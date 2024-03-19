@@ -8353,7 +8353,6 @@ MonoBehaviour:
   m_Level: 0
   m_Bounus: 0
   m_frequency: 0
-  m_min_C: 0
 --- !u!1 &4004225659579039639
 GameObject:
   m_ObjectHideFlags: 0
@@ -17059,13 +17058,14 @@ GameObject:
   - component: {fileID: 4889712537473909265}
   - component: {fileID: 8600715064460956972}
   - component: {fileID: 5274681565264872786}
+  - component: {fileID: 8900135849937627018}
   m_Layer: 5
   m_Name: test btn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6284830108178901956
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17083,7 +17083,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 84}
+  m_AnchoredPosition: {x: 0, y: -125}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4889712537473909265
@@ -17168,9 +17168,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5545019879401854795}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: testratio
+      - m_Target: {fileID: 8900135849937627018}
+        m_TargetAssemblyTypeName: UIStatus, Assembly-CSharp
+        m_MethodName: setCost
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17180,6 +17180,26 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8900135849937627018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8600863375560473707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0abb7abc092cf949973c97bc6911c2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Number: 3
+  Lv: 0
+  baseCost: 0
+  nextCost: 0
+  growthRate: 1.07
+  initialProd: 0
+  powNum: 0
+  totalProd: 0
 --- !u!1 &8610035313093407724
 GameObject:
   m_ObjectHideFlags: 0

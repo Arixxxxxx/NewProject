@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] float m_Level;
     [SerializeField] float m_Bounus;
     [SerializeField] float m_frequency;
-    [SerializeField] float m_min_C;
+    [SerializeField] float Min_C { get; set; }
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
 
     public void testratio()
     {
-        float ratio = Mathf.Log(m_Level,m_base) + m_min_C;
+        float ratio = Mathf.Log(m_Level,m_base) + Min_C;
         Debug.Log(ratio);
     }
 
