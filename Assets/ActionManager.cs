@@ -5,7 +5,7 @@ using UnityEngine;
 public class ActionManager : MonoBehaviour
 {
     public static ActionManager inst;
-    // Start is called before the first frame update
+    bool actionStart;
     void Start()
     {
         if (inst == null)
@@ -18,7 +18,7 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         
