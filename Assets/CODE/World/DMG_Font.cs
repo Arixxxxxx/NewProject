@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DMG_Font : MonoBehaviour
 {
-    float speed = 45f;
+    float speed = 0.6f;
     [SerializeField] bool isCritical;
     float stayTime = 1.25f;
     float timeCount = 0;
@@ -56,8 +56,10 @@ public class DMG_Font : MonoBehaviour
     
         if (cri)
         {
+            transform.position += Vector3.up * 0.3f;
             isCritical = true;
             Dmg_Text.color = Color.red;
+
         }
     }
     

@@ -1,15 +1,18 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 
 public class ActionManager : MonoBehaviour
 {
     public static ActionManager inst;
+
+    //카메라
+    CinemachineVirtualCamera cam;
+    CinemachineBasicMultiChannelPerlin camShake;
 
     //배경
     GameObject worldSpaceGroup;
@@ -35,7 +38,9 @@ public class ActionManager : MonoBehaviour
     [SerializeField] float enemyCurHP;
     [SerializeField] float enemyMaxHP;
     [SerializeField] Sprite[] enemySprite;
-    
+
+    //타격 이펙트
+    [SerializeField] ParticleSystem[] enemyEffect;
 
     Transform enemy_StartPoint;
     Transform enemy_StopPoint;
@@ -50,20 +55,28 @@ public class ActionManager : MonoBehaviour
     float enemyPosX;
     [SerializeField] float enemySpawnSpeed;
 
+    
 
     private void Awake()
     {
         worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
+
+        
         mat = worldSpaceGroup.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>().material;
         playerAnim = worldSpaceGroup.transform.Find("Player_Obj").GetComponent<Animator>();
         
         enemyObj = worldSpaceGroup.transform.Find("Enemy").GetComponent<SpriteRenderer>();
+        enemyEffect = enemyObj.transform.Find("Effect").GetComponentsInChildren<ParticleSystem>();
+        
         dmgFontParent = enemyObj.transform.Find("HPBar_Canvas/FontPosition").GetComponent<Transform>();
         hpBar_IMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Front").GetComponent<Image>();
         hpBar_Text = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Text").GetComponent<TMP_Text>();
 
         enemy_StartPoint = worldSpaceGroup.transform.Find("SpawnPoint").GetComponent<Transform>();
         enemy_StopPoint = worldSpaceGroup.transform.Find("StopPoint").GetComponent<Transform>();
+
+        cam = GameObject.Find("---[Cams]/Cam_0").GetComponent<CinemachineVirtualCamera>();
+        camShake = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
 
         Prefabs_Awake();
     }
@@ -131,13 +144,13 @@ public class ActionManager : MonoBehaviour
         //에너미 스폰 및 대기장소까지 전진
         checkPosition = Vector2.Distance(enemyObj.transform.position, enemy_StopPoint.position);
 
-        if (checkPosition > 2f) // 거리값 체크 2이상 이동
+        if (checkPosition > 0.5f) // 거리값 체크 2이상 이동
         {
             enemyPosX += Time.deltaTime * enemySpawnSpeed;
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
-        else if (checkPosition < 2f) // 2미만 공격
+        else if (checkPosition < 0.5f) // 2미만 공격
         {
             attackReady = true;
             ismove = false;
@@ -165,6 +178,7 @@ public class ActionManager : MonoBehaviour
         }
     }
 
+
     IEnumerator enemyOnHit()
     {
         yield return null;
@@ -175,12 +189,11 @@ public class ActionManager : MonoBehaviour
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
             obj.transform.position = dmgFontParent.position;
-
             float randomDice = Random.Range(0f, 100f);
             obj.GetComponent<DMG_Font>().SetText(atkPower.ToString(), randomDice < GameStatus.inst.CriticalChance ? true : false);
-            Debug.Log($"{randomDice} / {GameStatus.inst.CriticalChance}");
-
             obj.SetActive(true);
+
+            EnemyOnHitEffect();
         }
         else if(enemyCurHP - atkPower <= 0)
         {
@@ -191,6 +204,17 @@ public class ActionManager : MonoBehaviour
         
     }
 
+    int effectIndexCount = 0;
+    private void EnemyOnHitEffect()
+    {
+        if (effectIndexCount == enemyEffect.Length - 1)
+        {
+            effectIndexCount = 0;
+        }
+
+        enemyEffect[effectIndexCount].Play();
+        effectIndexCount++;
+    }
     bool isUIActive;
     private void Enemyinit()
     {
