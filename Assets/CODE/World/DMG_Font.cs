@@ -13,11 +13,14 @@ public class DMG_Font : MonoBehaviour
     Vector2 originPos;
 
     TMP_Text Dmg_Text;
-    Color originColor;
+    [SerializeField] Color originColor;
+    private void Awake()
+    {
+        originPos = transform.position;
+    }
     void Start()
     {
-        originColor = Dmg_Text.color;
-        originPos = transform.position; 
+        
     }
 
     private void OnEnable()
@@ -52,14 +55,18 @@ public class DMG_Font : MonoBehaviour
 
     public void SetText(string text, bool cri)
     {
-        Dmg_Text.text = text;
-    
-        if (cri)
+         if (cri)
         {
-            transform.position += Vector3.up * 0.3f;
+            Dmg_Text.text = $"Hit! {text}";
+            transform.position += Vector3.up * 0.5f;
             isCritical = true;
             Dmg_Text.color = Color.red;
-
+        }
+        else
+        {
+            Debug.Log("≥Î≈©∏Æ");
+            Dmg_Text.color = originColor;
+            Dmg_Text.text = text;
         }
     }
     
