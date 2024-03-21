@@ -2,6 +2,7 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +36,11 @@ public class ActionManager : MonoBehaviour
     float atkPower;
     SpriteRenderer palyerWeapenSr;
     [SerializeField] Sprite[] weaponSprite;
+    [SerializeField] Sprite[] backGroudSprite;
+    SpriteRenderer backGroundIMG;
     GameObject moveWindParticle;
+
+
     // 에너미
     GameObject enemyObj;
     SpriteRenderer enemySr;
@@ -68,9 +73,10 @@ public class ActionManager : MonoBehaviour
     {
         worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
 
-
-        mat = worldSpaceGroup.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>().material;
+        backGroundIMG = worldSpaceGroup.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>();
+        mat = backGroundIMG.material;
         playerAnim = worldSpaceGroup.transform.Find("Player_Obj/Sprite").GetComponent<Animator>();
+       
         moveWindParticle = playerAnim.transform.Find("MoveWind").gameObject;
         palyerWeapenSr = playerAnim.transform.Find("Weapon").GetComponent<SpriteRenderer>();
 
@@ -113,12 +119,17 @@ public class ActionManager : MonoBehaviour
     }
 
     Vector2 matVec;
-
+    bool doEnemyMove = true;
     private void FixedUpdate()
     {
-        if (attackReady == false) // 몬스터 전진
+        if (attackReady == false) //배경 이동
         {
-            MoveEnemyAndMap();
+            MoveMap();
+
+            if(doEnemyMove == true)
+            {
+                EnemyMove();
+            }
         }
     }
 
@@ -134,6 +145,15 @@ public class ActionManager : MonoBehaviour
         EnemyHPBarUI_RealTimeUpdater();
         atkPowerUpdater();
 
+
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            playerAnim.SetTrigger("Out");
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            playerAnim.SetTrigger("In");
+        }
     }
 
 
@@ -153,7 +173,7 @@ public class ActionManager : MonoBehaviour
     }
 
 
-    private void MoveEnemyAndMap()
+    private void MoveMap()
     {
         // 움직이기전 초기화
         if (ismove == false)
@@ -175,8 +195,11 @@ public class ActionManager : MonoBehaviour
         matVec.x += Time.deltaTime * backGroundSpeed;
         matVec.x = Mathf.Repeat(matVec.x, 1);
         mat.mainTextureOffset = matVec;
+    
+    }
 
-
+    private void EnemyMove()
+    {
         //에너미 스폰 및 대기장소까지 전진
         checkPosition = Vector2.Distance(enemyObj.transform.position, enemy_StopPoint.position);
 
@@ -188,8 +211,9 @@ public class ActionManager : MonoBehaviour
         }
         else if (checkPosition < 0.5f) // 2미만 공격
         {
-            enemyVec.x = 0;
             attackReady = true;
+
+            enemyVec.x = 0;
             ismove = false;
         }
     }
@@ -204,8 +228,8 @@ public class ActionManager : MonoBehaviour
     float count = 0;
     private void AttackEnemy()
     {
-        //애니메이션 켜주고
-        if (playerAnim.GetBool("Move") == true)
+     
+        if (playerAnim.GetBool("Move") == true) // 공격 Animation On
         {
             
             playerAnim.SetBool("Move", false);
@@ -213,7 +237,7 @@ public class ActionManager : MonoBehaviour
             moveWindParticle.gameObject.SetActive(false);
         }
 
-        if (palyerWeapenSr.enabled == false)
+        if (palyerWeapenSr.enabled == false) // 무기 SpriteRenderer On
         {
             palyerWeapenSr.enabled = true;
         }
@@ -224,6 +248,7 @@ public class ActionManager : MonoBehaviour
     {
         yield return null;
         enemyAnim.SetTrigger("Hit");
+
         if (enemyCurHP - atkPower > 0)
         {
             enemyCurHP -= atkPower;
@@ -256,30 +281,64 @@ public class ActionManager : MonoBehaviour
     private void EnemyDeadFloorUp()
     {
         attackReady = false;
-        Enemyinit();
+
 
         floorCount++;
 
         if (floorCount < 4)
         {
+            Enemyinit();
             GameStatus.inst.FloorLv = floorCount;
             WorldUI_Manager.inst.Set_StageUiBar(floorCount);
         }
         else if (floorCount == 4)
         {
+             Enemyinit();
             GameStatus.inst.FloorLv = floorCount;
             WorldUI_Manager.inst.Set_StageUiBar(floorCount);
             //보스피통 늘려주는 ~
         }
         else if (floorCount == 5)
         {
+            doEnemyMove = false;
+            Enemyinit();
             floorCount = 0;
-            GameStatus.inst.StageLv++;
-            GameStatus.inst.FloorLv = floorCount;
-            WorldUI_Manager.inst.Reset_StageUiBar();
-            // 다음 층으로 이동하는거처럼보이는 애니메이션 추가
+            StartCoroutine(NextStageAction()); //  다음 층으로 이동하는거처럼
+
+
+            
         }
     }
+
+   
+    IEnumerator NextStageAction()
+    {
+        GameStatus.inst.StageLv++;
+        GameStatus.inst.FloorLv = floorCount;
+
+        playerAnim.SetTrigger("Out");
+       
+        yield return new WaitForSeconds(0.2f);
+
+        WorldUI_Manager.inst.Set_Auto_BlackCutton(1);
+        yield return new WaitForSeconds(1);
+
+        // 맵변경
+        TestMapChanger();
+        doEnemyMove = true;
+
+        yield return new WaitForSeconds(0.5f);
+
+        
+        WorldUI_Manager.inst.Reset_StageUiBar();
+        playerAnim.transform.localPosition = new Vector3(-5,0,0);
+        yield return null;
+        playerAnim.SetTrigger("In");
+
+        yield return new WaitForSeconds(1f);
+       
+    }
+
 
     int effectIndexCount = 0;
 
@@ -301,7 +360,7 @@ public class ActionManager : MonoBehaviour
     {
         // 나중에 체력 초기화 연산 바꿔야함
         enemyObj.transform.position = enemy_StartPoint.position; // 위치 초기화
-        enemyMaxHP = /*GameStatus.inst.StageLv **/ 100; // 체력초기화
+        enemyMaxHP = /*GameStatus.inst.StageLv **/ 50; // 체력초기화
         enemyCurHP = enemyMaxHP;
 
         //Hpbar 초기화
@@ -343,6 +402,13 @@ public class ActionManager : MonoBehaviour
     }
 
 
+    public void PlayerAttackSpeedLvUp(int Lv)
+    {
+        if (GameStatus.inst.AtkSpeedLv >= 10) { return; }
+
+        playerAnim.SetFloat("AttackSpeed", 1 + (attackS * Lv));
+        Debug.Log($"Total : {1 + (attackS * Lv)} / AddSpeed {attackS} + {Lv}");
+    }
 
 
     //풀링시스템
@@ -391,6 +457,17 @@ public class ActionManager : MonoBehaviour
 
     }
 
+    int mapint = 0;
+    private void TestMapChanger()
+    {
+        mapint++;
+        mapint = mapint == 2 ? 0 : 1;
+        backGroundIMG.sprite = backGroudSprite[mapint];
+    }
+    private void Set_MapSpriteChanger(int indexNum)
+    {
+        backGroundIMG.sprite = backGroudSprite[indexNum];
+    }
 
     // 카메라 쉐이크
     public void F_PlayerOnHitCamShake()
@@ -438,11 +515,5 @@ public class ActionManager : MonoBehaviour
 
     }
 
-    public void PlayerAttackSpeedLvUp(int Lv)
-    {
-        if (GameStatus.inst.AtkSpeedLv >= 10) { return; }
-        
-        playerAnim.SetFloat("AttackSpeed", 1 + (attackS * Lv));
-        Debug.Log($"Total : {1 + (attackS * Lv)} / AddSpeed {attackS} + {Lv}");
-    }
+  
 }
