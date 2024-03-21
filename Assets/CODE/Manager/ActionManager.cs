@@ -2,6 +2,7 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,13 +11,15 @@ public class ActionManager : MonoBehaviour
 {
     public static ActionManager inst;
 
+    GameStatus statusManager;
+
     //카메라
     CinemachineVirtualCamera cam;
     CinemachineBasicMultiChannelPerlin camShake;
 
     //배경
     GameObject worldSpaceGroup;
-    
+
     Material mat;
     [SerializeField] float backGroundSpeed;
     [SerializeField] GameObject[] pooling_Obj;
@@ -30,8 +33,9 @@ public class ActionManager : MonoBehaviour
     int attackSpeedLv;
     float attackSpeed;
     float atkPower;
-    SpriteRenderer palyerWeapen;
-
+    SpriteRenderer palyerWeapenSr;
+    [SerializeField] Sprite[] weaponSprite;
+    GameObject moveWindParticle;
     // 에너미
     GameObject enemyObj;
     SpriteRenderer enemySr;
@@ -57,23 +61,25 @@ public class ActionManager : MonoBehaviour
     Vector2 enemyVec;
     float enemyPosX;
     [SerializeField] float enemySpawnSpeed;
+    int floorCount;
 
-    
 
     private void Awake()
     {
         worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
 
-        
+
         mat = worldSpaceGroup.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>().material;
-        playerAnim = worldSpaceGroup.transform.Find("Player_Obj").GetComponent<Animator>();
-        palyerWeapen = playerAnim.transform.Find("Weapon").GetComponent<SpriteRenderer>();
+        playerAnim = worldSpaceGroup.transform.Find("Player_Obj/Sprite").GetComponent<Animator>();
+        moveWindParticle = playerAnim.transform.Find("MoveWind").gameObject;
+        palyerWeapenSr = playerAnim.transform.Find("Weapon").GetComponent<SpriteRenderer>();
 
         enemyObj = worldSpaceGroup.transform.Find("Enemy").gameObject;
         enemySr = enemyObj.transform.Find("Sprite").GetComponent<SpriteRenderer>();
+        
         enemyAnim = enemySr.GetComponent<Animator>();
         enemyEffect = enemyObj.transform.Find("Effect").GetComponentsInChildren<ParticleSystem>();
-        
+
         dmgFontParent = enemyObj.transform.Find("HPBar_Canvas/FontPosition").GetComponent<Transform>();
         hpBar_IMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Front").GetComponent<Image>();
         hpBar_Text = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Text").GetComponent<TMP_Text>();
@@ -85,6 +91,7 @@ public class ActionManager : MonoBehaviour
         camShake = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
 
         Prefabs_Awake();
+
     }
 
     void Start()
@@ -99,10 +106,10 @@ public class ActionManager : MonoBehaviour
         }
 
         //최초 init
-       
+
         Enemyinit();
         PlayerInit();
-
+        UI_Init();
     }
 
     Vector2 matVec;
@@ -114,6 +121,9 @@ public class ActionManager : MonoBehaviour
             MoveEnemyAndMap();
         }
     }
+
+    int index = 1;
+    float attackS = 0.15f;
     void Update()
     {
         if (attackReady == true) // 전투
@@ -123,10 +133,24 @@ public class ActionManager : MonoBehaviour
 
         EnemyHPBarUI_RealTimeUpdater();
         atkPowerUpdater();
+
     }
 
 
+    private void UI_Init()
+    {
+        // UI Bar 초기화
+        statusManager = GameStatus.inst;
+        if (statusManager.FloorLv != 0)
+        {
+            WorldUI_Manager.inst.Set_StageUiBar(statusManager.FloorLv);
+        }
+        else if (statusManager.FloorLv == 0)
+        {
+            WorldUI_Manager.inst.Reset_StageUiBar();
+        }
 
+    }
 
 
     private void MoveEnemyAndMap()
@@ -138,9 +162,10 @@ public class ActionManager : MonoBehaviour
             if (playerAnim.GetBool("Move") == false)
             {
                 playerAnim.SetBool("Move", true);
+                moveWindParticle.gameObject.SetActive(true);
             }
 
-            palyerWeapen.enabled = false;
+            palyerWeapenSr.enabled = false;
             enemyPosX = 0;
             enemyVec.x = enemy_StartPoint.transform.position.x;
             enemyVec.y = enemy_StartPoint.transform.position.y;
@@ -169,30 +194,28 @@ public class ActionManager : MonoBehaviour
         }
     }
 
+    //애니메이션 공격 함수
+    public void A_PlayerAttackToEnemy()
+    {
+        StopCoroutine(enemyOnHit());
+        StartCoroutine(enemyOnHit());
+    }
 
     float count = 0;
     private void AttackEnemy()
     {
         //애니메이션 켜주고
-        if(playerAnim.GetBool("Move") == true)
+        if (playerAnim.GetBool("Move") == true)
         {
+            
             playerAnim.SetBool("Move", false);
+            playerAnim.transform.position = new Vector2(-0.706f, 5.45f);
+            moveWindParticle.gameObject.SetActive(false);
         }
 
-        if(palyerWeapen.enabled == false)
+        if (palyerWeapenSr.enabled == false)
         {
-            palyerWeapen.enabled = true;
-        }
-
-
-        //공격
-        count += Time.deltaTime;
-
-        if(count > attackSpeed)
-        {
-            count = 0;
-            StopCoroutine(enemyOnHit());
-            StartCoroutine(enemyOnHit());
+            palyerWeapenSr.enabled = true;
         }
     }
 
@@ -220,13 +243,42 @@ public class ActionManager : MonoBehaviour
 
             EnemyOnHitEffect();
         }
-        else if(enemyCurHP - atkPower <= 0)
+        else if (enemyCurHP - atkPower <= 0) //에너미 사망 및 초기화
         {
-            //에너미 사망 및 초기화
-            Enemyinit();
-            attackReady = false;
+            EnemyDeadFloorUp();
         }
-        
+
+    }
+
+    /// <summary>
+    /// 몬스터 사망 Init 함수
+    /// </summary>
+    private void EnemyDeadFloorUp()
+    {
+        attackReady = false;
+        Enemyinit();
+
+        floorCount++;
+
+        if (floorCount < 4)
+        {
+            GameStatus.inst.FloorLv = floorCount;
+            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
+        }
+        else if (floorCount == 4)
+        {
+            GameStatus.inst.FloorLv = floorCount;
+            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
+            //보스피통 늘려주는 ~
+        }
+        else if (floorCount == 5)
+        {
+            floorCount = 0;
+            GameStatus.inst.StageLv++;
+            GameStatus.inst.FloorLv = floorCount;
+            WorldUI_Manager.inst.Reset_StageUiBar();
+            // 다음 층으로 이동하는거처럼보이는 애니메이션 추가
+        }
     }
 
     int effectIndexCount = 0;
@@ -261,7 +313,7 @@ public class ActionManager : MonoBehaviour
         int spirteRanValue = Random.Range(0, spriteCount);
         enemySr.sprite = enemySprite[spirteRanValue];
 
-       
+
     }
 
 
@@ -298,14 +350,14 @@ public class ActionManager : MonoBehaviour
     {
         prefabsQue = new Queue<GameObject>[pooling_Obj.Length];
 
-        for(int index =0; index < prefabsQue.Length; index++)
+        for (int index = 0; index < prefabsQue.Length; index++)
         {
             prefabsQue[index] = new Queue<GameObject>();
         }
 
         int count = 10;
 
-        for(int index=0; index < count; index++)
+        for (int index = 0; index < count; index++)
         {
             GameObject obj = Instantiate(pooling_Obj[0], dmgFontParent);
             prefabsQue[0].Enqueue(obj);
@@ -316,7 +368,7 @@ public class ActionManager : MonoBehaviour
 
     public GameObject Get_Pooling_Prefabs(int indexNum)
     {
-        if(prefabsQue[indexNum].Count <= 1)
+        if (prefabsQue[indexNum].Count <= 1)
         {
             GameObject obj = Instantiate(pooling_Obj[0], dmgFontParent);
             prefabsQue[0].Enqueue(obj);
@@ -330,9 +382,9 @@ public class ActionManager : MonoBehaviour
 
     public void Set_Pooling_Prefabs(GameObject obj, int indexNum)
     {
-        if (obj.activeSelf) 
+        if (obj.activeSelf)
         {
-            obj.SetActive(false); 
+            obj.SetActive(false);
         }
 
         prefabsQue[indexNum].Enqueue(obj);
@@ -370,6 +422,27 @@ public class ActionManager : MonoBehaviour
 
         camShake.m_AmplitudeGain = 0;
         camShake.m_FrequencyGain = 0;
+    }
 
+
+    public void TestBtnWeaponChange()
+    {
+        index++;
+
+        if (index >= weaponSprite.Length)
+        {
+            index = 0;
+        }
+        
+        palyerWeapenSr.sprite = weaponSprite[index];
+
+    }
+
+    public void PlayerAttackSpeedLvUp(int Lv)
+    {
+        if (GameStatus.inst.AtkSpeedLv >= 10) { return; }
+        
+        playerAnim.SetFloat("AttackSpeed", 1 + (attackS * Lv));
+        Debug.Log($"Total : {1 + (attackS * Lv)} / AddSpeed {attackS} + {Lv}");
     }
 }

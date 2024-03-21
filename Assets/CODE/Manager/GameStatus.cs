@@ -22,7 +22,7 @@ public class GameStatus : MonoBehaviour
     [Space]
     [SerializeField] float atkPower; 
     [SerializeField] int atkSpeedLv; // 공격속도 증가
-    public int AtkSpeedLv { get { return atkSpeedLv; } set { atkSpeedLv = value; } }
+    public int AtkSpeedLv { get { return atkSpeedLv; } set { Debug.Log("12"); atkSpeedLv = value; ActionManager.inst.PlayerAttackSpeedLvUp(atkSpeedLv); } }
 
     [SerializeField] float criticalChance;  //크리티컬 확률
     [SerializeField] float criticalPower; // 크리티컬 피해증가
@@ -34,7 +34,7 @@ public class GameStatus : MonoBehaviour
     public int StageLv { get { return stageLv; } set { stageLv = value; } }
 
     [SerializeField] int floorLv; // 해당 층의 몬스터 단계 
-    public int FloorLv { get { return floorLv; } set { floorLv = value; } }
+    public int FloorLv   { get { return floorLv; } set { floorLv = value; }}
 
     [Space]
     [Header("# Total Get Resource")]
