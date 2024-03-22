@@ -60,9 +60,10 @@ public class UIStatus : MonoBehaviour
         string strValue = value.ToString();
         int count = strValue.Length;
         int pointNum = 0;
+        char point = '.';
         for (int iNum = 0; iNum < count; iNum++)
         {
-            if (Equals(strValue[iNum],"."))
+            if (string.Equals(strValue[iNum],  point))
             {
                 pointNum = iNum;
                 break;
@@ -75,7 +76,7 @@ public class UIStatus : MonoBehaviour
             BigInteger A = BigInteger.Pow(b, pow);
             string result = A.ToString();
             int index = result.Length - countValue;
-            result.Insert(index, ".");
+            result = result.Insert(index, point.ToString());
             return result;
         }
         else
