@@ -111,7 +111,7 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string DigitMultiply(string a, int percent)
     {
-        StringBuilder sb = new StringBuilder();
+        sb.Clear();
         int wordIndex = a.Count(x => char.IsLetter(x));
 
         if (wordIndex == 0)
