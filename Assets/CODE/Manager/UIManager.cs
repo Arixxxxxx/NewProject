@@ -5,10 +5,6 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] List<GameObject> m_listBottomUI = new List<GameObject>();
-    [SerializeField] float m_base;
-    [SerializeField] float m_Level;
-    [SerializeField] float m_Bounus;
-    [SerializeField] float m_frequency;
     [SerializeField] float Min_C { get; set; }
     // Start is called before the first frame update
     void Start()
@@ -20,12 +16,6 @@ public class UIManager : MonoBehaviour
     void Update()
     {
 
-    }
-
-    public void testratio()
-    {
-        float ratio = Mathf.Log(m_Level,m_base) + Min_C;
-        Debug.Log(ratio);
     }
 
     public void ClickBotBtn(float _num)
