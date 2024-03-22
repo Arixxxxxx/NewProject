@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -102,6 +103,51 @@ public class CalCulator : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// %계산기 : StringFourDigitChanger 함수 들어갔다 나온 문자열 + % 집어넣어야함
+    /// </summary>
+    /// <param name="a"> Ex : 555A </param>
+    /// <param name="percent"> 5% => 5 </param>
+    /// <returns></returns>
+    public string DigitMultiply(string a, int percent)
+    {
+        StringBuilder sb = new StringBuilder();
+        int wordIndex = a.Count(x => char.IsLetter(x));
+
+        if (wordIndex == 0)
+        {
+            float sum = int.Parse(a) * (1 + 0.01f * percent);
+            int temp = (int)Mathf.Floor(sum);
+            return StringFourDigitChanger(temp.ToString());
+
+        }
+
+        else if (wordIndex > 0)
+        {
+
+            int numTemp = int.Parse(string.Join("", a.Where(x => char.IsDigit(x)).Select(x => x).ToArray())); //숫자꺼냄
+            string letter = new string(a.Where(x => char.IsLetter(x)).Select(x => x).ToArray());  //문자 꺼냄
+
+            int calcul = (int)Mathf.Floor(numTemp * (1 + 0.01f * percent));
+
+            string numberPart = calcul.ToString(); // 숫자 문자화
+            int digitLength = numberPart.Length; //문자 길이
+            int index = 0;
+
+            while (digitLength > 3)
+            {
+                index++;
+                digitLength -= 3; // 뒷자리 3개씩 지움
+                numberPart = numberPart.Substring(0, digitLength); // 지우고앞자리만 가져옴
+            }
+
+            sb.Append(numberPart + (char)((int)letter[0] + index));
+
+            return sb.ToString();
+        }
+
+        return string.Empty;
+    }
 
 
 
