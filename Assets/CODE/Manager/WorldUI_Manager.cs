@@ -70,7 +70,7 @@ public class WorldUI_Manager : MonoBehaviour
     public void Set_StageUiBar(int curFloorLv)
     {
         stageSlot[curFloorLv].sprite = stageSprite[2];
-        stageText.text = $"{GameStatus.inst.StageLv} - {curFloorLv+1} 층";
+        stageText.text = $"Stage {GameStatus.inst.StageLv+1} - {curFloorLv+1}";
         uiBossHead.gameObject.SetActive(curFloorLv == 4 ? true : false);
         for (int index = 0; index < curFloorLv; index++)
         {
@@ -86,7 +86,7 @@ public class WorldUI_Manager : MonoBehaviour
     public void Reset_StageUiBar()
     {
         stageSlot[0].sprite = stageSprite[2];
-        stageText.text = $"Stage {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv+1}";
+        stageText.text = $"Stage {GameStatus.inst.StageLv+1} - {GameStatus.inst.FloorLv+1}";
         uiBossHead.gameObject.SetActive(false);
 
         for (int index = 1; index < stageSlot.Length; index++)
@@ -99,9 +99,26 @@ public class WorldUI_Manager : MonoBehaviour
     /// World공간 배경 UI 페이드 커튼
     /// </summary>
     /// <param name="Value"></param>
-    public void Set_WorldBlackCottun(bool Value)
+    public void Set_Menual_WorldBlackCottun(bool Value)
     {
        cuttonBlack.SetTrigger(Value == true ? "FadeOn" : "FadeOff");
+    }
+
+    /// <summary>
+    /// 게임화면 페이드 인아웃 함수 
+    /// </summary>
+    /// <param name="durationTime">지속되는 시간</param>
+    public void Set_Auto_BlackCutton(float durationTime)
+    {
+        StopCoroutine(StartCutton(durationTime));
+        StartCoroutine(StartCutton(durationTime));
+    }
+    IEnumerator StartCutton(float durationTime)
+    {
+        cuttonBlack.SetTrigger("FadeOn");
+        yield return new WaitForSeconds(durationTime);
+        cuttonBlack.SetTrigger("FadeOff");
+
     }
 
     int weaponNum;
