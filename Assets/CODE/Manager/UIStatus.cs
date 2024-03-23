@@ -6,6 +6,7 @@ using TMPro;
 using System.Numerics;
 using System;
 
+
 public class UIStatus : MonoBehaviour
 {
     [SerializeField] int Number;
