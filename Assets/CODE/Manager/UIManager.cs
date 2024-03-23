@@ -1,18 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using UnityEngine.Events;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance;
+
+    public UnityEvent OnBuyCountChanged;
+
     [SerializeField] List<GameObject> m_listBottomUI = new List<GameObject>();
-    [SerializeField] float Min_C { get; set; }
-    // Start is called before the first frame update
+    [SerializeField] private int buyCount = 1;
+    public int BuyCount
+    {
+        get => buyCount;
+        set
+        {
+            buyCount = value;
+            OnBuyCountChanged?.Invoke();
+        }
+    }
+
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
     void Start()
     {
 
     }
 
-    // Update is called once per frame
     void Update()
     {
 
@@ -42,5 +68,10 @@ public class UIManager : MonoBehaviour
     public void ClickCloseThisTab(GameObject _obj)
     {
         _obj.SetActive(false);
+    }
+
+    public void ClickBuyCountBtn(int count)
+    {
+        BuyCount = count;
     }
 }
