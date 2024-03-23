@@ -24,6 +24,8 @@ public class ActionManager : MonoBehaviour
     [SerializeField] float backGroundSpeed;
     [SerializeField] GameObject[] pooling_Obj;
     Transform dmgFontParent;
+    Transform goldActionParent;
+    
 
     Queue<GameObject>[] prefabsQue;
 
@@ -73,6 +75,8 @@ public class ActionManager : MonoBehaviour
     private void Awake()
     {
         worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
+
+        goldActionParent = worldSpaceGroup.transform.Find("GoldActionDynamic").GetComponent<Transform>();
 
         backGroundIMG = worldSpaceGroup.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>();
         mat = backGroundIMG.material;
@@ -290,11 +294,23 @@ public class ActionManager : MonoBehaviour
         }
         else if (enemyCurHP - atkPower <= 0) //에너미 사망 및 초기화
         {
+            StartCoroutine(GetGoldActionParticle());
+            // 현재 받아야되는 돈 계산
+            WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, "912093203981029389");
             EnemyDeadFloorUp();
         }
 
     }
 
+    IEnumerator GetGoldActionParticle()
+    {
+        GameObject ps = Get_Pooling_Prefabs(1);
+        ps.transform.position = enemyAnim.transform.position + (Vector3.up * 0.5f);
+        ps.SetActive(true);
+        ps.GetComponent<ParticleSystem>().Play();
+        yield return new WaitForSeconds(1);
+        Return_Pooling_Prefabs(ps,1);
+    }
     /// <summary>
     /// 몬스터 사망 Init 함수
     /// </summary>
@@ -460,30 +476,52 @@ public class ActionManager : MonoBehaviour
 
         int count = 10;
 
-        for (int index = 0; index < count; index++)
+        for (int forCount = 0; forCount < count; forCount++)
         {
             GameObject obj = Instantiate(pooling_Obj[0], dmgFontParent);
             prefabsQue[0].Enqueue(obj);
+            obj.transform.position = dmgFontParent.transform.position;
+            obj.SetActive(false);
+        }
+
+        for (int forCount = 0; forCount < 3; forCount++)
+        {
+            GameObject obj = Instantiate(pooling_Obj[1], goldActionParent);
+            prefabsQue[1].Enqueue(obj);
             obj.transform.position = dmgFontParent.transform.position;
             obj.SetActive(false);
         }
     }
 
+    Transform trsPrent;
     public GameObject Get_Pooling_Prefabs(int indexNum)
     {
+        
         if (prefabsQue[indexNum].Count <= 1)
         {
-            GameObject obj = Instantiate(pooling_Obj[0], dmgFontParent);
-            prefabsQue[0].Enqueue(obj);
+            
+            switch (indexNum)
+            {
+                case 0:
+                    trsPrent = dmgFontParent;
+                    break;
+
+                case 1:
+                    trsPrent = goldActionParent;
+                    break;
+            }
+
+            GameObject obj = Instantiate(pooling_Obj[indexNum], trsPrent);
+            prefabsQue[indexNum].Enqueue(obj);
             obj.transform.position = dmgFontParent.transform.position;
             obj.SetActive(false);
         }
-
+       
         return prefabsQue[indexNum].Dequeue();
 
     }
 
-    public void Set_Pooling_Prefabs(GameObject obj, int indexNum)
+    public void Return_Pooling_Prefabs(GameObject obj, int indexNum)
     {
         if (obj.activeSelf)
         {

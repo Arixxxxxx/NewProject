@@ -23,25 +23,34 @@ public class UI_IncreaseValueFont : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        MoveAndHideFont();
+    }
 
+    // Font 위로 올라가면서 하이드됨
+    private void MoveAndHideFont()
+    {
         transform.localPosition += Vector3.up * Time.deltaTime * upSpeed;
         valueFont.color -= new Color(0, 0, 0, 0.35f) * Time.deltaTime * 2;
-        if (valueFont.color.a == 0)
+
+        if (valueFont.color.a <= 0.1f) // 알파값0되면 풀로 리턴
         {
-            gameObject.SetActive(false);
+            returnObj();
         }
-        // 풀링 
-    }
-    private void returnObj()
-    {
-        // 리턴 
     }
 
-    public void Set_PosAndColor(int index)
+    // 최초 Init
+    public void Set_PosAndColorInit(int index, string value)
     {
-        transform.position = startPos[index].position;
+        valueFont.text = "+" + CalCulator.inst.StringFourDigitChanger(value);
         valueFont.color = fontColor[index];
     }
+
+    private void returnObj()
+    {
+        WorldUI_Manager.inst.Return_GoldAndStarFontPrefabs(gameObject);
+    }
+
+    
 
 
 }

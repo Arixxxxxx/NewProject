@@ -53,7 +53,7 @@ public class DMG_Font : MonoBehaviour
         if (timeCount > stayTime)
         {
             timeCount = 0;
-            ActionManager.inst.Set_Pooling_Prefabs(gameObject, 0);
+            ActionManager.inst.Return_Pooling_Prefabs(gameObject, 0);
             transform.position = originPos;
             isCritical = false;
         }
