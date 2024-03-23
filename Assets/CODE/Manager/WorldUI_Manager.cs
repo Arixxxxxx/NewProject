@@ -35,11 +35,11 @@ public class WorldUI_Manager : MonoBehaviour
 
 
         cuttonBlack = worldUI.transform.Find("Cutton(B)").GetComponent<Animator>();
-        stageText = worldUI.transform.Find("StageUI/BG/Text").GetComponent<TMP_Text>();
-        uiBossHead = worldUI.transform.Find("StageUI/BG/Boss").GetComponent<Image>();
+        stageText = worldUI.transform.Find("StageUI/StageInfo/Text").GetComponent<TMP_Text>();
+        uiBossHead = worldUI.transform.Find("StageUI/StageInfo/Boss").GetComponent<Image>();
         for (int index = 0; index < stageSlot.Length; index++)
         {
-            stageSlot[index] = worldUI.transform.Find("StageUI/BG").GetChild(index).GetComponent<Image>();
+            stageSlot[index] = worldUI.transform.Find("StageUI/StageInfo").GetChild(index).GetComponent<Image>();
         }
 
         //테스트 버튼
