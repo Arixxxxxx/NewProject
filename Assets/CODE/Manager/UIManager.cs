@@ -1,17 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using System.Numerics;
 using UnityEngine.Events;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    public UnityEvent OnBuyCountChanged;
-
     [SerializeField] List<GameObject> m_listBottomUI = new List<GameObject>();
+    [SerializeField] TextMeshProUGUI m_totalGold;
+    [SerializeField] TextMeshProUGUI m_totalAtk;
+
     [SerializeField] private int buyCount = 1;
+    [HideInInspector] public UnityEvent OnBuyCountChanged;
+
+    BigInteger totalProdGold;
+    public BigInteger TotalProdGold
+    {
+        get => totalProdGold;
+        set
+        {
+            totalProdGold = value;
+            m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
+        }
+    }
+    BigInteger totalAtk;
+    public BigInteger TotalAtk
+    {
+        get => totalAtk;
+        set
+        {
+            totalAtk = value;
+            m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
+        }
+    }
     public int BuyCount
     {
         get => buyCount;
@@ -36,7 +60,8 @@ public class UIManager : MonoBehaviour
     }
     void Start()
     {
-
+        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
+        m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
     }
 
     void Update()
