@@ -71,10 +71,10 @@ public class GameStatus : MonoBehaviour
         set
         {
             floorLv = value;
+            AccumlateFloor++;
             if (floorLv == 5)
             {
                 floorLv = 0;
-                accumlateFloor++;
                 stageLv++;
             }
         }

@@ -211,14 +211,16 @@ public class CalCulator : MonoBehaviour
     {
         int index = 0;
         int digitLength = inputValue.Length;
-        string digit = inputValue;
+        string digit = new string(inputValue.Where( x => char.IsDigit(x) == true).ToArray());
 
         while (digitLength > 3)
         {
             index++;
             digitLength -= 3; // 뒷자리 3개씩 지움
+            digit = digit.Substring(0, digitLength);
         }
 
-        return digit.Substring(0, digitLength);
+        Debug.Log($"반환{digit}");
+        return digit;
     }
 }

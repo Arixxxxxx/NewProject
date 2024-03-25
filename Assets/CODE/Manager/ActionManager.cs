@@ -455,6 +455,8 @@ public class ActionManager : MonoBehaviour
     {
         fillAmountA = float.Parse(CalCulator.inst.OlnyDigitChanger(enemyCurHP));
         fillAmountB = float.Parse(CalCulator.inst.OlnyDigitChanger(enemyMaxHP));
+
+        Debug.Log($"{fillAmountA}, {fillAmountB}");
         hpBar_IMG.fillAmount = fillAmountA / fillAmountB;
         hpBar_Text.text = $"{CalCulator.inst.StringFourDigitChanger(enemyCurHP)}";
     }
