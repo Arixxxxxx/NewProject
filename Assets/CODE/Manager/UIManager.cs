@@ -28,7 +28,7 @@ public class UIManager : MonoBehaviour
             m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
         }
     }
-    BigInteger totalAtk;
+    BigInteger totalAtk = 5;
     public BigInteger TotalAtk
     {
         get => totalAtk;

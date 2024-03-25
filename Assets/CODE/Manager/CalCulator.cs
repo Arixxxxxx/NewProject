@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using UnityEngine;
 
@@ -150,6 +151,27 @@ public class CalCulator : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// 공격력 스트링으로 변환하여 리턴
+    /// </summary>
+    /// <returns></returns>
+    public string Get_ATKtoString()
+    {
+        return UIManager.Instance.TotalAtk.ToString();
+    }
+
+    public string ToBigIntigerFromString(BigInteger value)
+    {
+        return value.ToString();
+    }
+
+
+    public string EnemyHpSetup()
+    {
+        float a = 10.3f;
+        float b = GameStatus.inst.AccumlateFloor;
+        return StringFourDigitChanger(Mathf.Floor(Mathf.Pow(a, b)).ToString());
+    }
 
     /// <summary>
     /// 최종 숫자 + 문자 변환 함수
@@ -178,5 +200,25 @@ public class CalCulator : MonoBehaviour
         }
 
         return digit + word;
+    }
+
+    /// <summary>
+    /// 문자 제외 앞자리 숫자만 리턴
+    /// </summary>
+    /// <param name="inputValue"></param>
+    /// <returns></returns>
+    public string OlnyDigitChanger(string inputValue)
+    {
+        int index = 0;
+        int digitLength = inputValue.Length;
+        string digit = inputValue;
+
+        while (digitLength > 3)
+        {
+            index++;
+            digitLength -= 3; // 뒷자리 3개씩 지움
+        }
+
+        return digit.Substring(0, digitLength);
     }
 }

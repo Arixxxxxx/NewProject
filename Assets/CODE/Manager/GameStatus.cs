@@ -7,10 +7,7 @@ public class GameStatus : MonoBehaviour
 {
     public static GameStatus inst;
 
-    [Header("# Check Info")]
-    [Space]
-    [Header("# Player Info")]
-    [Space]
+
     [Header("# Resource")]
     [SerializeField] float gold;
     public float Gold { get { return gold; } set { gold = value; } }
@@ -18,27 +15,74 @@ public class GameStatus : MonoBehaviour
     [SerializeField] float key; // 환생시 주는 키
     [SerializeField] float ruby;
     [SerializeField] int rebirthToken; // 환생 토큰
-    [Header("# Player Info")]
-    [Space]
-    [SerializeField] float atkPower; 
-    [SerializeField] int atkSpeedLv; // 공격속도 증가
-    public int AtkSpeedLv { get { return atkSpeedLv; } set { Debug.Log("12"); atkSpeedLv = value; ActionManager.inst.PlayerAttackSpeedLvUp(atkSpeedLv); } }
 
-    [SerializeField] float criticalChance;  //크리티컬 확률
-    [SerializeField] float criticalPower; // 크리티컬 피해증가
+    int atkSpeedLv; // 공격속도 증가
+
+    public int AtkSpeedLv
+    {
+        get { return atkSpeedLv; }
+        set
+        {
+            atkSpeedLv = value;
+            ActionManager.inst.PlayerAttackSpeedLvUp(atkSpeedLv);
+        }
+    }
+
+    float criticalChance = 20;  //크리티컬 확률
+    float criticalPower = 0; // 크리티컬 피해증가
     public float CriticalChance { get { return criticalChance; } set { criticalChance = value; } }
 
     [Space]
     [Header("# Stage Info")]
-    [SerializeField] int stageLv = 1; // 층수 
-    public int StageLv { get { return stageLv; } set { stageLv = value; } }
+    int stageLv = 1; // 층수 
+    int accumlateFloor = 1;
+    public int AccumlateFloor 
+    {
+        get
+        {
+            return accumlateFloor;
+        }
 
-    [SerializeField] int floorLv; // 해당 층의 몬스터 단계 
-    public int FloorLv   { get { return floorLv; } set { floorLv = value; }}
+        set
+        {
+            accumlateFloor = value;
+        }
+    }
+    public int StageLv
+    {
+        get
+        {
+            return stageLv;
+        }
+
+        set
+        {
+            stageLv = value;
+        }
+    }
+
+    int floorLv = 1; // 해당 층의 몬스터 단계 
+    public int FloorLv
+    {
+        get
+        {
+            return floorLv;
+        }
+        set
+        {
+            floorLv = value;
+            if (floorLv == 5)
+            {
+                floorLv = 0;
+                accumlateFloor++;
+                stageLv++;
+            }
+        }
+    }
 
     [Space]
     [Header("# Total Get Resource")]
-    [SerializeField] float mosterKill; 
+    [SerializeField] float mosterKill;
     [SerializeField] float bossKill;
     [SerializeField] float getGold;
     [SerializeField] int rebirthCount; // 환생 횟수
@@ -58,7 +102,7 @@ public class GameStatus : MonoBehaviour
 
     void Start()
     {
-        criticalChance = 40;
+        //criticalChance = 40;
 
 
 
@@ -68,9 +112,9 @@ public class GameStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
 
 
 }
