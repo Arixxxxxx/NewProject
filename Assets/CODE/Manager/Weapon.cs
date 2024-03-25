@@ -11,6 +11,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] int Lv;//퀘스트 업그레이드 레벨
     [SerializeField] float atkGrowthRate;//공격력 성장률
     [SerializeField] float atkpowNumRate;//초기공격력지수
+    [SerializeField] int WeaponNum; //무기 이미지번호
 
     BigInteger baseCost;//초기 비용
     BigInteger nextCost;//다음레벨 비용
@@ -51,8 +52,6 @@ public class Weapon : MonoBehaviour
             Lv = Number * 5;
         }
 
-
-
         if (Lv - (Number * 5) != 0)
         {
             Atk = BigInteger.Multiply(resultPowNum, Lv);
@@ -74,6 +73,7 @@ public class Weapon : MonoBehaviour
     {
         Lv++;
         Atk = BigInteger.Multiply(resultPowNum, Lv);
+        UIManager.Instance.EquipWeaponNum = WeaponNum;
         setNextCost();
         setText();
         if (Lv - Number * 5 >= 5)
@@ -87,7 +87,7 @@ public class Weapon : MonoBehaviour
         nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(atkGrowthRate, Lv), 1.67f) * resultPowNum;
     }
 
-    public void clickWeaponImage(int WeaponNum)
+    public void clickWeaponImage()
     {
         UIManager.Instance.EquipWeaponNum = WeaponNum;
         Debug.Log(UIManager.Instance.EquipWeaponNum);

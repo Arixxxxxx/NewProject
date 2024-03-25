@@ -16,9 +16,18 @@ public class UIManager : MonoBehaviour
     [SerializeField] private int buyCount = 1;
     [HideInInspector] public UnityEvent OnBuyCountChanged;
 
-    BigInteger totalProdGold;
-    public int EquipWeaponNum { get; set; } = 0;
+    private int equipWeaponNum;
+    public int EquipWeaponNum
+    {
+        get => equipWeaponNum;
+        set
+        {
+            equipWeaponNum = value;
+            
+        }
+    }
 
+    BigInteger totalProdGold;
     public BigInteger TotalProdGold
     {
         get => totalProdGold;
