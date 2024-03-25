@@ -50,7 +50,10 @@ public class Weapon : MonoBehaviour
         {
             powNum += atkpowNumRate * iNum;
         }
-        Lv = Number * 5;
+        if (Number != 0)
+        {
+            Lv = Number * 5;
+        }
 
         int intpowNum = (int)Mathf.Floor(powNum);
         float pracpowNum = powNum - intpowNum;
@@ -58,6 +61,10 @@ public class Weapon : MonoBehaviour
         float temp2 = Mathf.Pow(10, pracpowNum);
         resultPowNum = BigInteger.Multiply(temp, (BigInteger)temp2);
 
+        if (Lv - (Number * 5) != 0)
+        {
+            Atk = BigInteger.Multiply(resultPowNum, Lv);
+        }
         baseCost = multiplyBigInteger(calculatePow(atkGrowthRate, Lv), 1.67f);
         setNextCost();
 
