@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 388381724220424591}
   - component: {fileID: 3741891026980833702}
+  - component: {fileID: 2844958066360400491}
   m_Layer: 0
   m_Name: WorldUI_Manager
   m_TagString: Untagged
@@ -48,6 +49,26 @@ MonoBehaviour:
   - {fileID: 1899164654, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
   - {fileID: -1113515469, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
   - {fileID: 1121342626, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
+  getGoldAndStar_Text: {fileID: 7590727819067225288, guid: cf8fd12e99f015349a14132c5c82dc08, type: 3}
+--- !u!114 &2844958066360400491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301478751794470908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dd74b8899b676d42aa715460308d70a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topButtonIMG:
+  - {fileID: 143353064, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
+  - {fileID: 289588209, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
+  - {fileID: -33821149, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
+  - {fileID: 1512390688, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
+  - {fileID: -104010614, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
+  - {fileID: -1576829590, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
 --- !u!1 &4073252676762207242
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,6 +311,7 @@ MonoBehaviour:
   backGroundSpeed: 0.4
   pooling_Obj:
   - {fileID: 8693004578028599730, guid: c8070f580aa769c478d839dd14939111, type: 3}
+  - {fileID: 7024948397352142213, guid: 894a2933279285c45b07dabd4b4133f6, type: 3}
   weaponSprite:
   - {fileID: -273317533, guid: a16dbe52a146326449633afd4f9b9006, type: 3}
   - {fileID: 42077032, guid: a16dbe52a146326449633afd4f9b9006, type: 3}
@@ -374,7 +396,6 @@ MonoBehaviour:
   enemySprite:
   - {fileID: 876536713, guid: 76670a6a306dad34bb538dd9f1e47adb, type: 3}
   - {fileID: 1307528843, guid: 76670a6a306dad34bb538dd9f1e47adb, type: 3}
-  enemyEffect: []
   attackReady: 0
   checkPosition: 0
   enemySpawnSpeed: 0.12

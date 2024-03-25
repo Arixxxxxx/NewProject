@@ -2,10 +2,9 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 
 public class ActionManager : MonoBehaviour
@@ -25,6 +24,8 @@ public class ActionManager : MonoBehaviour
     [SerializeField] float backGroundSpeed;
     [SerializeField] GameObject[] pooling_Obj;
     Transform dmgFontParent;
+    Transform goldActionParent;
+
 
     Queue<GameObject>[] prefabsQue;
 
@@ -39,6 +40,7 @@ public class ActionManager : MonoBehaviour
     [SerializeField] Sprite[] backGroudSprite;
     SpriteRenderer backGroundIMG;
     GameObject moveWindParticle;
+    ParticleSystem swordEffect;
 
 
     // 에너미
@@ -52,7 +54,8 @@ public class ActionManager : MonoBehaviour
     [SerializeField] Sprite[] enemySprite;
 
     //타격 이펙트
-    [SerializeField] ParticleSystem[] enemyEffect;
+    ParticleSystem[] enemyEffect;
+    ParticleSystem[] enemyCriEffect;
 
     Transform enemy_StartPoint;
     Transform enemy_StopPoint;
@@ -73,18 +76,35 @@ public class ActionManager : MonoBehaviour
     {
         worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
 
+        goldActionParent = worldSpaceGroup.transform.Find("GoldActionDynamic").GetComponent<Transform>();
+
         backGroundIMG = worldSpaceGroup.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>();
         mat = backGroundIMG.material;
         playerAnim = worldSpaceGroup.transform.Find("Player_Obj/Sprite").GetComponent<Animator>();
-       
+
         moveWindParticle = playerAnim.transform.Find("MoveWind").gameObject;
         palyerWeapenSr = playerAnim.transform.Find("Weapon").GetComponent<SpriteRenderer>();
+        swordEffect = playerAnim.transform.Find("0").GetComponent<ParticleSystem>();
 
         enemyObj = worldSpaceGroup.transform.Find("Enemy").gameObject;
         enemySr = enemyObj.transform.Find("Sprite").GetComponent<SpriteRenderer>();
-        
+
         enemyAnim = enemySr.GetComponent<Animator>();
-        enemyEffect = enemyObj.transform.Find("Effect").GetComponentsInChildren<ParticleSystem>();
+        int forcount = enemyObj.transform.Find("Effect").childCount;
+
+        enemyEffect = new ParticleSystem[forcount];
+        for (int i = 0; i < forcount; i++)
+        {
+            enemyEffect[i] = enemyObj.transform.Find("Effect").GetChild(i).GetComponent<ParticleSystem>();
+        }
+
+        forcount = enemyObj.transform.Find("CriEffect").childCount;
+        enemyCriEffect = new ParticleSystem[forcount];
+        for (int i = 0; i < forcount; i++)
+        {
+            enemyCriEffect[i] = enemyObj.transform.Find("CriEffect").GetChild(i).GetComponent<ParticleSystem>();
+        }
+
 
         dmgFontParent = enemyObj.transform.Find("HPBar_Canvas/FontPosition").GetComponent<Transform>();
         hpBar_IMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Front").GetComponent<Image>();
@@ -126,7 +146,7 @@ public class ActionManager : MonoBehaviour
         {
             MoveMap();
 
-            if(doEnemyMove == true)
+            if (doEnemyMove == true)
             {
                 EnemyMove();
             }
@@ -146,7 +166,7 @@ public class ActionManager : MonoBehaviour
         atkPowerUpdater();
 
 
-        if(Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             playerAnim.SetTrigger("Out");
         }
@@ -179,10 +199,12 @@ public class ActionManager : MonoBehaviour
         if (ismove == false)
         {
             ismove = true;
+
             if (playerAnim.GetBool("Move") == false)
             {
                 playerAnim.SetBool("Move", true);
                 moveWindParticle.gameObject.SetActive(true);
+                swordEffect.Stop();
             }
 
             palyerWeapenSr.enabled = false;
@@ -195,7 +217,7 @@ public class ActionManager : MonoBehaviour
         matVec.x += Time.deltaTime * backGroundSpeed;
         matVec.x = Mathf.Repeat(matVec.x, 1);
         mat.mainTextureOffset = matVec;
-    
+
     }
 
     private void EnemyMove()
@@ -203,13 +225,13 @@ public class ActionManager : MonoBehaviour
         //에너미 스폰 및 대기장소까지 전진
         checkPosition = Vector2.Distance(enemyObj.transform.position, enemy_StopPoint.position);
 
-        if (checkPosition > 0.5f) // 거리값 체크 2이상 이동
+        if (checkPosition > 0.85f) // 거리값 체크 2이상 이동
         {
             enemyPosX += Time.deltaTime * enemySpawnSpeed;
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
-        else if (checkPosition < 0.5f) // 2미만 공격
+        else if (checkPosition < 0.85f) // 2미만 공격
         {
             attackReady = true;
 
@@ -225,13 +247,12 @@ public class ActionManager : MonoBehaviour
         StartCoroutine(enemyOnHit());
     }
 
-    float count = 0;
     private void AttackEnemy()
     {
-     
+
         if (playerAnim.GetBool("Move") == true) // 공격 Animation On
         {
-            
+
             playerAnim.SetBool("Move", false);
             playerAnim.transform.position = new Vector2(-0.706f, 5.45f);
             moveWindParticle.gameObject.SetActive(false);
@@ -248,6 +269,7 @@ public class ActionManager : MonoBehaviour
     {
         yield return null;
         enemyAnim.SetTrigger("Hit");
+        swordEffect.Play();
 
         if (enemyCurHP - atkPower > 0)
         {
@@ -256,25 +278,38 @@ public class ActionManager : MonoBehaviour
             GameObject obj = Get_Pooling_Prefabs(0);
             obj.transform.position = dmgFontParent.position;
             float randomDice = Random.Range(0f, 100f);
-
+            bool cri = false;
             //크리티컬 판정시 캠흔들림
             if (randomDice < GameStatus.inst.CriticalChance == true)
             {
                 F_PlayerOnHitCamShake();
+                cri = true;
             }
 
             obj.GetComponent<DMG_Font>().SetText(atkPower.ToString(), randomDice < GameStatus.inst.CriticalChance ? true : false);
             obj.SetActive(true);
 
-            EnemyOnHitEffect();
+            EnemyOnHitEffect(cri);
         }
         else if (enemyCurHP - atkPower <= 0) //에너미 사망 및 초기화
         {
+            StartCoroutine(GetGoldActionParticle());
+            // 현재 받아야되는 돈 계산
+            WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, "912093203981029389");
             EnemyDeadFloorUp();
         }
 
     }
 
+    IEnumerator GetGoldActionParticle()
+    {
+        GameObject ps = Get_Pooling_Prefabs(1);
+        ps.transform.position = enemyAnim.transform.position + (Vector3.up * 0.5f);
+        ps.SetActive(true);
+        ps.GetComponent<ParticleSystem>().Play();
+        yield return new WaitForSeconds(1);
+        Return_Pooling_Prefabs(ps, 1);
+    }
     /// <summary>
     /// 몬스터 사망 Init 함수
     /// </summary>
@@ -293,7 +328,7 @@ public class ActionManager : MonoBehaviour
         }
         else if (floorCount == 4)
         {
-             Enemyinit();
+            Enemyinit();
             GameStatus.inst.FloorLv = floorCount;
             WorldUI_Manager.inst.Set_StageUiBar(floorCount);
             //보스피통 늘려주는 ~
@@ -306,18 +341,18 @@ public class ActionManager : MonoBehaviour
             StartCoroutine(NextStageAction()); //  다음 층으로 이동하는거처럼
 
 
-            
+
         }
     }
 
-   
+
     IEnumerator NextStageAction()
     {
         GameStatus.inst.StageLv++;
         GameStatus.inst.FloorLv = floorCount;
 
         playerAnim.SetTrigger("Out");
-       
+
         yield return new WaitForSeconds(0.2f);
 
         WorldUI_Manager.inst.Set_Auto_BlackCutton(1);
@@ -329,29 +364,45 @@ public class ActionManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        
+
         WorldUI_Manager.inst.Reset_StageUiBar();
-        playerAnim.transform.localPosition = new Vector3(-5,0,0);
+        playerAnim.transform.localPosition = new Vector3(-5, 0, 0);
         yield return null;
         playerAnim.SetTrigger("In");
 
         yield return new WaitForSeconds(1f);
-       
+
     }
 
 
     int effectIndexCount = 0;
+    int effectCriIndexCount = 0;
 
     //에너미 피격 이펙트 함수
-    private void EnemyOnHitEffect()
+    private void EnemyOnHitEffect(bool cri)
     {
-        if (effectIndexCount == enemyEffect.Length - 1)
+        if (cri == false)
         {
-            effectIndexCount = 0;
+            if (effectIndexCount == enemyEffect.Length - 1)
+            {
+                effectIndexCount = 0;
+            }
+
+            enemyEffect[effectIndexCount].Play();
+            effectIndexCount++;
+        }
+        else
+        {
+            if (effectCriIndexCount == enemyCriEffect.Length - 1)
+            {
+                effectCriIndexCount = 0;
+            }
+
+            enemyCriEffect[effectCriIndexCount].Play();
+            effectCriIndexCount++;
         }
 
-        enemyEffect[effectIndexCount].Play();
-        effectIndexCount++;
+
     }
     bool isUIActive;
 
@@ -359,8 +410,9 @@ public class ActionManager : MonoBehaviour
     private void Enemyinit()
     {
         // 나중에 체력 초기화 연산 바꿔야함
+        swordEffect.Stop();
         enemyObj.transform.position = enemy_StartPoint.position; // 위치 초기화
-        enemyMaxHP = /*GameStatus.inst.StageLv **/ 50; // 체력초기화
+        enemyMaxHP = /*GameStatus.inst.StageLv **/ 100; // 체력초기화
         enemyCurHP = enemyMaxHP;
 
         //Hpbar 초기화
@@ -423,21 +475,43 @@ public class ActionManager : MonoBehaviour
 
         int count = 10;
 
-        for (int index = 0; index < count; index++)
+        for (int forCount = 0; forCount < count; forCount++)
         {
             GameObject obj = Instantiate(pooling_Obj[0], dmgFontParent);
             prefabsQue[0].Enqueue(obj);
             obj.transform.position = dmgFontParent.transform.position;
             obj.SetActive(false);
         }
+
+        for (int forCount = 0; forCount < 3; forCount++)
+        {
+            GameObject obj = Instantiate(pooling_Obj[1], goldActionParent);
+            prefabsQue[1].Enqueue(obj);
+            obj.transform.position = dmgFontParent.transform.position;
+            obj.SetActive(false);
+        }
     }
 
+    Transform trsPrent;
     public GameObject Get_Pooling_Prefabs(int indexNum)
     {
+
         if (prefabsQue[indexNum].Count <= 1)
         {
-            GameObject obj = Instantiate(pooling_Obj[0], dmgFontParent);
-            prefabsQue[0].Enqueue(obj);
+
+            switch (indexNum)
+            {
+                case 0:
+                    trsPrent = dmgFontParent;
+                    break;
+
+                case 1:
+                    trsPrent = goldActionParent;
+                    break;
+            }
+
+            GameObject obj = Instantiate(pooling_Obj[indexNum], trsPrent);
+            prefabsQue[indexNum].Enqueue(obj);
             obj.transform.position = dmgFontParent.transform.position;
             obj.SetActive(false);
         }
@@ -446,7 +520,7 @@ public class ActionManager : MonoBehaviour
 
     }
 
-    public void Set_Pooling_Prefabs(GameObject obj, int indexNum)
+    public void Return_Pooling_Prefabs(GameObject obj, int indexNum)
     {
         if (obj.activeSelf)
         {
@@ -510,10 +584,10 @@ public class ActionManager : MonoBehaviour
         {
             index = 0;
         }
-        
+
         palyerWeapenSr.sprite = weaponSprite[index];
 
     }
 
-  
+
 }

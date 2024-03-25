@@ -66,17 +66,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 123D
+  m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b09cca57a5e5e4144b202c5a9058686e, type: 2}
+  m_sharedMaterial: {fileID: 6445687876499013919, guid: b09cca57a5e5e4144b202c5a9058686e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278225663
-  m_fontColor: {r: 1, g: 0.5411765, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -93,13 +93,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 23
+  m_fontSizeBase: 23
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -148,4 +148,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCritical: 0
-  originColor: {r: 1, g: 0.5411765, b: 0, a: 1}
+  fonts:
+  - {fileID: 11400000, guid: b09cca57a5e5e4144b202c5a9058686e, type: 2}
+  - {fileID: 11400000, guid: c7360e77dd35e2148a8ef382abfdcb60, type: 2}
+  hideSpeed: 3
+  originColor: {r: 1, g: 0.99997795, b: 0, a: 1}

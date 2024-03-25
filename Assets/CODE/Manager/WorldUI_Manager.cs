@@ -11,15 +11,28 @@ public class WorldUI_Manager : MonoBehaviour
 {
     public static WorldUI_Manager inst;
 
-
+    [SerializeField] Sprite[] stageSprite;
+    [SerializeField] GameObject getGoldAndStar_Text;
+    Queue<GameObject> getGoldAndStar_TextQue = new Queue<GameObject>();
+    Transform fontDanymic;
+    Transform[] fontPoint = new Transform[2]; // 풀링오브젝트 스타트포인트 초기화용
+    
     GameObject worldUI;
     Image[] stageSlot = new Image[5];
     Image uiBossHead;
     TMP_Text stageText;
-    [SerializeField] Sprite[] stageSprite;
+    
     Button[] testBtn;
     TMP_Text[] weapbtnText;
     Animator cuttonBlack;
+
+    //퀘스트 목록 관련
+    Button questListBtn;
+    TMP_Text questListSideText;
+
+    
+
+
     private void Awake()
     {
         if (inst == null)
@@ -35,11 +48,13 @@ public class WorldUI_Manager : MonoBehaviour
 
 
         cuttonBlack = worldUI.transform.Find("Cutton(B)").GetComponent<Animator>();
-        stageText = worldUI.transform.Find("StageUI/BG/Text").GetComponent<TMP_Text>();
-        uiBossHead = worldUI.transform.Find("StageUI/BG/Boss").GetComponent<Image>();
+        stageText = worldUI.transform.Find("StageUI/StageInfo/Text").GetComponent<TMP_Text>();
+        uiBossHead = worldUI.transform.Find("StageUI/StageInfo/Boss").GetComponent<Image>();
+        fontDanymic = worldUI.transform.Find("StageUI/Dyanamic").GetComponent<Transform>();
+
         for (int index = 0; index < stageSlot.Length; index++)
         {
-            stageSlot[index] = worldUI.transform.Find("StageUI/BG").GetChild(index).GetComponent<Image>();
+            stageSlot[index] = worldUI.transform.Find("StageUI/StageInfo").GetChild(index).GetComponent<Image>();
         }
 
         //테스트 버튼
@@ -49,7 +64,10 @@ public class WorldUI_Manager : MonoBehaviour
         {
             weapbtnText[index] = testBtn[index].GetComponentInChildren<TMP_Text>();
         }
-
+        
+        questListBtn = worldUI.transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
+        questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
+        Prefabs_Awake();
     }
     void Start()
     {
@@ -130,7 +148,7 @@ public class WorldUI_Manager : MonoBehaviour
             //weaponNum++;
             //weapbtnText[0].text = $"무기 교체 {weaponNum}번";
              ActionManager.inst.TestBtnWeaponChange(); 
-        } );
+        });
 
         testBtn[1].onClick.AddListener(() => 
         {
@@ -143,10 +161,68 @@ public class WorldUI_Manager : MonoBehaviour
             {
                 weapbtnText[1].text = $"만렙";
             }
+        });
+
+        testBtn[2].onClick.AddListener(() => // 골드증가 테스트 버튼
+        {
+            Debug.Log("2");
+            Get_Increase_GetGoldAndStar_Font(0, "912093203981029389");
+        });
+
+        testBtn[3].onClick.AddListener(() =>// 별증가 테스트 버튼
+        {
+            Debug.Log("3");
+            Get_Increase_GetGoldAndStar_Font(1, "42344263424346465443");
+        });
+
+    }
+
+    private void Prefabs_Awake()
+    {
+        int count = 10;
+
+        fontPoint[0] = worldUI.transform.Find("StageUI/Dyanamic/0").GetComponent<Transform>();
+        fontPoint[1] = worldUI.transform.Find("StageUI/Dyanamic/1").GetComponent<Transform>();
+
+        for (int index = 0; index < count; index++)
+        {
+            GameObject obj = Instantiate(getGoldAndStar_Text, fontDanymic);
+            getGoldAndStar_TextQue.Enqueue(obj);
+            obj.transform.position = fontDanymic.transform.position;
+            obj.SetActive(false);
         }
-        );
+    }
+    /// <summary>
+    /// Gold = 0 / Star = 1
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public void Get_Increase_GetGoldAndStar_Font(int index, string textvalue)
+    {
+        if (getGoldAndStar_TextQue.Count <= 1)
+        {
+            GameObject obj = Instantiate(getGoldAndStar_Text, fontDanymic);
+            getGoldAndStar_TextQue.Enqueue(obj);
+            obj.transform.position = fontDanymic.transform.position;
+            obj.SetActive(false);
+        }
+
         
-        
+        GameObject objs = getGoldAndStar_TextQue.Dequeue();
+        objs.transform.localPosition = fontPoint[index].localPosition;
+        objs.GetComponent<UI_IncreaseValueFont>().Set_PosAndColorInit(index, textvalue);
+        objs.gameObject.SetActive(true);
+    }
+
+    public void Return_GoldAndStarFontPrefabs(GameObject obj)
+    {
+        if (obj.activeSelf)
+        {
+            obj.SetActive(false);
+        }
+
+        getGoldAndStar_TextQue.Enqueue(obj);
+
     }
 
 }
