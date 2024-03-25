@@ -23,7 +23,7 @@ public class UIManager : MonoBehaviour
         set
         {
             equipWeaponNum = value;
-            
+            ActionManager.inst.Set_WeaponSprite_Changer(value);
         }
     }
 

@@ -35,6 +35,11 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
+
+    }
+
+    private void Start()
+    {
         initValue();
     }
 
@@ -55,6 +60,7 @@ public class Weapon : MonoBehaviour
         if (Lv - (Number * 5) != 0)
         {
             Atk = BigInteger.Multiply(resultPowNum, Lv);
+            clickWeaponImage();
         }
         baseCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(atkGrowthRate, Lv), 1.67f);
         setNextCost();
@@ -73,7 +79,7 @@ public class Weapon : MonoBehaviour
     {
         Lv++;
         Atk = BigInteger.Multiply(resultPowNum, Lv);
-        UIManager.Instance.EquipWeaponNum = WeaponNum;
+        clickWeaponImage();
         setNextCost();
         setText();
         if (Lv - Number * 5 >= 5)
@@ -90,6 +96,5 @@ public class Weapon : MonoBehaviour
     public void clickWeaponImage()
     {
         UIManager.Instance.EquipWeaponNum = WeaponNum;
-        Debug.Log(UIManager.Instance.EquipWeaponNum);
     }
 }
