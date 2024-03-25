@@ -453,10 +453,7 @@ public class ActionManager : MonoBehaviour
     float fillAmountA, fillAmountB;
     private void EnemyHPBarUI_Updater()
     {
-        fillAmountA = float.Parse(CalCulator.inst.OlnyDigitChanger(enemyCurHP));
-        //fillAmountB = enemyMaxHP;
-        
-        hpBar_IMG.fillAmount = fillAmountA / fillAmountB;
+        hpBar_IMG.fillAmount = CalCulator.inst.ForImageFillAmout(enemyCurHP, enemyMaxHP);
         hpBar_Text.text = $"{CalCulator.inst.StringFourDigitChanger(enemyCurHP)}";
     }
 
@@ -549,7 +546,7 @@ public class ActionManager : MonoBehaviour
         backGroundIMG.sprite = backGroudSprite[mapint];
     }
 
-    // ActionManager 무기스프라이트 교체 함수 (인덱스번호는 스프라이트 딴 번호 그대로임) 
+    
     private void Set_MapSpriteChanger(int indexNum)
     {
         backGroundIMG.sprite = backGroudSprite[indexNum];
@@ -561,6 +558,8 @@ public class ActionManager : MonoBehaviour
         StopCoroutine(ShakeCam());
         StartCoroutine(ShakeCam());
     }
+
+
     [SerializeField] float shakeTime;
     float shakeCount;
     IEnumerator ShakeCam()
@@ -585,6 +584,12 @@ public class ActionManager : MonoBehaviour
 
         camShake.m_AmplitudeGain = 0;
         camShake.m_FrequencyGain = 0;
+    }
+
+    // 무기 스프라이트 변경 함수
+    public void Set_WeaponSprite_Changer(int index)
+    {
+        palyerWeapenSr.sprite = weaponSprite[index];
     }
 
 

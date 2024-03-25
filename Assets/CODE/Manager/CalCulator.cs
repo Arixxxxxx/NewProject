@@ -9,6 +9,8 @@ public class CalCulator : MonoBehaviour
 {
     public static CalCulator inst;
     StringBuilder sb = new StringBuilder();
+    BigInteger forCalculatorA = new BigInteger();
+    BigInteger forCalculatorB = new BigInteger();
     private void Awake()
     {
         if(inst == null)
@@ -347,4 +349,13 @@ public class CalCulator : MonoBehaviour
             return result;
         }
     }
+
+    public float ForImageFillAmout(string cur, string max) 
+    {
+        forCalculatorA = BigInteger.Parse(new string(cur.Where( x => char.IsDigit(x)).ToArray()));
+        forCalculatorB = BigInteger.Parse(new string(max.Where(x => char.IsDigit(x)).ToArray()));
+        double result = (double)forCalculatorA / (double)forCalculatorB;
+        return (float)result;
+    }
+
 }
