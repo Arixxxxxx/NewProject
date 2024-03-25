@@ -223,4 +223,128 @@ public class CalCulator : MonoBehaviour
         Debug.Log($"반환{digit}");
         return digit;
     }
+
+    /// <summary>
+    /// float에int 제곱 결과값이 biginteger일 때 사용
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="pow"></param>
+    /// <returns></returns>
+    public BigInteger CalculatePow(float value, int pow)
+    {
+        string strValue = value.ToString();
+        int count = strValue.Length;
+        int pointNum = 0;
+        char point = '.';
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            if (Equals(strValue[iNum], point))
+            {
+                pointNum = iNum;
+                break;
+            }
+        }
+        if (pointNum != 0)
+        {
+            int pracCount = strValue.Length - pointNum - 1;
+            float powpracCount = Mathf.Pow(10, pracCount);
+            BigInteger intvalue = (BigInteger)(value * powpracCount);
+            BigInteger powResult = BigInteger.Pow(intvalue, pow);
+            BigInteger Result = BigInteger.Divide(powResult, BigInteger.Pow((BigInteger)powpracCount, pow));
+            return Result;
+        }
+        else
+        {
+            return BigInteger.Parse(strValue);
+        }
+    }
+
+    /// <summary>
+    /// int에 float만큼 제곱 결과값이 Biginteger일 때 사용
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="pow"></param>
+    /// <returns></returns>
+    public BigInteger CalculatePow(int value, float pow)
+    {
+        int intpowNum = (int)Mathf.Floor(pow);
+        float pracpowNum = pow - intpowNum;
+        BigInteger temp = BigInteger.Pow(value, intpowNum);
+        float temp2 = Mathf.Pow(value, pracpowNum);
+        BigInteger resultPowNum = BigInteger.Multiply(temp, (BigInteger)temp2);
+        return resultPowNum;
+    }
+
+    /// <summary>
+    /// Biginteger에 float곱 계산
+    /// </summary>
+    /// <param name="Ivalue"></param>
+    /// <param name="fvalue"></param>
+    /// <returns></returns>
+    public BigInteger MultiplyBigIntegerAndfloat(BigInteger Ivalue, float fvalue)
+    {
+        string strValue = fvalue.ToString();
+        int count = strValue.Length;
+        int pointNum = 0;
+        char point = '.';
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            if (Equals(strValue[iNum], point))
+            {
+                pointNum = iNum;
+                break;
+            }
+        }
+        if (pointNum != 0)
+        {
+            int pracCount = strValue.Length - pointNum - 1;
+            float powpracCount = Mathf.Pow(10, pracCount);
+            BigInteger intvalue = (BigInteger)(fvalue * powpracCount);
+            BigInteger result = BigInteger.Multiply(Ivalue, intvalue);
+            result = BigInteger.Divide(result, (BigInteger)powpracCount);
+            return result;
+        }
+        else
+        {
+            BigInteger result = BigInteger.Multiply(Ivalue, (BigInteger)fvalue);
+            return result;
+        }
+    }
+
+
+    /// <summary>
+    /// Biginteger를 float으로 나누기
+    /// </summary>
+    /// <param name="ivalue"></param>
+    /// <param name="fvalue"></param>
+    /// <returns></returns>
+    public BigInteger DevideBigIntegerAndfloat(BigInteger ivalue, float fvalue)//BigInteger / float 계산기
+    {
+        string strValue = fvalue.ToString();
+        int count = strValue.Length;
+        int pointNum = 0;
+        char point = '.';
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            if (Equals(strValue[iNum], point))
+            {
+                pointNum = iNum;
+                break;
+            }
+        }
+        if (pointNum != 0)
+        {
+            int pracCount = strValue.Length - pointNum - 1;
+            float powpracCount = Mathf.Pow(10, pracCount);
+            BigInteger intvalue = (BigInteger)(fvalue * powpracCount);
+            BigInteger result = BigInteger.Divide(ivalue, intvalue);
+            result = BigInteger.Multiply(result, (BigInteger)powpracCount);
+            return result;
+        }
+        else
+        {
+            BigInteger result = BigInteger.Divide(ivalue, (BigInteger)fvalue);
+            return result;
+        }
+    }
 }

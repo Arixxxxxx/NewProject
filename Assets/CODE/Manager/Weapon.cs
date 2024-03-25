@@ -16,7 +16,6 @@ public class Weapon : MonoBehaviour
     BigInteger nextCost;//다음레벨 비용
     BigInteger resultPowNum;//보정값 빅인트로 전환
     BigInteger atk;//공격력
-
     private BigInteger Atk
     {
         set
@@ -38,16 +37,6 @@ public class Weapon : MonoBehaviour
         initValue();
     }
 
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
-
     void initValue()//초기값 설정
     {
         float powNum = 0;
@@ -55,24 +44,21 @@ public class Weapon : MonoBehaviour
         {
             powNum += atkpowNumRate * iNum;
         }
+        resultPowNum = CalCulator.inst.CalculatePow(10, powNum);
+
         if (Number != 0)
         {
             Lv = Number * 5;
         }
 
-        int intpowNum = (int)Mathf.Floor(powNum);
-        float pracpowNum = powNum - intpowNum;
-        BigInteger temp = BigInteger.Pow(10, intpowNum);
-        float temp2 = Mathf.Pow(10, pracpowNum);
-        resultPowNum = BigInteger.Multiply(temp, (BigInteger)temp2);
+
 
         if (Lv - (Number * 5) != 0)
         {
             Atk = BigInteger.Multiply(resultPowNum, Lv);
         }
-        baseCost = multiplyBigInteger(calculatePow(atkGrowthRate, Lv), 1.67f);
+        baseCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(atkGrowthRate, Lv), 1.67f);
         setNextCost();
-
         setText();
     }
 
@@ -82,95 +68,6 @@ public class Weapon : MonoBehaviour
         LvText.text = $"Lv : {Lv - Number * 5} / 5";
         upAtkText.text = "+" + CalCulator.inst.StringFourDigitChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString());
         totalAtkText.text = "공격력 : " + CalCulator.inst.StringFourDigitChanger(atk.ToString());
-    }
-
-    private BigInteger calculatePow(float value, int pow)// biginteger로 float 제곱 계산기
-    {
-        string strValue = value.ToString();
-        int count = strValue.Length;
-        int pointNum = 0;
-        char point = '.';
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (Equals(strValue[iNum], point))
-            {
-                pointNum = iNum;
-                break;
-            }
-        }
-        if (pointNum != 0)
-        {
-            int pracCount = strValue.Length - pointNum - 1;
-            float powpracCount = Mathf.Pow(10, pracCount);
-            BigInteger intvalue = (BigInteger)(value * powpracCount);
-            BigInteger powResult = BigInteger.Pow(intvalue, pow);
-            BigInteger Result = BigInteger.Divide(powResult, BigInteger.Pow((BigInteger)powpracCount, pow));
-            return Result;
-        }
-        else
-        {
-            return BigInteger.Parse(strValue);
-        }
-    }
-
-    private BigInteger multiplyBigInteger(BigInteger Ivalue, float fvalue)//BigInteger * float 계산기
-    {
-        string strValue = fvalue.ToString();
-        int count = strValue.Length;
-        int pointNum = 0;
-        char point = '.';
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (Equals(strValue[iNum], point))
-            {
-                pointNum = iNum;
-                break;
-            }
-        }
-        if (pointNum != 0)
-        {
-            int pracCount = strValue.Length - pointNum - 1;
-            float powpracCount = Mathf.Pow(10, pracCount);
-            BigInteger intvalue = (BigInteger)(fvalue * powpracCount);
-            BigInteger result = BigInteger.Multiply(Ivalue, intvalue);
-            result = BigInteger.Divide(result, (BigInteger)powpracCount);
-            return result;
-        }
-        else
-        {
-            BigInteger result = BigInteger.Multiply(Ivalue, (BigInteger)fvalue);
-            return result;
-        }
-    }
-
-    private BigInteger devideBigInteger(BigInteger ivalue, float fvalue)//BigInteger / float 계산기
-    {
-        string strValue = fvalue.ToString();
-        int count = strValue.Length;
-        int pointNum = 0;
-        char point = '.';
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (Equals(strValue[iNum], point))
-            {
-                pointNum = iNum;
-                break;
-            }
-        }
-        if (pointNum != 0)
-        {
-            int pracCount = strValue.Length - pointNum - 1;
-            float powpracCount = Mathf.Pow(10, pracCount);
-            BigInteger intvalue = (BigInteger)(fvalue * powpracCount);
-            BigInteger result = BigInteger.Divide(ivalue, intvalue);
-            result = BigInteger.Multiply(result, (BigInteger)powpracCount);
-            return result;
-        }
-        else
-        {
-            BigInteger result = BigInteger.Divide(ivalue, (BigInteger)fvalue);
-            return result;
-        }
     }
 
     public void ClickBuy()
@@ -187,7 +84,7 @@ public class Weapon : MonoBehaviour
 
     private void setNextCost()
     {
-        nextCost = multiplyBigInteger(calculatePow(atkGrowthRate, Lv), 1.67f) * resultPowNum;
+        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(atkGrowthRate, Lv), 1.67f) * resultPowNum;
     }
 
     public void clickWeaponImage(int WeaponNum)

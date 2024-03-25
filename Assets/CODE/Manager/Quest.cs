@@ -46,11 +46,6 @@ public class Quest : MonoBehaviour
         UIManager.Instance.OnBuyCountChanged.AddListener(Test_OnCountChanged);
     }
 
-    void Update()
-    {
-
-    }
-
     void initValue()//초기값 설정
     {
         powNum = 0;
@@ -58,11 +53,8 @@ public class Quest : MonoBehaviour
         {
             powNum += powNumRate * iNum;
         }
-        int intpowNum = (int)Mathf.Floor(powNum);
-        float pracpowNum = powNum - intpowNum;
-        BigInteger temp = BigInteger.Pow(10, intpowNum);
-        float temp2 = Mathf.Pow(10, pracpowNum);
-        BigInteger resultPowNum = BigInteger.Multiply(temp, (BigInteger)temp2);
+        BigInteger resultPowNum = CalCulator.inst.CalculatePow(10,powNum);
+
         initialProd = BigInteger.Multiply((BigInteger)baseProd, resultPowNum);
 
         baseCost = BigInteger.Multiply(initialProd, (BigInteger)initalProdRate);
@@ -79,95 +71,6 @@ public class Quest : MonoBehaviour
         totalGoldText.text = "Gps : " + CalCulator.inst.StringFourDigitChanger($"{totalProd}");
     }
 
-    private BigInteger calculatePow(float value, int pow)// biginteger로 float 제곱 계산기
-    {
-        string strValue = value.ToString();
-        int count = strValue.Length;
-        int pointNum = 0;
-        char point = '.';
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (Equals(strValue[iNum], point))
-            {
-                pointNum = iNum;
-                break;
-            }
-        }
-        if (pointNum != 0)
-        {
-            int pracCount = strValue.Length - pointNum - 1;
-            float powpracCount = Mathf.Pow(10, pracCount);
-            BigInteger intvalue = (BigInteger)(value * powpracCount);
-            BigInteger powResult = BigInteger.Pow(intvalue, pow);
-            BigInteger Result = BigInteger.Divide(powResult, BigInteger.Pow((BigInteger)powpracCount, pow));
-            return Result;
-        }
-        else
-        {
-            return BigInteger.Parse(strValue);
-        }
-    }
-
-    private BigInteger multiplyBigInteger(BigInteger Ivalue, float fvalue)//BigInteger * float 계산기
-    {
-        string strValue = fvalue.ToString();
-        int count = strValue.Length;
-        int pointNum = 0;
-        char point = '.';
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (Equals(strValue[iNum], point))
-            {
-                pointNum = iNum;
-                break;
-            }
-        }
-        if (pointNum != 0)
-        {
-            int pracCount = strValue.Length - pointNum - 1;
-            float powpracCount = Mathf.Pow(10, pracCount);
-            BigInteger intvalue = (BigInteger)(fvalue * powpracCount);
-            BigInteger result = BigInteger.Multiply(Ivalue, intvalue);
-            result = BigInteger.Divide(result, (BigInteger)powpracCount);
-            return result;
-        }
-        else
-        {
-            BigInteger result = BigInteger.Multiply(Ivalue, (BigInteger)fvalue);
-            return result;
-        }
-    }
-
-    private BigInteger devideBigInteger(BigInteger ivalue, float fvalue)//BigInteger / float 계산기
-    {
-        string strValue = fvalue.ToString();
-        int count = strValue.Length;
-        int pointNum = 0;
-        char point = '.';
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (Equals(strValue[iNum], point))
-            {
-                pointNum = iNum;
-                break;
-            }
-        }
-        if (pointNum != 0)
-        {
-            int pracCount = strValue.Length - pointNum - 1;
-            float powpracCount = Mathf.Pow(10, pracCount);
-            BigInteger intvalue = (BigInteger)(fvalue * powpracCount);
-            BigInteger result = BigInteger.Divide(ivalue, intvalue);
-            result = BigInteger.Multiply(result, (BigInteger)powpracCount);
-            return result;
-        }
-        else
-        {
-            BigInteger result = BigInteger.Divide(ivalue, (BigInteger)fvalue);
-            return result;
-        }
-    }
-
     public void ClickBuy()
     {
         Lv += UIManager.Instance.BuyCount;
@@ -175,7 +78,7 @@ public class Quest : MonoBehaviour
         {
             LvCur *= 2;
         }
-        TotalProd = multiplyBigInteger(initialProd, Lv * LvCur * itemCur);
+        TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
         setNextCost();
         setText();
     }
@@ -185,7 +88,7 @@ public class Quest : MonoBehaviour
         int buycount = UIManager.Instance.BuyCount;
         if (buycount != 0)//max가 아닐때
         {
-            nextCost = baseCost * (calculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buycount) - 1) / (growthRate - 1)));
+            nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buycount) - 1) / (growthRate - 1)));
         }
     }
 
