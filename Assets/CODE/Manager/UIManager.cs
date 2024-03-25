@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
     [HideInInspector] public UnityEvent OnBuyCountChanged;
 
     BigInteger totalProdGold;
+    public int EquipWeaponNum { get; set; } = 0;
+
     public BigInteger TotalProdGold
     {
         get => totalProdGold;

@@ -177,4 +177,10 @@ public class Weapon : MonoBehaviour
     {
         nextCost = multiplyBigInteger(calculatePow(atkGrowthRate, Lv), 1.67f) * resultPowNum;
     }
+
+    public void clickWeaponImage(int WeaponNum)
+    {
+        UIManager.Instance.EquipWeaponNum = WeaponNum;
+        Debug.Log(UIManager.Instance.EquipWeaponNum);
+    }
 }
