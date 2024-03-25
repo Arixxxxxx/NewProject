@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+
 public class WorldUI_Manager : MonoBehaviour
 {
     public static WorldUI_Manager inst;
@@ -25,6 +26,9 @@ public class WorldUI_Manager : MonoBehaviour
     Button[] testBtn;
     TMP_Text[] weapbtnText;
     Animator cuttonBlack;
+
+    // 하단 자원현황바 텍스트
+    TMP_Text[] curMaterial = new TMP_Text[4];
 
     //퀘스트 목록 관련
     Button questListBtn;
@@ -64,7 +68,13 @@ public class WorldUI_Manager : MonoBehaviour
         {
             weapbtnText[index] = testBtn[index].GetComponentInChildren<TMP_Text>();
         }
-        
+        curMaterial[0] = worldUI.transform.Find("StageUI/Bottom/Gold/UI_Text").GetComponent<TMP_Text>();
+        curMaterial[1] = worldUI.transform.Find("StageUI/Bottom/Star/UI_Text").GetComponent<TMP_Text>();
+        curMaterial[2] = worldUI.transform.Find("StageUI/Bottom/Key/UI_Text").GetComponent<TMP_Text>();
+        curMaterial[3] = worldUI.transform.Find("StageUI/Bottom/Ruby/UI_Text").GetComponent<TMP_Text>();
+
+
+
         questListBtn = worldUI.transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
         questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
         Prefabs_Awake();
@@ -73,6 +83,11 @@ public class WorldUI_Manager : MonoBehaviour
     {
         //테스트용 나중에 지워야함
         testBtnInit();
+
+        curMaterial[0].text = GameStatus.inst.Gold;
+        curMaterial[1].text = GameStatus.inst.Star;
+        curMaterial[2].text = GameStatus.inst.Key;
+        curMaterial[3].text = GameStatus.inst.Ruby;
     }
 
     // Update is called once per frame
@@ -223,6 +238,11 @@ public class WorldUI_Manager : MonoBehaviour
 
         getGoldAndStar_TextQue.Enqueue(obj);
 
+    }
+
+    public void CurMaterialUpdate(int index, string EA)
+    {
+        curMaterial[index].text = CalCulator.inst.StringFourDigitChanger(EA);
     }
 
 }

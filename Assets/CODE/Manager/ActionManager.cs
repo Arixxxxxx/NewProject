@@ -454,9 +454,8 @@ public class ActionManager : MonoBehaviour
     private void EnemyHPBarUI_Updater()
     {
         fillAmountA = float.Parse(CalCulator.inst.OlnyDigitChanger(enemyCurHP));
-        fillAmountB = float.Parse(CalCulator.inst.OlnyDigitChanger(enemyMaxHP));
-
-        Debug.Log($"{fillAmountA}, {fillAmountB}");
+        //fillAmountB = enemyMaxHP;
+        
         hpBar_IMG.fillAmount = fillAmountA / fillAmountB;
         hpBar_Text.text = $"{CalCulator.inst.StringFourDigitChanger(enemyCurHP)}";
     }
@@ -550,6 +549,7 @@ public class ActionManager : MonoBehaviour
         backGroundIMG.sprite = backGroudSprite[mapint];
     }
 
+    // ActionManager 무기스프라이트 교체 함수 (인덱스번호는 스프라이트 딴 번호 그대로임) 
     private void Set_MapSpriteChanger(int indexNum)
     {
         backGroundIMG.sprite = backGroudSprite[indexNum];

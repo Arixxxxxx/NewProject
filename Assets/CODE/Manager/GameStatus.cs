@@ -9,12 +9,65 @@ public class GameStatus : MonoBehaviour
 
 
     [Header("# Resource")]
-    [SerializeField] float gold;
-    public float Gold { get { return gold; } set { gold = value; } }
+    string gold = "0";
+    public string Gold
+    {
+        get
+        {
+            return gold;
+        }
+        set
+        {
+            gold = value;
+            WorldUI_Manager.inst.CurMaterialUpdate(0, gold);
+        }
+    }
 
-    [SerializeField] float key; // 환생시 주는 키
-    [SerializeField] float ruby;
-    [SerializeField] int rebirthToken; // 환생 토큰
+    string star = "0"; // 환생시 주는 키
+    public string Star
+    {
+        get
+        {
+            return star;
+        }
+        set
+        {
+            star = value;
+            WorldUI_Manager.inst.CurMaterialUpdate(1, star);
+        }
+    }
+
+    string key = "0";
+    public string Key
+    {
+        get
+        {
+            return key;
+        }
+        set
+        {
+            key = value;
+            WorldUI_Manager.inst.CurMaterialUpdate(2, key);
+        }
+    }
+
+    string ruby = "0";
+    public string Ruby
+    {
+        get
+        {
+            return ruby;
+        }
+        
+        set
+        {
+            ruby = value;
+            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby);
+        }
+    }
+
+
+    string rebirthToken; // 환생 토큰
 
     int atkSpeedLv; // 공격속도 증가
 
@@ -36,7 +89,7 @@ public class GameStatus : MonoBehaviour
     [Header("# Stage Info")]
     int stageLv = 1; // 층수 
     int accumlateFloor = 1;
-    public int AccumlateFloor 
+    public int AccumlateFloor
     {
         get
         {
