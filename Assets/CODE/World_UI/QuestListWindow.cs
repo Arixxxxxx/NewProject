@@ -37,7 +37,7 @@ public class QuestListWindow : MonoBehaviour
         }
 
         //오브젝트 참조
-        worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
+        worldUI = GameObject.Find("---[FrontUICanvas]").gameObject;
         mainWindow = worldUI.transform.Find("Active_WindowUI").gameObject;
         window = mainWindow.transform.Find("Mission/Window").gameObject;
         topQuestInfo = window.transform.Find("TopBar_Mission").gameObject;

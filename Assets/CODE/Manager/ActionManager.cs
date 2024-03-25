@@ -34,7 +34,7 @@ public class ActionManager : MonoBehaviour
     Animator playerAnim;
     int attackSpeedLv;
     float attackSpeed;
-    float atkPower;
+    string atkPower;
     SpriteRenderer palyerWeapenSr;
     [SerializeField] Sprite[] weaponSprite;
     [SerializeField] Sprite[] backGroudSprite;
@@ -49,8 +49,8 @@ public class ActionManager : MonoBehaviour
     Animator enemyAnim;
     Image hpBar_IMG;
     TMP_Text hpBar_Text;
-    [SerializeField] float enemyCurHP;
-    [SerializeField] float enemyMaxHP;
+    [SerializeField] string enemyCurHP;
+    [SerializeField] string enemyMaxHP;
     [SerializeField] Sprite[] enemySprite;
 
     //타격 이펙트
@@ -69,6 +69,8 @@ public class ActionManager : MonoBehaviour
     Vector2 enemyVec;
     float enemyPosX;
     [SerializeField] float enemySpawnSpeed;
+
+
     int floorCount;
 
 
@@ -162,17 +164,18 @@ public class ActionManager : MonoBehaviour
             AttackEnemy();
         }
 
-        EnemyHPBarUI_RealTimeUpdater();
-        atkPowerUpdater();
+        
 
+
+        //테스트용
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            playerAnim.SetTrigger("Out");
+           
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-            playerAnim.SetTrigger("In");
+       
         }
     }
 
@@ -181,11 +184,11 @@ public class ActionManager : MonoBehaviour
     {
         // UI Bar 초기화
         statusManager = GameStatus.inst;
-        if (statusManager.FloorLv != 0)
+        if (statusManager.FloorLv > 1)
         {
             WorldUI_Manager.inst.Set_StageUiBar(statusManager.FloorLv);
         }
-        else if (statusManager.FloorLv == 0)
+        else if (statusManager.FloorLv == 1)
         {
             WorldUI_Manager.inst.Reset_StageUiBar();
         }
@@ -270,10 +273,12 @@ public class ActionManager : MonoBehaviour
         yield return null;
         enemyAnim.SetTrigger("Hit");
         swordEffect.Play();
+        
 
-        if (enemyCurHP - atkPower > 0)
+        if (CalCulator.inst.DigidMinus(enemyCurHP, atkPower) != "Dead")
         {
-            enemyCurHP -= atkPower;
+            enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, atkPower);
+            EnemyHPBarUI_Updater();
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
             obj.transform.position = dmgFontParent.position;
@@ -286,12 +291,12 @@ public class ActionManager : MonoBehaviour
                 cri = true;
             }
 
-            obj.GetComponent<DMG_Font>().SetText(atkPower.ToString(), randomDice < GameStatus.inst.CriticalChance ? true : false);
+            obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(atkPower), randomDice < GameStatus.inst.CriticalChance ? true : false);
             obj.SetActive(true);
 
             EnemyOnHitEffect(cri);
         }
-        else if (enemyCurHP - atkPower <= 0) //에너미 사망 및 초기화
+        else //에너미 사망 및 초기화
         {
             StartCoroutine(GetGoldActionParticle());
             // 현재 받아야되는 돈 계산
@@ -412,12 +417,15 @@ public class ActionManager : MonoBehaviour
         // 나중에 체력 초기화 연산 바꿔야함
         swordEffect.Stop();
         enemyObj.transform.position = enemy_StartPoint.position; // 위치 초기화
-        enemyMaxHP = /*GameStatus.inst.StageLv **/ 100; // 체력초기화
+
+        enemyMaxHP = CalCulator.inst.EnemyHpSetup();
+        Debug.Log(enemyMaxHP);
         enemyCurHP = enemyMaxHP;
 
         //Hpbar 초기화
         hpBar_IMG.fillAmount = 1;
         hpBar_Text.text = string.Empty;
+        EnemyHPBarUI_Updater(); // 체력
 
         //스프라이트 값 할당
         int spriteCount = enemySprite.Length;
@@ -427,10 +435,13 @@ public class ActionManager : MonoBehaviour
 
     }
 
+   
 
 
     private void PlayerInit()
     {
+        atkPower = CalCulator.inst.Get_ATKtoString();
+        Debug.Log($"현재 나의 공격력{atkPower}");
         attackSpeedLv = GameStatus.inst.AtkSpeedLv;
         float attackTempSpeed = 0.6f;
 
@@ -439,19 +450,17 @@ public class ActionManager : MonoBehaviour
     }
 
     // 에너미 HP 바 업데이터
-    private void EnemyHPBarUI_RealTimeUpdater()
+    float fillAmountA, fillAmountB;
+    private void EnemyHPBarUI_Updater()
     {
-        hpBar_IMG.fillAmount = enemyCurHP / enemyMaxHP;
-
-        // 나중에 변환 필요함!!@#@!##!@!@#
-        hpBar_Text.text = $"{enemyCurHP}";
+        fillAmountA = float.Parse(CalCulator.inst.OlnyDigitChanger(enemyCurHP));
+        fillAmountB = float.Parse(CalCulator.inst.OlnyDigitChanger(enemyMaxHP));
+        hpBar_IMG.fillAmount = fillAmountA / fillAmountB;
+        hpBar_Text.text = $"{CalCulator.inst.StringFourDigitChanger(enemyCurHP)}";
     }
 
     // 추후에 연산 입력해야함
-    private void atkPowerUpdater()
-    {
-        atkPower = 10;
-    }
+    
 
 
     public void PlayerAttackSpeedLvUp(int Lv)
@@ -538,6 +547,7 @@ public class ActionManager : MonoBehaviour
         mapint = mapint == 2 ? 0 : 1;
         backGroundIMG.sprite = backGroudSprite[mapint];
     }
+
     private void Set_MapSpriteChanger(int indexNum)
     {
         backGroundIMG.sprite = backGroudSprite[indexNum];
