@@ -26,6 +26,12 @@ public class WorldUI_Manager : MonoBehaviour
     TMP_Text[] weapbtnText;
     Animator cuttonBlack;
 
+    //퀘스트 목록 관련
+    Button questListBtn;
+    TMP_Text questListSideText;
+
+    
+
 
     private void Awake()
     {
@@ -58,7 +64,9 @@ public class WorldUI_Manager : MonoBehaviour
         {
             weapbtnText[index] = testBtn[index].GetComponentInChildren<TMP_Text>();
         }
-
+        
+        questListBtn = worldUI.transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
+        questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
         Prefabs_Awake();
     }
     void Start()
