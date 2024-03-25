@@ -33,9 +33,14 @@ public class Weapon : MonoBehaviour
     [SerializeField] TextMeshProUGUI totalAtkText;
     [SerializeField] GameObject objBtn;
 
-    void Start()
+    private void Awake()
     {
         initValue();
+    }
+
+    void Start()
+    {
+
     }
 
     void Update()
