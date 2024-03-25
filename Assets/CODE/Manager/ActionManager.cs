@@ -25,7 +25,7 @@ public class ActionManager : MonoBehaviour
     [SerializeField] GameObject[] pooling_Obj;
     Transform dmgFontParent;
     Transform goldActionParent;
-    
+
 
     Queue<GameObject>[] prefabsQue;
 
@@ -199,7 +199,7 @@ public class ActionManager : MonoBehaviour
         if (ismove == false)
         {
             ismove = true;
-            
+
             if (playerAnim.GetBool("Move") == false)
             {
                 playerAnim.SetBool("Move", true);
@@ -247,7 +247,6 @@ public class ActionManager : MonoBehaviour
         StartCoroutine(enemyOnHit());
     }
 
-    float count = 0;
     private void AttackEnemy()
     {
 
@@ -309,7 +308,7 @@ public class ActionManager : MonoBehaviour
         ps.SetActive(true);
         ps.GetComponent<ParticleSystem>().Play();
         yield return new WaitForSeconds(1);
-        Return_Pooling_Prefabs(ps,1);
+        Return_Pooling_Prefabs(ps, 1);
     }
     /// <summary>
     /// 몬스터 사망 Init 함수
@@ -403,7 +402,7 @@ public class ActionManager : MonoBehaviour
             effectCriIndexCount++;
         }
 
-        
+
     }
     bool isUIActive;
 
@@ -496,10 +495,10 @@ public class ActionManager : MonoBehaviour
     Transform trsPrent;
     public GameObject Get_Pooling_Prefabs(int indexNum)
     {
-        
+
         if (prefabsQue[indexNum].Count <= 1)
         {
-            
+
             switch (indexNum)
             {
                 case 0:
@@ -516,7 +515,7 @@ public class ActionManager : MonoBehaviour
             obj.transform.position = dmgFontParent.transform.position;
             obj.SetActive(false);
         }
-       
+
         return prefabsQue[indexNum].Dequeue();
 
     }
