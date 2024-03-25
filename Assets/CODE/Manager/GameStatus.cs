@@ -127,7 +127,7 @@ public class GameStatus : MonoBehaviour
             AccumlateFloor++;
             if (floorLv == 5)
             {
-                floorLv = 0;
+                floorLv = 1;
                 stageLv++;
             }
         }
@@ -168,6 +168,12 @@ public class GameStatus : MonoBehaviour
 
     }
 
+    public void GetGold(string getValue)
+    {
+        string result = CalCulator.inst.DigidPlus(gold, getValue);
+        Debug.Log(result);
+        Gold = result;
+    }
 
 
 }

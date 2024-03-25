@@ -76,6 +76,15 @@ public class ActionManager : MonoBehaviour
 
     private void Awake()
     {
+        if (inst == null)
+        {
+            inst = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
         worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
 
         goldActionParent = worldSpaceGroup.transform.Find("GoldActionDynamic").GetComponent<Transform>();
@@ -124,19 +133,10 @@ public class ActionManager : MonoBehaviour
 
     void Start()
     {
-        if (inst == null)
-        {
-            inst = this;
-        }
-        else
-        {
-            Destroy(this);
-        }
-
+  
         //최초 init
 
         Enemyinit();
-        PlayerInit();
         UI_Init();
     }
 
@@ -270,6 +270,7 @@ public class ActionManager : MonoBehaviour
 
     IEnumerator enemyOnHit()
     {
+        PlayerInit();
         yield return null;
         enemyAnim.SetTrigger("Hit");
         swordEffect.Play();
@@ -300,7 +301,9 @@ public class ActionManager : MonoBehaviour
         {
             StartCoroutine(GetGoldActionParticle());
             // 현재 받아야되는 돈 계산
-            WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, "912093203981029389");
+            string getGold = Get_EnemyDeadGold();
+            WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
+            GameStatus.inst.GetGold(getGold);
             EnemyDeadFloorUp();
         }
 
@@ -419,7 +422,6 @@ public class ActionManager : MonoBehaviour
         enemyObj.transform.position = enemy_StartPoint.position; // 위치 초기화
 
         enemyMaxHP = CalCulator.inst.EnemyHpSetup();
-        Debug.Log(enemyMaxHP);
         enemyCurHP = enemyMaxHP;
 
         //Hpbar 초기화
@@ -605,6 +607,9 @@ public class ActionManager : MonoBehaviour
         palyerWeapenSr.sprite = weaponSprite[index];
 
     }
-
+    public string Get_EnemyDeadGold()
+    {
+        return Mathf.Ceil(Mathf.Pow(1.5f, GameStatus.inst.AccumlateFloor)).ToString();
+    }
 
 }

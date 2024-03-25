@@ -170,9 +170,9 @@ public class CalCulator : MonoBehaviour
 
     public string EnemyHpSetup()
     {
-        float a = 10.3f;
+        float a = 2f;
         float b = GameStatus.inst.AccumlateFloor;
-        return StringFourDigitChanger(Mathf.Floor(Mathf.Pow(a, b)).ToString());
+        return Mathf.Floor(Mathf.Pow(a, b)).ToString();
     }
 
     /// <summary>
@@ -357,5 +357,7 @@ public class CalCulator : MonoBehaviour
         double result = (double)forCalculatorA / (double)forCalculatorB;
         return (float)result;
     }
+
+
 
 }
