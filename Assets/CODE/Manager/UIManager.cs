@@ -102,20 +102,15 @@ public class UIManager : MonoBehaviour
 
     public void ClickBotBtn(int _num)
     {
-        int count = m_listMainUI.Count;
-        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
-        for (int iNum = 0; iNum < count; iNum++)
+        if (_num != 4)
         {
-            if (iNum == _num)
-            {
-                m_listMainUI[iNum].SetActive(true);
-            }
-            else
-            {
-                m_listMainUI[iNum].SetActive(false);
-            }
+            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
+            m_listMainUI[bottomBtnNum].SetActive(false);
+
+            bottomBtnNum = _num;
+            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
         }
-        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
+        m_listMainUI[_num].SetActive(true);
     }
 
     public void ClickOpenThisTab(GameObject _obj)

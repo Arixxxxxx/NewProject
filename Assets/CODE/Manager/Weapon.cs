@@ -82,7 +82,7 @@ public class Weapon : MonoBehaviour
         {
             Lv++;
             Atk = BigInteger.Multiply(resultPowNum, Lv);
-            GameStatus.inst.MinusGold(nextCost.ToString());
+            //GameStatus.inst.MinusGold(nextCost.ToString());
             clickWeaponImage();
             setNextCost();
             setText();
