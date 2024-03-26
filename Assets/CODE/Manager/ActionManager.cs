@@ -12,6 +12,7 @@ public class ActionManager : MonoBehaviour
     public static ActionManager inst;
 
     GameStatus statusManager;
+    PetContollerManager petManager;
 
     //카메라
     CinemachineVirtualCamera cam;
@@ -86,6 +87,7 @@ public class ActionManager : MonoBehaviour
         }
 
         worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
+        petManager = GetComponent<PetContollerManager>();
 
         goldActionParent = worldSpaceGroup.transform.Find("GoldActionDynamic").GetComponent<Transform>();
 
@@ -94,6 +96,7 @@ public class ActionManager : MonoBehaviour
         playerAnim = worldSpaceGroup.transform.Find("Player_Obj/Sprite").GetComponent<Animator>();
 
         moveWindParticle = playerAnim.transform.Find("MoveWind").gameObject;
+
         palyerWeapenSr = playerAnim.transform.Find("Weapon").GetComponent<SpriteRenderer>();
         swordEffect = playerAnim.transform.Find("0").GetComponent<ParticleSystem>();
 
@@ -133,9 +136,8 @@ public class ActionManager : MonoBehaviour
 
     void Start()
     {
-  
-        //최초 init
 
+        //최초 init
         Enemyinit();
         UI_Init();
     }
@@ -205,7 +207,9 @@ public class ActionManager : MonoBehaviour
 
             if (playerAnim.GetBool("Move") == false)
             {
+                petManager.PetAllParticle_Stop();
                 playerAnim.SetBool("Move", true);
+                petManager.PetAnimPlay(true);
                 moveWindParticle.gameObject.SetActive(true);
                 swordEffect.Stop();
             }
@@ -246,10 +250,16 @@ public class ActionManager : MonoBehaviour
     //애니메이션 공격 함수
     public void A_PlayerAttackToEnemy()
     {
-        StopCoroutine(enemyOnHit());
-        StartCoroutine(enemyOnHit());
+        StopCoroutine(enemyOnHit(0));
+        StartCoroutine(enemyOnHit(0));
+    }
+    public void A_Pet0AttackToEnemy()
+    {
+        StopCoroutine(enemyOnHit(1));
+        StartCoroutine(enemyOnHit(1));
     }
 
+    // 공격 함수 
     private void AttackEnemy()
     {
 
@@ -257,6 +267,7 @@ public class ActionManager : MonoBehaviour
         {
 
             playerAnim.SetBool("Move", false);
+            petManager.PetAnimPlay(false);
             playerAnim.transform.position = new Vector2(-0.706f, 5.45f);
             moveWindParticle.gameObject.SetActive(false);
         }
@@ -268,44 +279,88 @@ public class ActionManager : MonoBehaviour
     }
 
 
-    IEnumerator enemyOnHit()
+    IEnumerator enemyOnHit(int index)
     {
         PlayerInit();
         yield return null;
         enemyAnim.SetTrigger("Hit");
         swordEffect.Play();
+
+        string DMG = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
+
+        if (index == 0) // 플레이어일시
+        {
+            if (CalCulator.inst.DigidMinus(enemyCurHP, DMG) != "Dead")
+            {
+                // 펫버프가 있다면 포함
+                
+
+                // 대미지폰트
+                GameObject obj = Get_Pooling_Prefabs(0);
+                obj.transform.position = dmgFontParent.position;
+                float randomDice = Random.Range(0f, 100f);
+                bool cri = false;
+                //크리티컬 판정시 캠흔들림
+                if (randomDice < GameStatus.inst.CriticalChance)
+                {
+                    F_PlayerOnHitCamShake();
+                    DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
+                    cri = true;
+                }
+
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
+                obj.SetActive(true);
+
+                enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG);
+                EnemyHPBarUI_Updater();
+                EnemyOnHitEffect(cri);
+            }
+            else //에너미 사망 및 초기화
+            {
+                StartCoroutine(GetGoldActionParticle());
+                // 현재 받아야되는 돈 계산
+                string getGold = Get_EnemyDeadGold();
+              
+                GameStatus.inst.TakeGold(getGold);
+                EnemyDeadFloorUp();
+            }
+            
+            // 한타 떄려서 버프값 0으로 초기화
+            PetContollerManager.inst.AttackBuffDisable();
+        }
         
 
-        if (CalCulator.inst.DigidMinus(enemyCurHP, atkPower) != "Dead")
+        else if(index == 1)
         {
-            enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, atkPower);
-            EnemyHPBarUI_Updater();
-            // 대미지폰트
-            GameObject obj = Get_Pooling_Prefabs(0);
-            obj.transform.position = dmgFontParent.position;
-            float randomDice = Random.Range(0f, 100f);
-            bool cri = false;
-            //크리티컬 판정시 캠흔들림
-            if (randomDice < GameStatus.inst.CriticalChance == true)
+            // 펫대미지 공식 => 플레이어 대미지 * 펫레벨+1
+
+            string PetDmg = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
+
+            if (CalCulator.inst.DigidMinus(enemyCurHP, PetDmg) != "Dead")
             {
-                F_PlayerOnHitCamShake();
-                cri = true;
+                enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, PetDmg);
+                EnemyHPBarUI_Updater();
+
+                // 대미지폰트
+                GameObject obj = Get_Pooling_Prefabs(0);
+                obj.transform.position = dmgFontParent.position;
+
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(PetDmg), false,0);
+                obj.SetActive(true);
+                
             }
-
-            obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(atkPower), randomDice < GameStatus.inst.CriticalChance ? true : false);
-            obj.SetActive(true);
-
-            EnemyOnHitEffect(cri);
+            else //에너미 사망 및 초기화
+            {
+                StartCoroutine(GetGoldActionParticle());
+                // 현재 받아야되는 돈 계산
+                string getGold = Get_EnemyDeadGold();
+                WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
+                GameStatus.inst.TakeGold(getGold);
+                EnemyDeadFloorUp();
+            }
         }
-        else //에너미 사망 및 초기화
-        {
-            StartCoroutine(GetGoldActionParticle());
-            // 현재 받아야되는 돈 계산
-            string getGold = Get_EnemyDeadGold();
-            WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
-            GameStatus.inst.GetGold(getGold);
-            EnemyDeadFloorUp();
-        }
+
+     
 
     }
 
@@ -443,7 +498,6 @@ public class ActionManager : MonoBehaviour
     private void PlayerInit()
     {
         atkPower = CalCulator.inst.Get_ATKtoString();
-        Debug.Log($"현재 나의 공격력{atkPower}");
         attackSpeedLv = GameStatus.inst.AtkSpeedLv;
         float attackTempSpeed = 0.6f;
 
@@ -607,9 +661,13 @@ public class ActionManager : MonoBehaviour
         palyerWeapenSr.sprite = weaponSprite[index];
 
     }
-    public string Get_EnemyDeadGold()
-    {
-        return Mathf.Ceil(Mathf.Pow(1.5f, GameStatus.inst.AccumlateFloor)).ToString();
-    }
+    
+
+    // 몬스터 죽고 골드 상승
+    public string Get_EnemyDeadGold() => Mathf.Ceil(Mathf.Pow(1.5f, GameStatus.inst.AccumlateFloor)).ToString();
+    
+    // 플레이어 하이라키 오브젝트 리턴
+    public GameObject ReturnPlayerObjInHierachy () => playerAnim.gameObject;
+    public GameObject ReturnEnemyObjInHierachy () => enemyObj;
 
 }

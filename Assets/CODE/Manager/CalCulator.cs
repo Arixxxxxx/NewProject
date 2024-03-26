@@ -76,9 +76,13 @@ public class CalCulator : MonoBehaviour
     {
         sb.Clear();
         string result = string.Empty;
+        
+        string tempA = new string(a.Where( x=> char.IsDigit(x) ).ToArray());
+        string tempB = new string(b.Where( x=> char.IsDigit(x) ).ToArray());
+
         int maxLength = Mathf.Max(a.Length, b.Length);
-        string A = a.PadLeft(maxLength, '0');
-        string B = b.PadLeft(maxLength, '0');
+        string A = tempA.PadLeft(maxLength, '0');
+        string B = tempB.PadLeft(maxLength, '0');
         int carry = 0;
 
         if (int.Parse(A[0].ToString()) < int.Parse(B[0].ToString())) // 만약 결과가 음수로 될시 죽음처리
@@ -112,7 +116,7 @@ public class CalCulator : MonoBehaviour
     /// <param name="a"> Ex : 555A </param>
     /// <param name="percent"> 5% => 5 </param>
     /// <returns></returns>
-    public string DigitMultiply(string a, int percent)
+    public string DigitPercentMultiply(string a, int percent)
     {
         sb.Clear();
                                
@@ -167,12 +171,13 @@ public class CalCulator : MonoBehaviour
         return value.ToString();
     }
 
-
+    BigInteger hpA = new BigInteger();
     public string EnemyHpSetup()
     {
-        float a = 2f;
-        float b = GameStatus.inst.AccumlateFloor;
-        return Mathf.Floor(Mathf.Pow(a, b)).ToString();
+        hpA = 200; // 기존 2 임시로 200
+        hpA = BigInteger.Pow(hpA, GameStatus.inst.AccumlateFloor);
+
+        return hpA.ToString();
     }
 
     /// <summary>
@@ -219,10 +224,10 @@ public class CalCulator : MonoBehaviour
         {
             index++;
             digitLength -= 3; // 뒷자리 3개씩 지움
-            digit = digit.Substring(0, digitLength);
         }
 
-        Debug.Log($"반환{digit}");
+        digit = digit.Substring(0, digitLength);
+
         return digit;
     }
 
@@ -349,14 +354,61 @@ public class CalCulator : MonoBehaviour
             return result;
         }
     }
+    
 
+    /// <summary>
+    /// 플레이어 치명타적중시 치명타피해량 합산하여 리턴하는 함수
+    /// </summary>
+    /// <param name="a"></param>
+    /// <returns></returns>
+    public string PlayerCriDMGCalculator(string playerDMG)
+    {
+        sb.Clear();
+        forCalculatorA = BigInteger.Parse(playerDMG);
+        double critMultiplier = 2 + (GameStatus.inst.CriticalPower / 100.0);
+        forCalculatorA = BigInteger.Multiply(forCalculatorA, new BigInteger(critMultiplier));
+        sb.Append(forCalculatorA);
+
+        return sb.ToString();
+    }
+
+
+    /// <summary>
+    /// string * int => return string
+    /// </summary>
+    /// <param name="a"> string / int </param>
+    /// <returns></returns>
+    public string StringAndIntMultiPly(string value, int multiplyValue)
+    {
+        sb.Clear();
+        return sb.Append(BigInteger.Multiply(BigInteger.Parse(value), multiplyValue)).ToString();
+
+    }
+
+    BigInteger forFillAmountA = new BigInteger();
+    BigInteger forFillAmountB = new BigInteger();
+
+    /// <summary>
+    /// 체력 환산용
+    /// </summary>
+    /// <param name="cur"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
     public float ForImageFillAmout(string cur, string max) 
     {
-        forCalculatorA = BigInteger.Parse(new string(cur.Where( x => char.IsDigit(x)).ToArray()));
-        forCalculatorB = BigInteger.Parse(new string(max.Where(x => char.IsDigit(x)).ToArray()));
-        double result = (double)forCalculatorA / (double)forCalculatorB;
-        return (float)result;
+        float A = float.Parse(OlnyDigitChanger(cur));
+        float B = float.Parse(OlnyDigitChanger(max));
+
+        Debug.Log($"{A} / {B}  ,  {A/B}");
+
+        return A/B;
+
+        //forCalculatorA = BigInteger.Parse(new string(cur.Where( x => char.IsDigit(x)).ToArray()));
+        //forCalculatorB = BigInteger.Parse(new string(max.Where(x => char.IsDigit(x)).ToArray()));
     }
+
+
+
 
 
 

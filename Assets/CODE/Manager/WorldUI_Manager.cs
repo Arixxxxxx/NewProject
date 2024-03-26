@@ -178,17 +178,17 @@ public class WorldUI_Manager : MonoBehaviour
             }
         });
 
-        testBtn[2].onClick.AddListener(() => // 골드증가 테스트 버튼
-        {
-            Debug.Log("2");
-            Get_Increase_GetGoldAndStar_Font(0, "912093203981029389");
-        });
+        //testBtn[2].onClick.AddListener(() => // 골드증가 테스트 버튼
+        //{
+        //    Debug.Log("2");
+        //    Get_Increase_GetGoldAndStar_Font(0, "912093203981029389");
+        //});
 
-        testBtn[3].onClick.AddListener(() =>// 별증가 테스트 버튼
-        {
-            Debug.Log("3");
-            Get_Increase_GetGoldAndStar_Font(1, "42344263424346465443");
-        });
+        //testBtn[3].onClick.AddListener(() =>// 별증가 테스트 버튼
+        //{
+        //    Debug.Log("3");
+        //    Get_Increase_GetGoldAndStar_Font(1, "42344263424346465443");
+        //});
 
     }
 

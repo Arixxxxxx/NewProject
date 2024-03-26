@@ -59,7 +59,7 @@ public class DMG_Font : MonoBehaviour
         }
     }
 
-    public void SetText(string text, bool cri)
+    public void SetText(string text, bool cri, int colorType)
     {
         if (cri)
         {
@@ -75,6 +75,11 @@ public class DMG_Font : MonoBehaviour
             Dmg_Text.font = fonts[0];
             Dmg_Text.color = originColor;
             Dmg_Text.text = $"<b>{text}</b>";
+        }
+        
+        if(colorType == 0)
+        {
+            Dmg_Text.color = Color.cyan;
         }
     }
 
