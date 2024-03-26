@@ -286,11 +286,14 @@ public class ActionManager : MonoBehaviour
         enemyAnim.SetTrigger("Hit");
         swordEffect.Play();
 
-        if(index == 0) // 플레이어일시
+        string DMG = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
+
+        if (index == 0) // 플레이어일시
         {
-            if (CalCulator.inst.DigidMinus(enemyCurHP, atkPower) != "Dead")
+            if (CalCulator.inst.DigidMinus(enemyCurHP, DMG) != "Dead")
             {
-                string DMG = atkPower;
+                // 펫버프가 있다면 포함
+                
 
                 // 대미지폰트
                 GameObject obj = Get_Pooling_Prefabs(0);
@@ -317,16 +320,21 @@ public class ActionManager : MonoBehaviour
                 StartCoroutine(GetGoldActionParticle());
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
-                WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
-                GameStatus.inst.GetGold(getGold);
+              
+                GameStatus.inst.TakeGold(getGold);
                 EnemyDeadFloorUp();
             }
+            
+            // 한타 떄려서 버프값 0으로 초기화
+            PetContollerManager.inst.AttackBuffDisable();
         }
         
 
         else if(index == 1)
         {
-            string PetDmg = CalCulator.inst.DigitPercentMultiply(atkPower, GameStatus.inst.LvUpPower);
+            // 펫대미지 공식 => 플레이어 대미지 * 펫레벨+1
+
+            string PetDmg = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
 
             if (CalCulator.inst.DigidMinus(enemyCurHP, PetDmg) != "Dead")
             {
@@ -347,7 +355,7 @@ public class ActionManager : MonoBehaviour
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
                 WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
-                GameStatus.inst.GetGold(getGold);
+                GameStatus.inst.TakeGold(getGold);
                 EnemyDeadFloorUp();
             }
         }

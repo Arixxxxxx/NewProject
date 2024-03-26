@@ -171,12 +171,13 @@ public class CalCulator : MonoBehaviour
         return value.ToString();
     }
 
-
+    BigInteger hpA = new BigInteger();
     public string EnemyHpSetup()
     {
-        float a = 500f; // 기존 2 임시로 500
-        float b = GameStatus.inst.AccumlateFloor;
-        return Mathf.Floor(Mathf.Pow(a, b)).ToString();
+        hpA = 200; // 기존 2 임시로 200
+        hpA = BigInteger.Pow(hpA, GameStatus.inst.AccumlateFloor);
+
+        return hpA.ToString();
     }
 
     /// <summary>
@@ -223,10 +224,10 @@ public class CalCulator : MonoBehaviour
         {
             index++;
             digitLength -= 3; // 뒷자리 3개씩 지움
-            digit = digit.Substring(0, digitLength);
         }
 
-        Debug.Log($"반환{digit}");
+        digit = digit.Substring(0, digitLength);
+
         return digit;
     }
 
@@ -372,27 +373,43 @@ public class CalCulator : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// string * int => return string
+    /// </summary>
+    /// <param name="a"> string / int </param>
+    /// <returns></returns>
+    public string StringAndIntMultiPly(string value, int multiplyValue)
+    {
+        sb.Clear();
+        return sb.Append(BigInteger.Multiply(BigInteger.Parse(value), multiplyValue)).ToString();
 
+    }
+
+    BigInteger forFillAmountA = new BigInteger();
+    BigInteger forFillAmountB = new BigInteger();
+
+    /// <summary>
+    /// 체력 환산용
+    /// </summary>
+    /// <param name="cur"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
     public float ForImageFillAmout(string cur, string max) 
     {
-        forCalculatorA = BigInteger.Parse(new string(cur.Where( x => char.IsDigit(x)).ToArray()));
-        forCalculatorB = BigInteger.Parse(new string(max.Where(x => char.IsDigit(x)).ToArray()));
-        double result = (double)forCalculatorA / (double)forCalculatorB;
-        return (float)result;
+        float A = float.Parse(OlnyDigitChanger(cur));
+        float B = float.Parse(OlnyDigitChanger(max));
+
+        Debug.Log($"{A} / {B}  ,  {A/B}");
+
+        return A/B;
+
+        //forCalculatorA = BigInteger.Parse(new string(cur.Where( x => char.IsDigit(x)).ToArray()));
+        //forCalculatorB = BigInteger.Parse(new string(max.Where(x => char.IsDigit(x)).ToArray()));
     }
 
 
 
 
 
-    public string Get_PetBuffValue(int index)
-    {
-        switch (index)
-        {
-            case 0:
-                return (UIManager.Instance.TotalAtk * 3).ToString();
-        }
 
-        return "Null";
-    }
 }
