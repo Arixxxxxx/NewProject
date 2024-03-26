@@ -264,12 +264,4 @@ public class GameStatus : MonoBehaviour
         WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitChanger(getValue));
         Gold = result;
     }
-
-    public void MinusGold(string getValue)
-    {
-        string result = CalCulator.inst.DigidMinus(gold, getValue);
-        Gold = result;
-    }
-
-
 }
