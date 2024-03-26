@@ -265,7 +265,15 @@ public class GameStatus : MonoBehaviour
         Gold = result;
     }
 
+<<<<<<< HEAD
 
 
 
+=======
+    //public void MinusGold(string getValue)
+    //{
+    //    string result = CalCulator.inst.DigidMinus(gold, getValue);
+    //    Gold = result;
+    //}
+>>>>>>> 70a1d48 (ui 이미지 삽입중)
 }
