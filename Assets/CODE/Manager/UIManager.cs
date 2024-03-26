@@ -4,19 +4,28 @@ using UnityEngine;
 using System.Numerics;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
-
-    [SerializeField] List<GameObject> m_listBottomUI = new List<GameObject>();
-    [SerializeField] TextMeshProUGUI m_totalGold;
-    [SerializeField] TextMeshProUGUI m_totalAtk;
-
-    [SerializeField] private int buyCount = 1;
     [HideInInspector] public UnityEvent OnBuyCountChanged;
 
-    private int equipWeaponNum;
+    [SerializeField] List<GameObject> m_listMainUI = new List<GameObject>();
+    [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();
+
+    [SerializeField] private int buyCount = 1;
+
+    [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>();
+    [SerializeField] List<Image> m_list_BottomBtn = new List<Image>();
+
+    [SerializeField] TextMeshProUGUI m_totalAtk;
+    [SerializeField] TextMeshProUGUI m_totalGold;
+
+    int questBuyCountBtnNum = 0;
+    int bottomBtnNum = 0;
+    int equipWeaponNum;
+
     public int EquipWeaponNum
     {
         get => equipWeaponNum;
@@ -78,6 +87,12 @@ public class UIManager : MonoBehaviour
     {
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
         m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
+        InvokeRepeating("getGoldperSceond", 0, 1);
+    }
+
+    void getGoldPerSceond()
+    {
+        GameStatus.inst.GetGold(GetTotalGold());
     }
 
     void Update()
@@ -85,20 +100,22 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void ClickBotBtn(float _num)
+    public void ClickBotBtn(int _num)
     {
-        int count = m_listBottomUI.Count;
+        int count = m_listMainUI.Count;
+        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
         for (int iNum = 0; iNum < count; iNum++)
         {
             if (iNum == _num)
             {
-                m_listBottomUI[iNum].SetActive(true);
+                m_listMainUI[iNum].SetActive(true);
             }
             else
             {
-                m_listBottomUI[iNum].SetActive(false);
+                m_listMainUI[iNum].SetActive(false);
             }
         }
+        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
     }
 
     public void ClickOpenThisTab(GameObject _obj)
@@ -114,5 +131,22 @@ public class UIManager : MonoBehaviour
     public void ClickBuyCountBtn(int count)
     {
         BuyCount = count;
+        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
+        switch (count)
+        {
+            case 1:
+                questBuyCountBtnNum = 0;
+                break;
+            case 10:
+                questBuyCountBtnNum = 1;
+                break;
+            case 100:
+                questBuyCountBtnNum = 2;
+                break;
+            case 0:
+                questBuyCountBtnNum = 3;
+                break;
+        }
+        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
     }
 }

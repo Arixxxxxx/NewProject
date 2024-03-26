@@ -77,14 +77,22 @@ public class Weapon : MonoBehaviour
 
     public void ClickBuy()
     {
-        Lv++;
-        Atk = BigInteger.Multiply(resultPowNum, Lv);
-        clickWeaponImage();
-        setNextCost();
-        setText();
-        if (Lv - Number * 5 >= 5)
+        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
+        if (haveGold >= nextCost)
         {
-            objBtn.SetActive(false);
+            Lv++;
+            Atk = BigInteger.Multiply(resultPowNum, Lv);
+            clickWeaponImage();
+            setNextCost();
+            setText();
+            if (Lv - Number * 5 >= 5)
+            {
+                objBtn.SetActive(false);
+            }
+        }
+        else
+        {
+            Debug.Log("골드가 부족합니다");
         }
     }
 

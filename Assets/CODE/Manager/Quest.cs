@@ -53,7 +53,7 @@ public class Quest : MonoBehaviour
         {
             powNum += powNumRate * iNum;
         }
-        BigInteger resultPowNum = CalCulator.inst.CalculatePow(10,powNum);
+        BigInteger resultPowNum = CalCulator.inst.CalculatePow(10, powNum);
 
         initialProd = BigInteger.Multiply((BigInteger)baseProd, resultPowNum);
 
@@ -66,21 +66,30 @@ public class Quest : MonoBehaviour
     private void setText()
     {
         priceText.text = "가격 : " + CalCulator.inst.StringFourDigitChanger(nextCost.ToString());
-        upGoldText.text ="+" + CalCulator.inst.StringFourDigitChanger($"{initialProd * (Lv + UIManager.Instance.BuyCount) - initialProd * (Lv)}");
+        upGoldText.text = "+" + CalCulator.inst.StringFourDigitChanger($"{initialProd * (Lv + UIManager.Instance.BuyCount) - initialProd * (Lv)}");
         LvText.text = "Lv : " + CalCulator.inst.StringFourDigitChanger(Lv.ToString());
         totalGoldText.text = "Gps : " + CalCulator.inst.StringFourDigitChanger($"{totalProd}");
     }
 
     public void ClickBuy()
     {
-        Lv += UIManager.Instance.BuyCount;
-        if (Lv >= 25 * LvCur)
+        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
+        if (haveGold >= nextCost)
         {
-            LvCur *= 2;
+            Lv += UIManager.Instance.BuyCount;
+            if (Lv >= 25 * LvCur)
+            {
+                LvCur *= 2;
+            }
+            TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+            GameStatus.inst.GetGold(nextCost.ToString());
+            setNextCost();
+            setText();
         }
-        TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
-        setNextCost();
-        setText();
+        else
+        {
+            Debug.Log("돈이 부족합니다.");
+        }
     }
 
     private void setNextCost()
@@ -93,8 +102,8 @@ public class Quest : MonoBehaviour
     }
 
     private void maxUpgrade()
-    { 
-        
+    {
+
     }
 
     private void _OnCountChanged()
