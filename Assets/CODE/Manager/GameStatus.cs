@@ -265,7 +265,11 @@ public class GameStatus : MonoBehaviour
         Gold = result;
     }
 
-
+    public void MinusGold(string getValue)
+    {
+        string result = CalCulator.inst.DigidMinus(gold, getValue);
+        Gold = result;
+    }
 
 
 }
