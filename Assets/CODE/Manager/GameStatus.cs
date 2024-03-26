@@ -58,7 +58,7 @@ public class GameStatus : MonoBehaviour
         {
             return ruby;
         }
-        
+
         set
         {
             ruby = value;
@@ -82,9 +82,12 @@ public class GameStatus : MonoBehaviour
     }
 
     float criticalChance = 20;  //크리티컬 확률
-    float criticalPower = 0; // 크리티컬 피해증가
-    public float CriticalChance { get { return criticalChance; } set { criticalChance = value; } }
 
+    
+    public float CriticalChance { get { return criticalChance + addPetCriChanceBuff; } set { criticalChance = value; } }
+
+    float criticalPower = 0; // 크리티컬 피해증가
+    public float CriticalPower { get { return criticalPower + addPetCriDmgBuff; } set { criticalChance = value; } }
     [Space]
     [Header("# Stage Info")]
     int stageLv = 1; // 층수 
@@ -133,12 +136,72 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+
+
+    int lvUpPower = 10; // 메인캐릭터 공격력 * % 수치
+    public int LvUpPower
+    {
+        get
+        {
+            return lvUpPower;
+        }
+    }
+
+    int upGradeLv = 1; // 업그레이드 레벨 => 레벨당 10씩 증가
+    public int UpGradeLv
+    {
+        get
+        {
+            return upGradeLv;
+        }
+        set
+        {
+            upGradeLv += value;
+            lvUpPower += 10;
+        }
+    }
+
     [Space]
     [Header("# Total Get Resource")]
     [SerializeField] float mosterKill;
     [SerializeField] float bossKill;
     [SerializeField] float getGold;
     [SerializeField] int rebirthCount; // 환생 횟수
+
+
+    /////////////////////////////// 펫 버프 증가량 관련 //////////////////////////////////
+
+    int pet1_Lv = 1;
+    public int Pet1_Lv
+    {
+        get { return pet1_Lv; }
+        set { pet1_Lv = value; }
+    }
+
+
+    string addPetAtkBuff = "0";
+    public string AddPetAtkBuff
+    {
+        get { return addPetAtkBuff; }
+        set { addPetAtkBuff = value; }
+    }
+
+    int addPetCriChanceBuff = 0;
+    public int AddPetCriBuff
+    {
+        get { return addPetCriChanceBuff; }
+        set { addPetCriChanceBuff = value; }
+    }
+
+    float addPetCriDmgBuff = 0f;
+    public float AddPetDmgBuff
+    {
+        get { return addPetCriDmgBuff; }
+        set { addPetCriDmgBuff = value; }
+    }
+
+
+    ///////////////////////////////////////////////////////////////////
 
     private void Awake()
     {
@@ -175,5 +238,65 @@ public class GameStatus : MonoBehaviour
         Gold = result;
     }
 
+    public void PetBuffAcitve()
+    {
+        //주사위굴리고
+        int dice = Random.Range(0, 100);
+
+        if (dice >= 0 && dice < 40) // 공격력 증가
+        {
+            StopCoroutine(ActiveBuff(0));
+            StartCoroutine(ActiveBuff(0));
+
+        }
+        else if (dice >= 40 && dice < 80) //크리티컬 증가
+        {
+            StopCoroutine(ActiveBuff(1));
+            StartCoroutine(ActiveBuff(1));
+        }
+        else if (dice > 80) // 크리티컬 피해증가
+        {
+            StopCoroutine(ActiveBuff(2));
+            StartCoroutine(ActiveBuff(2));
+        }
+    }
+
+
+    WaitForSeconds waitBuffTime;
+    float buffTime = 2f;
+    IEnumerator ActiveBuff(int buffNum)
+    {
+        buffTime = (buffTime * pet1_Lv);
+        waitBuffTime = new WaitForSeconds(buffTime);
+        Debug.Log($"버프 타임 : {buffTime}");
+        switch (buffNum)
+        {
+            case 0:
+                addPetAtkBuff = CalCulator.inst.Get_PetBuffValue(0);
+                Debug.Log($"공격버프 시작 => 현재 공격력 {CalCulator.inst.DigidPlus(CalCulator.inst.Get_ATKtoString() , addPetAtkBuff)} ");
+                yield return waitBuffTime;
+                addPetAtkBuff = "0";
+                Debug.Log($"공격버프 종료 => 현재 공격력 {CalCulator.inst.DigidPlus(CalCulator.inst.Get_ATKtoString(), addPetAtkBuff)} ");
+                break;
+
+            case 1:
+                addPetCriChanceBuff = 25;
+                Debug.Log($"크리버프 시작 => 현재 크리확률 {criticalChance} %");
+
+                yield return waitBuffTime;
+                addPetCriChanceBuff = 0;
+                Debug.Log($"크리버프 종료 => 현재 크리확률 {criticalChance} %");
+                break;
+
+            case 2:
+                addPetCriDmgBuff = 150;
+                Debug.Log($"크리 피해량 버프 시작 => 현재 치명타피해증가량 {CriticalChance} %");
+
+                yield return waitBuffTime;
+                addPetCriChanceBuff = 0;
+                Debug.Log($"크리 피버프 종료 => 현재 치명타피해증가량 {criticalChance} %");
+                break;
+        }
+    }
 
 }

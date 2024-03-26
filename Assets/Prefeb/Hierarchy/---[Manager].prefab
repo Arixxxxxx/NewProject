@@ -69,6 +69,13 @@ MonoBehaviour:
   - {fileID: 1512390688, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
   - {fileID: -104010614, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
   - {fileID: -1576829590, guid: 35a6dd1167954584baa2716bcbb8cbe4, type: 3}
+  scrollViewr:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  topBtnTrsRef: {fileID: 0}
+  topBtnIMG: []
+  topBtn: []
 --- !u!1 &4073252676762207242
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,16 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddbc722344f14ef4f882ebc727e99a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gold: 0
-  key: 0
-  ruby: 0
-  rebirthToken: 0
-  atkPower: 0
-  atkSpeedLv: 0
-  criticalChance: 0
-  criticalPower: 0
-  stageLv: 0
-  floorLv: 0
   mosterKill: 0
   bossKill: 0
   getGold: 0
@@ -274,6 +271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1098314311902924739}
   - component: {fileID: 3112622375572403345}
+  - component: {fileID: 3517163624738997859}
   m_Layer: 0
   m_Name: ActionManager
   m_TagString: Untagged
@@ -400,3 +398,15 @@ MonoBehaviour:
   checkPosition: 0
   enemySpawnSpeed: 0.12
   shakeTime: 0.25
+--- !u!114 &3517163624738997859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5776699501368750618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a16f38fb3758643b4f3cb947f9e713, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

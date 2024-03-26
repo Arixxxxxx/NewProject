@@ -76,9 +76,13 @@ public class CalCulator : MonoBehaviour
     {
         sb.Clear();
         string result = string.Empty;
+        
+        string tempA = new string(a.Where( x=> char.IsDigit(x) ).ToArray());
+        string tempB = new string(b.Where( x=> char.IsDigit(x) ).ToArray());
+
         int maxLength = Mathf.Max(a.Length, b.Length);
-        string A = a.PadLeft(maxLength, '0');
-        string B = b.PadLeft(maxLength, '0');
+        string A = tempA.PadLeft(maxLength, '0');
+        string B = tempB.PadLeft(maxLength, '0');
         int carry = 0;
 
         if (int.Parse(A[0].ToString()) < int.Parse(B[0].ToString())) // 만약 결과가 음수로 될시 죽음처리
@@ -112,7 +116,7 @@ public class CalCulator : MonoBehaviour
     /// <param name="a"> Ex : 555A </param>
     /// <param name="percent"> 5% => 5 </param>
     /// <returns></returns>
-    public string DigitMultiply(string a, int percent)
+    public string DigitPercentMultiply(string a, int percent)
     {
         sb.Clear();
                                
@@ -170,7 +174,7 @@ public class CalCulator : MonoBehaviour
 
     public string EnemyHpSetup()
     {
-        float a = 2f;
+        float a = 500f; // 기존 2 임시로 500
         float b = GameStatus.inst.AccumlateFloor;
         return Mathf.Floor(Mathf.Pow(a, b)).ToString();
     }
@@ -349,6 +353,25 @@ public class CalCulator : MonoBehaviour
             return result;
         }
     }
+    
+
+    /// <summary>
+    /// 플레이어 치명타적중시 치명타피해량 합산하여 리턴하는 함수
+    /// </summary>
+    /// <param name="a"></param>
+    /// <returns></returns>
+    public string PlayerCriDMGCalculator(string playerDMG)
+    {
+        sb.Clear();
+        forCalculatorA = BigInteger.Parse(playerDMG);
+        double critMultiplier = 2 + (GameStatus.inst.CriticalPower / 100.0);
+        forCalculatorA = BigInteger.Multiply(forCalculatorA, new BigInteger(critMultiplier));
+        sb.Append(forCalculatorA);
+
+        return sb.ToString();
+    }
+
+
 
     public float ForImageFillAmout(string cur, string max) 
     {
@@ -360,4 +383,16 @@ public class CalCulator : MonoBehaviour
 
 
 
+
+
+    public string Get_PetBuffValue(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return (UIManager.Instance.TotalAtk * 3).ToString();
+        }
+
+        return "Null";
+    }
 }
