@@ -43,7 +43,7 @@ public class Quest : MonoBehaviour
     void Start()
     {
         initValue();
-        UIManager.Instance.OnBuyCountChanged.AddListener(Test_OnCountChanged);
+        UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
     }
 
     void initValue()//초기값 설정
@@ -92,7 +92,12 @@ public class Quest : MonoBehaviour
         }
     }
 
-    private void Test_OnCountChanged()
+    private void maxUpgrade()
+    { 
+        
+    }
+
+    private void _OnCountChanged()
     {
         setNextCost();
         setText();
