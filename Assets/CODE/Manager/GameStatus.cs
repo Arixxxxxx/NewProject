@@ -91,7 +91,8 @@ public class GameStatus : MonoBehaviour
     [Space]
     [Header("# Stage Info")]
     int stageLv = 1; // 층수 
-    int accumlateFloor = 1;
+
+    int accumlateFloor = 1; // 누적층수
     public int AccumlateFloor
     {
         get
@@ -117,6 +118,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+    [SerializeField]
     int floorLv = 1; // 해당 층의 몬스터 단계 
     public int FloorLv
     {
@@ -128,7 +130,8 @@ public class GameStatus : MonoBehaviour
         {
             floorLv = value;
             AccumlateFloor++;
-            if (floorLv == 5)
+
+            if (floorLv == 6)
             {
                 floorLv = 1;
                 stageLv++;

@@ -87,7 +87,7 @@ public class UIManager : MonoBehaviour
     {
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
         m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
-        InvokeRepeating("getGoldperSceond", 0, 1);
+        InvokeRepeating("getGoldPerSceond", 0, 1); // <ㅡ 오타
     }
 
     void getGoldPerSceond()

@@ -103,7 +103,7 @@ public class WorldUI_Manager : MonoBehaviour
     public void Set_StageUiBar(int curFloorLv)
     {
         stageSlot[curFloorLv].sprite = stageSprite[2];
-        stageText.text = $"Stage {GameStatus.inst.StageLv} - {curFloorLv}";
+        stageText.text = $"Stage {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv}";
         uiBossHead.gameObject.SetActive(curFloorLv == 4 ? true : false);
         for (int index = 0; index < curFloorLv; index++)
         {

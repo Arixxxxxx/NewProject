@@ -285,29 +285,32 @@ public class ActionManager : MonoBehaviour
         yield return null;
         enemyAnim.SetTrigger("Hit");
         swordEffect.Play();
-
+        
+        //기본 대미지 계산
         string DMG = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
+
+        // 크리티컬 계산
+        float randomDice = Random.Range(0f, 100f);
+        bool cri = false;
+       
+        //크리티컬 판정시 캠흔들림
+        if (randomDice < GameStatus.inst.CriticalChance)
+        {
+            F_PlayerOnHitCamShake();
+            DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
+            cri = true;
+        }
+
+        Debug.Log($"현재 체력 : {enemyCurHP} / 최대체력 : {enemyMaxHP} / 가한 대미지 {DMG}");
 
         if (index == 0) // 플레이어일시
         {
             if (CalCulator.inst.DigidMinus(enemyCurHP, DMG) != "Dead")
             {
-                // 펫버프가 있다면 포함
-                
 
                 // 대미지폰트
                 GameObject obj = Get_Pooling_Prefabs(0);
                 obj.transform.position = dmgFontParent.position;
-                float randomDice = Random.Range(0f, 100f);
-                bool cri = false;
-                //크리티컬 판정시 캠흔들림
-                if (randomDice < GameStatus.inst.CriticalChance)
-                {
-                    F_PlayerOnHitCamShake();
-                    DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
-                    cri = true;
-                }
-
                 obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
                 obj.SetActive(true);
 
@@ -327,6 +330,7 @@ public class ActionManager : MonoBehaviour
             
             // 한타 떄려서 버프값 0으로 초기화
             PetContollerManager.inst.AttackBuffDisable();
+
         }
         
 
@@ -335,10 +339,11 @@ public class ActionManager : MonoBehaviour
             // 펫대미지 공식 => 플레이어 대미지 * 펫레벨+1
 
             string PetDmg = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
+            string MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, PetDmg); // 총체력에서 공격력을 뺀값
 
-            if (CalCulator.inst.DigidMinus(enemyCurHP, PetDmg) != "Dead")
+            if (MinusValue != "Dead")
             {
-                enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, PetDmg);
+                enemyCurHP = MinusValue;
                 EnemyHPBarUI_Updater();
 
                 // 대미지폰트
@@ -364,6 +369,7 @@ public class ActionManager : MonoBehaviour
 
     }
 
+    // 몬스터 죽엇을때 돈이 팡 튀는 파티클 재생 함수
     IEnumerator GetGoldActionParticle()
     {
         GameObject ps = Get_Pooling_Prefabs(1);
@@ -386,13 +392,13 @@ public class ActionManager : MonoBehaviour
         if (floorCount < 4)
         {
             Enemyinit();
-            GameStatus.inst.FloorLv = floorCount;
+            GameStatus.inst.FloorLv++;
             WorldUI_Manager.inst.Set_StageUiBar(floorCount);
         }
         else if (floorCount == 4)
         {
             Enemyinit();
-            GameStatus.inst.FloorLv = floorCount;
+            GameStatus.inst.FloorLv++;
             WorldUI_Manager.inst.Set_StageUiBar(floorCount);
             //보스피통 늘려주는 ~
         }
@@ -401,6 +407,7 @@ public class ActionManager : MonoBehaviour
             doEnemyMove = false;
             Enemyinit();
             floorCount = 0;
+            GameStatus.inst.FloorLv++;
             StartCoroutine(NextStageAction()); //  다음 층으로 이동하는거처럼
 
 
@@ -411,9 +418,7 @@ public class ActionManager : MonoBehaviour
 
     IEnumerator NextStageAction()
     {
-        GameStatus.inst.StageLv++;
-        GameStatus.inst.FloorLv = floorCount;
-
+        
         playerAnim.SetTrigger("Out");
 
         yield return new WaitForSeconds(0.2f);
