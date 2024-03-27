@@ -32,6 +32,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             gold = value;
+            WorldUI_Manager.inst.CurMaterialUpdate(0, gold);
         }
     }
 
