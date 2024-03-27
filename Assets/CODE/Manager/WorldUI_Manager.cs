@@ -84,7 +84,7 @@ public class WorldUI_Manager : MonoBehaviour
         //테스트용 나중에 지워야함
         testBtnInit();
 
-        curMaterial[0].text = GameStatus.inst.Gold;
+        curMaterial[0].text = GameStatus.inst.PulsGold;
         curMaterial[1].text = GameStatus.inst.Star;
         curMaterial[2].text = GameStatus.inst.Key;
         curMaterial[3].text = GameStatus.inst.Ruby;
@@ -103,7 +103,7 @@ public class WorldUI_Manager : MonoBehaviour
     public void Set_StageUiBar(int curFloorLv)
     {
         stageSlot[curFloorLv].sprite = stageSprite[2];
-        stageText.text = $"Stage {GameStatus.inst.StageLv} - {curFloorLv}";
+        stageText.text = $"Stage {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv}";
         uiBossHead.gameObject.SetActive(curFloorLv == 4 ? true : false);
         for (int index = 0; index < curFloorLv; index++)
         {

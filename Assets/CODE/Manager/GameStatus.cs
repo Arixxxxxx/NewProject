@@ -10,7 +10,7 @@ public class GameStatus : MonoBehaviour
 
     [Header("# Resource")]
     string gold = "0";
-    public string Gold
+    public string PulsGold
     {
         get
         {
@@ -20,6 +20,18 @@ public class GameStatus : MonoBehaviour
         {
             gold = value;
             WorldUI_Manager.inst.CurMaterialUpdate(0, gold);
+        }
+    }
+
+    public string inputMinusGold
+    {
+        get
+        {
+            return gold;
+        }
+        set
+        {
+            gold = value;
         }
     }
 
@@ -91,7 +103,8 @@ public class GameStatus : MonoBehaviour
     [Space]
     [Header("# Stage Info")]
     int stageLv = 1; // Ãþ¼ö 
-    int accumlateFloor = 1;
+
+    int accumlateFloor = 1; // ´©ÀûÃþ¼ö
     public int AccumlateFloor
     {
         get
@@ -117,6 +130,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+    [SerializeField]
     int floorLv = 1; // ÇØ´ç ÃþÀÇ ¸ó½ºÅÍ ´Ü°è 
     public int FloorLv
     {
@@ -128,7 +142,8 @@ public class GameStatus : MonoBehaviour
         {
             floorLv = value;
             AccumlateFloor++;
-            if (floorLv == 5)
+
+            if (floorLv == 6)
             {
                 floorLv = 1;
                 stageLv++;
@@ -255,19 +270,19 @@ public class GameStatus : MonoBehaviour
     public void GetGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);
-        Gold = result;
+        PulsGold = result;
     }
 
     public void TakeGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);
         WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitChanger(getValue));
-        Gold = result;
+        PulsGold = result;
     }
 
     public void MinusGold(string getValue)
     {
         string result = CalCulator.inst.DigidMinus(gold, getValue);
-        Gold = result;
+        inputMinusGold = result;
     }
 }

@@ -174,9 +174,10 @@ public class CalCulator : MonoBehaviour
     BigInteger hpA = new BigInteger();
     public string EnemyHpSetup()
     {
-        hpA = 200; // 기존 2 임시로 200
+        hpA = 2; // 기존 2 임시로 200
         hpA = BigInteger.Pow(hpA, GameStatus.inst.AccumlateFloor);
 
+        Debug.Log($"몬스터 초기화된 체력 : {hpA}");
         return hpA.ToString();
     }
 
@@ -197,8 +198,10 @@ public class CalCulator : MonoBehaviour
         {
             index++;
             digitLength -= 3; // 뒷자리 3개씩 지움
-            digit = digit.Substring(0, digitLength); // 지우고앞자리만 가져옴
         }
+
+        digitLength = Mathf.Min(digitLength, digit.Length);
+        digit = digit.Substring(0, digitLength); // 지우고앞자리만 가져옴
 
         // 알파벳 가져오는 부분
         if (index > 0)
@@ -226,6 +229,7 @@ public class CalCulator : MonoBehaviour
             digitLength -= 3; // 뒷자리 3개씩 지움
         }
 
+        digitLength = Mathf.Min(digitLength, digit.Length);
         digit = digit.Substring(0, digitLength);
 
         return digit;
@@ -385,8 +389,7 @@ public class CalCulator : MonoBehaviour
 
     }
 
-    BigInteger forFillAmountA = new BigInteger();
-    BigInteger forFillAmountB = new BigInteger();
+
 
     /// <summary>
     /// 체력 환산용
@@ -396,15 +399,27 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public float ForImageFillAmout(string cur, string max) 
     {
-        float A = float.Parse(OlnyDigitChanger(cur));
-        float B = float.Parse(OlnyDigitChanger(max));
+        if(cur == "Dead")
+        {
+            cur = "0";
+        }
 
-        Debug.Log($"{A} / {B}  ,  {A/B}");
+        if (!float.TryParse(OlnyDigitChanger(cur), out float A))
+        {
+            Debug.LogError($"Failed to parse '{cur}' to float.");
+            return 0; // 혹은 적절한 오류 처리
+        }
 
-        return A/B;
+        if (!float.TryParse(OlnyDigitChanger(max), out float B) || B == 0)
+        {
+            Debug.LogError($"Failed to parse '{max}' to float or B is zero.");
+            return 0; // 혹은 적절한 오류 처리
+        }
 
-        //forCalculatorA = BigInteger.Parse(new string(cur.Where( x => char.IsDigit(x)).ToArray()));
-        //forCalculatorB = BigInteger.Parse(new string(max.Where(x => char.IsDigit(x)).ToArray()));
+        //Debug.Log($"{A} / {B}  ,  {A / B}");
+
+        return A / B;
+
     }
 
 
