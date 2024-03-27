@@ -87,7 +87,7 @@ public class UIManager : MonoBehaviour
     {
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
         m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
-        InvokeRepeating("getGoldperSceond", 0, 1);
+        InvokeRepeating("getGoldPerSceond", 0, 1);
     }
 
     void getGoldPerSceond()
@@ -102,20 +102,15 @@ public class UIManager : MonoBehaviour
 
     public void ClickBotBtn(int _num)
     {
-        int count = m_listMainUI.Count;
-        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
-        for (int iNum = 0; iNum < count; iNum++)
+        if (_num != 4)
         {
-            if (iNum == _num)
-            {
-                m_listMainUI[iNum].SetActive(true);
-            }
-            else
-            {
-                m_listMainUI[iNum].SetActive(false);
-            }
+            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
+            m_listMainUI[bottomBtnNum].SetActive(false);
+
+            bottomBtnNum = _num;
+            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
         }
-        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
+        m_listMainUI[_num].SetActive(true);
     }
 
     public void ClickOpenThisTab(GameObject _obj)

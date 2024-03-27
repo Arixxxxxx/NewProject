@@ -82,7 +82,7 @@ public class Quest : MonoBehaviour
                 LvCur *= 2;
             }
             TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
-            GameStatus.inst.GetGold(nextCost.ToString());
+            //GameStatus.inst.MinusGold(nextCost.ToString());
             setNextCost();
             setText();
         }
