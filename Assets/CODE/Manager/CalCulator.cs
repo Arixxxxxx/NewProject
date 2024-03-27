@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +88,7 @@ public class CalCulator : MonoBehaviour
         string B = tempB.PadLeft(maxLength, '0');
         int carry = 0;
 
-        if (areYouEnemy == true && int.Parse(A[0].ToString()) - int.Parse(B[0].ToString()) < 0) // 만약 결과가 음수로 될시 죽음처리
+        if (areYouEnemy == true && int.Parse(A[0].ToString()) < int.Parse(B[0].ToString())) // 만약 결과가 음수로 될시 죽음처리
         {
             return "Dead";
         }
@@ -109,11 +110,11 @@ public class CalCulator : MonoBehaviour
 
         result = sb.ToString().TrimStart('0');
 
-        if(result == string.Empty && areYouEnemy)
+        if(result == string.Empty && areYouEnemy == true)
         {
             result = "Dead";
         }
-        else
+        else if(result == string.Empty && areYouEnemy == false)
         {
             result = "0";
         }
@@ -218,12 +219,31 @@ public class CalCulator : MonoBehaviour
         // 알파벳 가져오는 부분
         if (index > 0)
         {
-            word += (char)(64 + index);
+            //word += (char)(64 + index); 아스키코드 과정에서 변경 A -> ZZ
+            word = MakeBigDigitWord(index);
         }
 
         return digit + word;
     }
 
+    /// <summary>
+    /// 숫자뒤에 문자로 합산해주는 함수
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    private string MakeBigDigitWord(int index)
+    {
+        string result = string.Empty;
+        while (index > 0)
+        {
+            index--; // 0 기반으로 조정
+            int remainder = index % 26;
+            char letter = (char)('A' + remainder);
+            result = letter + result;
+            index = (index / 26); // 정확한 나눗셈
+        }
+        return result;
+    }
     /// <summary>
     /// 문자 제외 앞자리 숫자만 리턴
     /// </summary>
@@ -404,33 +424,43 @@ public class CalCulator : MonoBehaviour
 
 
     /// <summary>
-    /// 체력 환산용
+    /// 
     /// </summary>
     /// <param name="cur"></param>
     /// <param name="max"></param>
     /// <returns></returns>
-    public float ForImageFillAmout(string cur, string max) 
+    public float StringAndStringDivideReturnFloat(string cur, string max, int precision) 
     {
-        if(cur == "Dead")
+        if(cur == "Dead") { cur = "0"; }
+
+
+        BigInteger bigA = BigInteger.Parse(cur);
+        BigInteger bigB = BigInteger.Parse(max);
+
+        // 분자를 확장하여 소수점 이하 정밀도 확보
+        BigInteger scale = BigInteger.Pow(10, precision);
+        BigInteger expandedA = bigA * scale;
+
+        // 확장된 분자를 분모로 나눔
+        BigInteger result = expandedA / bigB;
+
+        // 결과를 문자열로 변환
+        string resultString = result.ToString();
+
+        // 결과 문자열에 소수점 추가
+        if (resultString.Length <= precision)
         {
-            cur = "0";
+            // 결과가 1보다 작은 경우, 선행 0을 추가
+            resultString = resultString.PadLeft(precision + 1, '0');
         }
 
-        if (!float.TryParse(OlnyDigitChanger(cur), out float A))
-        {
-            Debug.LogError($"Failed to parse '{cur}' to float.");
-            return 0; // 혹은 적절한 오류 처리
-        }
+        // 적절한 위치에 소수점 삽입
+        string finalResult = resultString.Insert(resultString.Length - precision, ".");
 
-        if (!float.TryParse(OlnyDigitChanger(max), out float B) || B == 0)
-        {
-            Debug.LogError($"Failed to parse '{max}' to float or B is zero.");
-            return 0; // 혹은 적절한 오류 처리
-        }
-
-        //Debug.Log($"{A} / {B}  ,  {A / B}");
-
-        return A / B;
+        // 소수점 이하 불필요한 0 제거 (옵션)
+        finalResult = finalResult.TrimEnd('0').TrimEnd('.');
+        Debug.Log($"완료된 계산값 => {float.Parse(finalResult)}");
+        return float.Parse(finalResult);
 
     }
 

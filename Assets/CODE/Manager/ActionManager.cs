@@ -281,33 +281,32 @@ public class ActionManager : MonoBehaviour
 
     IEnumerator enemyOnHit(int index)
     {
-        PlayerInit();
-        yield return null;
         enemyAnim.SetTrigger("Hit");
-        swordEffect.Play();
-        
+        PlayerInit();
         //기본 대미지 계산
         string DMG = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
-
-        // 크리티컬 계산
-        float randomDice = Random.Range(0f, 100f);
-        bool cri = false;
-       
-        //크리티컬 판정시 캠흔들림
-        if (randomDice < GameStatus.inst.CriticalChance)
-        {
-            F_PlayerOnHitCamShake();
-            DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
-            cri = true;
-        }
-
-        Debug.Log($"현재 체력 : {enemyCurHP} / 최대체력 : {enemyMaxHP} / 가한 대미지 {DMG}");
+        
 
         if (index == 0) // 플레이어일시
         {
-            if (CalCulator.inst.DigidMinus(enemyCurHP, DMG, true) != "Dead")
-            {
+            swordEffect.Play();
+            // 크리티컬 계산
+            float randomDice = Random.Range(0f, 100f);
+            bool cri = false;
 
+            //크리티컬 판정시 캠흔들림
+            if (randomDice < GameStatus.inst.CriticalChance)
+            {
+                F_PlayerOnHitCamShake();
+                DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
+                cri = true;
+            }
+
+            string checkDMG = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
+            Debug.Log($"현재 체력 : {enemyCurHP} / 최대체력 : {enemyMaxHP} / 가한 대미지 {DMG}");
+
+            if (checkDMG != "Dead" && attackReady == true)
+            {
                 // 대미지폰트
                 GameObject obj = Get_Pooling_Prefabs(0);
                 obj.transform.position = dmgFontParent.position;
@@ -318,7 +317,7 @@ public class ActionManager : MonoBehaviour
                 EnemyHPBarUI_Updater();
                 EnemyOnHitEffect(cri);
             }
-            else //에너미 사망 및 초기화
+            else if(checkDMG == "Dead")//에너미 사망 및 초기화
             {
                 StartCoroutine(GetGoldActionParticle());
                 // 현재 받아야되는 돈 계산
@@ -340,7 +339,7 @@ public class ActionManager : MonoBehaviour
             string PetDmg = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
             string MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, PetDmg, true); // 총체력에서 공격력을 뺀값
 
-            if (MinusValue != "Dead")
+            if (MinusValue != "Dead" && attackReady == true)
             {
                 enemyCurHP = MinusValue;
                 EnemyHPBarUI_Updater();
@@ -353,7 +352,7 @@ public class ActionManager : MonoBehaviour
                 obj.SetActive(true);
                 
             }
-            else //에너미 사망 및 초기화
+            else if(MinusValue == "Dead")//에너미 사망 및 초기화
             {
                 StartCoroutine(GetGoldActionParticle());
                 // 현재 받아야되는 돈 계산
@@ -364,7 +363,7 @@ public class ActionManager : MonoBehaviour
             }
         }
 
-     
+        yield return null;
 
     }
 
@@ -408,9 +407,6 @@ public class ActionManager : MonoBehaviour
             floorCount = 0;
             GameStatus.inst.FloorLv++;
             StartCoroutine(NextStageAction()); //  다음 층으로 이동하는거처럼
-
-
-
         }
     }
 
@@ -513,7 +509,7 @@ public class ActionManager : MonoBehaviour
     float fillAmountA, fillAmountB;
     private void EnemyHPBarUI_Updater()
     {
-        hpBar_IMG.fillAmount = CalCulator.inst.ForImageFillAmout(enemyCurHP, enemyMaxHP);
+        hpBar_IMG.fillAmount = CalCulator.inst.StringAndStringDivideReturnFloat(enemyCurHP, enemyMaxHP , 3);
         hpBar_Text.text = $"{CalCulator.inst.StringFourDigitChanger(enemyCurHP)}";
     }
 
