@@ -305,7 +305,7 @@ public class ActionManager : MonoBehaviour
 
         if (index == 0) // 플레이어일시
         {
-            if (CalCulator.inst.DigidMinus(enemyCurHP, DMG) != "Dead")
+            if (CalCulator.inst.DigidMinus(enemyCurHP, DMG, true) != "Dead")
             {
 
                 // 대미지폰트
@@ -314,7 +314,7 @@ public class ActionManager : MonoBehaviour
                 obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
                 obj.SetActive(true);
 
-                enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG);
+                enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
                 EnemyHPBarUI_Updater();
                 EnemyOnHitEffect(cri);
             }
@@ -323,7 +323,6 @@ public class ActionManager : MonoBehaviour
                 StartCoroutine(GetGoldActionParticle());
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
-              
                 GameStatus.inst.TakeGold(getGold);
                 EnemyDeadFloorUp();
             }
@@ -339,7 +338,7 @@ public class ActionManager : MonoBehaviour
             // 펫대미지 공식 => 플레이어 대미지 * 펫레벨+1
 
             string PetDmg = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
-            string MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, PetDmg); // 총체력에서 공격력을 뺀값
+            string MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, PetDmg, true); // 총체력에서 공격력을 뺀값
 
             if (MinusValue != "Dead")
             {
