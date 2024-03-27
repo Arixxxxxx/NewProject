@@ -77,7 +77,7 @@ public class Weapon : MonoBehaviour
 
     public void ClickBuy()
     {
-        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
+        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
         if (haveGold >= nextCost)
         {
             Lv++;

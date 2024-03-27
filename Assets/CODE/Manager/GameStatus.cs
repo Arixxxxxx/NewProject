@@ -10,7 +10,7 @@ public class GameStatus : MonoBehaviour
 
     [Header("# Resource")]
     string gold = "0";
-    public string Gold
+    public string PulsGold
     {
         get
         {
@@ -20,6 +20,18 @@ public class GameStatus : MonoBehaviour
         {
             gold = value;
             WorldUI_Manager.inst.CurMaterialUpdate(0, gold);
+        }
+    }
+
+    public string inputMinusGold
+    {
+        get
+        {
+            return gold;
+        }
+        set
+        {
+            gold = value;
         }
     }
 
@@ -258,19 +270,19 @@ public class GameStatus : MonoBehaviour
     public void GetGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);
-        Gold = result;
+        PulsGold = result;
     }
 
     public void TakeGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);
         WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitChanger(getValue));
-        Gold = result;
+        PulsGold = result;
     }
 
-    //public void MinusGold(string getValue)
-    //{
-    //    string result = CalCulator.inst.DigidMinus(gold, getValue);
-    //    Gold = result;
-    //}
+    public void MinusGold(string getValue)
+    {
+        string result = CalCulator.inst.DigidMinus(gold, getValue);
+        inputMinusGold = result;
+    }
 }
