@@ -197,8 +197,10 @@ public class CalCulator : MonoBehaviour
         {
             index++;
             digitLength -= 3; // 뒷자리 3개씩 지움
-            digit = digit.Substring(0, digitLength); // 지우고앞자리만 가져옴
         }
+
+        digitLength = Mathf.Min(digitLength, digit.Length);
+        digit = digit.Substring(0, digitLength); // 지우고앞자리만 가져옴
 
         // 알파벳 가져오는 부분
         if (index > 0)
@@ -226,6 +228,7 @@ public class CalCulator : MonoBehaviour
             digitLength -= 3; // 뒷자리 3개씩 지움
         }
 
+        digitLength = Mathf.Min(digitLength, digit.Length);
         digit = digit.Substring(0, digitLength);
 
         return digit;
@@ -385,8 +388,7 @@ public class CalCulator : MonoBehaviour
 
     }
 
-    BigInteger forFillAmountA = new BigInteger();
-    BigInteger forFillAmountB = new BigInteger();
+
 
     /// <summary>
     /// 체력 환산용
