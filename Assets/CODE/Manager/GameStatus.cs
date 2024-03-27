@@ -32,7 +32,6 @@ public class GameStatus : MonoBehaviour
         set
         {
             gold = value;
-            WorldUI_Manager.inst.CurMaterialUpdate(0, gold);
         }
     }
 
@@ -283,7 +282,8 @@ public class GameStatus : MonoBehaviour
 
     public void MinusGold(string getValue)
     {
-        string result = CalCulator.inst.DigidMinus(gold, getValue);
+        string result = CalCulator.inst.DigidMinus(gold, getValue, false);
+        Debug.Log($"반환값 {result} / 현재값 {gold} , {getValue}");
         inputMinusGold = result;
     }
 }

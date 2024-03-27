@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CalCulator : MonoBehaviour
@@ -72,7 +74,7 @@ public class CalCulator : MonoBehaviour
     /// <param name="a"></param>
     /// <param name="b"></param>
     /// <returns></returns>
-    public string DigidMinus(string a, string b)
+    public string DigidMinus(string a, string b, bool areYouEnemy)
     {
         sb.Clear();
         string result = string.Empty;
@@ -85,7 +87,7 @@ public class CalCulator : MonoBehaviour
         string B = tempB.PadLeft(maxLength, '0');
         int carry = 0;
 
-        if (int.Parse(A[0].ToString()) < int.Parse(B[0].ToString())) // 만약 결과가 음수로 될시 죽음처리
+        if (areYouEnemy == true && int.Parse(A[0].ToString()) - int.Parse(B[0].ToString()) < 0) // 만약 결과가 음수로 될시 죽음처리
         {
             return "Dead";
         }
@@ -106,7 +108,17 @@ public class CalCulator : MonoBehaviour
         }
 
         result = sb.ToString().TrimStart('0');
-        return result == string.Empty ? "Dead" : result; // 결과가 빈 문자열인 경우 0이니깐 "Dead"을 반환
+
+        if(result == string.Empty && areYouEnemy)
+        {
+            result = "Dead";
+        }
+        else
+        {
+            result = "0";
+        }
+
+        return result; // 결과가 빈 문자열인 경우 0이니깐 "Dead"을 반환
     }
 
 
