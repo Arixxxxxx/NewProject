@@ -11,12 +11,14 @@ public class BuffContoller : MonoBehaviour
     GameObject worldUI;
     GameObject buffParent;
 
+    
     Button[] buffBtns;
     GameObject[] buffActive;
     TMP_Text[] buffTime;
-    [SerializeField]
+    
     float[] buffTimer;
-
+    
+    ParticleSystem[] buffIconPs;
 
     private void Awake()
     {
@@ -37,14 +39,19 @@ public class BuffContoller : MonoBehaviour
         buffActive = new GameObject[buffChild];
         buffTime = new TMP_Text[buffChild];
         buffTimer = new float[buffChild];
+        buffIconPs = new ParticleSystem[buffChild];
+      
 
+     
         for (int index = 0; index < buffBtns.Length; index++)
         {
             buffBtns[index] = buffParent.transform.GetChild(index).GetComponent<Button>();
             buffActive[index] = buffBtns[index].transform.GetChild(0).gameObject;
             buffTime[index] = buffActive[index].GetComponentInChildren<TMP_Text>();
+            buffIconPs[index] = buffActive[index].GetComponentInChildren<ParticleSystem>();
         }
 
+     
         //버튼 초기화
 
         // 활성화
@@ -58,21 +65,6 @@ public class BuffContoller : MonoBehaviour
     private void Update()
     {
         BuffTimeCheck();
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            BuffManager.inst.AddBuffCoolTime(0, 1);
-
-        }
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            BuffManager.inst.AddBuffCoolTime(1, 1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            BuffManager.inst.AddBuffCoolTime(2, 1);
-        }
     }
 
     /// <summary>
@@ -87,6 +79,7 @@ public class BuffContoller : MonoBehaviour
         if (buffActive[Num].activeSelf == false)
         {
             buffActive[Num].SetActive(true);
+            BuffIconParticleReset();
         }
 
         //버프활성화되엇다고 알림 
@@ -193,5 +186,13 @@ public class BuffContoller : MonoBehaviour
 
     }
 
+    public void BuffIconParticleReset()
+    {
+        for(int index=0; index < buffIconPs.Length; index++)
+        {
+            buffIconPs[index].Stop();
+            buffIconPs[index].Play();
+        }
+    }
 
 }

@@ -21,6 +21,7 @@ public class BuffManager : MonoBehaviour
     float[] viewAdCoolTimer;
     GameObject[] btnAdActiveIMG;
     TMP_Text[] adCoolTimeText;
+    TMP_Text[] buffIconBottomTime;
 
     // 루비 선택창관련
     Button[] useRubyBtn;
@@ -29,6 +30,10 @@ public class BuffManager : MonoBehaviour
     GameObject alrimWindow;
     TMP_Text rubyValueText;
     Button[] alrimYesOrNoBtn = new Button[2];
+    // 루비 부족시 뜨는창
+    [SerializeField]
+    GameObject noHaveRubyMainWindow;
+    Button[] noHaveRubyWindowYesOrNoBtn = new Button[2];
 
     int useRutyTemp;
 
@@ -49,7 +54,7 @@ public class BuffManager : MonoBehaviour
         mainWindow = buffWindow.transform.Find("Buff_Window").gameObject;
         buffSelectUIWindow = buffWindow.transform.Find("Buff_Window/Window").gameObject;
         exitBtn = buffSelectUIWindow.transform.Find("ExitBtn").GetComponent<Button>();
-        
+
         btnCount = buffSelectUIWindow.transform.Find("Buff_Layout").childCount;
         viewAdBtn = new Button[btnCount];
         viewAdCoolTimer = new float[btnCount];
@@ -57,6 +62,7 @@ public class BuffManager : MonoBehaviour
         useRubyBtn = new Button[btnCount];
         adCoolTimeText = new TMP_Text[btnCount];
         rubyPrice = new TMP_Text[btnCount];
+        buffIconBottomTime = new TMP_Text[btnCount];
 
         //물어보는창 
         alrimWindow = buffWindow.transform.Find("Buff_Window/Alrim_Window").gameObject;
@@ -64,22 +70,31 @@ public class BuffManager : MonoBehaviour
         alrimYesOrNoBtn[0] = alrimWindow.transform.Find("Title/NoBtn").GetComponent<Button>();
         alrimYesOrNoBtn[1] = alrimWindow.transform.Find("Title/YesBtn").GetComponent<Button>();
 
+        // 루비없어 창
+        noHaveRubyMainWindow = mainWindow.transform.Find("NoHaveRuby").gameObject;
+        noHaveRubyWindowYesOrNoBtn[0] = noHaveRubyMainWindow.transform.Find("Title/NoBtn").GetComponent<Button>();
+        noHaveRubyWindowYesOrNoBtn[1] = noHaveRubyMainWindow.transform.Find("Title/YesBtn").GetComponent<Button>();
+
         //ATK 초기화
         viewAdBtn[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD").GetComponent<Button>();
         btnAdActiveIMG[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD/AD").gameObject;
         adCoolTimeText[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
-        
-        viewAdBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD").GetComponent<Button>();
-        btnAdActiveIMG[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD/AD").gameObject;
-        adCoolTimeText[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
+        buffIconBottomTime[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/Space/ReturnItem_Text").GetComponent<TMP_Text>();
 
-        viewAdBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD").GetComponent<Button>();
-        btnAdActiveIMG[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD/AD").gameObject;
-        adCoolTimeText[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
+        viewAdBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD").GetComponent<Button>();
+        btnAdActiveIMG[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD/AD").gameObject;
+        adCoolTimeText[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
+        buffIconBottomTime[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/Space/ReturnItem_Text").GetComponent<TMP_Text>();
+
+        viewAdBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD").GetComponent<Button>();
+        btnAdActiveIMG[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD/AD").gameObject;
+        adCoolTimeText[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
+        buffIconBottomTime[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/Space/ReturnItem_Text").GetComponent<TMP_Text>();
 
         useRubyBtn[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_Ruby").GetComponent<Button>();
-        useRubyBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_Ruby").GetComponent<Button>();
-        useRubyBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_Ruby").GetComponent<Button>();
+        useRubyBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_Ruby").GetComponent<Button>();
+        useRubyBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_Ruby").GetComponent<Button>();
+        
     }
 
     private void Start()
@@ -88,7 +103,7 @@ public class BuffManager : MonoBehaviour
         useRubyBtn[0].transform.Find("AD/Text").GetComponent<TMP_Text>().text = RubyPrice.inst.Get_buffRubyPrice(0).ToString();
         useRubyBtn[1].transform.Find("AD/Text").GetComponent<TMP_Text>().text = RubyPrice.inst.Get_buffRubyPrice(1).ToString();
         useRubyBtn[2].transform.Find("AD/Text").GetComponent<TMP_Text>().text = RubyPrice.inst.Get_buffRubyPrice(2).ToString();
-        
+
         BtnInIt();
     }
     private void Update()
@@ -99,54 +114,69 @@ public class BuffManager : MonoBehaviour
     {
         exitBtn.onClick.AddListener(() => { WorldUI_Manager.inst.buffSelectUIWindowAcitve(false); });
 
-        viewAdBtn[0].onClick.AddListener(() => WorldUI_Manager.inst.SampleAD("buff",0));;
+        viewAdBtn[0].onClick.AddListener(() => WorldUI_Manager.inst.SampleAD("buff", 0)); ;
         viewAdBtn[1].onClick.AddListener(() => WorldUI_Manager.inst.SampleAD("buff", 1));
         viewAdBtn[2].onClick.AddListener(() => WorldUI_Manager.inst.SampleAD("buff", 2));
 
 
         // 루비로 구매버튼 => 정말 구매하시껍니까 창으로 연결
-        useRubyBtn[0].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(true,0) ); 
-        useRubyBtn[1].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(true,1) ); 
-        useRubyBtn[2].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(true,2) );
+        useRubyBtn[0].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(0));
+        useRubyBtn[1].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(1));
+        useRubyBtn[2].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(2));
 
-        alrimYesOrNoBtn[0].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(false,0));
+        alrimYesOrNoBtn[0].onClick.AddListener(() => alrimWindow.SetActive(false));
+
+        //루비로 구매하지만 부족 창버튼
+        noHaveRubyWindowYesOrNoBtn[0].onClick.AddListener(() => noHaveRubyMainWindow.SetActive(false)); // No 버튼
+        noHaveRubyWindowYesOrNoBtn[1].onClick.AddListener(() =>  // Yes버튼
+        {
+            noHaveRubyMainWindow.SetActive(false);
+            mainWindow.SetActive(false);
+            //상점창으로 이동~~
+        });
+
     }
 
-    
+
     /// <summary>
     /// 정말 구매하실껀지 물어보는창 초기화 및 yes버튼 초기화
     /// </summary>
     /// <param name="value"></param>
     /// <param name="indexNum"></param>
-    private void Set_ReallyBuyBuffWindow_Active(bool value, int indexNum)
+    private void Set_ReallyBuyBuffWindow_Active(int indexNum)
     {
-        if (value)
-        {
-            // 네 창에 재화 계산되는양 계산 초기화
-            int curRuby = GameStatus.inst.Ruby; //현재 소지 루비
-            useRutyTemp = RubyPrice.inst.Get_buffRubyPrice(indexNum); // 사용할 루비
-            int leftPrice = curRuby - useRutyTemp; // 잔액
 
+        // 네 창에 재화 계산되는양 계산 초기화
+        int curRuby = GameStatus.inst.Ruby; //현재 소지 루비
+        useRutyTemp = RubyPrice.inst.Get_buffRubyPrice(indexNum); // 사용할 루비
+        int leftPrice = curRuby - useRutyTemp; // 잔액
+
+        if (curRuby >= useRutyTemp) //가진 루비가 적을경우
+        {
             rubyValueText.text = $"{curRuby}\n-{useRutyTemp}\n\n{leftPrice}";
 
             //네 버튼 여기서 초기화
             alrimYesOrNoBtn[1].onClick.RemoveAllListeners();
+
             alrimYesOrNoBtn[1].onClick.AddListener(() =>
             {
                 GameStatus.inst.Ruby -= useRutyTemp;  //루비차감
                 useRutyTemp = 0;
-                
-                BuffContoller.inst.ActiveBuff(indexNum,30); // 버프주기
-                
+
+                BuffContoller.inst.ActiveBuff(indexNum, 30); // 버프주기
+
                 alrimWindow.SetActive(false); //창닫기
                 mainWindow.SetActive(false);
 
                 WorldUI_Manager.inst.Set_TextAlrim(MakeAlrimMSG(indexNum, 30)); // 알림바 넣어주기
             });
+
+            alrimWindow.SetActive(true);
         }
-
-        alrimWindow.SetActive(value);
-
+        else if (curRuby < useRutyTemp) //가진 루비가 적을경우
+        {
+            noHaveRubyMainWindow.SetActive(true);
+        }
     }
 
     public void viewAdCoolTime(int buffIndexNum)
@@ -164,17 +194,19 @@ public class BuffManager : MonoBehaviour
                 viewAdBtn[0].interactable = false;
                 btnAdActiveIMG[0].gameObject.SetActive(false);
                 adCoolTimeText[0].gameObject.SetActive(true);
+                buffIconBottomTime[0].gameObject.SetActive(true);
             }
 
             viewAdCoolTimer[0] -= Time.deltaTime;
-            int hour = (int)viewAdCoolTimer[0] / 60;
-            int min = (int)viewAdCoolTimer[0] % 60;
-            adCoolTimeText[0].text = $"{hour} : {min}";
+            int min = (int)viewAdCoolTimer[0] / 60;
+            int sec = (int)viewAdCoolTimer[0] % 60;
+            adCoolTimeText[0].text = $"{min} : {sec}";
+            buffIconBottomTime[0].text = $"남은 시간: {min}분 {sec}초";
         }
 
-        else if(viewAdCoolTimer[0] <= 0)
+        else if (viewAdCoolTimer[0] <= 0)
         {
-            if(viewAdCoolTimer[0] != 0)
+            if (viewAdCoolTimer[0] != 0)
             {
                 viewAdCoolTimer[0] = 0;
             }
@@ -183,6 +215,7 @@ public class BuffManager : MonoBehaviour
                 viewAdBtn[0].interactable = true;
                 btnAdActiveIMG[0].gameObject.SetActive(true);
                 adCoolTimeText[0].gameObject.SetActive(false);
+                buffIconBottomTime[0].gameObject.SetActive(false);
             }
         }
 
@@ -195,12 +228,14 @@ public class BuffManager : MonoBehaviour
                 viewAdBtn[1].interactable = false;
                 btnAdActiveIMG[1].gameObject.SetActive(false);
                 adCoolTimeText[1].gameObject.SetActive(true);
+                buffIconBottomTime[1].gameObject.SetActive (true);
             }
 
             viewAdCoolTimer[1] -= Time.deltaTime;
-            int hour = (int)viewAdCoolTimer[1] / 60;
-            int min = (int)viewAdCoolTimer[1] % 60;
-            adCoolTimeText[1].text = $"{hour} : {min}";
+            int min = (int)viewAdCoolTimer[1] / 60;
+            int sec = (int)viewAdCoolTimer[1] % 60;
+            adCoolTimeText[1].text = $"{min} : {sec}";
+            buffIconBottomTime[1].text = $"남은 시간: {min}분 {sec}초";
         }
 
         else if (viewAdCoolTimer[1] <= 0)
@@ -214,6 +249,7 @@ public class BuffManager : MonoBehaviour
                 viewAdBtn[1].interactable = true;
                 btnAdActiveIMG[1].gameObject.SetActive(true);
                 adCoolTimeText[1].gameObject.SetActive(false);
+                buffIconBottomTime[1].gameObject.SetActive(false);
             }
         }
 
@@ -225,12 +261,14 @@ public class BuffManager : MonoBehaviour
                 viewAdBtn[2].interactable = false;
                 btnAdActiveIMG[2].gameObject.SetActive(false);
                 adCoolTimeText[2].gameObject.SetActive(true);
+                buffIconBottomTime[2].gameObject.SetActive(true);
             }
 
             viewAdCoolTimer[2] -= Time.deltaTime;
-            int hour = (int)viewAdCoolTimer[2] / 60;
-            int min = (int)viewAdCoolTimer[2] % 60;
-            adCoolTimeText[2].text = $"{hour} : {min}";
+            int min = (int)viewAdCoolTimer[2] / 60;
+            int sec = (int)viewAdCoolTimer[2] % 60;
+            adCoolTimeText[2].text = $"{min} : {sec}";
+            buffIconBottomTime[2].text = $"남은 시간: {min}분 {sec}초";
         }
 
         else if (viewAdCoolTimer[2] <= 0)
@@ -244,10 +282,11 @@ public class BuffManager : MonoBehaviour
                 viewAdBtn[2].interactable = true;
                 btnAdActiveIMG[2].gameObject.SetActive(true);
                 adCoolTimeText[2].gameObject.SetActive(false);
+                buffIconBottomTime[2].gameObject.SetActive(false);
             }
         }
 
-    }  
+    }
 
     /// <summary>
     /// 광고 쿨타임에 시간넣기
@@ -255,23 +294,23 @@ public class BuffManager : MonoBehaviour
     /// <param name="index">버프 인덱스 번호</param>
     /// <param name="Time">시간(분)</param>
     public void AddBuffCoolTime(int index, int Time) => viewAdCoolTimer[index] = Time * 60;
-    
-    public string MakeAlrimMSG(int indexNum , int Time)
+
+    public string MakeAlrimMSG(int indexNum, int Time)
     {
-        
+
         switch (indexNum)
         {
             case 0:
-               return $"공격력 버프가 {Time}분 활성화 되었습니다.";
-               
+                return $"공격력 버프가 {Time}분 활성화 되었습니다.";
+
 
             case 1:
                 return $"골드획득 버프가 {Time}분 활성화 되었습니다.";
-                
+
 
             case 2:
                 return $"이동속도 버프가 {Time}분 활성화 되었습니다.";
-     
+
         }
 
         return null;

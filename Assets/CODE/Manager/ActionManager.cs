@@ -179,6 +179,11 @@ public class ActionManager : MonoBehaviour
         {
        
         }
+        
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            GameStatus.inst.Ruby += 100;
+        }
     }
 
 
@@ -221,12 +226,14 @@ public class ActionManager : MonoBehaviour
         }
 
         // 배경 움직임
-        matVec.x += Time.deltaTime * backGroundSpeed;
+        matVec.x += (Time.deltaTime * backGroundSpeed) * GameStatus.inst.BuffAddSpeed;
         matVec.x = Mathf.Repeat(matVec.x, 1);
         mat.mainTextureOffset = matVec;
 
     }
 
+    
+    
     private void EnemyMove()
     {
         //에너미 스폰 및 대기장소까지 전진
@@ -234,7 +241,7 @@ public class ActionManager : MonoBehaviour
 
         if (checkPosition > 0.85f) // 거리값 체크 2이상 이동
         {
-            enemyPosX += Time.deltaTime * enemySpawnSpeed;
+            enemyPosX += (Time.deltaTime * enemySpawnSpeed) * GameStatus.inst.BuffAddSpeed;
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
@@ -284,8 +291,8 @@ public class ActionManager : MonoBehaviour
         enemyAnim.SetTrigger("Hit");
         PlayerInit();
         //기본 대미지 계산
-        string DMG = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
-        
+        string firstDmg = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
+        string DMG = CalCulator.inst.DigidPlus(firstDmg, GameStatus.inst.BuffAddATK);
 
         if (index == 0) // 플레이어일시
         {
@@ -664,10 +671,13 @@ public class ActionManager : MonoBehaviour
     
 
     // 몬스터 죽고 골드 상승
-    public string Get_EnemyDeadGold() => Mathf.Ceil(Mathf.Pow(1.5f, GameStatus.inst.AccumlateFloor)).ToString();
+    public string Get_EnemyDeadGold() => CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.GetTotalGold(), 3);
     
     // 플레이어 하이라키 오브젝트 리턴
     public GameObject ReturnPlayerObjInHierachy () => playerAnim.gameObject;
     public GameObject ReturnEnemyObjInHierachy () => enemyObj;
+
+    // 플레이어 움직임 속도변경
+    public void SetPlayerMoveSpeed() => playerAnim.SetFloat("MoveSpeed", GameStatus.inst.BuffAddSpeed);
 
 }
