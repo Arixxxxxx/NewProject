@@ -13,7 +13,7 @@ public class CalCulator : MonoBehaviour
     public static CalCulator inst;
     StringBuilder sb = new StringBuilder();
     BigInteger forCalculatorA = new BigInteger();
-    BigInteger forCalculatorB = new BigInteger();
+    
     private void Awake()
     {
         if(inst == null)

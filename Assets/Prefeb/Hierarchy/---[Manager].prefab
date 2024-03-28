@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3741891026980833702}
   - component: {fileID: 2844958066360400491}
   - component: {fileID: 8818511281849614642}
+  - component: {fileID: 767588577821127078}
   m_Layer: 0
   m_Name: WorldUI_Manager
   m_TagString: Untagged
@@ -89,6 +90,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36256dd22e9d6164386184ce310ff7d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &767588577821127078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301478751794470908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2e0e61dee5649c498f97e35775978f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buffTimer: []
 --- !u!1 &4073252676762207242
 GameObject:
   m_ObjectHideFlags: 0
@@ -100,6 +114,7 @@ GameObject:
   - component: {fileID: 8894089758388781017}
   - component: {fileID: 2988553473284758269}
   - component: {fileID: 5565797874132208868}
+  - component: {fileID: 7855258429462042929}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -151,6 +166,19 @@ MonoBehaviour:
   bossKill: 0
   getGold: 0
   rebirthCount: 0
+--- !u!114 &7855258429462042929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4073252676762207242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e72991ee436f84a95c1ef855f693ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buffRubyPrice: 6400000064000000fa000000
 --- !u!1 &4258258913248396868
 GameObject:
   m_ObjectHideFlags: 0

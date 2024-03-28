@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,19 +10,31 @@ public class BuffManager : MonoBehaviour
 {
     public static BuffManager inst;
 
-    GameObject worldUI;
-    GameObject buffParent;
-    
-    Button[] buffBtns;
-    GameObject[] buffActive;
-    TMP_Text[] buffTime;
-    [SerializeField]
-    float[] buffTimer;
-    
+    GameObject mainWindow;
+    GameObject buffWindow;
+    GameObject buffSelectUIWindow;
+
+    Button exitBtn;
+    int btnCount;
+    Button[] viewAdBtn;
+    // AD 쿨타임관련
+    float[] viewAdCoolTimer;
+    GameObject[] btnAdActiveIMG;
+    TMP_Text[] adCoolTimeText;
+
+    // 루비 선택창관련
+    Button[] useRubyBtn;
+    TMP_Text[] rubyPrice;
+    //정말 살껀지 물어보는창
+    GameObject alrimWindow;
+    TMP_Text rubyValueText;
+    Button[] alrimYesOrNoBtn = new Button[2];
+
+    int useRutyTemp;
 
     private void Awake()
     {
-        if(inst == null)
+        if (inst == null)
         {
             inst = this;
         }
@@ -30,168 +43,238 @@ public class BuffManager : MonoBehaviour
             Destroy(inst);
         }
 
-        worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
-        buffParent = worldUI.transform.Find("StageUI/Buff").gameObject;
+        buffWindow = GameObject.Find("---[FrontUICanvas]").gameObject;
+
+        //기본 버프선택창
+        mainWindow = buffWindow.transform.Find("Buff_Window").gameObject;
+        buffSelectUIWindow = buffWindow.transform.Find("Buff_Window/Window").gameObject;
+        exitBtn = buffSelectUIWindow.transform.Find("ExitBtn").GetComponent<Button>();
         
-        int buffChild = buffParent.transform.childCount;
-        buffBtns = new Button[buffChild];
-        buffActive = new GameObject[buffChild];
-        buffTime = new TMP_Text[buffChild];
-        buffTimer = new float[buffChild];
+        btnCount = buffSelectUIWindow.transform.Find("Buff_Layout").childCount;
+        viewAdBtn = new Button[btnCount];
+        viewAdCoolTimer = new float[btnCount];
+        btnAdActiveIMG = new GameObject[btnCount];
+        useRubyBtn = new Button[btnCount];
+        adCoolTimeText = new TMP_Text[btnCount];
+        rubyPrice = new TMP_Text[btnCount];
 
-        for (int index=0; index<buffBtns.Length; index++)
-        {
-            buffBtns[index] = buffParent.transform.GetChild(index).GetComponent<Button>();
-            buffActive[index] = buffBtns[index].transform.GetChild(0).gameObject;
-            buffTime[index] = buffActive[index].GetComponentInChildren<TMP_Text>();
-        }
+        //물어보는창 
+        alrimWindow = buffWindow.transform.Find("Buff_Window/Alrim_Window").gameObject;
+        rubyValueText = alrimWindow.transform.Find("Title/RubyValue_Text").GetComponent<TMP_Text>();
+        alrimYesOrNoBtn[0] = alrimWindow.transform.Find("Title/NoBtn").GetComponent<Button>();
+        alrimYesOrNoBtn[1] = alrimWindow.transform.Find("Title/YesBtn").GetComponent<Button>();
 
-        //버튼 초기화
+        //ATK 초기화
+        viewAdBtn[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD").GetComponent<Button>();
+        btnAdActiveIMG[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD/AD").gameObject;
+        adCoolTimeText[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
+        
+        viewAdBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD").GetComponent<Button>();
+        btnAdActiveIMG[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD/AD").gameObject;
+        adCoolTimeText[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
 
-        // 활성화
+        viewAdBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD").GetComponent<Button>();
+        btnAdActiveIMG[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD/AD").gameObject;
+        adCoolTimeText[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD/Left_Time").GetComponent<TMP_Text>();
+
+        useRubyBtn[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_Ruby").GetComponent<Button>();
+        useRubyBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_Ruby").GetComponent<Button>();
+        useRubyBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_Ruby").GetComponent<Button>();
     }
+
     private void Start()
     {
+        // UII 루비 가격Text 초기화
+        useRubyBtn[0].transform.Find("AD/Text").GetComponent<TMP_Text>().text = RubyPrice.inst.Get_buffRubyPrice(0).ToString();
+        useRubyBtn[1].transform.Find("AD/Text").GetComponent<TMP_Text>().text = RubyPrice.inst.Get_buffRubyPrice(1).ToString();
+        useRubyBtn[2].transform.Find("AD/Text").GetComponent<TMP_Text>().text = RubyPrice.inst.Get_buffRubyPrice(2).ToString();
         
+        BtnInIt();
     }
-
-
     private void Update()
     {
-        BuffTimeCheck();
+        CheakCoomTime();
+    }
+    private void BtnInIt()
+    {
+        exitBtn.onClick.AddListener(() => { WorldUI_Manager.inst.buffSelectUIWindowAcitve(false); });
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ActiveBuff(0, 60);
-        }
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            ActiveBuff(1, 60);
-        }
+        viewAdBtn[0].onClick.AddListener(() => WorldUI_Manager.inst.SampleAD("buff",0));;
+        viewAdBtn[1].onClick.AddListener(() => WorldUI_Manager.inst.SampleAD("buff", 1));
+        viewAdBtn[2].onClick.AddListener(() => WorldUI_Manager.inst.SampleAD("buff", 2));
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            ActiveBuff(2, 60);
-        }
+
+        // 루비로 구매버튼 => 정말 구매하시껍니까 창으로 연결
+        useRubyBtn[0].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(true,0) ); 
+        useRubyBtn[1].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(true,1) ); 
+        useRubyBtn[2].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(true,2) );
+
+        alrimYesOrNoBtn[0].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(false,0));
     }
 
+    
     /// <summary>
-    /// 버프 활성화 함수 => 매개변수 ( 버프인덱스번호 , 시간(초))
+    /// 정말 구매하실껀지 물어보는창 초기화 및 yes버튼 초기화
     /// </summary>
-    /// <param name="Num">인덱스번호</param>
-    /// <param name="Time">시간(초)</param>
-    public void ActiveBuff(int Num, float Time)
+    /// <param name="value"></param>
+    /// <param name="indexNum"></param>
+    private void Set_ReallyBuyBuffWindow_Active(bool value, int indexNum)
     {
-        buffTimer[Num] += Time;
-
-        if(buffActive[Num].activeSelf == false)
+        if (value)
         {
-            buffActive[Num].SetActive(true);
+            // 네 창에 재화 계산되는양 계산 초기화
+            int curRuby = GameStatus.inst.Ruby; //현재 소지 루비
+            useRutyTemp = RubyPrice.inst.Get_buffRubyPrice(indexNum); // 사용할 루비
+            int leftPrice = curRuby - useRutyTemp; // 잔액
+
+            rubyValueText.text = $"{curRuby}\n-{useRutyTemp}\n\n{leftPrice}";
+
+            //네 버튼 여기서 초기화
+            alrimYesOrNoBtn[1].onClick.RemoveAllListeners();
+            alrimYesOrNoBtn[1].onClick.AddListener(() =>
+            {
+                GameStatus.inst.Ruby -= useRutyTemp;  //루비차감
+                useRutyTemp = 0;
+                
+                BuffContoller.inst.ActiveBuff(indexNum,30); // 버프주기
+                
+                alrimWindow.SetActive(false); //창닫기
+                mainWindow.SetActive(false);
+
+                WorldUI_Manager.inst.Set_TextAlrim(MakeAlrimMSG(indexNum, 30)); // 알림바 넣어주기
+            });
         }
+
+        alrimWindow.SetActive(value);
+
+    }
+
+    public void viewAdCoolTime(int buffIndexNum)
+    {
+        viewAdCoolTimer[buffIndexNum] += 15 * 60;
+    }
+
+    public void CheakCoomTime()
+    {
+        // 버프 1번 추적
+        if (viewAdCoolTimer[0] > 0)
+        {
+            if (btnAdActiveIMG[0].gameObject.activeSelf == true && adCoolTimeText[0].gameObject.activeSelf == false)
+            {
+                viewAdBtn[0].interactable = false;
+                btnAdActiveIMG[0].gameObject.SetActive(false);
+                adCoolTimeText[0].gameObject.SetActive(true);
+            }
+
+            viewAdCoolTimer[0] -= Time.deltaTime;
+            int hour = (int)viewAdCoolTimer[0] / 60;
+            int min = (int)viewAdCoolTimer[0] % 60;
+            adCoolTimeText[0].text = $"{hour} : {min}";
+        }
+
+        else if(viewAdCoolTimer[0] <= 0)
+        {
+            if(viewAdCoolTimer[0] != 0)
+            {
+                viewAdCoolTimer[0] = 0;
+            }
+            if (btnAdActiveIMG[0].gameObject.activeSelf == false && adCoolTimeText[0].gameObject.activeSelf == true)
+            {
+                viewAdBtn[0].interactable = true;
+                btnAdActiveIMG[0].gameObject.SetActive(true);
+                adCoolTimeText[0].gameObject.SetActive(false);
+            }
+        }
+
+
+        //버프 2번 추적
+        if (viewAdCoolTimer[1] > 0)
+        {
+            if (btnAdActiveIMG[1].gameObject.activeSelf == true && adCoolTimeText[1].gameObject.activeSelf == false)
+            {
+                viewAdBtn[1].interactable = false;
+                btnAdActiveIMG[1].gameObject.SetActive(false);
+                adCoolTimeText[1].gameObject.SetActive(true);
+            }
+
+            viewAdCoolTimer[1] -= Time.deltaTime;
+            int hour = (int)viewAdCoolTimer[1] / 60;
+            int min = (int)viewAdCoolTimer[1] % 60;
+            adCoolTimeText[1].text = $"{hour} : {min}";
+        }
+
+        else if (viewAdCoolTimer[1] <= 0)
+        {
+            if (viewAdCoolTimer[1] != 0)
+            {
+                viewAdCoolTimer[1] = 0;
+            }
+            if (btnAdActiveIMG[1].gameObject.activeSelf == false && adCoolTimeText[1].gameObject.activeSelf == true)
+            {
+                viewAdBtn[1].interactable = true;
+                btnAdActiveIMG[1].gameObject.SetActive(true);
+                adCoolTimeText[1].gameObject.SetActive(false);
+            }
+        }
+
+        // 버프 3번 추적
+        if (viewAdCoolTimer[2] > 0)
+        {
+            if (btnAdActiveIMG[2].gameObject.activeSelf == true && adCoolTimeText[2].gameObject.activeSelf == false)
+            {
+                viewAdBtn[2].interactable = false;
+                btnAdActiveIMG[2].gameObject.SetActive(false);
+                adCoolTimeText[2].gameObject.SetActive(true);
+            }
+
+            viewAdCoolTimer[2] -= Time.deltaTime;
+            int hour = (int)viewAdCoolTimer[2] / 60;
+            int min = (int)viewAdCoolTimer[2] % 60;
+            adCoolTimeText[2].text = $"{hour} : {min}";
+        }
+
+        else if (viewAdCoolTimer[2] <= 0)
+        {
+            if (viewAdCoolTimer[2] != 0)
+            {
+                viewAdCoolTimer[2] = 0;
+            }
+            if (btnAdActiveIMG[2].gameObject.activeSelf == false && adCoolTimeText[2].gameObject.activeSelf == true)
+            {
+                viewAdBtn[2].interactable = true;
+                btnAdActiveIMG[2].gameObject.SetActive(true);
+                adCoolTimeText[2].gameObject.SetActive(false);
+            }
+        }
+
+    }  
+
+    /// <summary>
+    /// 광고 쿨타임에 시간넣기
+    /// </summary>
+    /// <param name="index">버프 인덱스 번호</param>
+    /// <param name="Time">시간(분)</param>
+    public void AddBuffCoolTime(int index, int Time) => viewAdCoolTimer[index] = Time * 60;
+    
+    public string MakeAlrimMSG(int indexNum , int Time)
+    {
         
-    }
-
-
-    /// <summary>
-    /// 버프 실행기
-    /// </summary>
-    private void BuffTimeCheck()
-    {
-        // 버프 1번
-        if(buffTimer[0] <= 0 && buffActive[0].activeSelf)
+        switch (indexNum)
         {
-            buffTimer[0] = 0;
-            buffActive[0].gameObject.SetActive(false);
-        }
-        else if (buffTimer[0] > 0 && buffActive[0].activeSelf)
-        {
-            buffTimer[0] -= Time.deltaTime;
-            
-            int timeValue = 0;
-            string  stringValue = string.Empty;
+            case 0:
+               return $"공격력 버프가 {Time}분 활성화 되었습니다.";
+               
 
-            if (buffTimer[0] > 3600)
-            {
-                timeValue = (int)buffTimer[0] / 3600;
-                stringValue = "H";
-            }
-            else if (buffTimer[0] > 60 && buffTimer[0] < 3600) 
-            {
-                timeValue = (int)buffTimer[0] / 60;
-                stringValue = "M";
-            }
-            else if(buffTimer[0] > 0 && buffTimer[0] < 60)
-            {
-                timeValue = (int)buffTimer[0];
-                stringValue = "S";
-            }
-            buffTime[0].text = timeValue.ToString() + stringValue;
-        }
+            case 1:
+                return $"골드획득 버프가 {Time}분 활성화 되었습니다.";
+                
 
-        // 버프 2번
-        if (buffTimer[1] <= 0 && buffActive[1].activeSelf)
-        {
-            buffTimer[1] = 0;
-            buffActive[1].gameObject.SetActive(false);
-        }
-        else if (buffTimer[1] > 0 && buffActive[1].activeSelf)
-        {
-            buffTimer[1] -= Time.deltaTime;
-
-            int timeValue = 0;
-            string stringValue = string.Empty;
-
-            if (buffTimer[1] > 3600)
-            {
-                timeValue = (int)buffTimer[1] / 3600;
-                stringValue = "H";
-            }
-            else if (buffTimer[1] > 60 && buffTimer[1] < 3600)
-            {
-                timeValue = (int)buffTimer[1] / 60;
-                stringValue = "M";
-            }
-            else if (buffTimer[1] > 0 && buffTimer[1] < 60)
-            {
-                timeValue = (int)buffTimer[1];
-                stringValue = "S";
-            }
-            buffTime[1].text = timeValue.ToString() + stringValue;
-        }
-
-        // 버프 3번
-        if (buffTimer[2] <= 0 && buffActive[2].activeSelf)
-        {
-            buffTimer[2] = 0;
-            buffActive[2].gameObject.SetActive(false);
-        }
-        else if (buffTimer[2] > 0 && buffActive[2].activeSelf)
-        {
-            buffTimer[2] -= Time.deltaTime;
-
-            int timeValue = 0;
-            string stringValue = string.Empty;
-
-            if (buffTimer[2] > 3600)
-            {
-                timeValue = (int)buffTimer[2] / 3600;
-                stringValue = "H";
-            }
-            else if (buffTimer[2] > 60 && buffTimer[2] < 3600)
-            {
-                timeValue = (int)buffTimer[2] / 60;
-                stringValue = "M";
-            }
-            else if (buffTimer[2] > 0 && buffTimer[2] < 60)
-            {
-                timeValue = (int)buffTimer[2];
-                stringValue = "S";
-            }
-            buffTime[2].text = timeValue.ToString() + stringValue;
-        }
-
-    }
-
- 
+            case 2:
+                return $"이동속도 버프가 {Time}분 활성화 되었습니다.";
      
+        }
+
+        return null;
+    }
 }
+

@@ -64,8 +64,8 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    string ruby = "0";
-    public string Ruby
+    int ruby = 1000;
+    public int Ruby
     {
         get
         {
@@ -75,7 +75,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             ruby = value;
-            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby);
+            WorldUI_Manager.inst.CurMaterialUpdate(0, ruby.ToString());
         }
     }
 
