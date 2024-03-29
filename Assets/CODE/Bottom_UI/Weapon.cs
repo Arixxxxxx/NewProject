@@ -7,9 +7,9 @@ using TMPro;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] int Number;//퀘스트 단계
-    [SerializeField] int Lv;//퀘스트 업그레이드 레벨
-    [SerializeField] float atkGrowthRate;//공격력 성장률
+    [SerializeField] int Number;//무기 단계
+    [SerializeField] int Lv;//무기 업그레이드 레벨
+    [SerializeField] float costGrowthRate;//비용 성장률
     [SerializeField] float atkpowNumRate;//초기공격력지수
     [SerializeField] int WeaponNum; //무기 이미지번호
 
@@ -62,7 +62,7 @@ public class Weapon : MonoBehaviour
             Atk = BigInteger.Multiply(resultPowNum, Lv);
             clickWeaponImage();
         }
-        baseCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(atkGrowthRate, Lv), 1.67f);
+        baseCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f);
         setNextCost();
         setText();
     }
@@ -83,6 +83,7 @@ public class Weapon : MonoBehaviour
             Lv++;
             Atk = BigInteger.Multiply(resultPowNum, Lv);
             GameStatus.inst.MinusGold(nextCost.ToString());
+            UIManager.Instance.SetTopWeaponNum(Lv);
             clickWeaponImage();
             setNextCost();
             setText();
@@ -99,7 +100,12 @@ public class Weapon : MonoBehaviour
 
     private void setNextCost()
     {
-        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(atkGrowthRate, Lv), 1.67f) * resultPowNum;
+        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f) * resultPowNum;
+    }
+
+    public BigInteger GetNextCost()
+    {
+        return nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f) * resultPowNum;
     }
 
     public void clickWeaponImage()

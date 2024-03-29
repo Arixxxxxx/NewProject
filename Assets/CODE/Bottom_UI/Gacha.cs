@@ -20,7 +20,6 @@ public class Gacha : MonoBehaviour
         [SerializeField] float minPercentage;
         [Header("확률범위 최대값")]
         [SerializeField] float maxPercentage;
-        [Header("랭크 번호")]
 
         [SerializeField] GameObject[] aryObj;
         public GameObject[] AryObj

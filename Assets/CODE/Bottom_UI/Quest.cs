@@ -66,18 +66,18 @@ public class Quest : MonoBehaviour
     private void setText()
     {
         priceText.text = "가격 : " + CalCulator.inst.StringFourDigitChanger(nextCost.ToString());
-        upGoldText.text = "+" + CalCulator.inst.StringFourDigitChanger($"{initialProd * (Lv + UIManager.Instance.BuyCount) - initialProd * (Lv)}");
+        upGoldText.text = "+" + CalCulator.inst.StringFourDigitChanger($"{initialProd * (Lv + UIManager.Instance.QuestBuyCount) - initialProd * (Lv)}");
         LvText.text = "Lv : " + CalCulator.inst.StringFourDigitChanger(Lv.ToString());
         totalGoldText.text = "Gps : " + CalCulator.inst.StringFourDigitChanger($"{totalProd}");
     }
 
     public void ClickBuy()
     {
-        
+
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
         if (haveGold >= nextCost)
         {
-            Lv += UIManager.Instance.BuyCount;
+            Lv += UIManager.Instance.QuestBuyCount;
             if (Lv >= 25 * LvCur)
             {
                 LvCur *= 2;
@@ -95,7 +95,7 @@ public class Quest : MonoBehaviour
 
     private void setNextCost()
     {
-        int buycount = UIManager.Instance.BuyCount;
+        int buycount = UIManager.Instance.QuestBuyCount;
         if (buycount != 0)//max가 아닐때
         {
             nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buycount) - 1) / (growthRate - 1)));
@@ -109,7 +109,10 @@ public class Quest : MonoBehaviour
 
     private void _OnCountChanged()
     {
-        setNextCost();
-        setText();
+        if (UIManager.Instance.QuestBuyCount != 0)
+        {
+            setNextCost();
+            setText();
+        }
     }
 }

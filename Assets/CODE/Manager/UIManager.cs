@@ -13,22 +13,30 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] List<GameObject> m_listMainUI = new List<GameObject>();
     [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();
-
-    [SerializeField] private int buyCount = 1;
-
-    [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>();
     [SerializeField] List<Image> m_list_BottomBtn = new List<Image>();
+    int bottomBtnNum = 0;//선택한 하단 버튼 번호
 
-    [SerializeField] LinkedList<Transform> m_list_Weapon = new LinkedList<Transform>();
-    [SerializeField] Transform m_WeaponParents;
-
-    [SerializeField] TextMeshProUGUI m_totalAtk;
+    [Header("퀘스트")]
+    [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>();
     [SerializeField] TextMeshProUGUI m_totalGold;
+    int questBuyCountBtnNum = 0;//선택한 퀘스트 한번에 구매 버튼 번호
+    [SerializeField] private int questBuyCount = 1;//퀘스트 구매하려는 갯수
+    public int QuestBuyCount
+    {
+        get => questBuyCount;
+        set
+        {
+            questBuyCount = value;
+            OnBuyCountChanged?.Invoke();
+        }
+    }
 
-    int questBuyCountBtnNum = 0;
-    int bottomBtnNum = 0;
-    int equipWeaponNum;
-
+    [Header("무기")]
+    [SerializeField] List<Transform> m_list_Weapon = new List<Transform>();
+    [SerializeField] Transform m_WeaponParents;
+    [SerializeField] TextMeshProUGUI m_totalAtk;
+    int haveWeaponLv;//보유중인 무기중 제일 최상위 무기 번호
+    int equipWeaponNum;//장착중인 무기 이미지 번호
     public int EquipWeaponNum
     {
         get => equipWeaponNum;
@@ -38,8 +46,12 @@ public class UIManager : MonoBehaviour
             ActionManager.inst.Set_WeaponSprite_Changer(value);
         }
     }
+    public void SetTopWeaponNum(int _num)
+    {
+        haveWeaponLv = _num;
+    }
 
-    BigInteger totalProdGold;
+    BigInteger totalProdGold = 10;
     public BigInteger TotalProdGold
     {
         get => totalProdGold;
@@ -49,11 +61,11 @@ public class UIManager : MonoBehaviour
             m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
         }
     }
-
     public string GetTotalGold()
     {
         return TotalProdGold.ToString();
     }
+
     BigInteger totalAtk = 5;
     public BigInteger TotalAtk
     {
@@ -64,16 +76,6 @@ public class UIManager : MonoBehaviour
             m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
         }
     }
-    public int BuyCount
-    {
-        get => buyCount;
-        set
-        {
-            buyCount = value;
-            OnBuyCountChanged?.Invoke();
-        }
-    }
-
 
     private void Awake()
     {
@@ -86,17 +88,17 @@ public class UIManager : MonoBehaviour
             Destroy(this);
         }
     }
+
     void Start()
     {
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
         m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
         InvokeRepeating("getGoldPerSceond", 0, 1);
 
-
         int count = m_WeaponParents.childCount;
         for (int iNum = 0; iNum < count; iNum++)
         {
-            m_list_Weapon.AddLast(m_WeaponParents.GetChild(iNum));
+            m_list_Weapon.Add(m_WeaponParents.GetChild(iNum));
         }
     }
 
@@ -135,7 +137,7 @@ public class UIManager : MonoBehaviour
 
     public void ClickBuyCountBtn(int count)
     {
-        BuyCount = count;
+        QuestBuyCount = count;
         m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
         switch (count)
         {
@@ -153,5 +155,23 @@ public class UIManager : MonoBehaviour
                 break;
         }
         m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
+    }
+
+    public void MaxBuyWeapon()
+    {
+        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
+        int lv = haveWeaponLv;
+        int Number = lv / 5;
+        BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
+        while (haveGold >= nextcost)
+        {
+            Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
+            ScWeapon.ClickBuy();
+            haveGold -= nextcost;
+
+            lv = haveWeaponLv;
+            nextcost = ScWeapon.GetNextCost();
+            Number = lv / 5;
+        }
     }
 }
