@@ -20,6 +20,7 @@ public class Quest : MonoBehaviour
     int LvCur = 1; //레벨보정
     int itemCur = 1; //아이템보정
     float powNum;//단계별 지수
+    int buyCount = 1;
 
     BigInteger baseCost;//초기 비용
     BigInteger nextCost;//다음레벨 비용
@@ -66,7 +67,7 @@ public class Quest : MonoBehaviour
     private void setText()
     {
         priceText.text = "가격 : " + CalCulator.inst.StringFourDigitChanger(nextCost.ToString());
-        upGoldText.text = "+" + CalCulator.inst.StringFourDigitChanger($"{initialProd * (Lv + UIManager.Instance.QuestBuyCount) - initialProd * (Lv)}");
+        upGoldText.text = "+" + CalCulator.inst.StringFourDigitChanger($"{initialProd * (Lv + buyCount) - initialProd * (Lv)}");
         LvText.text = "Lv : " + CalCulator.inst.StringFourDigitChanger(Lv.ToString());
         totalGoldText.text = "Gps : " + CalCulator.inst.StringFourDigitChanger($"{totalProd}");
     }
@@ -77,15 +78,14 @@ public class Quest : MonoBehaviour
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
         if (haveGold >= nextCost)
         {
-            Lv += UIManager.Instance.QuestBuyCount;
+            Lv += buyCount;
             if (Lv >= 25 * LvCur)
             {
                 LvCur *= 2;
             }
             TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
             GameStatus.inst.MinusGold(nextCost.ToString());
-            setNextCost();
-            setText();
+            UIManager.Instance.OnBuyCountChanged?.Invoke();
         }
         else
         {
@@ -95,24 +95,42 @@ public class Quest : MonoBehaviour
 
     private void setNextCost()
     {
-        int buycount = UIManager.Instance.QuestBuyCount;
-        if (buycount != 0)//max가 아닐때
+        int btnnum = UIManager.Instance.QuestBuyCountBtnNum;
+        if (btnnum != 3)//max가 아닐때
         {
-            nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buycount) - 1) / (growthRate - 1)));
+            nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
+            Debug.Log(nextCost);
+        }
+        else
+        {
+            buyCount = 1;
+            BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
+            setNextCost(buyCount);
+            while (haveGold >= nextCost)
+            {
+                buyCount++;
+                setNextCost(buyCount);
+            }
+            buyCount--;
+            nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
         }
     }
 
-    private void maxUpgrade()
+    private void setNextCost(int count)
     {
-
+        nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
     }
 
     private void _OnCountChanged()
     {
-        if (UIManager.Instance.QuestBuyCount != 0)
-        {
-            setNextCost();
-            setText();
-        }
+        buyCount = UIManager.Instance.QuestBuyCount;
+        setNextCost();
+        setText();
+
+    }
+
+    public int GetLv()
+    {
+        return Lv;
     }
 }

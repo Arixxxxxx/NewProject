@@ -32,6 +32,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] TextMeshProUGUI LvText;
     [SerializeField] TextMeshProUGUI totalAtkText;
     [SerializeField] GameObject objBtn;
+    [SerializeField] GameObject mask;
 
     private void Awake()
     {
@@ -90,6 +91,7 @@ public class Weapon : MonoBehaviour
             if (Lv - Number * 5 >= 5)
             {
                 objBtn.SetActive(false);
+                UIManager.Instance.WeaponUpComplete(transform);
             }
         }
         else
@@ -111,5 +113,10 @@ public class Weapon : MonoBehaviour
     public void clickWeaponImage()
     {
         UIManager.Instance.EquipWeaponNum = WeaponNum;
+    }
+
+    public void SetMaskActive(bool value)
+    {
+        mask.SetActive(value);
     }
 }

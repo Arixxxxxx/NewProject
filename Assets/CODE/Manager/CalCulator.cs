@@ -14,12 +14,12 @@ public class CalCulator : MonoBehaviour
     StringBuilder sb = new StringBuilder();
     BigInteger forCalculatorA = new BigInteger();
 
-    
-    
+
+
 
     private void Awake()
     {
-        if(inst == null)
+        if (inst == null)
         {
             inst = this;
         }
@@ -31,13 +31,13 @@ public class CalCulator : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     /// <summary>
@@ -82,9 +82,9 @@ public class CalCulator : MonoBehaviour
     {
         sb.Clear();
         string result = string.Empty;
-        
-        string tempA = new string(a.Where( x=> char.IsDigit(x) ).ToArray());
-        string tempB = new string(b.Where( x=> char.IsDigit(x) ).ToArray());
+
+        string tempA = new string(a.Where(x => char.IsDigit(x)).ToArray());
+        string tempB = new string(b.Where(x => char.IsDigit(x)).ToArray());
 
         int maxLength = Mathf.Max(a.Length, b.Length);
         string A = tempA.PadLeft(maxLength, '0');
@@ -113,11 +113,11 @@ public class CalCulator : MonoBehaviour
 
         result = sb.ToString().TrimStart('0');
 
-        if(result == string.Empty && areYouEnemy == true)
+        if (result == string.Empty && areYouEnemy == true)
         {
             result = "Dead";
         }
-        else if(result == string.Empty && areYouEnemy == false)
+        else if (result == string.Empty && areYouEnemy == false)
         {
             result = "0";
         }
@@ -135,7 +135,7 @@ public class CalCulator : MonoBehaviour
     public string DigitPercentMultiply(string a, int percent)
     {
         sb.Clear();
-                               
+
         int wordIndex = a.Count(x => char.IsLetter(x));
 
         if (wordIndex == 0)
@@ -256,7 +256,7 @@ public class CalCulator : MonoBehaviour
     {
         int index = 0;
         int digitLength = inputValue.Length;
-        string digit = new string(inputValue.Where( x => char.IsDigit(x) == true).ToArray());
+        string digit = new string(inputValue.Where(x => char.IsDigit(x) == true).ToArray());
 
         while (digitLength > 3)
         {
@@ -386,6 +386,7 @@ public class CalCulator : MonoBehaviour
             BigInteger result = BigInteger.Divide(ivalue, intvalue);
             result = BigInteger.Multiply(result, (BigInteger)powpracCount);
             return result;
+            Debug.Log($"{ivalue}, {fvalue}, {result}");
         }
         else
         {
@@ -393,7 +394,7 @@ public class CalCulator : MonoBehaviour
             return result;
         }
     }
-    
+
 
     /// <summary>
     /// 플레이어 치명타적중시 치명타피해량 합산하여 리턴하는 함수
@@ -432,9 +433,9 @@ public class CalCulator : MonoBehaviour
     /// <param name="cur"></param>
     /// <param name="max"></param>
     /// <returns></returns>
-    public float StringAndStringDivideReturnFloat(string cur, string max, int precision) 
+    public float StringAndStringDivideReturnFloat(string cur, string max, int precision)
     {
-        if(cur == "Dead") { cur = "0"; }
+        if (cur == "Dead") { cur = "0"; }
 
 
         BigInteger bigA = BigInteger.Parse(cur);

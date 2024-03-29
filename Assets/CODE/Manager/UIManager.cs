@@ -19,9 +19,16 @@ public class UIManager : MonoBehaviour
     [SerializeField] Button[] m_aryPetDetailInforBtns;
 
     [Header("퀘스트")]
+
+    [SerializeField] List<Transform> m_list_Quest = new List<Transform>();
+    [SerializeField] Transform m_QuestParents;
     [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>();
     [SerializeField] TextMeshProUGUI m_totalGold;
     int questBuyCountBtnNum = 0;//선택한 퀘스트 한번에 구매 버튼 번호
+    public int QuestBuyCountBtnNum
+    {
+        get => questBuyCountBtnNum;
+    }
     [SerializeField] private int questBuyCount = 1;//퀘스트 구매하려는 갯수
     public int QuestBuyCount
     {
@@ -35,6 +42,11 @@ public class UIManager : MonoBehaviour
 
     [Header("무기")]
     [SerializeField] List<Transform> m_list_Weapon = new List<Transform>();
+    public void WeaponUpComplete(Transform _trs)
+    {
+        int index = m_list_Weapon.FindIndex(x => x == _trs);
+        m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
+    }
     [SerializeField] Transform m_WeaponParents;
     [SerializeField] TextMeshProUGUI m_totalAtk;
     int haveWeaponLv;//보유중인 무기중 제일 최상위 무기 번호
@@ -103,6 +115,11 @@ public class UIManager : MonoBehaviour
             m_list_Weapon.Add(m_WeaponParents.GetChild(iNum));
         }
 
+        int questCount = m_QuestParents.childCount;
+        for (int iNum = 0; iNum < questCount; iNum++)
+        {
+            m_list_Quest.Add(m_QuestParents.GetChild(iNum));
+        }
 
         m_aryPetDetailInforBtns[0].onClick.AddListener(() =>
         {
@@ -125,31 +142,25 @@ public class UIManager : MonoBehaviour
         GameStatus.inst.GetGold(GetTotalGold());
     }
 
-    void Update()
+    public int GetQuestLv(int index)//원하는 퀘스트의 레벨 가져오기
     {
-
+        return m_list_Quest[index].GetComponent<Quest>().GetLv();
     }
 
     public void ClickBotBtn(int _num)
     {
-        if (_num != 4)
-        {
-            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
-            m_listMainUI[bottomBtnNum].SetActive(false);
+        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
+        m_listMainUI[bottomBtnNum].SetActive(false);
 
-            bottomBtnNum = _num;
-            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
-        }
-        else
-        {
-            canvas.sortingOrder = 4;
-        }
+        bottomBtnNum = _num;
+        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
         m_listMainUI[_num].SetActive(true);
     }
 
     public void ClickOpenThisTab(GameObject _obj)
     {
         _obj.SetActive(true);
+        canvas.sortingOrder = 4;
     }
 
     public void ClickCloseThisTab(GameObject _obj)
@@ -160,21 +171,21 @@ public class UIManager : MonoBehaviour
 
     public void ClickBuyCountBtn(int count)
     {
-        QuestBuyCount = count;
         m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
+        questBuyCountBtnNum = count;
         switch (count)
         {
-            case 1:
-                questBuyCountBtnNum = 0;
-                break;
-            case 10:
-                questBuyCountBtnNum = 1;
-                break;
-            case 100:
-                questBuyCountBtnNum = 2;
-                break;
             case 0:
-                questBuyCountBtnNum = 3;
+                QuestBuyCount = 1;
+                break;
+            case 1:
+                QuestBuyCount = 10;
+                break;
+            case 2:
+                QuestBuyCount = 100;
+                break;
+            case 3:
+                QuestBuyCount = 0;
                 break;
         }
         m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
