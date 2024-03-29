@@ -194,7 +194,6 @@ public class CalCulator : MonoBehaviour
         hpA = 2; // 기존 2 임시로 200
         hpA = BigInteger.Pow(hpA, GameStatus.inst.AccumlateFloor);
 
-        Debug.Log($"몬스터 초기화된 체력 : {hpA}");
         return hpA.ToString();
     }
 
@@ -463,7 +462,6 @@ public class CalCulator : MonoBehaviour
 
         // 소수점 이하 불필요한 0 제거 (옵션)
         finalResult = finalResult.TrimEnd('0').TrimEnd('.');
-        Debug.Log($"완료된 계산값 => {float.Parse(finalResult)}");
         return float.Parse(finalResult);
 
     }

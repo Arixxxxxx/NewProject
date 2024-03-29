@@ -124,7 +124,7 @@ public class PetDetailViewr_UI : MonoBehaviour
     }
     private void BtnInIt()
     {
-        xBtn.onClick.AddListener(() => { curCharNum = 0; curBotNum = 0; PetDetailViwerObj.SetActive(false); });
+        xBtn.onClick.AddListener(() => { middleBtnImageChanger(0); curCharNum = 0; curBotNum = 0; PetDetailViwerObj.SetActive(false); });
         topArrayBtns[0].onClick.AddListener(() => TopArrayBtnActive(0));
         topArrayBtns[1].onClick.AddListener(() => TopArrayBtnActive(1));
         topArrayBtns[2].onClick.AddListener(() => TopArrayBtnActive(2));
@@ -167,7 +167,7 @@ public class PetDetailViewr_UI : MonoBehaviour
     /// 상단 캐릭터버튼 배경 변경 함수
     /// </summary>
     /// <param name="indexNum"> 공격펫 / 버프펫 / 골드펫 </param>
-    private void TopArrayBtnActive(int indexNum)
+    public void TopArrayBtnActive(int indexNum)
     {
         if (PetDetailViwerObj.gameObject.activeSelf == false)
         {
@@ -215,6 +215,9 @@ public class PetDetailViewr_UI : MonoBehaviour
     }
 
 
+    /// <summary>
+    ///  상단 캐릭터 선택 버튼 클릭시  하단부 자동 초기화 함수 [상단 버튼용]
+    /// </summary>
     private void BottomReset()
     {
         switch (curBotNum)
@@ -260,8 +263,6 @@ public class PetDetailViewr_UI : MonoBehaviour
                 midArrayBtnsImage[index].sprite = middleArrayBtnIMG[1];
             }
         }
-
-
     }
 
 

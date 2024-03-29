@@ -311,7 +311,7 @@ public class ActionManager : MonoBehaviour
             }
 
             string checkDMG = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
-            Debug.Log($"현재 체력 : {enemyCurHP} / 최대체력 : {enemyMaxHP} / 가한 대미지 {DMG}");
+            //Debug.Log($"현재 체력 : {enemyCurHP} / 최대체력 : {enemyMaxHP} / 가한 대미지 {DMG}");
 
             if (checkDMG != "Dead" && attackReady == true)
             {
