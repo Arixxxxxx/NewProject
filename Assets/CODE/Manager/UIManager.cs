@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();
     [SerializeField] List<Image> m_list_BottomBtn = new List<Image>();
     int bottomBtnNum = 0;//선택한 하단 버튼 번호
+    [SerializeField] Button[] m_aryPetDetailInforBtns;
 
     [Header("퀘스트")]
     [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>();
@@ -95,83 +96,99 @@ public class UIManager : MonoBehaviour
         m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
         InvokeRepeating("getGoldPerSceond", 0, 1);
 
-        int count = m_WeaponParents.childCount;
-        for (int iNum = 0; iNum < count; iNum++)
+        int weaponCount = m_WeaponParents.childCount;
+        for (int iNum = 0; iNum < weaponCount; iNum++)
         {
             m_list_Weapon.Add(m_WeaponParents.GetChild(iNum));
         }
-    }
 
-    void getGoldPerSceond()
-    {
-        GameStatus.inst.GetGold(GetTotalGold());
-    }
 
-    void Update()
-    {
-
-    }
-
-    public void ClickBotBtn(int _num)
-    {
-        if (_num != 4)
+        m_aryPetDetailInforBtns[0].onClick.AddListener(() =>
         {
-            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
-            m_listMainUI[bottomBtnNum].SetActive(false);
+            PetDetailViewr_UI.inst.TopArrayBtnActive(0);
+        });
 
-            bottomBtnNum = _num;
-            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
-        }
-        m_listMainUI[_num].SetActive(true);
-    }
-
-    public void ClickOpenThisTab(GameObject _obj)
-    {
-        _obj.SetActive(true);
-    }
-
-    public void ClickCloseThisTab(GameObject _obj)
-    {
-        _obj.SetActive(false);
-    }
-
-    public void ClickBuyCountBtn(int count)
-    {
-        QuestBuyCount = count;
-        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
-        switch (count)
+        m_aryPetDetailInforBtns[1].onClick.AddListener(() =>
         {
-            case 1:
-                questBuyCountBtnNum = 0;
-                break;
-            case 10:
-                questBuyCountBtnNum = 1;
-                break;
-            case 100:
-                questBuyCountBtnNum = 2;
-                break;
-            case 0:
-                questBuyCountBtnNum = 3;
-                break;
-        }
-        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
-    }
+            PetDetailViewr_UI.inst.TopArrayBtnActive(1);
+        });
 
-    public void MaxBuyWeapon()
-    {
-        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
-        int lv = haveWeaponLv;
-        int Number = lv / 5;
-        BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
-        while (haveGold >= nextcost)
+        m_aryPetDetailInforBtns[2].onClick.AddListener(() =>
         {
-            Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
-            ScWeapon.ClickBuy();
-            haveGold -= nextcost;
+            PetDetailViewr_UI.inst.TopArrayBtnActive(2);
+        });
+    }
 
-            lv = haveWeaponLv;
-            nextcost = ScWeapon.GetNextCost();
-            Number = lv / 5;
+        void getGoldPerSceond()
+        {
+            GameStatus.inst.GetGold(GetTotalGold());
+        }
+
+        void Update()
+        {
+
+        }
+
+        public void ClickBotBtn(int _num)
+        {
+            if (_num != 4)
+            {
+                m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
+                m_listMainUI[bottomBtnNum].SetActive(false);
+
+                bottomBtnNum = _num;
+                m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
+            }
+            m_listMainUI[_num].SetActive(true);
+        }
+
+        public void ClickOpenThisTab(GameObject _obj)
+        {
+            _obj.SetActive(true);
+        }
+
+        public void ClickCloseThisTab(GameObject _obj)
+        {
+            _obj.SetActive(false);
+        }
+
+        public void ClickBuyCountBtn(int count)
+        {
+            QuestBuyCount = count;
+            m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
+            switch (count)
+            {
+                case 1:
+                    questBuyCountBtnNum = 0;
+                    break;
+                case 10:
+                    questBuyCountBtnNum = 1;
+                    break;
+                case 100:
+                    questBuyCountBtnNum = 2;
+                    break;
+                case 0:
+                    questBuyCountBtnNum = 3;
+                    break;
+            }
+            m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
+        }
+
+        public void MaxBuyWeapon()
+        {
+            BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
+            int lv = haveWeaponLv;
+            int Number = lv / 5;
+            BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
+            while (haveGold >= nextcost)
+            {
+                Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
+                ScWeapon.ClickBuy();
+                haveGold -= nextcost;
+
+                lv = haveWeaponLv;
+                nextcost = ScWeapon.GetNextCost();
+                Number = lv / 5;
+            }
         }
     }
-}
