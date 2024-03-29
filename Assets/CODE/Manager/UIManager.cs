@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
+    [SerializeField] Canvas canvas;
     [HideInInspector] public UnityEvent OnBuyCountChanged;
 
     [SerializeField] List<GameObject> m_listMainUI = new List<GameObject>();
@@ -119,76 +120,81 @@ public class UIManager : MonoBehaviour
         });
     }
 
-        void getGoldPerSceond()
+    void getGoldPerSceond()
+    {
+        GameStatus.inst.GetGold(GetTotalGold());
+    }
+
+    void Update()
+    {
+
+    }
+
+    public void ClickBotBtn(int _num)
+    {
+        if (_num != 4)
         {
-            GameStatus.inst.GetGold(GetTotalGold());
+            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
+            m_listMainUI[bottomBtnNum].SetActive(false);
+
+            bottomBtnNum = _num;
+            m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
         }
-
-        void Update()
+        else
         {
-
+            canvas.sortingOrder = 4;
         }
+        m_listMainUI[_num].SetActive(true);
+    }
 
-        public void ClickBotBtn(int _num)
+    public void ClickOpenThisTab(GameObject _obj)
+    {
+        _obj.SetActive(true);
+    }
+
+    public void ClickCloseThisTab(GameObject _obj)
+    {
+        _obj.SetActive(false);
+        canvas.sortingOrder = 0;
+    }
+
+    public void ClickBuyCountBtn(int count)
+    {
+        QuestBuyCount = count;
+        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
+        switch (count)
         {
-            if (_num != 4)
-            {
-                m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
-                m_listMainUI[bottomBtnNum].SetActive(false);
-
-                bottomBtnNum = _num;
-                m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
-            }
-            m_listMainUI[_num].SetActive(true);
+            case 1:
+                questBuyCountBtnNum = 0;
+                break;
+            case 10:
+                questBuyCountBtnNum = 1;
+                break;
+            case 100:
+                questBuyCountBtnNum = 2;
+                break;
+            case 0:
+                questBuyCountBtnNum = 3;
+                break;
         }
+        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
+    }
 
-        public void ClickOpenThisTab(GameObject _obj)
+    public void MaxBuyWeapon()
+    {
+        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
+        int lv = haveWeaponLv;
+        int Number = lv / 5;
+        BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
+        while (haveGold >= nextcost)
         {
-            _obj.SetActive(true);
-        }
+            Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
+            ScWeapon.ClickBuy();
+            haveGold -= nextcost;
 
-        public void ClickCloseThisTab(GameObject _obj)
-        {
-            _obj.SetActive(false);
-        }
-
-        public void ClickBuyCountBtn(int count)
-        {
-            QuestBuyCount = count;
-            m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
-            switch (count)
-            {
-                case 1:
-                    questBuyCountBtnNum = 0;
-                    break;
-                case 10:
-                    questBuyCountBtnNum = 1;
-                    break;
-                case 100:
-                    questBuyCountBtnNum = 2;
-                    break;
-                case 0:
-                    questBuyCountBtnNum = 3;
-                    break;
-            }
-            m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
-        }
-
-        public void MaxBuyWeapon()
-        {
-            BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
-            int lv = haveWeaponLv;
-            int Number = lv / 5;
-            BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
-            while (haveGold >= nextcost)
-            {
-                Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
-                ScWeapon.ClickBuy();
-                haveGold -= nextcost;
-
-                lv = haveWeaponLv;
-                nextcost = ScWeapon.GetNextCost();
-                Number = lv / 5;
-            }
+            lv = haveWeaponLv;
+            nextcost = ScWeapon.GetNextCost();
+            Number = lv / 5;
         }
     }
+}
