@@ -292,7 +292,8 @@ public class ActionManager : MonoBehaviour
         PlayerInit();
         //기본 대미지 계산
         string firstDmg = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
-        string DMG = CalCulator.inst.DigidPlus(firstDmg, GameStatus.inst.BuffAddATK);
+        string AdDMG = CalCulator.inst.DigidPlus(firstDmg, GameStatus.inst.BuffAddAdATK);
+        string DMG = CalCulator.inst.DigidPlus(AdDMG, GameStatus.inst.BuffAddATK);
 
         if (index == 0) // 플레이어일시
         {
@@ -441,7 +442,6 @@ public class ActionManager : MonoBehaviour
         playerAnim.SetTrigger("In");
 
         yield return new WaitForSeconds(1f);
-
     }
 
 
@@ -495,11 +495,7 @@ public class ActionManager : MonoBehaviour
         int spriteCount = enemySprite.Length;
         int spirteRanValue = Random.Range(0, spriteCount);
         enemySr.sprite = enemySprite[spirteRanValue];
-
-
     }
-
-   
 
 
     private void PlayerInit()

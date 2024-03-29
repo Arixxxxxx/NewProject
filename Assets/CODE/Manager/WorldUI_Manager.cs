@@ -284,7 +284,7 @@ public class WorldUI_Manager : MonoBehaviour
 
 
   /// <summary>
-  /// 광고보고 뭔가 돌려받기
+  /// 광고보고 버프 활성화시켜주는 함수
   /// </summary>
   /// <param name="witch"> buff ~~</param>
   /// <param name="value"></param>
@@ -293,12 +293,17 @@ public class WorldUI_Manager : MonoBehaviour
         adXbtn.onClick.RemoveAllListeners();
         adXbtn.onClick.AddListener(() =>
         {
-            if(witch == "buff")
+            if(witch == "buff" && value != 3)
             {
-                BuffContoller.inst.ActiveBuff(value, 15); //버프활성화
-                BuffManager.inst.AddBuffCoolTime(value, 15); // 쿨타임 시간추가
-                Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(value, 15)); // 알림띄우기
+                BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
+                BuffManager.inst.AddBuffCoolTime(value, (int)BuffManager.inst.AdbuffTime(value)); // 쿨타임 시간추가
+                Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(value, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
                 
+            }
+            else if(value == 3)
+            {
+                BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
+                Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
             }
            
             adXbtn.gameObject.SetActive(false);

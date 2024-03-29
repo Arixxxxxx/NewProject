@@ -11,13 +11,13 @@ public class BuffContoller : MonoBehaviour
     GameObject worldUI;
     GameObject buffParent;
 
-    
+
     Button[] buffBtns;
     GameObject[] buffActive;
     TMP_Text[] buffTime;
-    
+
     float[] buffTimer;
-    
+
     ParticleSystem[] buffIconPs;
 
     private void Awake()
@@ -40,9 +40,9 @@ public class BuffContoller : MonoBehaviour
         buffTime = new TMP_Text[buffChild];
         buffTimer = new float[buffChild];
         buffIconPs = new ParticleSystem[buffChild];
-      
 
-     
+
+
         for (int index = 0; index < buffBtns.Length; index++)
         {
             buffBtns[index] = buffParent.transform.GetChild(index).GetComponent<Button>();
@@ -51,7 +51,7 @@ public class BuffContoller : MonoBehaviour
             buffIconPs[index] = buffActive[index].GetComponentInChildren<ParticleSystem>();
         }
 
-     
+
         //버튼 초기화
 
         // 활성화
@@ -64,7 +64,10 @@ public class BuffContoller : MonoBehaviour
 
     private void Update()
     {
-        BuffTimeCheck();
+        BuffTimeCheck(0);
+        BuffTimeCheck(1);
+        BuffTimeCheck(2);
+        BuffTimeCheck(3);
     }
 
     /// <summary>
@@ -76,11 +79,17 @@ public class BuffContoller : MonoBehaviour
     {
         buffTimer[Num] += Time * 60;
 
-        if (buffActive[Num].activeSelf == false)
+        if (Num != 3 && buffActive[Num].activeSelf == false)
         {
             buffActive[Num].SetActive(true);
             BuffIconParticleReset();
         }
+        else if(Num == 3 && buffBtns[Num].gameObject.activeSelf == false)
+        {
+            buffBtns[Num].gameObject.SetActive(true);
+            BuffIconParticleReset();
+        }
+
 
         //버프활성화되엇다고 알림 
     }
@@ -89,106 +98,50 @@ public class BuffContoller : MonoBehaviour
     /// <summary>
     /// 버프 실행기
     /// </summary>
-    private void BuffTimeCheck()
+    private void BuffTimeCheck(int index)
     {
         // 버프 1번
-        if (buffTimer[0] <= 0 && buffActive[0].activeSelf)
+        if (buffTimer[index] <= 0 && buffActive[index].activeSelf)
         {
-            buffTimer[0] = 0;
-            buffActive[0].gameObject.SetActive(false);
+            if (index != 3)
+            {
+                buffTimer[index] = 0;
+                buffActive[index].gameObject.SetActive(false);
+            }
+            else if (index == 3)
+            {
+                buffBtns[index].gameObject.SetActive(false);
+            }
         }
-        else if (buffTimer[0] > 0 && buffActive[0].activeSelf)
+        else if (buffTimer[index] > 0 && buffActive[index].activeSelf)
         {
-            buffTimer[0] -= Time.deltaTime;
+            buffTimer[index] -= Time.deltaTime;
 
             int timeValue = 0;
             string stringValue = string.Empty;
 
-            if (buffTimer[0] > 3600)
+            if (buffTimer[index] > 3600)
             {
-                timeValue = (int)buffTimer[0] / 3600;
+                timeValue = (int)buffTimer[index] / 3600;
                 stringValue = "H";
             }
-            else if (buffTimer[0] > 60 && buffTimer[0] < 3600)
+            else if (buffTimer[index] > 60 && buffTimer[index] < 3600)
             {
-                timeValue = (int)buffTimer[0] / 60;
+                timeValue = (int)buffTimer[index] / 60;
                 stringValue = "M";
             }
-            else if (buffTimer[0] > 0 && buffTimer[0] < 60)
+            else if (buffTimer[index] > 0 && buffTimer[index] < 60)
             {
-                timeValue = (int)buffTimer[0];
+                timeValue = (int)buffTimer[index];
                 stringValue = "S";
             }
-            buffTime[0].text = timeValue.ToString() + stringValue;
+            buffTime[index].text = timeValue.ToString() + stringValue;
         }
-
-        // 버프 2번
-        if (buffTimer[1] <= 0 && buffActive[1].activeSelf)
-        {
-            buffTimer[1] = 0;
-            buffActive[1].gameObject.SetActive(false);
-        }
-        else if (buffTimer[1] > 0 && buffActive[1].activeSelf)
-        {
-            buffTimer[1] -= Time.deltaTime;
-
-            int timeValue = 0;
-            string stringValue = string.Empty;
-
-            if (buffTimer[1] > 3600)
-            {
-                timeValue = (int)buffTimer[1] / 3600;
-                stringValue = "H";
-            }
-            else if (buffTimer[1] > 60 && buffTimer[1] < 3600)
-            {
-                timeValue = (int)buffTimer[1] / 60;
-                stringValue = "M";
-            }
-            else if (buffTimer[1] > 0 && buffTimer[1] < 60)
-            {
-                timeValue = (int)buffTimer[1];
-                stringValue = "S";
-            }
-            buffTime[1].text = timeValue.ToString() + stringValue;
-        }
-
-        // 버프 3번
-        if (buffTimer[2] <= 0 && buffActive[2].activeSelf)
-        {
-            buffTimer[2] = 0;
-            buffActive[2].gameObject.SetActive(false);
-        }
-        else if (buffTimer[2] > 0 && buffActive[2].activeSelf)
-        {
-            buffTimer[2] -= Time.deltaTime;
-
-            int timeValue = 0;
-            string stringValue = string.Empty;
-
-            if (buffTimer[2] > 3600)
-            {
-                timeValue = (int)buffTimer[2] / 3600;
-                stringValue = "H";
-            }
-            else if (buffTimer[2] > 60 && buffTimer[2] < 3600)
-            {
-                timeValue = (int)buffTimer[2] / 60;
-                stringValue = "M";
-            }
-            else if (buffTimer[2] > 0 && buffTimer[2] < 60)
-            {
-                timeValue = (int)buffTimer[2];
-                stringValue = "S";
-            }
-            buffTime[2].text = timeValue.ToString() + stringValue;
-        }
-
     }
 
     public void BuffIconParticleReset()
     {
-        for(int index=0; index < buffIconPs.Length; index++)
+        for (int index = 0; index < buffIconPs.Length; index++)
         {
             buffIconPs[index].Stop();
             buffIconPs[index].Play();

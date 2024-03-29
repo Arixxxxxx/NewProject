@@ -199,6 +199,19 @@ public class GameStatus : MonoBehaviour
             buffAddATK = value;
         }
     }
+
+    string buffAddAdATK = "0";
+    public string BuffAddAdATK
+    {
+        get
+        {
+            return buffAddAdATK;
+        }
+        set
+        {
+            buffAddAdATK = value;
+        }
+    }
     string buffAddGold = "0";
     public string BuffAddGold
     {

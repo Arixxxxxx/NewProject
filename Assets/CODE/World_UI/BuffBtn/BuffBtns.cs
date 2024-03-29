@@ -7,7 +7,7 @@ public class BuffBtns : MonoBehaviour
 {
     public enum buffType
     {
-        ATK, Gold, Speed
+        ATK, Gold, Speed, AD_ATK
     }
 
     public buffType whichBuff;
@@ -47,22 +47,20 @@ public class BuffBtns : MonoBehaviour
     {
         switch (whichBuff)
         {
-            case buffType.ATK:
-
+            case buffType.ATK: // 버프창 공격력증가
                 GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_ATKtoString(), 4);
-
                 break;
 
-            case buffType.Gold:
+            case buffType.Gold: // 골드 획득량증가
                 GameStatus.inst.BuffAddGold = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.GetTotalGold(), 2);
                 break;
 
-            case buffType.Speed:
-
-                Debug.Log(GameStatus.inst.BuffAddSpeed);
+            case buffType.Speed: // 이동속도 증가
                 GameStatus.inst.BuffAddSpeed = 2f;
-                Debug.Log($"변경{GameStatus.inst.BuffAddSpeed}");
+                break;
 
+            case buffType.AD_ATK: //인게임 화면 광고보고 공격력증가
+                GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_ATKtoString(), 8);
                 break;
         }
     }

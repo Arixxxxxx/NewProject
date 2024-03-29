@@ -193,4 +193,17 @@ public class PetContollerManager : MonoBehaviour
         pet1Ps[0].Stop();
         pet2Ps[0].Stop();
     }
+
+
+    /// <summary>
+    /// Æê On/Off È°¼ºÈ­ ÇÔ¼ö
+    /// </summary>
+    /// <param name="petNum">0 = °ø°ÝÆê / 1 = ¹öÇÁÆê / 2 =°ñµåÆê </param>
+    public void PetActive(int petNum)
+    {
+        if(petAnim[petNum].gameObject.activeSelf == false)
+        {
+            petAnim[petNum].gameObject.SetActive(true);
+        }
+    }
 }
