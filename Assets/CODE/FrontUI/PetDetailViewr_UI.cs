@@ -167,7 +167,7 @@ public class PetDetailViewr_UI : MonoBehaviour
     /// 상단 캐릭터버튼 배경 변경 함수
     /// </summary>
     /// <param name="indexNum"> 공격펫 / 버프펫 / 골드펫 </param>
-    private void TopArrayBtnActive(int indexNum)
+    public void TopArrayBtnActive(int indexNum)
     {
         if (PetDetailViwerObj.gameObject.activeSelf == false)
         {
