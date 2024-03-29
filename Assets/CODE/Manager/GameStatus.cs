@@ -64,8 +64,8 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    string ruby = "0";
-    public string Ruby
+    int ruby = 0;
+    public int Ruby
     {
         get
         {
@@ -75,7 +75,8 @@ public class GameStatus : MonoBehaviour
         set
         {
             ruby = value;
-            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby);
+            Debug.Log($"현재루비 {ruby}");
+            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString());
         }
     }
 
@@ -184,6 +185,60 @@ public class GameStatus : MonoBehaviour
     [SerializeField] float getGold;
     [SerializeField] int rebirthCount; // 환생 횟수
 
+    /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
+    
+    string buffAddATK = "0";
+    public string BuffAddATK
+    {
+        get
+        {
+            return buffAddATK;
+        }
+        set
+        {
+            buffAddATK = value;
+        }
+    }
+
+    string buffAddAdATK = "0";
+    public string BuffAddAdATK
+    {
+        get
+        {
+            return buffAddAdATK;
+        }
+        set
+        {
+            buffAddAdATK = value;
+        }
+    }
+    string buffAddGold = "0";
+    public string BuffAddGold
+    {
+        get
+        {
+            return buffAddGold;
+        }
+        set
+        {
+            buffAddGold = value;
+        }
+    }
+
+
+    [SerializeField] float buffAddSpeed = 1;
+    public float BuffAddSpeed
+    {
+        get
+        {
+            return buffAddSpeed;
+        }
+        set
+        {
+            buffAddSpeed = value;
+            ActionManager.inst.SetPlayerMoveSpeed();
+        }
+    }
 
     /////////////////////////////// 펫 버프 증가량 관련 //////////////////////////////////
 
@@ -261,7 +316,7 @@ public class GameStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     /// <summary>
@@ -270,7 +325,8 @@ public class GameStatus : MonoBehaviour
     /// <param name="getValue"></param>
     public void GetGold(string getValue)
     {
-        string result = CalCulator.inst.DigidPlus(gold, getValue);
+        string result = CalCulator.inst.DigidPlus(gold, getValue); // 기본 골드
+        result = CalCulator.inst.DigidPlus(result, buffAddGold); // 상점 버프로인한값 추가
         PulsGold = result;
     }
 

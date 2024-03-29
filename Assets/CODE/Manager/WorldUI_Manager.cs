@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 
 
@@ -33,10 +35,18 @@ public class WorldUI_Manager : MonoBehaviour
     //퀘스트 목록 관련
     Button questListBtn;
     TMP_Text questListSideText;
+    GameObject frontUICanvas;
+    GameObject buffSelectUIWindow;
 
-    
+    //텍스트알림
+    Animator textAlrim;
+    TMP_Text alrimText;
 
-
+    //샘플 광고테스트
+    [SerializeField]
+    GameObject adSample;
+    [SerializeField]
+    Button adXbtn;
     private void Awake()
     {
         if (inst == null)
@@ -49,7 +59,18 @@ public class WorldUI_Manager : MonoBehaviour
         }
 
         worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
+        frontUICanvas = GameObject.Find("---[FrontUICanvas]").gameObject;
 
+        //샘플광고
+        adSample = frontUICanvas.transform.Find("SampleAD").gameObject;
+        adXbtn = adSample.transform.Find("X").GetComponent<Button>();
+
+        //텍스트 알림
+        textAlrim = worldUI.transform.Find("TextAlrim").GetComponent<Animator>();
+        alrimText = textAlrim.GetComponentInChildren<TMP_Text>();
+
+       //버프창
+        buffSelectUIWindow = frontUICanvas.transform.Find("Buff_Window").gameObject;
 
         cuttonBlack = worldUI.transform.Find("Cutton(B)").GetComponent<Animator>();
         stageText = worldUI.transform.Find("StageUI/StageInfo/Text").GetComponent<TMP_Text>();
@@ -84,17 +105,13 @@ public class WorldUI_Manager : MonoBehaviour
         //테스트용 나중에 지워야함
         testBtnInit();
 
+        // 최초 소지재화들 초기화
         curMaterial[0].text = GameStatus.inst.PulsGold;
         curMaterial[1].text = GameStatus.inst.Star;
         curMaterial[2].text = GameStatus.inst.Key;
-        curMaterial[3].text = GameStatus.inst.Ruby;
+        curMaterial[3].text = GameStatus.inst.Ruby.ToString();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
 
     /// <summary>
     /// 스테이지 UI바 색칠
@@ -240,9 +257,84 @@ public class WorldUI_Manager : MonoBehaviour
 
     }
 
-    public void CurMaterialUpdate(int index, string EA)
+
+    Color orijinColor;
+    /// <summary>
+    /// 텍스트 알림창 호출
+    /// </summary>
+    /// <param name="data">알림창에 띄울 메세지</param>
+    public void Set_TextAlrim(string data)
     {
-        curMaterial[index].text = CalCulator.inst.StringFourDigitChanger(EA);
+        orijinColor = alrimText.color;
+
+        alrimText.text = data;
+        StopCoroutine(TextalrimStart());
+        StartCoroutine(TextalrimStart());
     }
 
+    IEnumerator TextalrimStart()
+    {
+        textAlrim.gameObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(3f);
+        textAlrim.SetTrigger("Off");
+        yield return new WaitForSecondsRealtime(1.5f);
+        textAlrim.gameObject.SetActive(false);
+        alrimText.color = orijinColor;
+    }
+
+
+  /// <summary>
+  /// 광고보고 버프 활성화시켜주는 함수
+  /// </summary>
+  /// <param name="witch"> buff ~~</param>
+  /// <param name="value"></param>
+    public void SampleAD(string witch, int value)
+    {
+        adXbtn.onClick.RemoveAllListeners();
+        adXbtn.onClick.AddListener(() =>
+        {
+            if(witch == "buff" && value != 3)
+            {
+                BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
+                BuffManager.inst.AddBuffCoolTime(value, (int)BuffManager.inst.AdbuffTime(value)); // 쿨타임 시간추가
+                Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(value, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
+                
+            }
+            else if(value == 3)
+            {
+                BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
+                Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
+            }
+           
+            adXbtn.gameObject.SetActive(false);
+            adSample.SetActive(false);
+            buffSelectUIWindow.SetActive(false);
+        });
+
+        StopCoroutine(PlayAD());
+        StartCoroutine(PlayAD());
+    }
+
+    IEnumerator PlayAD()
+    {
+        adSample.SetActive(true);
+        yield return new WaitForSeconds(3);
+        adXbtn.gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// 월드UI 자원바 업데이트 함수 
+    /// </summary>
+    /// <param name="index"> 0골드 / 1별 / 2키 / 3루비</param>
+    /// <param name="EA"> 현재 자원량 </param>
+    public void CurMaterialUpdate(int index, string EA) => curMaterial[index].text = CalCulator.inst.StringFourDigitChanger(EA);
+    
+    /// <summary>
+    /// 버프 선택창 호출
+    /// </summary>
+    /// <param name="value"> true / false </param>
+    public void buffSelectUIWindowAcitve(bool value) => buffSelectUIWindow.SetActive(value);
+
+
+ 
+    
 }

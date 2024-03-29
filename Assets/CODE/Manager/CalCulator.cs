@@ -13,7 +13,10 @@ public class CalCulator : MonoBehaviour
     public static CalCulator inst;
     StringBuilder sb = new StringBuilder();
     BigInteger forCalculatorA = new BigInteger();
-    BigInteger forCalculatorB = new BigInteger();
+
+    
+    
+
     private void Awake()
     {
         if(inst == null)
@@ -176,6 +179,7 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string Get_ATKtoString()
     {
+
         return UIManager.Instance.TotalAtk.ToString();
     }
 
