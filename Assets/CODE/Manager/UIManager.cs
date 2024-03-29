@@ -19,6 +19,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>();
     [SerializeField] List<Image> m_list_BottomBtn = new List<Image>();
 
+    [SerializeField] LinkedList<Transform> m_list_Weapon = new LinkedList<Transform>();
+    [SerializeField] Transform m_WeaponParents;
+
     [SerializeField] TextMeshProUGUI m_totalAtk;
     [SerializeField] TextMeshProUGUI m_totalGold;
 
@@ -88,6 +91,13 @@ public class UIManager : MonoBehaviour
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
         m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
         InvokeRepeating("getGoldPerSceond", 0, 1);
+
+
+        int count = m_WeaponParents.childCount;
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            m_list_Weapon.AddLast(m_WeaponParents.GetChild(iNum));
+        }
     }
 
     void getGoldPerSceond()

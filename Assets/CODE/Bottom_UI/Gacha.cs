@@ -102,9 +102,9 @@ public class Gacha : MonoBehaviour
         gachaResultObj.SetActive(true);
         for (int iNum = 0; iNum < count; iNum++)
         {
+            yield return new WaitForSecondsRealtime(0.2f);
             list_resultImage[iNum].sprite = ListResultSprite[iNum];
             list_resultImage[iNum].gameObject.SetActive(true);
-            yield return new WaitForSecondsRealtime(0.2f);
         }
     }
 
