@@ -12,6 +12,13 @@ public enum ItemTag
     Test
 }
 
+public enum ProductTag
+{ 
+    Gold,
+    Star,
+    Ruby
+}
+
 public interface ITypeGetable
 {
     Vector2 GetMyType();

@@ -10,26 +10,25 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
     [SerializeField] Canvas canvas;
-    [HideInInspector] public UnityEvent OnBuyCountChanged;
-
-    [SerializeField] List<GameObject> m_listMainUI = new List<GameObject>();
-    [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();
-    [SerializeField] List<Image> m_list_BottomBtn = new List<Image>();
+    [HideInInspector] public UnityEvent OnBuyCountChanged;//퀘스트 구매갯수 바뀌는 이벤트
+    [Header("메인UI")]
+    [SerializeField] List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
+    [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();//버튼 선택, 비선택 스프라이트
+    [SerializeField] List<Image> m_list_BottomBtn = new List<Image>();//메인UI 하단 버튼
     int bottomBtnNum = 0;//선택한 하단 버튼 번호
-    [SerializeField] Button[] m_aryPetDetailInforBtns;
+    [SerializeField] Button[] m_aryPetDetailInforBtns;//펫 상세보기버튼
 
     [Header("퀘스트")]
-
-    [SerializeField] List<Transform> m_list_Quest = new List<Transform>();
-    [SerializeField] Transform m_QuestParents;
-    [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>();
-    [SerializeField] TextMeshProUGUI m_totalGold;
+    [SerializeField] List<Transform> m_list_Quest = new List<Transform>();//퀘스트 리스트
+    [SerializeField] Transform m_QuestParents;//퀘스트 컨텐츠 트래스폼
+    [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>(); //퀘스트 구매갯수 조절 버튼
+    [SerializeField] TextMeshProUGUI m_totalGold;// 초당 골드 생산량 텍스트
+    [SerializeField] private int questBuyCount = 1;//퀘스트 구매하려는 갯수
     int questBuyCountBtnNum = 0;//선택한 퀘스트 한번에 구매 버튼 번호
     public int QuestBuyCountBtnNum
     {
         get => questBuyCountBtnNum;
     }
-    [SerializeField] private int questBuyCount = 1;//퀘스트 구매하려는 갯수
     public int QuestBuyCount
     {
         get => questBuyCount;
@@ -136,10 +135,19 @@ public class UIManager : MonoBehaviour
             PetDetailViewr_UI.inst.TopArrayBtnActive(2);
         });
     }
+    public Sprite GetSelectUISprite(int num)
+    {
+        return m_BtnSprite[num];
+    }
 
     void getGoldPerSceond()
     {
         GameStatus.inst.GetGold(GetTotalGold());
+    }
+
+    public void changeSortOder(int value)
+    {
+        canvas.sortingOrder = value;
     }
 
     public int GetQuestLv(int index)//원하는 퀘스트의 레벨 가져오기
@@ -157,6 +165,7 @@ public class UIManager : MonoBehaviour
         m_listMainUI[_num].SetActive(true);
     }
 
+
     public void ClickOpenThisTab(GameObject _obj)
     {
         _obj.SetActive(true);
@@ -166,7 +175,6 @@ public class UIManager : MonoBehaviour
     public void ClickCloseThisTab(GameObject _obj)
     {
         _obj.SetActive(false);
-        canvas.sortingOrder = 0;
     }
 
     public void ClickBuyCountBtn(int count)

@@ -466,10 +466,4 @@ public class CalCulator : MonoBehaviour
         return float.Parse(finalResult);
 
     }
-
-
-
-
-
-
 }

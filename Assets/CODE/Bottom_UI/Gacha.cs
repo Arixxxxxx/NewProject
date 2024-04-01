@@ -11,6 +11,7 @@ public class Gacha : MonoBehaviour
 
     [SerializeField] GameObject gachaResultObj;
     [SerializeField] List<Image> list_resultImage = new List<Image>();
+    
     List<GameObject> list_haveRelic = new List<GameObject>();
 
     [Serializable]
@@ -42,8 +43,6 @@ public class Gacha : MonoBehaviour
 
     IEnumerator gachaEffect(int GachaCount)
     {
-        
-
         int imagecount = list_resultImage.Count;
         for (int iNum = 0; iNum < imagecount; iNum++)
         {
@@ -110,16 +109,5 @@ public class Gacha : MonoBehaviour
     public void clickGacha(int GachaCount)
     {
         StartCoroutine(gachaEffect(GachaCount));
-    }
-
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
