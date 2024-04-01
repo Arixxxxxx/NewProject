@@ -1,12 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System;
 using UnityEngine;
 
 public class GameStatus : MonoBehaviour
 {
     public static GameStatus inst;
 
+
+    ///////////////////////////////////////////////////
+    //최초 가입 일시
+    // 이부분 나중에 첫 가입부분으로 옮겨야함
+    // 최초에 필요한값 회원가입일자 
+    // 첫 선물받기 시작한 일자
+    DateTime firstdate = DateTime.Now;
+    
+    int[] getGiftDay = new int[3]; // 선물받은 년/월/일
+    public int[] GetGiftDay
+    {
+        get
+        {
+            return getGiftDay;
+        }
+        set
+        {
+            getGiftDay = value;
+        }
+    }
+    int firstjoinday = 0;
+     
+    public int FirstJoinDay
+    {
+        get { return firstjoinday; }
+        set { firstjoinday += value; }
+    }
+   
+    int gotDilayPlayGiftCount; // 선물 받은 횟수
+    public int GotDilayPlayGiftCount
+    {
+        get { return gotDilayPlayGiftCount; }
+        set { gotDilayPlayGiftCount = value; }
+    }
+    ///////////////////////////////////////////////////
 
     [Header("# Resource")]
     string gold = "0";
@@ -36,7 +69,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    string star = "0"; // 환생시 주는 키
+    string star = "0"; // 환생시 주는 화폐
     public string Star
     {
         get
@@ -302,6 +335,7 @@ public class GameStatus : MonoBehaviour
             Destroy(this);
         }
         // 서버에서 데이터 받아와서 초기화해줌
+    
     }
 
     void Start()
@@ -319,6 +353,7 @@ public class GameStatus : MonoBehaviour
         
     }
 
+ 
     /// <summary>
     /// 실질적으로 골드증가 시키는 함수
     /// </summary>
@@ -330,11 +365,20 @@ public class GameStatus : MonoBehaviour
         PulsGold = result;
     }
 
+
+
     public void TakeGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);
         WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitChanger(getValue));
         PulsGold = result;
+    }
+
+    public void TakeStar(string getValue)
+    {
+        string result = CalCulator.inst.DigidPlus(Star, getValue);
+        WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(1, CalCulator.inst.StringFourDigitChanger(getValue));
+        Star = result;
     }
 
     public void MinusGold(string getValue)

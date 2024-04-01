@@ -177,12 +177,20 @@ public class ActionManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-       
+            GameStatus.inst.GetGiftDay[0] -= 1;
         }
         
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            GameStatus.inst.Ruby += 100;
+            LetterManager.inst.MakeLetter(0, "이동은", "테스트 (루비)편지입니다", 100);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            LetterManager.inst.MakeLetter(1, "게임GM", "테스트 (골드)편지입니다", 150);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            LetterManager.inst.MakeLetter(2, "박겸희", "테스트 편지 (별)입니다", 200);
         }
     }
 

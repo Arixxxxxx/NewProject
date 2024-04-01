@@ -78,6 +78,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4915752004229631794}
   - component: {fileID: 7170244665202604963}
+  - component: {fileID: 2814709135380697339}
   m_Layer: 0
   m_Name: FrontUI
   m_TagString: Untagged
@@ -125,6 +126,24 @@ MonoBehaviour:
   midArrayBtns: []
   midArrayBtnsImage:
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &2814709135380697339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2214145803004256810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7504cb2f9ade584408a4b7e55a1308ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  adBtnSprite:
+  - {fileID: 156669073, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
+  - {fileID: -222251119, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
+  GetBtn:
   - {fileID: 0}
   - {fileID: 0}
 --- !u!1 &2736036513137762766
@@ -179,8 +198,6 @@ MonoBehaviour:
   - {fileID: -1113515469, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
   - {fileID: 1121342626, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
   getGoldAndStar_Text: {fileID: 7590727819067225288, guid: cf8fd12e99f015349a14132c5c82dc08, type: 3}
-  adSample: {fileID: 0}
-  adXbtn: {fileID: 0}
 --- !u!114 &8657987254807945146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,6 +462,7 @@ GameObject:
   - component: {fileID: 7545983312889438815}
   - component: {fileID: 1261329416261446279}
   - component: {fileID: 8406171563017925295}
+  - component: {fileID: 4904963902540086993}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -510,3 +528,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffRubyPrice: 64000000fa00000064000000
+--- !u!114 &4904963902540086993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9049315439970797926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c51437ac03499b478022952f07f82c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  letter: {fileID: 2212636165233051943, guid: 42e8d957bc12a2a42afafbd60fb26434, type: 3}

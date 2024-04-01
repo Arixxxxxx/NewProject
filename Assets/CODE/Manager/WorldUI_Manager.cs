@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -43,10 +42,17 @@ public class WorldUI_Manager : MonoBehaviour
     TMP_Text alrimText;
 
     //샘플 광고테스트
-    [SerializeField]
     GameObject adSample;
-    [SerializeField]
     Button adXbtn;
+
+    //우편 수신함
+    Button getLetterBtn;
+    // 출석체크
+    Button dailyPlayCheckBtn;
+
+    //레드심볼 관리
+    List<GameObject> redSimBall_Icons = new List<GameObject>();
+
     private void Awake()
     {
         if (inst == null)
@@ -97,13 +103,34 @@ public class WorldUI_Manager : MonoBehaviour
 
 
         questListBtn = worldUI.transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
-        questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
+       
+
+        // 게임화면 우측상단 버튼들
+        getLetterBtn = worldUI.transform.Find("StageUI/Right/0_Line/Letter").GetComponent<Button>(); // 우편함
+        dailyPlayCheckBtn = worldUI.transform.Find("StageUI/Right/0_Line/DailyCheck").GetComponent<Button>(); //출석체크
+
+
         Prefabs_Awake();
+        redSimballI_Icons_List_Init();
+    }
+
+
+    // 아이콘 위에 빨간색구슬 초기화
+    private void redSimballI_Icons_List_Init()
+    {
+        GameObject simballRef = worldUI.transform.Find("StageUI/Right/Simballs").gameObject;
+        int count = simballRef.transform.childCount;
+
+        for(int index=0; index < count; index++)
+        {
+            redSimBall_Icons.Add(simballRef.transform.GetChild(index).gameObject);
+        }
+        
     }
     void Start()
     {
         //테스트용 나중에 지워야함
-        testBtnInit();
+        buttonInIt();
 
         // 최초 소지재화들 초기화
         curMaterial[0].text = GameStatus.inst.PulsGold;
@@ -173,7 +200,7 @@ public class WorldUI_Manager : MonoBehaviour
 
     int weaponNum;
    
-    private void testBtnInit()
+    private void buttonInIt()
     {
         testBtn[0].onClick.AddListener(() => 
         {
@@ -194,19 +221,9 @@ public class WorldUI_Manager : MonoBehaviour
                 weapbtnText[1].text = $"만렙";
             }
         });
-
-        //testBtn[2].onClick.AddListener(() => // 골드증가 테스트 버튼
-        //{
-        //    Debug.Log("2");
-        //    Get_Increase_GetGoldAndStar_Font(0, "912093203981029389");
-        //});
-
-        //testBtn[3].onClick.AddListener(() =>// 별증가 테스트 버튼
-        //{
-        //    Debug.Log("3");
-        //    Get_Increase_GetGoldAndStar_Font(1, "42344263424346465443");
-        //});
-
+        questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
+        getLetterBtn.onClick.AddListener( ()=> { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
+        dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
     }
 
     private void Prefabs_Awake()
@@ -288,7 +305,7 @@ public class WorldUI_Manager : MonoBehaviour
   /// </summary>
   /// <param name="witch"> buff ~~</param>
   /// <param name="value"></param>
-    public void SampleAD(string witch, int value)
+    public void SampleADBuff(string witch, int value)
     {
         adXbtn.onClick.RemoveAllListeners();
         adXbtn.onClick.AddListener(() =>
@@ -305,7 +322,6 @@ public class WorldUI_Manager : MonoBehaviour
                 BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
                 Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
             }
-           
             adXbtn.gameObject.SetActive(false);
             adSample.SetActive(false);
             buffSelectUIWindow.SetActive(false);
@@ -315,24 +331,77 @@ public class WorldUI_Manager : MonoBehaviour
         StartCoroutine(PlayAD());
     }
 
+    /// <summary>
+    /// 광고보고 루비 혹은 돈
+    /// </summary>
+    /// <param name="itemType"> 0 루비 / 1 골드</param>
+    /// <param name="value"> 값 </param>
+    public void SampleAD_Get_Currency(int itemType, int value)
+    {
+        adXbtn.onClick.RemoveAllListeners();
+        adXbtn.onClick.AddListener(() =>
+        {
+            switch (itemType)
+            {
+                case 0:
+                    GameStatus.inst.Ruby += value;
+                    break;
+
+                case 1:
+                    GameStatus.inst.TakeGold($"{value}");
+                    break;
+            }
+
+            adXbtn.gameObject.SetActive(false);
+            adSample.SetActive(false);
+            buffSelectUIWindow.SetActive(false);
+        });
+
+        StopCoroutine(PlayAD());
+        StartCoroutine(PlayAD());
+    }
     IEnumerator PlayAD()
     {
         adSample.SetActive(true);
         yield return new WaitForSeconds(3);
         adXbtn.gameObject.SetActive(true);
     }
+    
+    /// <summary>
+    /// 빨간색 심볼 켜주고 꺼주고
+    /// </summary>
+    /// <param name="index"> 0= 우편수신함</param>
+    /// <param name="value"> 키고 / 끄기 </param>
+    public void OnEnableRedSimball(int index, bool value)
+    {
+        redSimBall_Icons[index].SetActive(value);
+    }
+
     /// <summary>
     /// 월드UI 자원바 업데이트 함수 
     /// </summary>
     /// <param name="index"> 0골드 / 1별 / 2키 / 3루비</param>
     /// <param name="EA"> 현재 자원량 </param>
-    public void CurMaterialUpdate(int index, string EA) => curMaterial[index].text = CalCulator.inst.StringFourDigitChanger(EA);
-    
-    /// <summary>
-    /// 버프 선택창 호출
-    /// </summary>
-    /// <param name="value"> true / false </param>
-    public void buffSelectUIWindowAcitve(bool value) => buffSelectUIWindow.SetActive(value);
+    public void CurMaterialUpdate(int index, string EA)
+    {
+        
+
+        if(index != 3)
+        {
+            curMaterial[index].text = CalCulator.inst.StringFourDigitChanger(EA);
+        }
+        else if(index == 3) 
+        {
+            curMaterial[index].text = EA;
+        }
+    }
+
+
+        /// <summary>
+        /// 버프 선택창 호출
+        /// </summary>
+        /// <param name="value"> true / false </param>
+        public void buffSelectUIWindowAcitve(bool value) => buffSelectUIWindow.SetActive(value);
 
 
  
