@@ -49,6 +49,8 @@ public class WorldUI_Manager : MonoBehaviour
     Button getLetterBtn;
     // 출석체크
     Button dailyPlayCheckBtn;
+    // 뉴비버튼
+    Button newBieBtn;
 
     //레드심볼 관리
     List<GameObject> redSimBall_Icons = new List<GameObject>();
@@ -108,7 +110,7 @@ public class WorldUI_Manager : MonoBehaviour
         // 게임화면 우측상단 버튼들
         getLetterBtn = worldUI.transform.Find("StageUI/Right/0_Line/Letter").GetComponent<Button>(); // 우편함
         dailyPlayCheckBtn = worldUI.transform.Find("StageUI/Right/0_Line/DailyCheck").GetComponent<Button>(); //출석체크
-
+        newBieBtn = worldUI.transform.Find("StageUI/Right/1_Line/NewBie").GetComponent<Button>(); //출석체크
 
         Prefabs_Awake();
         redSimballI_Icons_List_Init();
@@ -130,7 +132,7 @@ public class WorldUI_Manager : MonoBehaviour
     void Start()
     {
         //테스트용 나중에 지워야함
-        buttonInIt();
+        BtnInIt();
 
         // 최초 소지재화들 초기화
         curMaterial[0].text = GameStatus.inst.PulsGold;
@@ -200,7 +202,7 @@ public class WorldUI_Manager : MonoBehaviour
 
     int weaponNum;
    
-    private void buttonInIt()
+    private void BtnInIt()
     {
         testBtn[0].onClick.AddListener(() => 
         {
@@ -221,9 +223,11 @@ public class WorldUI_Manager : MonoBehaviour
                 weapbtnText[1].text = $"만렙";
             }
         });
+
         questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
         getLetterBtn.onClick.AddListener( ()=> { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
+        newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true) ; });
     }
 
     private void Prefabs_Awake()

@@ -178,6 +178,7 @@ public class ActionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             GameStatus.inst.GetGiftDay[0] -= 1;
+            GameStatus.inst.GetNewbieGiftDay[0] -= 1;
         }
         
         if (Input.GetKeyDown(KeyCode.Alpha4))

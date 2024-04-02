@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -16,8 +14,6 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     GameObject[] iconBG;
     int iconCount;
 
-    
-
     Button xBtn;
 
     //받기 버튼 혹은 없는
@@ -27,6 +23,8 @@ public class DailyPlayCheckUIManager : MonoBehaviour
 
     //
     Button adViewAndGetRubyBtn;
+
+    
 
     void Awake()
     {
@@ -53,7 +51,6 @@ public class DailyPlayCheckUIManager : MonoBehaviour
 
         // 루비
         adViewAndGetRubyBtn = dailyWindowRef.transform.Find("ShowADBtn").GetComponent<Button>();
-            
 
         LayoutIconBGInit(); // 아이콘 백그라운드 일단 다 끄기
 
@@ -95,9 +92,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
             iconBG[index].SetActive(true);
         }
     }
-
-
-  
+      
 
     /// <summary>
     /// 켜주면서 초기화
@@ -105,13 +100,15 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     /// <param name="value"></param>
     public void MainWindow_Acitve(bool value)
     {
-        if (value == true)
+        if (value == true && GameStatus.inst.GotDilayPlayGiftCount < 20)
         {
             LayOutInit();
         }
 
         dailyCheckObjRef.SetActive(value);
     }
+
+
     // 게임실행시 아이콘에 빨간심볼 만들어주는 함수
     public void IconRedSimballInit()
     {
@@ -187,7 +184,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         int checkDay = int.Parse(layoutRef.transform.GetChild(GameStatus.inst.GotDilayPlayGiftCount).Find("NumberText").GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
 
         // N일차 보상받기 ~~ 텍스트 초기화
-        mainTaxt.text = $"< {checkDay}일차 > 출석체크 보상받기\r\n- 보상은 <color=green>우편함</color>으로 발송됩니다.";
+        mainTaxt.text = $"  < {checkDay}일차 > 출석체크 보상받기\r\n - 보상은 <color=green>우편함</color>으로 발송됩니다.";
 
         //수락일자 계산
         int[] NowDate = new int[3];

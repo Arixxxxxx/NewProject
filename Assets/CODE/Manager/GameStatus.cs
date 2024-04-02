@@ -5,12 +5,12 @@ public class GameStatus : MonoBehaviour
 {
     public static GameStatus inst;
 
-
     ///////////////////////////////////////////////////
     //최초 가입 일시
     // 이부분 나중에 첫 가입부분으로 옮겨야함
     // 최초에 필요한값 회원가입일자 
     // 첫 선물받기 시작한 일자
+
     DateTime firstdate = DateTime.Now;
     
     int[] getGiftDay = new int[3]; // 선물받은 년/월/일
@@ -25,6 +25,20 @@ public class GameStatus : MonoBehaviour
             getGiftDay = value;
         }
     }
+
+    int[] getNewbieGiftDay = new int[3]; // 선물받은 년/월/일
+    public int[] GetNewbieGiftDay
+    {
+        get
+        {
+            return getNewbieGiftDay;
+        }
+        set
+        {
+            getNewbieGiftDay = value;
+        }
+    }
+
     int firstjoinday = 0;
      
     public int FirstJoinDay
@@ -38,6 +52,13 @@ public class GameStatus : MonoBehaviour
     {
         get { return gotDilayPlayGiftCount; }
         set { gotDilayPlayGiftCount = value; }
+    }
+
+    int gotNewbieGiftCount; // 선물 받은 횟수
+    public int GotNewbieGiftCount
+    {
+        get { return gotNewbieGiftCount; }
+        set { gotNewbieGiftCount = value; }
     }
     ///////////////////////////////////////////////////
 
