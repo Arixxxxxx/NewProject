@@ -76,23 +76,23 @@ public class ShopManager : MonoBehaviour
 
     public void SetCheckBuy(List<GoldShop.Product> _list, string _price, ProductTag _priceType)
     {
-        list_buyWaiting = _list;
-        waitingPrice = _price;
-        waitingPriceType = _priceType;
-        int count = list_productImage.Count;
+        list_buyWaiting = _list;//구매 물품 저장
+        waitingPrice = _price;//구매 물품 가격
+        waitingPriceType = _priceType;//구매 가격 재화 타입
+        int count = list_productImage.Count;// 이미지 다 꺼주기
         for (int iNum = 0; iNum < count; iNum++)
         {
             list_productImage[iNum].gameObject.SetActive(false);
         }
 
         count = _list.Count;
-        for (int iNum = 0; iNum < count; iNum++)
+        for (int iNum = 0; iNum < count; iNum++)// 이미지 갯수에 맞게 켜주고 이미지 변경
         {
             list_productImage[iNum].gameObject.SetActive(true);
             list_productImage[iNum].sprite = _list[iNum].sprite;
             list_productCountText[iNum].text = _list[iNum].count;
         }
-        text_price.text = _price.ToString();
+        text_price.text = _price;
     }
 
     public void ClickBuyYes()
@@ -101,13 +101,13 @@ public class ShopManager : MonoBehaviour
         switch (waitingPriceType)
         {
             case ProductTag.Gold:
-                string convertGold = CalCulator.inst.ConvertChartoIndex(waitingPrice);
+                string convertGold = CalCulator.inst.ConvertChartoIndex(waitingPrice);//문자로 표기돼있는 숫자를 풀어서 반환
                 BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
                 if (haveGold >= BigInteger.Parse(convertGold))
                 {
                     GameStatus.inst.MinusGold(convertGold);
                     count = list_buyWaiting.Count;
-                    for (int iNum = 0; iNum < count; iNum++)
+                    for (int iNum = 0; iNum < count; iNum++)// 구매
                     {
                         list_buyWaiting[iNum].buyProduct();
                     }
@@ -121,7 +121,7 @@ public class ShopManager : MonoBehaviour
                 {
                     GameStatus.inst.Ruby -= iPrice;
                     count = list_buyWaiting.Count;
-                    for (int iNum = 0; iNum < count; iNum++)
+                    for (int iNum = 0; iNum < count; iNum++)//구매
                     {
                         list_buyWaiting[iNum].buyProduct();
                     }
@@ -129,12 +129,12 @@ public class ShopManager : MonoBehaviour
                 }
                 break;
             case ProductTag.Star:
-                string convertStar = CalCulator.inst.ConvertChartoIndex(waitingPrice);
+                string convertStar = CalCulator.inst.ConvertChartoIndex(waitingPrice);//문자로 표기돼있는 숫자를 풀어서 반환
                 BigInteger haveStar = BigInteger.Parse(GameStatus.inst.PulsGold);
                 if (haveStar >= BigInteger.Parse(convertStar))
                 {
                     //별 갯수 차감
-                    count = list_buyWaiting.Count;
+                    count = list_buyWaiting.Count;// 구매
                     for (int iNum = 0; iNum < count; iNum++)
                     {
                         list_buyWaiting[iNum].buyProduct();

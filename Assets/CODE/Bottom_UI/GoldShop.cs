@@ -1,20 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System;
 
 public class GoldShop : MonoBehaviour
 {
-
+    [Header("상품 목록")]
     [SerializeField] List<Product> list_product = new List<Product>();
+    [Header("상품 가격")]
     [SerializeField] string price;
+    [Header("가격 타입")]
     [SerializeField] ProductTag priceType;
-    [SerializeField] TMP_Text rewordText;
+    [Space]
+    [SerializeField] Sprite[] list_prodSprite;
     [SerializeField] TMP_Text priceText;
+    [SerializeField] Transform imageParents;
+    [SerializeField] GameObject obj_EmptyObj;
+    [SerializeField] Image priceImage;
+    List<Image> list_rewordImage = new List<Image>();
+    List<TMP_Text> list_rewordText = new List<TMP_Text>();
+
 
     [Serializable]
-
     public class Product
     {
         [SerializeField] public ProductTag prodtag;
@@ -40,7 +49,34 @@ public class GoldShop : MonoBehaviour
 
     private void Start()
     {
+        priceText.text = price;
+        priceImage.sprite = list_prodSprite[(int)priceType];
+        int prodCount = list_product.Count;
+        for (int iNum = 0; iNum < prodCount; iNum++)
+        {
+            Instantiate(obj_EmptyObj, imageParents);
+        }
 
+        int imageCount = imageParents.childCount;
+        for (int iNum = 0; iNum < imageCount; iNum++)
+        {
+            list_rewordImage.Add(imageParents.GetChild(iNum).GetComponent<Image>());
+        }
+
+        for (int iNum = 0; iNum < imageCount; iNum++)
+        {
+            list_rewordText.Add(list_rewordImage[iNum].transform.GetChild(0).GetComponent<TMP_Text>());
+        }
+
+        for (int iNum = 0; iNum < imageCount; iNum++)
+        {
+            list_rewordImage[iNum].sprite = list_product[iNum].sprite;
+        }
+
+        for (int iNum = 0; iNum < imageCount; iNum++)
+        {
+            list_rewordText[iNum].text = list_product[iNum].count;
+        }
     }
 
     public void ClickBuy()
