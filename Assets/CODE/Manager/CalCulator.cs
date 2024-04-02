@@ -247,6 +247,35 @@ public class CalCulator : MonoBehaviour
         }
         return result;
     }
+
+    public string ConvertChartoIndex(string _text)
+    {
+        
+        char firalp = _text[_text.Length - 1];
+        char secAlp = _text[_text.Length - 2];
+        int firNum = firalp - 64;
+        int secNum = secAlp - 64;
+        int firindex = 0;
+        int secindex = 0;
+        if (firNum >= 1 && firNum <= 26)
+        {
+            firindex = firNum * 3;
+            _text = _text.Remove(_text.Length - 1);
+        }
+        if (secNum >= 1 && secNum <= 26)
+        {
+            secindex = secNum * 26;
+            _text = _text.Remove(_text.Length - 1);
+        }
+        string result = _text;
+        int count = firindex + secindex;
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            result += '0';
+        }
+
+        return result;
+    }
     /// <summary>
     /// 문자 제외 앞자리 숫자만 리턴
     /// </summary>

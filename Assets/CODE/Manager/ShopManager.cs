@@ -101,15 +101,17 @@ public class ShopManager : MonoBehaviour
         switch (waitingPriceType)
         {
             case ProductTag.Gold:
+                string convertGold = CalCulator.inst.ConvertChartoIndex(waitingPrice);
                 BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
-                if (haveGold >= BigInteger.Parse(waitingPrice))
+                if (haveGold >= BigInteger.Parse(convertGold))
                 {
-                    GameStatus.inst.MinusGold(waitingPrice);
+                    GameStatus.inst.MinusGold(convertGold);
                     count = list_buyWaiting.Count;
                     for (int iNum = 0; iNum < count; iNum++)
                     {
                         list_buyWaiting[iNum].buyProduct();
                     }
+                    obj_BuyCheck.SetActive(false);
                 }
                 break;
             case ProductTag.Ruby:
@@ -123,11 +125,13 @@ public class ShopManager : MonoBehaviour
                     {
                         list_buyWaiting[iNum].buyProduct();
                     }
+                    obj_BuyCheck.SetActive(false);
                 }
                 break;
             case ProductTag.Star:
+                string convertStar = CalCulator.inst.ConvertChartoIndex(waitingPrice);
                 BigInteger haveStar = BigInteger.Parse(GameStatus.inst.PulsGold);
-                if (haveStar >= BigInteger.Parse(waitingPrice))
+                if (haveStar >= BigInteger.Parse(convertStar))
                 {
                     //º° °¹¼ö Â÷°¨
                     count = list_buyWaiting.Count;
@@ -135,9 +139,10 @@ public class ShopManager : MonoBehaviour
                     {
                         list_buyWaiting[iNum].buyProduct();
                     }
+                    obj_BuyCheck.SetActive(false);
                 }
                 break;
         }
-        obj_BuyCheck.SetActive(false);
+        
     }
 }

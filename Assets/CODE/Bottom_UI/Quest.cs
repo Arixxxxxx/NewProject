@@ -99,7 +99,6 @@ public class Quest : MonoBehaviour
         if (btnnum != 3)//max°¡ ¾Æ´Ò¶§
         {
             nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
-            Debug.Log(nextCost);
         }
         else
         {
