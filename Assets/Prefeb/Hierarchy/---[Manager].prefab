@@ -79,6 +79,7 @@ GameObject:
   - component: {fileID: 4915752004229631794}
   - component: {fileID: 7170244665202604963}
   - component: {fileID: 2814709135380697339}
+  - component: {fileID: 390421881016182503}
   m_Layer: 0
   m_Name: FrontUI
   m_TagString: Untagged
@@ -146,6 +147,22 @@ MonoBehaviour:
   GetBtn:
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &390421881016182503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2214145803004256810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeedfc5a8bde65b4abbf34f5c54fb194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgBoxSideSprite:
+  - {fileID: -1400070277, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
+  - {fileID: -1622704582, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
+  gotItemColor: {r: 0.30980393, g: 0.92549026, b: 0.9803922, a: 1}
 --- !u!1 &2736036513137762766
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,6 +480,7 @@ GameObject:
   - component: {fileID: 1261329416261446279}
   - component: {fileID: 8406171563017925295}
   - component: {fileID: 4904963902540086993}
+  - component: {fileID: 4419585097905868713}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -541,3 +559,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   letter: {fileID: 2212636165233051943, guid: 42e8d957bc12a2a42afafbd60fb26434, type: 3}
+--- !u!114 &4419585097905868713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9049315439970797926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 8b0bc32a37821fa45995693ccabc55b2, type: 2}
