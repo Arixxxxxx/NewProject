@@ -9,7 +9,7 @@ public class BuffManager : MonoBehaviour
     [Header("# Input Buff Time (Min) / View ToolTip")]
 
     [Space]
-    [SerializeField][Tooltip("0번 : UI창 광고 ATK \n1번 : UI 창 광고 이동속도\n2번: UI창 광고 골드획득량\n3번: 인게임 팝업광고 공격력")] float[] adBuffTime; 
+    [SerializeField][Tooltip("0번 : UI창 광고 ATK \n1번 : UI 창 광고 이동속도\n2번: UI창 광고 골드획득량\n3번: 인게임 팝업광고 공격력// 4번 뉴비버프")] float[] adBuffTime; 
     public float AdbuffTime(int index) => adBuffTime[index];
 
     [SerializeField][Tooltip("0번 : UI창 루비 ATK \n1번 : UI 창 루비 이동속도\n2번: UI창 루비 골드획득량")] float[] RubyBuffTime;
@@ -48,6 +48,9 @@ public class BuffManager : MonoBehaviour
 
 
     int useRutyTemp;
+    // 뉴비버튼
+    GameObject newbiebuffIcon;
+    GameObject newbiebuffIconActive;
 
     private void Awake()
     {
@@ -62,7 +65,7 @@ public class BuffManager : MonoBehaviour
 
         viewAdATKBuff = Random.Range(10f, 15f);
         worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
-        adBuffBtn = worldUI.transform.Find("StageUI/ADBuff").GetComponent<Button>();
+        adBuffBtn = worldUI.transform.Find("StageUI/ADBuff").GetComponent<Button>(); // 인게임 팝업 버프아이콘
 
         buffWindow = GameObject.Find("---[FrontUICanvas]").gameObject;
 
@@ -120,6 +123,9 @@ public class BuffManager : MonoBehaviour
         useRubyBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_Ruby").GetComponent<Button>();
         useRubyBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_Ruby").GetComponent<Button>();
 
+        //뉴비 관련
+        newbiebuffIcon = worldUI.transform.Find("StageUI/Buff/NewBie").gameObject;
+        newbiebuffIconActive = newbiebuffIcon.transform.Find("Active").gameObject;
 
         uiWindowTimeInfo[0].text = $"+{adBuffTime[0]}M";
         uiWindowTimeInfo[1].text = $"+{RubyBuffTime[0]}M";
@@ -318,6 +324,17 @@ public class BuffManager : MonoBehaviour
         }
 
         return null;
+    }
+
+
+    /// <summary>
+    /// 인게임 버프창 뉴비아이콘 상태 체크
+    /// </summary>
+    /// <param name="value"></param>
+    public void NewBieBuffActive(bool value)
+    {
+        newbiebuffIcon.SetActive(value);
+        newbiebuffIconActive.SetActive(value);
     }
 }
 

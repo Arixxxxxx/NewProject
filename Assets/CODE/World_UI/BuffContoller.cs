@@ -8,18 +8,27 @@ public class BuffContoller : MonoBehaviour
 {
     public static BuffContoller inst;
 
+    // 버프 인데스 설명
+    // 0 공격력
+    // 1 이동속도
+    // 2 골드
+    // 3 광고 5분 공격력버프
+    // 4 뉴비
+
     GameObject worldUI;
     GameObject buffParent;
 
 
     Button[] buffBtns;
+
     GameObject[] buffActive;
     TMP_Text[] buffTime;
-
-    float[] buffTimer;
+    [SerializeField]
+    double[] buffTimer;
 
     ParticleSystem[] buffIconPs;
-
+    
+    GameObject newBieObj;
     private void Awake()
     {
         if (inst == null)
@@ -38,7 +47,7 @@ public class BuffContoller : MonoBehaviour
         buffBtns = new Button[buffChild];
         buffActive = new GameObject[buffChild];
         buffTime = new TMP_Text[buffChild];
-        buffTimer = new float[buffChild];
+        buffTimer = new double[buffChild];
         buffIconPs = new ParticleSystem[buffChild];
 
 
@@ -50,15 +59,17 @@ public class BuffContoller : MonoBehaviour
             buffTime[index] = buffActive[index].GetComponentInChildren<TMP_Text>();
             buffIconPs[index] = buffActive[index].GetComponentInChildren<ParticleSystem>();
         }
-
-
-        //버튼 초기화
-
-        // 활성화
+        newBieObj = buffActive[4].transform.parent.gameObject;
+        //buffActive[4] = buffActive[4].transform.parent.gameObject;
     }
     private void Start()
     {
-
+        
+        // 뉴비 버프 시간 넣어줌 (나중에 데이터매니저 신규유저일시넣어줌으로 옮겨야함)
+        if (GameStatus.inst.IsNewBie && buffTimer[4] == 0)
+        {
+            ActiveBuff(4, 10080);
+        }
     }
 
 
@@ -68,6 +79,8 @@ public class BuffContoller : MonoBehaviour
         BuffTimeCheck(1);
         BuffTimeCheck(2);
         BuffTimeCheck(3);
+
+        NewBieBuffTimeCheck();
     }
 
     /// <summary>
@@ -79,16 +92,40 @@ public class BuffContoller : MonoBehaviour
     {
         buffTimer[Num] += Time * 60;
 
-        if (Num != 3 && buffActive[Num].activeSelf == false)
+        switch (Num)
         {
-            buffActive[Num].SetActive(true);
-            BuffIconParticleReset();
+            case 0:  //공
+            case 1:  //이속
+            case 2:  //골드
+
+                if (buffActive[Num].activeSelf == false)
+                {
+                    buffActive[Num].SetActive(true);
+                    BuffIconParticleReset();
+                }
+
+                break;
+
+            case 3: // 공격력 광고 5분
+
+                if (buffBtns[Num].gameObject.activeSelf == false)
+                {
+                    buffBtns[Num].gameObject.SetActive(true);
+                    BuffIconParticleReset();
+                }
+
+                break;
+
+            case 4:
+
+                newBieObj.SetActive(true);
+
+                break;
         }
-        else if(Num == 3 && buffBtns[Num].gameObject.activeSelf == false)
-        {
-            buffBtns[Num].gameObject.SetActive(true);
-            BuffIconParticleReset();
-        }
+
+
+
+
 
 
         //버프활성화되엇다고 알림 
@@ -100,17 +137,20 @@ public class BuffContoller : MonoBehaviour
     /// </summary>
     private void BuffTimeCheck(int index)
     {
-        // 버프 1번
         if (buffTimer[index] <= 0 && buffActive[index].activeSelf)
         {
-            if (index != 3)
+            switch (index)
             {
-                buffTimer[index] = 0;
-                buffActive[index].gameObject.SetActive(false);
-            }
-            else if (index == 3)
-            {
-                buffBtns[index].gameObject.SetActive(false);
+                case 0: // 공격력 버프
+                case 1:  // 이속 버프
+                case 2: // 골드 버프
+                    buffTimer[index] = 0;
+                    buffActive[index].gameObject.SetActive(false);
+                    break;
+
+                case 3:  // 이벤트 광고 버프
+                    buffBtns[index].gameObject.SetActive(false);
+                    break;
             }
         }
         else if (buffTimer[index] > 0 && buffActive[index].activeSelf)
@@ -139,6 +179,21 @@ public class BuffContoller : MonoBehaviour
         }
     }
 
+
+    //뉴비 전용 타임체커
+    private void NewBieBuffTimeCheck()
+    {
+        if (buffTimer[4] <= 0 && newBieObj.activeSelf == true)
+        {
+            newBieObj.gameObject.SetActive(false);
+        }
+        else if (buffTimer[4] > 0 && newBieObj.activeSelf)
+        {
+            buffTimer[4] -= Time.deltaTime;
+            
+        }
+    }
+
     public void BuffIconParticleReset()
     {
         for (int index = 0; index < buffIconPs.Length; index++)
@@ -146,6 +201,16 @@ public class BuffContoller : MonoBehaviour
             buffIconPs[index].Stop();
             buffIconPs[index].Play();
         }
+    }
+
+    /// <summary>
+    /// 버프시간의 남은 시간 [분 (min) ] 으로 리턴
+    /// </summary>
+    /// <param name="type"> 0공격/1이속/2골드/3광고버프/4뉴비버프</param>
+    /// <returns></returns>
+    public int GetBuffTime(int type)
+    {
+        return (int)buffTimer[type] / 60;
     }
 
 }

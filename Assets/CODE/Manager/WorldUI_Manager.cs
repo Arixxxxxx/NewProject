@@ -6,9 +6,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
-
 public class WorldUI_Manager : MonoBehaviour
 {
     public static WorldUI_Manager inst;
@@ -18,12 +15,12 @@ public class WorldUI_Manager : MonoBehaviour
     Queue<GameObject> getGoldAndStar_TextQue = new Queue<GameObject>();
     Transform fontDanymic;
     Transform[] fontPoint = new Transform[2]; // 풀링오브젝트 스타트포인트 초기화용
-    
+
     GameObject worldUI;
     Image[] stageSlot = new Image[5];
     Image uiBossHead;
     TMP_Text stageText;
-    
+
     Button[] testBtn;
     TMP_Text[] weapbtnText;
     Animator cuttonBlack;
@@ -77,7 +74,7 @@ public class WorldUI_Manager : MonoBehaviour
         textAlrim = worldUI.transform.Find("TextAlrim").GetComponent<Animator>();
         alrimText = textAlrim.GetComponentInChildren<TMP_Text>();
 
-       //버프창
+        //버프창
         buffSelectUIWindow = frontUICanvas.transform.Find("Buff_Window").gameObject;
 
         cuttonBlack = worldUI.transform.Find("Cutton(B)").GetComponent<Animator>();
@@ -93,7 +90,7 @@ public class WorldUI_Manager : MonoBehaviour
         //테스트 버튼
         testBtn = worldUI.transform.Find("TestBtn").GetComponentsInChildren<Button>();
         weapbtnText = new TMP_Text[testBtn.Length];
-        for(int index=0; index < testBtn.Length; index++)
+        for (int index = 0; index < testBtn.Length; index++)
         {
             weapbtnText[index] = testBtn[index].GetComponentInChildren<TMP_Text>();
         }
@@ -105,7 +102,7 @@ public class WorldUI_Manager : MonoBehaviour
 
 
         questListBtn = worldUI.transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
-       
+
 
         // 게임화면 우측상단 버튼들
         getLetterBtn = worldUI.transform.Find("StageUI/Right/0_Line/Letter").GetComponent<Button>(); // 우편함
@@ -123,11 +120,11 @@ public class WorldUI_Manager : MonoBehaviour
         GameObject simballRef = worldUI.transform.Find("StageUI/Right/Simballs").gameObject;
         int count = simballRef.transform.childCount;
 
-        for(int index=0; index < count; index++)
+        for (int index = 0; index < count; index++)
         {
             redSimBall_Icons.Add(simballRef.transform.GetChild(index).gameObject);
         }
-        
+
     }
     void Start()
     {
@@ -180,7 +177,7 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="Value"></param>
     public void Set_Menual_WorldBlackCottun(bool Value)
     {
-       cuttonBlack.SetTrigger(Value == true ? "FadeOn" : "FadeOff");
+        cuttonBlack.SetTrigger(Value == true ? "FadeOn" : "FadeOff");
     }
 
     /// <summary>
@@ -201,33 +198,33 @@ public class WorldUI_Manager : MonoBehaviour
     }
 
     int weaponNum;
-   
+
     private void BtnInIt()
     {
-        testBtn[0].onClick.AddListener(() => 
+        testBtn[0].onClick.AddListener(() =>
         {
             //weaponNum++;
             //weapbtnText[0].text = $"무기 교체 {weaponNum}번";
-             ActionManager.inst.TestBtnWeaponChange(); 
+            ActionManager.inst.TestBtnWeaponChange();
         });
 
-        testBtn[1].onClick.AddListener(() => 
+        testBtn[1].onClick.AddListener(() =>
         {
             GameStatus.inst.AtkSpeedLv++;
-            if(GameStatus.inst.AtkSpeedLv < 10)
+            if (GameStatus.inst.AtkSpeedLv < 10)
             {
                 weapbtnText[1].text = $"공격 속도 x {GameStatus.inst.AtkSpeedLv}";
             }
-            else if(GameStatus.inst.AtkSpeedLv >= 10)
+            else if (GameStatus.inst.AtkSpeedLv >= 10)
             {
                 weapbtnText[1].text = $"만렙";
             }
         });
 
         questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
-        getLetterBtn.onClick.AddListener( ()=> { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
+        getLetterBtn.onClick.AddListener(() => { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
-        newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true) ; });
+        newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
     }
 
     private void Prefabs_Awake()
@@ -246,7 +243,7 @@ public class WorldUI_Manager : MonoBehaviour
         }
     }
     /// <summary>
-    /// Gold = 0 / Star = 1
+    /// 화면 자원바 획득한 자원량 숫자올라가는 연출 ( Gold = 0 / Star = 1 )
     /// </summary>
     /// <param name="index"></param>
     /// <returns></returns>
@@ -260,7 +257,7 @@ public class WorldUI_Manager : MonoBehaviour
             obj.SetActive(false);
         }
 
-        
+
         GameObject objs = getGoldAndStar_TextQue.Dequeue();
         objs.transform.localPosition = fontPoint[index].localPosition;
         objs.GetComponent<UI_IncreaseValueFont>().Set_PosAndColorInit(index, textvalue);
@@ -304,24 +301,25 @@ public class WorldUI_Manager : MonoBehaviour
     }
 
 
-  /// <summary>
-  /// 광고보고 버프 활성화시켜주는 함수
-  /// </summary>
-  /// <param name="witch"> buff ~~</param>
-  /// <param name="value"></param>
+
+    /// <summary>
+    /// 광고보고 버프 활성화시켜주는 함수
+    /// </summary>
+    /// <param name="witch"> buff ~~</param>
+    /// <param name="value">0 ~ 2 버프선택 창에있는 버프들 / 3 = 클릭하는 화면버프 </param>
     public void SampleADBuff(string witch, int value)
     {
         adXbtn.onClick.RemoveAllListeners();
         adXbtn.onClick.AddListener(() =>
         {
-            if(witch == "buff" && value != 3)
+            if (witch == "buff" && value != 3)
             {
                 BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
                 BuffManager.inst.AddBuffCoolTime(value, (int)BuffManager.inst.AdbuffTime(value)); // 쿨타임 시간추가
                 Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(value, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
-                
+
             }
-            else if(value == 3)
+            else if (value == 3) // 클릭하는 화면 버프
             {
                 BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
                 Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
@@ -370,7 +368,7 @@ public class WorldUI_Manager : MonoBehaviour
         yield return new WaitForSeconds(3);
         adXbtn.gameObject.SetActive(true);
     }
-    
+
     /// <summary>
     /// 빨간색 심볼 켜주고 꺼주고
     /// </summary>
@@ -381,6 +379,7 @@ public class WorldUI_Manager : MonoBehaviour
         redSimBall_Icons[index].SetActive(value);
     }
 
+
     /// <summary>
     /// 월드UI 자원바 업데이트 함수 
     /// </summary>
@@ -388,26 +387,25 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="EA"> 현재 자원량 </param>
     public void CurMaterialUpdate(int index, string EA)
     {
-        
-
-        if(index != 3)
+        if (index != 3) // 루비가 아니면 (골드,별,키)
         {
-            curMaterial[index].text = CalCulator.inst.StringFourDigitChanger(EA);
+            curMaterial[index].text = CalCulator.inst.StringFourDigitAddFloatChanger(EA);
         }
-        else if(index == 3) 
+        else if (index == 3)
         {
             curMaterial[index].text = EA;
         }
     }
 
 
-        /// <summary>
-        /// 버프 선택창 호출
-        /// </summary>
-        /// <param name="value"> true / false </param>
-        public void buffSelectUIWindowAcitve(bool value) => buffSelectUIWindow.SetActive(value);
+    /// <summary>
+    /// 버프 선택창 호출
+    /// </summary>
+    /// <param name="value"> true / false </param>
+    public void buffSelectUIWindowAcitve(bool value) => buffSelectUIWindow.SetActive(value);
+
+    public void NewbieBtnAcitveFalse() => newBieBtn.gameObject.SetActive(false);
 
 
- 
-    
+
 }

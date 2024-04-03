@@ -155,6 +155,7 @@ public class LetterManager : MonoBehaviour
             notthingLetter.gameObject.SetActive(true);
         }
     }
+
     /// <summary>
     /// 최종 승인창 => 우편 버튼 눌렀을때
     /// </summary>
