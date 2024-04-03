@@ -190,7 +190,7 @@ public class LetterManager : MonoBehaviour
                 break;
 
             case 2:
-                GameStatus.inst.TakeStar(itemCount.ToString());
+                GameStatus.inst.PlusStar(itemCount.ToString());
                 break;
         }
 

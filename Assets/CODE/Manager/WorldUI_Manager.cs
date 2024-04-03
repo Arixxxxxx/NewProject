@@ -132,7 +132,7 @@ public class WorldUI_Manager : MonoBehaviour
         BtnInIt();
 
         // 최초 소지재화들 초기화
-        curMaterial[0].text = GameStatus.inst.PulsGold;
+        curMaterial[0].text = GameStatus.inst.Gold;
         curMaterial[1].text = GameStatus.inst.Star;
         curMaterial[2].text = GameStatus.inst.Key;
         curMaterial[3].text = GameStatus.inst.Ruby.ToString();
@@ -350,7 +350,7 @@ public class WorldUI_Manager : MonoBehaviour
                     break;
 
                 case 1:
-                    GameStatus.inst.TakeGold($"{value}");
+                    GameStatus.inst.PlusGold($"{value}");
                     break;
             }
 

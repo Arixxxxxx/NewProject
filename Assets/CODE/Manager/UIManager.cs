@@ -201,7 +201,7 @@ public class UIManager : MonoBehaviour
 
     public void MaxBuyWeapon()
     {
-        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
+        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
         int lv = haveWeaponLv;
         int Number = lv / 5;
         BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();

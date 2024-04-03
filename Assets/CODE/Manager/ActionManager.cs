@@ -157,7 +157,8 @@ public class ActionManager : MonoBehaviour
     }
 
     int index = 1;
-    float attackS = 0.15f;
+    
+
     void Update()
     {
         if (attackReady == true) // 전투
@@ -165,19 +166,13 @@ public class ActionManager : MonoBehaviour
             AttackEnemy();
         }
 
-        
-
-
         //테스트용
-
-        
-
         if (Input.GetKeyDown(KeyCode.W))
         {
             GameStatus.inst.GetGiftDay[0] -= 1;
             GameStatus.inst.GetNewbieGiftDay[0] -= 1;
         }
-        
+
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             //BuffContoller.inst.ActiveBuff(4, 3);
@@ -193,10 +188,10 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-
+    // UI Bar 초기화
     private void UI_Init()
     {
-        // UI Bar 초기화
+      
         statusManager = GameStatus.inst;
         if (statusManager.FloorLv > 1)
         {
@@ -206,13 +201,11 @@ public class ActionManager : MonoBehaviour
         {
             WorldUI_Manager.inst.Reset_StageUiBar();
         }
-
     }
 
-
+    // 움직이기전 초기화
     private void MoveMap()
     {
-        // 움직이기전 초기화
         if (ismove == false)
         {
             ismove = true;
@@ -233,53 +226,17 @@ public class ActionManager : MonoBehaviour
         }
 
         // 배경 움직임
-        matVec.x += (Time.deltaTime * backGroundSpeed) * GameStatus.inst.BuffAddSpeed;
+        matVec.x += (Time.deltaTime * backGroundSpeed) * (1 + (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
         matVec.x = Mathf.Repeat(matVec.x, 1);
         mat.mainTextureOffset = matVec;
 
     }
 
-    
-    
-    private void EnemyMove()
-    {
-        //에너미 스폰 및 대기장소까지 전진
-        checkPosition = Vector2.Distance(enemyObj.transform.position, enemy_StopPoint.position);
-
-        if (checkPosition > 0.85f) // 거리값 체크 2이상 이동
-        {
-            enemyPosX += (Time.deltaTime * enemySpawnSpeed) * GameStatus.inst.BuffAddSpeed;
-            enemyVec.x -= enemyPosX;
-            enemyObj.transform.position = enemyVec;
-        }
-        else if (checkPosition < 0.85f) // 2미만 공격
-        {
-            attackReady = true;
-
-            enemyVec.x = 0;
-            ismove = false;
-        }
-    }
-
-    //애니메이션 공격 함수
-    public void A_PlayerAttackToEnemy()
-    {
-        StopCoroutine(enemyOnHit(0));
-        StartCoroutine(enemyOnHit(0));
-    }
-    public void A_Pet0AttackToEnemy()
-    {
-        StopCoroutine(enemyOnHit(1));
-        StartCoroutine(enemyOnHit(1));
-    }
-
     // 공격 함수 
     private void AttackEnemy()
     {
-
         if (playerAnim.GetBool("Move") == true) // 공격 Animation On
         {
-
             playerAnim.SetBool("Move", false);
             petManager.PetAnimPlay(false);
             playerAnim.transform.position = new Vector2(-0.706f, 5.45f);
@@ -293,14 +250,53 @@ public class ActionManager : MonoBehaviour
     }
 
 
-    IEnumerator enemyOnHit(int index)
+    private void EnemyMove()
+    {
+        //에너미 스폰 및 대기장소까지 전진
+        checkPosition = Vector2.Distance(enemyObj.transform.position, enemy_StopPoint.position);
+
+        if (checkPosition > 0.85f) // 거리값 체크 2이상 이동
+        {
+            enemyPosX += (Time.deltaTime * enemySpawnSpeed) * ( 1 +  (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
+            enemyVec.x -= enemyPosX;
+            enemyObj.transform.position = enemyVec;
+        }
+        else if (checkPosition < 0.85f) // 2미만 공격
+        {
+            attackReady = true;
+
+            enemyVec.x = 0;
+            ismove = false;
+        }
+    }
+
+    // 애니메이션 공격 
+    public void A_PlayerAttackToEnemy()
+    {
+        StopCoroutine(EnemyOnHitDMG(0));
+        StartCoroutine(EnemyOnHitDMG(0));
+    }
+
+    public void A_Pet0AttackToEnemy()
+    {
+        StopCoroutine(EnemyOnHitDMG(1));
+        StartCoroutine(EnemyOnHitDMG(1));
+    }
+
+    // 공격 함수!! //
+    IEnumerator EnemyOnHitDMG(int index) // < =
     {
         enemyAnim.SetTrigger("Hit");
         PlayerInit();
-        //기본 대미지 계산
-        string firstDmg = CalCulator.inst.DigidPlus(atkPower, GameStatus.inst.AddPetAtkBuff);
-        string AdDMG = CalCulator.inst.DigidPlus(firstDmg, GameStatus.inst.BuffAddAdATK);
-        string DMG = CalCulator.inst.DigidPlus(AdDMG, GameStatus.inst.BuffAddATK);
+
+        // 뉴비버프 어택카운트 및 버프 
+        GameStatus.inst.NewbieAttackCountUp(true);
+        if (GameStatus.inst.IsNewBie)
+        {
+            atkPower = CalCulator.inst.StringAndIntMultiPly(atkPower, GameStatus.inst.Get_NewBieAttackBuff_MultiplyValue());
+        }
+
+        string DMG = atkPower;
 
         if (index == 0) // 플레이어일시
         {
@@ -332,22 +328,23 @@ public class ActionManager : MonoBehaviour
                 EnemyHPBarUI_Updater();
                 EnemyOnHitEffect(cri);
             }
-            else if(checkDMG == "Dead")//에너미 사망 및 초기화
+            else if (checkDMG == "Dead")//에너미 사망 및 초기화
             {
                 StartCoroutine(GetGoldActionParticle());
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
-                GameStatus.inst.TakeGold(getGold);
+                GameStatus.inst.PlusGold(getGold);
                 EnemyDeadFloorUp();
+                GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
             }
-            
+
             // 한타 떄려서 버프값 0으로 초기화
             PetContollerManager.inst.AttackBuffDisable();
 
         }
-        
 
-        else if(index == 1)
+
+        else if (index == 1)
         {
             // 펫대미지 공식 => 플레이어 대미지 * 펫레벨+1
 
@@ -363,18 +360,19 @@ public class ActionManager : MonoBehaviour
                 GameObject obj = Get_Pooling_Prefabs(0);
                 obj.transform.position = dmgFontParent.position;
 
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(PetDmg), false,0);
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(PetDmg), false, 0);
                 obj.SetActive(true);
-                
+
             }
-            else if(MinusValue == "Dead")//에너미 사망 및 초기화
+            else if (MinusValue == "Dead")//에너미 사망 및 초기화
             {
                 StartCoroutine(GetGoldActionParticle());
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
                 WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
-                GameStatus.inst.TakeGold(getGold);
+                GameStatus.inst.PlusGold(getGold);
                 EnemyDeadFloorUp();
+                GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
             }
         }
 
@@ -382,7 +380,7 @@ public class ActionManager : MonoBehaviour
 
     }
 
-    // 몬스터 죽엇을때 돈이 팡 튀는 파티클 재생 함수
+    // 몬스터 죽엇을때 돈이 팡 튀는 파티클 재생 
     IEnumerator GetGoldActionParticle()
     {
         GameObject ps = Get_Pooling_Prefabs(1);
@@ -392,8 +390,9 @@ public class ActionManager : MonoBehaviour
         yield return new WaitForSeconds(1);
         Return_Pooling_Prefabs(ps, 1);
     }
+
     /// <summary>
-    /// 몬스터 사망 Init 함수
+    /// 몬스터 사망 Init
     /// </summary>
     private void EnemyDeadFloorUp()
     {
@@ -428,7 +427,7 @@ public class ActionManager : MonoBehaviour
 
     IEnumerator NextStageAction()
     {
-        
+
         playerAnim.SetTrigger("Out");
 
         yield return new WaitForSeconds(0.2f);
@@ -484,6 +483,8 @@ public class ActionManager : MonoBehaviour
     bool isUIActive;
 
 
+
+    // 몬스터 초기화
     private void Enemyinit()
     {
         // 나중에 체력 초기화 연산 바꿔야함
@@ -505,35 +506,47 @@ public class ActionManager : MonoBehaviour
     }
 
 
+    // 플레이어 초기화
     private void PlayerInit()
     {
-        atkPower = CalCulator.inst.Get_ATKtoString();
+        atkPower = CalCulator.inst.Get_CurPlayerATK();
         attackSpeedLv = GameStatus.inst.AtkSpeedLv;
         float attackTempSpeed = 0.6f;
 
-        //어택레벨당 0.3초씩 감소
+        //어택레벨당 0.15초씩 감소
         attackSpeed = attackTempSpeed - (attackSpeedLv * 0.15f);
     }
 
     // 에너미 HP 바 업데이터
-    float fillAmountA, fillAmountB;
+  
     private void EnemyHPBarUI_Updater()
     {
-        hpBar_IMG.fillAmount = CalCulator.inst.StringAndStringDivideReturnFloat(enemyCurHP, enemyMaxHP , 3);
+        hpBar_IMG.fillAmount = CalCulator.inst.StringAndStringDivideReturnFloat(enemyCurHP, enemyMaxHP, 3);
         hpBar_Text.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(enemyCurHP)}";
     }
 
-    // 추후에 연산 입력해야함
+
+    
+    ////////////////////////////// [ 플레이어 속도증가 관련 ] /////////////////////////////////////////
     
 
-
-    public void PlayerAttackSpeedLvUp(int Lv)
+    //플레이어 공격속도 증가 함수
+    public void PlayerAttackSpeedLvUp()
     {
         if (GameStatus.inst.AtkSpeedLv >= 10) { return; }
 
-        playerAnim.SetFloat("AttackSpeed", 1 + (attackS * Lv));
-        Debug.Log($"Total : {1 + (attackS * Lv)} / AddSpeed {attackS} + {Lv}");
+        playerAnim.SetFloat("AttackSpeed", 1 + (0.15f * GameStatus.inst.AtkSpeedLv) + GameStatus.inst.NewbieAttackSpeed);
     }
+
+
+    // 플레이어 움직임 속도변경
+    public void SetPlayerMoveSpeed()
+    {
+        float speed = 1 + GameStatus.inst.BuffAddSpeed;
+        playerAnim.SetFloat("MoveSpeed", speed);
+    }
+
+
 
 
     //풀링시스템
@@ -605,14 +618,14 @@ public class ActionManager : MonoBehaviour
     }
 
     int mapint = 0;
-    private void TestMapChanger()
+    private void TestMapChanger() 
     {
         mapint++;
         mapint = mapint == 2 ? 0 : 1;
         backGroundIMG.sprite = backGroudSprite[mapint];
     }
 
-    
+
     private void Set_MapSpriteChanger(int indexNum)
     {
         backGroundIMG.sprite = backGroudSprite[indexNum];
@@ -671,16 +684,15 @@ public class ActionManager : MonoBehaviour
         palyerWeapenSr.sprite = weaponSprite[index];
 
     }
-    
+
 
     // 몬스터 죽고 골드 상승
     public string Get_EnemyDeadGold() => CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.GetTotalGold(), 3);
-    
-    // 플레이어 하이라키 오브젝트 리턴
-    public GameObject ReturnPlayerObjInHierachy () => playerAnim.gameObject;
-    public GameObject ReturnEnemyObjInHierachy () => enemyObj;
 
-    // 플레이어 움직임 속도변경
-    public void SetPlayerMoveSpeed() => playerAnim.SetFloat("MoveSpeed", GameStatus.inst.BuffAddSpeed);
+    // 플레이어 하이라키 오브젝트 리턴
+    public GameObject ReturnPlayerObjInHierachy() => playerAnim.gameObject;
+    public GameObject ReturnEnemyObjInHierachy() => enemyObj;
+
+
 
 }

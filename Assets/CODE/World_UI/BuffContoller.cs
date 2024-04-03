@@ -117,9 +117,7 @@ public class BuffContoller : MonoBehaviour
                 break;
 
             case 4:
-
                 newBieObj.SetActive(true);
-
                 break;
         }
 
@@ -150,6 +148,7 @@ public class BuffContoller : MonoBehaviour
 
                 case 3:  // 이벤트 광고 버프
                     buffBtns[index].gameObject.SetActive(false);
+                    
                     break;
             }
         }
@@ -186,11 +185,11 @@ public class BuffContoller : MonoBehaviour
         if (buffTimer[4] <= 0 && newBieObj.activeSelf == true)
         {
             newBieObj.gameObject.SetActive(false);
+
         }
         else if (buffTimer[4] > 0 && newBieObj.activeSelf)
         {
             buffTimer[4] -= Time.deltaTime;
-            
         }
     }
 

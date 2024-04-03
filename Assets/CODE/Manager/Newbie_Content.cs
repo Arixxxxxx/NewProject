@@ -24,6 +24,9 @@ public class Newbie_Content : MonoBehaviour
     Image alrimWindowItemIMG;
     Button alrimBtn;
 
+    //신규유저 버프 바로가기 버튼
+    Button buffViewrBtn;
+
     // 아이콘박스 이미지 및 나아가는 길목 이미지 색상
     Image[] iconLayoutIMG;
 
@@ -35,6 +38,7 @@ public class Newbie_Content : MonoBehaviour
     GameObject buffInfoWindow;
     TMP_Text buffLeftTimeText;
     Button buffinfoBottomBtn;
+    
 
     private void Awake()
     {
@@ -53,6 +57,8 @@ public class Newbie_Content : MonoBehaviour
         layoutRef = gameWindow.transform.Find("Lyaout").gameObject;
         xBtn = gameWindow.transform.Find("Title/X_Btn").GetComponent<Button>();
         xBtn.onClick.AddListener(() => Set_NewbieWindowActive(false));
+        buffViewrBtn = gameWindow.transform.Find("TextLayOut_2/NoGet/GetGiftBtn").GetComponent<Button>();
+        buffViewrBtn.onClick.AddListener(() => { newbieWindow.gameObject.SetActive(false); NewBieBuffInfoWindowActive(true); });
 
         iconLayoutCount = layoutRef.transform.childCount;
         iconLayoutIMG = new Image[iconLayoutCount];

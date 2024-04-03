@@ -57,25 +57,75 @@ public class BuffBtns : MonoBehaviour
 
     private void Update()
     {
-        if (activeCheck.activeSelf == false && isok == true)
+        switch (whichBuff) 
         {
-            isok = false;
-            BuffStatsReset();
-        }
-        else if (activeCheck.activeSelf == true && isok == false)
-        {
-            isok = true;
-            BuffStatsAdd();
+            case buffType.ATK:
+            case buffType.Speed:
+            case buffType.Gold:
+
+                if (activeCheck.activeSelf == false && isok == true)
+                {
+                    isok = false;
+                    BuffStatsReset();
+                }
+                else if (activeCheck.activeSelf == true && isok == false)
+                {
+                    isok = true;
+                    BuffStatsAdd();
+                }
+
+                break;
         }
     }
 
+
+    //// Ad버프는 꺼지고 켜지는거라 여기서 값을 0으로 바꿔줘야함
+    ///
+    private void OnEnable()
+    {
+        switch (whichBuff) 
+        {
+            case buffType.AD_ATK: //인게임 화면 광고보고 공격력증가
+                GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.TotalAtk.ToString(), 8); ;
+                break;
+
+            case buffType.NewBie:
+                GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.TotalAtk.ToString(), 4);
+                GameStatus.inst.NewbieAttackSpeed = 0.2f;
+                GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.GetTotalGold(), 4);
+                GameStatus.inst.NewbieMoveSpeedBuffValue = 0.5f;
+                break;
+        }
+       
+    }
+    private void OnDisable()
+    {
+        switch (whichBuff)
+        {
+            case buffType.AD_ATK: //인게임 화면 광고보고 공격력증가
+                GameStatus.inst.BuffAddAdATK = "0";
+                break;
+
+            case buffType.NewBie:
+                GameStatus.inst.NewbieATKBuffValue = "0";
+                GameStatus.inst.NewbieAttackSpeed = 0f;
+                GameStatus.inst.NewbieGoldBuffValue = "0";
+                GameStatus.inst.NewbieMoveSpeedBuffValue = 0f;
+                break;
+        }
+
+        if (whichBuff == buffType.AD_ATK)
+        {
+          
+        }
+    }
 
     private void BuffStatsAdd()
     {
         switch (whichBuff)
         {
             case buffType.ATK: // 버프창 공격력증가
-                GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_ATKtoString(), 4);
+                GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.TotalAtk.ToString(), 4);
                 break;
 
             case buffType.Gold: // 골드 획득량증가
@@ -83,11 +133,7 @@ public class BuffBtns : MonoBehaviour
                 break;
 
             case buffType.Speed: // 이동속도 증가
-                GameStatus.inst.BuffAddSpeed = 2f;
-                break;
-
-            case buffType.AD_ATK: //인게임 화면 광고보고 공격력증가
-                GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_ATKtoString(), 8);
+                GameStatus.inst.BuffAddSpeed = 1f;
                 break;
         }
     }
@@ -97,9 +143,7 @@ public class BuffBtns : MonoBehaviour
         switch (whichBuff)
         {
             case buffType.ATK:
-
                 GameStatus.inst.BuffAddATK = "0";
-
                 break;
 
             case buffType.Gold:
@@ -107,10 +151,9 @@ public class BuffBtns : MonoBehaviour
                 break;
 
             case buffType.Speed:
-
-                // 스피드 버프 추가해야함
-                GameStatus.inst.BuffAddSpeed = 1.0f;
+                GameStatus.inst.BuffAddSpeed = 0f;
                 break;
+
         }
     }
 

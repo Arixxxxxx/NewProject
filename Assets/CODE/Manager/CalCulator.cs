@@ -35,11 +35,7 @@ public class CalCulator : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
 
     /// <summary>
     /// 스트링끼리의 덧셈 함수
@@ -127,6 +123,7 @@ public class CalCulator : MonoBehaviour
     }
 
 
+
     /// <summary>
     /// %계산기 : StringFourDigitChanger 함수 들어갔다 나온 문자열 + % 집어넣어야함
     /// </summary>
@@ -174,14 +171,29 @@ public class CalCulator : MonoBehaviour
     }
 
 
+
     /// <summary>
-    /// 공격력 스트링으로 변환하여 리턴
+    /// 모든공격력 합산하여 스트링으로 변환하여 리턴
     /// </summary>
     /// <returns></returns>
-    public string Get_ATKtoString()
+    public string Get_CurPlayerATK()
     {
+        string result = string.Empty;
 
-        return UIManager.Instance.TotalAtk.ToString();
+        // 펫 버프량 체크
+        result = DigidPlus(UIManager.Instance.TotalAtk.ToString(), GameStatus.inst.AddPetAtkBuff);
+        Debug.Log($"펫버프 {GameStatus.inst.AddPetAtkBuff} / 합산량 {result}");
+        // 15분 버프량 체크
+        result = DigidPlus(result, GameStatus.inst.BuffAddATK);
+        Debug.Log($"공 버프 {GameStatus.inst.BuffAddATK} / 합산량 {result}");
+
+        //// 5분 버프량 체크 (화면광고)
+        result =  DigidPlus(result, GameStatus.inst.BuffAddAdATK);
+        Debug.Log($"5분 버프 {GameStatus.inst.BuffAddAdATK} / 합산량 {result}");
+        //// 초심자 버프
+        result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
+        Debug.Log($"초심자 버프 {GameStatus.inst.NewbieATKBuffValue} / 합산량 {result}");
+        return result;
     }
 
     public string ToBigIntigerFromString(BigInteger value)
@@ -197,6 +209,8 @@ public class CalCulator : MonoBehaviour
 
         return hpA.ToString();
     }
+
+
 
     /// <summary>
     /// 최종 숫자 + 문자 변환 함수
@@ -229,6 +243,8 @@ public class CalCulator : MonoBehaviour
 
         return digit + word;
     }
+
+
 
     /// <summary>
     /// 소수점 포함 숫자문자 변환기 ( Ex : 1.1A , 232.1B 등 )
@@ -267,6 +283,8 @@ public class CalCulator : MonoBehaviour
 
         return digit + word;
     }
+
+
 
     /// <summary>
     /// 숫자뒤에 문자로 합산해주는 함수
@@ -453,7 +471,6 @@ public class CalCulator : MonoBehaviour
             BigInteger result = BigInteger.Divide(ivalue, intvalue);
             result = BigInteger.Multiply(result, (BigInteger)powpracCount);
             return result;
-            Debug.Log($"{ivalue}, {fvalue}, {result}");
         }
         else
         {

@@ -129,7 +129,7 @@ public class PetContollerManager : MonoBehaviour
         switch (buffNum)
         {
             case 0: // 현재 공격력 * 레벨+1 추가
-                GameStatus.inst.AddPetAtkBuff = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_ATKtoString(), GameStatus.inst.Pet0_Lv);
+                GameStatus.inst.AddPetAtkBuff = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_CurPlayerATK(), GameStatus.inst.Pet0_Lv);
                 Pet1_Particle_Player(1);
                 break;
 
@@ -139,7 +139,7 @@ public class PetContollerManager : MonoBehaviour
                 break;
 
             case 2: // 모두 증가
-                GameStatus.inst.AddPetAtkBuff = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_ATKtoString(), GameStatus.inst.Pet0_Lv);
+                GameStatus.inst.AddPetAtkBuff = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_CurPlayerATK(), GameStatus.inst.Pet0_Lv);
                 GameStatus.inst.AddPetCriChanceBuff = 10 * GameStatus.inst.Pet1_Lv;
                 Pet1_Particle_Player(3);
                 break;
@@ -180,7 +180,7 @@ public class PetContollerManager : MonoBehaviour
             int Pet2Lv = GameStatus.inst.Pet2_Lv + 1;  // 레벨당 2배 3배 4배 계속늘어남
             //골드 증가
             string curGetGoldValue = CalCulator.inst.StringAndIntMultiPly(curGetGold, Pet2Lv);
-            GameStatus.inst.TakeGold(curGetGoldValue);
+            GameStatus.inst.PlusGold(curGetGoldValue);
 
         }
     }

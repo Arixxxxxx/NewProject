@@ -102,7 +102,7 @@ public class ShopManager : MonoBehaviour
         {
             case ProductTag.Gold:
                 string convertGold = CalCulator.inst.ConvertChartoIndex(waitingPrice);//문자로 표기돼있는 숫자를 풀어서 반환
-                BigInteger haveGold = BigInteger.Parse(GameStatus.inst.PulsGold);
+                BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
                 if (haveGold >= BigInteger.Parse(convertGold))
                 {
                     GameStatus.inst.MinusGold(convertGold);
@@ -115,7 +115,7 @@ public class ShopManager : MonoBehaviour
                 }
                 break;
             case ProductTag.Ruby:
-                int haveRuby = int.Parse(GameStatus.inst.PulsGold);
+                int haveRuby = int.Parse(GameStatus.inst.Gold);
                 int iPrice = int.Parse(waitingPrice);
                 if (haveRuby >= iPrice)
                 {
@@ -130,7 +130,7 @@ public class ShopManager : MonoBehaviour
                 break;
             case ProductTag.Star:
                 string convertStar = CalCulator.inst.ConvertChartoIndex(waitingPrice);//문자로 표기돼있는 숫자를 풀어서 반환
-                BigInteger haveStar = BigInteger.Parse(GameStatus.inst.PulsGold);
+                BigInteger haveStar = BigInteger.Parse(GameStatus.inst.Gold);
                 if (haveStar >= BigInteger.Parse(convertStar))
                 {
                     //별 갯수 차감
