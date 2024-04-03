@@ -11,8 +11,20 @@ public class GameStatus : MonoBehaviour
     // 최초에 필요한값 회원가입일자 
     // 첫 선물받기 시작한 일자
 
-    DateTime firstdate = DateTime.Now;
+    DateTime firstdate = DateTime.Now; // 일자계산 (아직 미사용)
+
+    bool isNewbie = false;
+    public bool IsNewBie  // 뉴비 컨트롤
+    {
+        get  { return isNewbie; }
+        set { isNewbie = value; }
+    }
+
+    string newbieATKBuffValue = "0";
+    string newbieMoveSpeedBuffValue = "0";
+    string newbieGoldBuffValue = "0";
     
+
     int[] getGiftDay = new int[3]; // 선물받은 년/월/일
     public int[] GetGiftDay
     {
@@ -40,13 +52,13 @@ public class GameStatus : MonoBehaviour
     }
 
     int firstjoinday = 0;
-     
+
     public int FirstJoinDay
     {
         get { return firstjoinday; }
         set { firstjoinday += value; }
     }
-   
+
     int gotDilayPlayGiftCount; // 선물 받은 횟수
     public int GotDilayPlayGiftCount
     {
@@ -58,7 +70,14 @@ public class GameStatus : MonoBehaviour
     public int GotNewbieGiftCount
     {
         get { return gotNewbieGiftCount; }
-        set { gotNewbieGiftCount = value; }
+        set
+        {
+            gotNewbieGiftCount = value;
+            if (GotNewbieGiftCount == 7)
+            {
+                WorldUI_Manager.inst.NewbieBtnAcitveFalse(); // 선물 다 받으면 버튼 잠궈버리기 
+            }
+        }
     }
     ///////////////////////////////////////////////////
 
@@ -151,8 +170,8 @@ public class GameStatus : MonoBehaviour
 
     float criticalChance = 20;  //크리티컬 확률
 
-    
-    public float CriticalChance { get { return criticalChance + addPetCriChanceBuff; } set { criticalChance = value;  } }
+
+    public float CriticalChance { get { return criticalChance + addPetCriChanceBuff; } set { criticalChance = value; } }
 
     float criticalPower = 0; // 크리티컬 피해증가
     public float CriticalPower { get { return criticalPower + addPetCriDmgBuff; } set { criticalChance = value; } }
@@ -240,7 +259,7 @@ public class GameStatus : MonoBehaviour
     [SerializeField] int rebirthCount; // 환생 횟수
 
     /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
-    
+
     string buffAddATK = "0";
     public string BuffAddATK
     {
@@ -356,7 +375,9 @@ public class GameStatus : MonoBehaviour
             Destroy(this);
         }
         // 서버에서 데이터 받아와서 초기화해줌
-    
+
+        // 뉴비 불리언변수 초기화
+        IsNewBie = true;
     }
 
     void Start()
@@ -371,10 +392,10 @@ public class GameStatus : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
- 
+
     /// <summary>
     /// 실질적으로 골드증가 시키는 함수
     /// </summary>
@@ -391,21 +412,20 @@ public class GameStatus : MonoBehaviour
     public void TakeGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);
-        WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitChanger(getValue));
+        WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitAddFloatChanger(getValue));
         PulsGold = result;
     }
 
     public void TakeStar(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(Star, getValue);
-        WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(1, CalCulator.inst.StringFourDigitChanger(getValue));
+        WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(1, CalCulator.inst.StringFourDigitAddFloatChanger(getValue));
         Star = result;
     }
 
     public void MinusGold(string getValue)
     {
         string result = CalCulator.inst.DigidMinus(gold, getValue, false);
-        Debug.Log($"반환값 {result} / 현재값 {gold} , {getValue}");
         inputMinusGold = result;
     }
 }

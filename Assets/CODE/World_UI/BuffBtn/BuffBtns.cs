@@ -7,7 +7,7 @@ public class BuffBtns : MonoBehaviour
 {
     public enum buffType
     {
-        ATK, Gold, Speed, AD_ATK
+        ATK, Gold, Speed, AD_ATK, NewBie
     }
 
     public buffType whichBuff;
@@ -18,24 +18,51 @@ public class BuffBtns : MonoBehaviour
     private void Awake()
     {
         btn = GetComponent<Button>();
-        activeCheck = transform.GetChild(0).gameObject;
+        activeCheck = transform.GetChild(0).gameObject; // 버프아이콘 의 자식 오브젝트 'Active'가 Enable 추적으로 버프활성화 체크
     }
     void Start()
     {
-        btn.onClick.AddListener(() =>
+        switch (whichBuff)
         {
-            WorldUI_Manager.inst.buffSelectUIWindowAcitve(true);
-        });
+            case buffType.ATK:
+            case buffType.Gold:
+            case buffType.Speed:
+            case buffType.AD_ATK:
+                btn.onClick.AddListener(() =>
+                {
+                    WorldUI_Manager.inst.buffSelectUIWindowAcitve(true);
+                });
+                break;
+
+
+
+            case buffType.NewBie:
+
+                btn.onClick.AddListener(() =>
+                {
+                    Newbie_Content.inst.NewBieBuffInfoWindowActive(true); // 뉴비 버프 정보창
+                });
+                //if (GameStatus.inst.IsNewBie == false)
+                //{
+                //    activeCheck.gameObject.SetActive(false);
+                //    gameObject.SetActive(false);
+                //}
+                
+                break;
+
+        }
+
+       
     }
 
     private void Update()
     {
-        if(activeCheck.activeSelf == false  && isok ==true)
+        if (activeCheck.activeSelf == false && isok == true)
         {
             isok = false;
             BuffStatsReset();
         }
-        else if(activeCheck.activeSelf == true && isok == false)
+        else if (activeCheck.activeSelf == true && isok == false)
         {
             isok = true;
             BuffStatsAdd();

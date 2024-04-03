@@ -16,7 +16,7 @@ public class Newbie_Content : MonoBehaviour
     Button xBtn;
 
     int iconLayoutCount = 0;
- 
+
     TMP_Text mainTaxt;
     // 수락버튼
     GameObject[] GetBtn = new GameObject[2];
@@ -27,12 +27,17 @@ public class Newbie_Content : MonoBehaviour
     // 아이콘박스 이미지 및 나아가는 길목 이미지 색상
     Image[] iconLayoutIMG;
 
-    
+
     Image[] iconRoadLineIMG;
     GameObject[] iconBG;
-    
+
+    // 뉴비 버프 아이콘 설명창
+    GameObject buffInfoWindow;
+    TMP_Text buffLeftTimeText;
+    Button buffinfoBottomBtn;
+
     private void Awake()
-    {   
+    {
         if (inst == null)
         {
             inst = this;
@@ -51,7 +56,7 @@ public class Newbie_Content : MonoBehaviour
 
         iconLayoutCount = layoutRef.transform.childCount;
         iconLayoutIMG = new Image[iconLayoutCount];
-        iconRoadLineIMG = new Image[iconLayoutCount-1];
+        iconRoadLineIMG = new Image[iconLayoutCount - 1];
 
         mainTaxt = gameWindow.transform.Find("TextLayOut/NoGet").GetComponent<TMP_Text>();
 
@@ -60,7 +65,7 @@ public class Newbie_Content : MonoBehaviour
             iconLayoutIMG[index] = layoutRef.transform.GetChild(index).GetComponent<Image>();
         }
 
-        for (int index = 0; index < iconLayoutCount-1; index++) // 길목 라인
+        for (int index = 0; index < iconLayoutCount - 1; index++) // 길목 라인
         {
             iconRoadLineIMG[index] = gameWindow.transform.Find("Line").GetChild(index).GetComponent<Image>();
         }
@@ -74,12 +79,38 @@ public class Newbie_Content : MonoBehaviour
         alrimBtn.onClick.AddListener(() => { alrimWindow.SetActive(false); });
 
         LayoutIconBGInit(); // 모든 BG 스프라이트 거멓게 
+
+        //버프 아이콘클릭시 정보창
+        buffInfoWindow = frontUI.transform.Find("NewbieBtnInfo").gameObject;
+        buffLeftTimeText = buffInfoWindow.transform.Find("Window/TextLayOut/NoGet").GetComponent<TMP_Text>();
+        buffinfoBottomBtn = buffLeftTimeText.transform.GetComponentInChildren<Button>();
+        buffinfoBottomBtn.onClick.AddListener(() => buffInfoWindow.gameObject.SetActive(false));
     }
 
+    /// <summary>
+    /// 뉴비 버프 아이콘 클릭시 정보창  초기화
+    /// </summary>
+    /// <param name="value"> On / Off </param>
+    public void NewBieBuffInfoWindowActive(bool value)
+    {
+        if (value == true)
+        {
+            buffLeftTimeText.text = $"- 최초가입 후 7일간 적용됩니다.\n- 버프 만료까지 남은시간\n   " +
+                $"  <color=green>   {(BuffContoller.inst.GetBuffTime(4)/60) / 24}일 {(BuffContoller.inst.GetBuffTime(4) / 60) % 24}시간 {BuffContoller.inst.GetBuffTime(4) % 60}분</color>";
+
+            buffInfoWindow.SetActive(true);
+        }
+        else
+        {
+            buffInfoWindow.SetActive(false);
+        }
+    }
 
     void Start()
     {
         IconRedSimballInit();
+      
+        
     }
 
 
@@ -94,6 +125,7 @@ public class Newbie_Content : MonoBehaviour
                 iconLayoutIMG[index].sprite = imgBoxSideSprite[1];
             }
             LayOutInit();
+            IconBoxInit();
         }
         newbieWindow.SetActive(value);
     }
@@ -114,7 +146,7 @@ public class Newbie_Content : MonoBehaviour
 
     public void LayOutInit()
     {
-        int[] LastGetGiftDay = GameStatus.inst.GetNewbieGiftDay;
+        int[] LastGetGiftDay = GameStatus.inst.GetNewbieGiftDay; // 마지막으로 선울받은 일시 가져옴
 
         if (LastGetGiftDay.Sum() == 0 && GameStatus.inst.GotNewbieGiftCount == 0)
         {
@@ -150,12 +182,10 @@ public class Newbie_Content : MonoBehaviour
             layoutRef.transform.GetChild(GameStatus.inst.GotNewbieGiftCount).Find("BG").gameObject.SetActive(false);
         }
 
-       
-
         //루비 계산 (적어놓은 텍스트에서 빼옴)
         int value = int.Parse(layoutRef.transform.GetChild(GameStatus.inst.GotNewbieGiftCount).Find("CountText").GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
         int checkDay = int.Parse(gameWindow.transform.Find("Box").GetChild(GameStatus.inst.GotNewbieGiftCount).GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
-        
+
         //Sprite ItemIMG = layoutRef.transform.GetChild(GameStatus.inst.GotNewbieGiftCount).Find("Image").GetComponent<Image>().sprite;
         // 나중에 알림창에 이미지 띄울꺼면 다시 살리면됨
 
@@ -176,17 +206,17 @@ public class Newbie_Content : MonoBehaviour
             GameStatus.inst.GetNewbieGiftDay = NowDate; // 일자 업데이트
             GameStatus.inst.GotNewbieGiftCount++; // 받은 카운트 올려줌
             WorldUI_Manager.inst.OnEnableRedSimball(2, false); // 빨간심볼 꺼주기
-            
+
             if (GameStatus.inst.GotNewbieGiftCount < layoutRef.transform.childCount)
             {
                 layoutRef.transform.GetChild(GameStatus.inst.GotNewbieGiftCount).Find("BG").gameObject.SetActive(false);
                 IconBoxInit();
             }
-            
-            
+
+
             GetBtnAcitve(false); // 버튼 비활성화
             ConfirmWindowAcitve();
-          
+
         });
 
     }
@@ -194,11 +224,20 @@ public class Newbie_Content : MonoBehaviour
     //아이콘박스 최신화 함수
     private void IconBoxInit()
     {
-        for (int index = 0; index < GameStatus.inst.GotNewbieGiftCount; index++)
+        // 아이콘 길목 색상
+        for (int index = 0; index < GameStatus.inst.GotNewbieGiftCount; index++) 
         {
             layoutRef.transform.GetChild(index).Find("Check").gameObject.SetActive(true);
-            iconLayoutIMG[index].sprite = imgBoxSideSprite[0]; // 아이콘 박스 이미지
-            iconRoadLineIMG[index].color = gotItemColor; // 아이콘 길목 색상
+            iconRoadLineIMG[index].color = gotItemColor; 
+        }
+
+        // 아이콘 박스 이미지
+        for (int index = 0; index < GameStatus.inst.GotNewbieGiftCount+1; index++)
+        {
+            if (iconLayoutIMG[index] != null)
+            {
+                iconLayoutIMG[index].sprite = imgBoxSideSprite[0];
+            }
         }
     }
 
@@ -255,6 +294,7 @@ public class Newbie_Content : MonoBehaviour
         layoutRef.transform.GetChild(value).Find("Check").gameObject.SetActive(true);
     }
 
+    
 }
 
 

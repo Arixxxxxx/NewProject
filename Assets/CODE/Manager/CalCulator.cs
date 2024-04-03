@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -230,6 +231,44 @@ public class CalCulator : MonoBehaviour
     }
 
     /// <summary>
+    /// 소수점 포함 숫자문자 변환기 ( Ex : 1.1A , 232.1B 등 )
+    /// </summary>
+    /// <param name="inputValue"></param>
+    /// <returns></returns>
+    public string StringFourDigitAddFloatChanger(string inputValue)
+    {
+        int index = 0;
+        int digitLength = inputValue.Length;
+        string digit = inputValue;
+        string word = "";
+
+        // 숫자 가져오는 부분 (뒷자리 3개씩 지우면서 인덱스값 올려줌)
+        while (digitLength > 3)
+        {
+            index++;
+            digitLength -= 3; // 뒷자리 3개씩 지움
+        }
+
+        digitLength = Mathf.Min(digitLength, digit.Length);
+        digit = digit.Substring(0, digitLength); // 지우고앞자리만 가져옴
+
+        if (inputValue.Length > 3) //소수점 붙여줌
+        {
+            digit += ".";
+            digit += new string(inputValue.Skip(digitLength).Take(1).ToArray()); // 소수점 한자리숫자 가져옴
+        }
+
+        // 알파벳 가져오는 부분
+        if (index > 0)
+        {
+            //word += (char)(64 + index); 아스키코드 과정에서 변경 A -> ZZ
+            word = MakeBigDigitWord(index);
+        }
+
+        return digit + word;
+    }
+
+    /// <summary>
     /// 숫자뒤에 문자로 합산해주는 함수
     /// </summary>
     /// <param name="index"></param>
@@ -250,7 +289,6 @@ public class CalCulator : MonoBehaviour
 
     public string ConvertChartoIndex(string _text)
     {
-        
         char firalp = _text[_text.Length - 1];
         char secAlp = _text[_text.Length - 2];
         int firNum = firalp - 64;

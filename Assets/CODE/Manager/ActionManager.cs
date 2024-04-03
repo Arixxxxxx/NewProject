@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-
 public class ActionManager : MonoBehaviour
 {
     public static ActionManager inst;
@@ -171,10 +170,8 @@ public class ActionManager : MonoBehaviour
 
         //테스트용
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-           
-        }
+        
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             GameStatus.inst.GetGiftDay[0] -= 1;
@@ -183,6 +180,7 @@ public class ActionManager : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
+            //BuffContoller.inst.ActiveBuff(4, 3);
             LetterManager.inst.MakeLetter(0, "이동은", "테스트 (루비)편지입니다", 100);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
@@ -327,7 +325,7 @@ public class ActionManager : MonoBehaviour
                 // 대미지폰트
                 GameObject obj = Get_Pooling_Prefabs(0);
                 obj.transform.position = dmgFontParent.position;
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
                 obj.SetActive(true);
 
                 enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
@@ -365,7 +363,7 @@ public class ActionManager : MonoBehaviour
                 GameObject obj = Get_Pooling_Prefabs(0);
                 obj.transform.position = dmgFontParent.position;
 
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitChanger(PetDmg), false,0);
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(PetDmg), false,0);
                 obj.SetActive(true);
                 
             }
@@ -522,7 +520,7 @@ public class ActionManager : MonoBehaviour
     private void EnemyHPBarUI_Updater()
     {
         hpBar_IMG.fillAmount = CalCulator.inst.StringAndStringDivideReturnFloat(enemyCurHP, enemyMaxHP , 3);
-        hpBar_Text.text = $"{CalCulator.inst.StringFourDigitChanger(enemyCurHP)}";
+        hpBar_Text.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(enemyCurHP)}";
     }
 
     // 추후에 연산 입력해야함
