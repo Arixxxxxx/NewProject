@@ -8,6 +8,7 @@ public class MissionData : MonoBehaviour
 
     int[] QuestLv;//각 퀘스트별 레벨
 
+    GameObject frontUICanvas;
 
     private void Awake()
     {
@@ -20,15 +21,20 @@ public class MissionData : MonoBehaviour
             Destroy(this);
         }
     }
-    // Start is called before the first frame update
+
     void Start()
+    {
+
+    }
+
+    void Update()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetQuestLv(int index, int lv)
     {
-        
+        QuestLv[index] = lv;
+
     }
 }
