@@ -86,13 +86,13 @@ public class BuffBtns : MonoBehaviour
         switch (whichBuff) 
         {
             case buffType.AD_ATK: //인게임 화면 광고보고 공격력증가
-                GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.TotalAtk.ToString(), 8); ;
+                GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 8); ;
                 break;
 
             case buffType.NewBie:
-                GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.TotalAtk.ToString(), 4);
+                GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 4);
                 GameStatus.inst.NewbieAttackSpeed = 0.2f;
-                GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.GetTotalGold(), 4);
+                GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 4);
                 GameStatus.inst.NewbieMoveSpeedBuffValue = 0.5f;
                 break;
         }
@@ -125,11 +125,11 @@ public class BuffBtns : MonoBehaviour
         switch (whichBuff)
         {
             case buffType.ATK: // 버프창 공격력증가
-                GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.TotalAtk.ToString(), 4);
+                GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 4);
                 break;
 
             case buffType.Gold: // 골드 획득량증가
-                GameStatus.inst.BuffAddGold = CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.GetTotalGold(), 2);
+                GameStatus.inst.BuffAddGold = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 2);
                 break;
 
             case buffType.Speed: // 이동속도 증가

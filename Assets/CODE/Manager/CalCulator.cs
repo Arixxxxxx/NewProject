@@ -181,7 +181,7 @@ public class CalCulator : MonoBehaviour
         string result = string.Empty;
 
         // 펫 버프량 체크
-        result = DigidPlus(UIManager.Instance.TotalAtk.ToString(), GameStatus.inst.AddPetAtkBuff);
+        result = DigidPlus(GameStatus.inst.TotalAtk.ToString(), GameStatus.inst.AddPetAtkBuff);
         Debug.Log($"펫버프 {GameStatus.inst.AddPetAtkBuff} / 합산량 {result}");
         // 15분 버프량 체크
         result = DigidPlus(result, GameStatus.inst.BuffAddATK);

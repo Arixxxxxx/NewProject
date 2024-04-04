@@ -8,7 +8,16 @@ using TMPro;
 public class Weapon : MonoBehaviour
 {
     [SerializeField] int Number;//무기 단계
-    [SerializeField] int Lv;//무기 업그레이드 레벨
+    [SerializeField] int lv;//무기 업그레이드 레벨
+    int Lv
+    {
+        get => lv;
+        set
+        {
+            lv = value;
+            GameStatus.inst.AryWeaponLv[Number] = value;
+        }
+    }
     [SerializeField] float costGrowthRate;//비용 성장률
     [SerializeField] float atkpowNumRate;//초기공격력지수
     [SerializeField] int WeaponNum; //무기 이미지번호
@@ -21,9 +30,9 @@ public class Weapon : MonoBehaviour
     {
         set
         {
-            UIManager.Instance.TotalAtk -= atk;
+            GameStatus.inst.TotalAtk -= atk;
             atk = value;
-            UIManager.Instance.TotalAtk += atk;
+            GameStatus.inst.TotalAtk += atk;
         }
     }
 

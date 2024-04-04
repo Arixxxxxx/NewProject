@@ -687,7 +687,7 @@ public class ActionManager : MonoBehaviour
 
 
     // 몬스터 죽고 골드 상승
-    public string Get_EnemyDeadGold() => CalCulator.inst.StringAndIntMultiPly(UIManager.Instance.GetTotalGold(), 3);
+    public string Get_EnemyDeadGold() => CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 3);
 
     // 플레이어 하이라키 오브젝트 리턴
     public GameObject ReturnPlayerObjInHierachy() => playerAnim.gameObject;

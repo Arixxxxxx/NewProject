@@ -1,18 +1,23 @@
 using System;
+using System.Numerics;
 using UnityEngine;
 
 
-[System.Serializable]   
-public class UpdateData 
+[System.Serializable]
+public class UpdateData
 {
-   public string Playeratk;
-   public int weaponLv = 0;
+    public string Playeratk;
+    public int weaponLv = 0;
 
 }
+
+
+
 
 public class GameStatus : MonoBehaviour
 {
     public static GameStatus inst;
+
 
     ///////////////////////////////////////////////////
     //최초 가입 일시
@@ -22,17 +27,17 @@ public class GameStatus : MonoBehaviour
 
     DateTime firstdate = DateTime.Now; // 일자계산 (아직 미사용)
 
- 
+
 
     /////////////////////[ 출석체크 현황 및  뉴비]//////////////////////////////
 
     // 1.  선물받은 년/월/일
-    int[] getGiftDay = new int[3]; 
-    public int[] GetGiftDay {  get { return getGiftDay; } set { getGiftDay = value; }}
+    int[] getGiftDay = new int[3];
+    public int[] GetGiftDay { get { return getGiftDay; } set { getGiftDay = value; } }
 
     // 2.  뉴비 혜택받은 년/월/일
     int[] getNewbieGiftDay = new int[3];
-    public int[] GetNewbieGiftDay { get {  return getNewbieGiftDay; }  set {   getNewbieGiftDay = value; }}
+    public int[] GetNewbieGiftDay { get { return getNewbieGiftDay; } set { getNewbieGiftDay = value; } }
 
 
     // 3.  출석체크 선물 받은 횟수
@@ -44,7 +49,7 @@ public class GameStatus : MonoBehaviour
     }
 
     // 4.  뉴비 선물 받은 횟수
-    int gotNewbieGiftCount; 
+    int gotNewbieGiftCount;
     public int GotNewbieGiftCount
     {
         get { return gotNewbieGiftCount; }
@@ -68,7 +73,7 @@ public class GameStatus : MonoBehaviour
 
     // 5-1. 뉴비 (공격력)
     string newbieATKBuffValue = "0";
-    public string NewbieATKBuffValue { get { return newbieATKBuffValue; } set {  newbieATKBuffValue = value; } }
+    public string NewbieATKBuffValue { get { return newbieATKBuffValue; } set { newbieATKBuffValue = value; } }
 
     // 5-2. 뉴비 (이속)
     float newbieMoveSpeedBuffValue = 0;
@@ -95,8 +100,8 @@ public class GameStatus : MonoBehaviour
     /// <param name="value"> ture = up / false = 0</param>
     public void NewbieAttackCountUp(bool value)
     {
-        if(IsNewBie == false) { return; }
-        if(value == true)
+        if (IsNewBie == false) { return; }
+        if (value == true)
         {
             newbieAttackCount++;
         }
@@ -107,9 +112,9 @@ public class GameStatus : MonoBehaviour
     }
     public int Get_NewBieAttackBuff_MultiplyValue()
     {
-        if(IsNewBie == true)
+        if (IsNewBie == true)
         {
-            if(newbieAttackCount >= 2000)
+            if (newbieAttackCount >= 2000)
             {
                 newbieAttackCount = 2000;
             }
@@ -184,15 +189,39 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+    // 5. 초당 골드 생산량
+    BigInteger totalProdGold = 10;
+    public BigInteger TotalProdGold
+    {
+        get => totalProdGold;
+        set
+        {
+            totalProdGold = value;
+            UIManager.Instance.GettotalGoldText().text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
+        }
+    }
+    public string GetTotalGold()
+    {
+        return TotalProdGold.ToString();
+    }
 
-   /////////////////////[ 캐릭터 공격 스탯 ]//////////////////////////////
+    /////////////////////[ 캐릭터 공격 스탯 ]//////////////////////////////
 
     // 1. 공격력
-    // 겸희한테 있음!!
+    BigInteger totalAtk = 5;
+    public BigInteger TotalAtk
+    {
+        get => totalAtk;
+        set
+        {
+            totalAtk = value;
+            UIManager.Instance.GettotalAtkText().text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
+        }
+    }
 
 
     // 2. 공격속도
-    int atkSpeedLv; 
+    int atkSpeedLv;
 
     public int AtkSpeedLv
     {
@@ -207,7 +236,7 @@ public class GameStatus : MonoBehaviour
     // 2. 크리티컬 확률
     float criticalChance = 20;  // 기본값 20
 
-    public float CriticalChance 
+    public float CriticalChance
     {
         get
         {
@@ -217,21 +246,21 @@ public class GameStatus : MonoBehaviour
     }
 
     // 3. 크리티컬 피해증가
-    float criticalPower = 0; 
+    float criticalPower = 0;
     public float CriticalPower
     {
-        get 
+        get
         { return criticalPower; } // <= 펫 시전버프량
         set
         {
-            criticalChance = value; 
+            criticalChance = value;
         }
     }
 
     /////////////////////[ 스테이지 현황 ]//////////////////////////////
 
     // 1. 총 누적층수
-    int accumlateFloor = 1; 
+    int accumlateFloor = 1;
     public int AccumlateFloor
     {
         get
@@ -261,7 +290,7 @@ public class GameStatus : MonoBehaviour
     }
 
     // 3. 현재 층수
-    int floorLv = 1; 
+    int floorLv = 1;
     public int FloorLv
     {
         get
@@ -280,21 +309,21 @@ public class GameStatus : MonoBehaviour
             }
         }
     }
-        
 
-   /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
+
+    /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
 
     // 1. 공격력증가 버프
     string buffAddATK = "0";
-    public string BuffAddATK {  get { return buffAddATK; } set { buffAddATK = value; } }
+    public string BuffAddATK { get { return buffAddATK; } set { buffAddATK = value; } }
 
     // 2. 화면 광고 공격력증가 
     string buffAddAdATK = "0";
-    public string BuffAddAdATK  { get { return buffAddAdATK; } set { buffAddAdATK = value; }}
+    public string BuffAddAdATK { get { return buffAddAdATK; } set { buffAddAdATK = value; } }
 
     // 3. 골드증가 버프
     string buffAddGold = "0";
-    public string BuffAddGold { get {  return buffAddGold;  } set  {  buffAddGold = value;  } }
+    public string BuffAddGold { get { return buffAddGold; } set { buffAddGold = value; } }
 
     // 4. 이동속도증가 버프
     float buffAddSpeed = 0;
@@ -317,7 +346,7 @@ public class GameStatus : MonoBehaviour
 
     // 1. 공격펫
     int pet0_Lv = 1;
-    public int Pet0_Lv 
+    public int Pet0_Lv
     {
         get { return pet0_Lv; }
         set { pet0_Lv = value; }
@@ -325,7 +354,7 @@ public class GameStatus : MonoBehaviour
 
     // 2. 버프펫
     int pet1_Lv = 1;
-    public int Pet1_Lv 
+    public int Pet1_Lv
     {
         get { return pet1_Lv; }
         set { pet1_Lv = value; }
@@ -348,17 +377,39 @@ public class GameStatus : MonoBehaviour
     }
 
     // 3. 골드펫
-    int pet2_Lv = 1; 
+    int pet2_Lv = 1;
     public int Pet2_Lv
     {
         get { return pet2_Lv; }
         set { pet2_Lv = value; }
     }
 
+    /////////////////////////////// 하단 UI 데이터 //////////////////////////////////
 
+    int[] aryQuestLv = new int[4];
+    public int[] AryQuestLv
+    {
+        get => aryQuestLv;
+        set{aryQuestLv = value;}
 
+    }
 
-    ///////////////////////////////////////////////////////////////////
+    int[] aryWeaponLv;
+    public int[] AryWeaponLv
+    {
+        get => aryWeaponLv;
+        set { aryWeaponLv = value; }
+    }
+
+    UnityEngine.Vector2[] aryRelic;
+    public UnityEngine.Vector2[] AryRelic
+    {
+        get => aryRelic;
+        set { aryRelic = value; }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////
+
 
     private void Awake()
     {
@@ -376,9 +427,9 @@ public class GameStatus : MonoBehaviour
         IsNewBie = true;
     }
 
-    void Start()  {        }
+    void Start() { }
 
- 
+
 
     /// <summary>
     ///  UI창에 골드증가량 안뜨는 함수 ( 초당 골드 자동증가 )

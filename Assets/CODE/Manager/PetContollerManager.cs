@@ -176,7 +176,7 @@ public class PetContollerManager : MonoBehaviour
             pet2Ps[0].Stop();
             pet2Ps[1].Play();
 
-            string curGetGold = UIManager.Instance.GetTotalGold();
+            string curGetGold = GameStatus.inst.GetTotalGold();
             int Pet2Lv = GameStatus.inst.Pet2_Lv + 1;  // 레벨당 2배 3배 4배 계속늘어남
             //골드 증가
             string curGetGoldValue = CalCulator.inst.StringAndIntMultiPly(curGetGold, Pet2Lv);

@@ -16,7 +16,16 @@ public class Quest : MonoBehaviour
     [SerializeField] float baseProd;//기초 생산량
     [Tooltip("초기생산량 지수")]
     [SerializeField] float powNumRate;//초기생산량지수
-    int Lv;//퀘스트 업그레이드 레벨
+    int lv;//퀘스트 업그레이드 레벨
+    int Lv
+    {
+        get => lv;
+        set
+        {
+            lv = value;
+            GameStatus.inst.AryQuestLv[Number] = value;
+        }
+    }
     int LvCur = 1; //레벨보정
     int itemCur = 1; //아이템보정
     float powNum;//단계별 지수
@@ -30,9 +39,9 @@ public class Quest : MonoBehaviour
     {
         set
         {
-            UIManager.Instance.TotalProdGold -= totalProd;
+            GameStatus.inst.TotalProdGold -= totalProd;
             totalProd = value;
-            UIManager.Instance.TotalProdGold += totalProd;
+            GameStatus.inst.TotalProdGold += totalProd;
         }
     }
 

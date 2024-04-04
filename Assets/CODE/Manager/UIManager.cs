@@ -23,6 +23,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] Transform m_QuestParents;//퀘스트 컨텐츠 트래스폼
     [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>(); //퀘스트 구매갯수 조절 버튼
     [SerializeField] TextMeshProUGUI m_totalGold;// 초당 골드 생산량 텍스트
+    public TextMeshProUGUI GettotalGoldText()
+    {
+        return m_totalGold;
+    }
+
     [SerializeField] private int questBuyCount = 1;//퀘스트 구매하려는 갯수
     int questBuyCountBtnNum = 0;//선택한 퀘스트 한번에 구매 버튼 번호
     public int QuestBuyCountBtnNum
@@ -48,6 +53,10 @@ public class UIManager : MonoBehaviour
     }
     [SerializeField] Transform m_WeaponParents;
     [SerializeField] TextMeshProUGUI m_totalAtk;
+    public TextMeshProUGUI GettotalAtkText()
+    {
+        return m_totalAtk;
+    }
     int haveWeaponLv;//보유중인 무기중 제일 최상위 무기 번호
     int equipWeaponNum;//장착중인 무기 이미지 번호
     public int EquipWeaponNum
@@ -64,32 +73,6 @@ public class UIManager : MonoBehaviour
         haveWeaponLv = _num;
     }
 
-    BigInteger totalProdGold = 10;
-    public BigInteger TotalProdGold
-    {
-        get => totalProdGold;
-        set
-        {
-            totalProdGold = value;
-            m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
-        }
-    }
-    public string GetTotalGold()
-    {
-        return TotalProdGold.ToString();
-    }
-
-    BigInteger totalAtk = 5;
-    public BigInteger TotalAtk
-    {
-        get => totalAtk;
-        set
-        {
-            totalAtk = value;
-            m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
-        }
-    }
-
     private void Awake()
     {
         if (Instance == null)
@@ -104,8 +87,8 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(totalProdGold.ToString());
-        m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
+        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(GameStatus.inst.TotalProdGold.ToString());
+        m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(GameStatus.inst.TotalAtk.ToString());
         InvokeRepeating("getGoldPerSceond", 0, 1);
 
         int weaponCount = m_WeaponParents.childCount;
@@ -142,7 +125,7 @@ public class UIManager : MonoBehaviour
 
     void getGoldPerSceond()
     {
-        GameStatus.inst.GetGold(GetTotalGold());
+        GameStatus.inst.GetGold(GameStatus.inst.GetTotalGold());
     }
 
     public void changeSortOder(int value)
