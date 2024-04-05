@@ -118,7 +118,6 @@ public class GameStatus : MonoBehaviour
             {
                 newbieAttackCount = 2000;
             }
-            Debug.Log($"어택카운트 : {newbieAttackCount} / 곱해지는양 {newbieAttackCount / 100 * 2}");
 
             return (newbieAttackCount / 100) * 2 > 0 ? (newbieAttackCount / 100) * 2 : 1;
         }

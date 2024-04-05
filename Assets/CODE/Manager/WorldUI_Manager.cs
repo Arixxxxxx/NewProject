@@ -49,6 +49,9 @@ public class WorldUI_Manager : MonoBehaviour
     // 뉴비버튼
     Button newBieBtn;
 
+    // 메인메뉴 버튼
+    Button mainMenuBtn;
+
     //레드심볼 관리
     List<GameObject> redSimBall_Icons = new List<GameObject>();
 
@@ -89,6 +92,8 @@ public class WorldUI_Manager : MonoBehaviour
 
         //테스트 버튼
         testBtn = worldUI.transform.Find("TestBtn").GetComponentsInChildren<Button>();
+
+
         weapbtnText = new TMP_Text[testBtn.Length];
         for (int index = 0; index < testBtn.Length; index++)
         {
@@ -102,7 +107,8 @@ public class WorldUI_Manager : MonoBehaviour
 
 
         questListBtn = worldUI.transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
-
+        mainMenuBtn = worldUI.transform.Find("StageUI/Right/0_Line/MainMenu").GetComponent<Button>();
+        mainMenuBtn.onClick.AddListener(() => MainMenuManager.inst.Set_MainMenuActive(true));
 
         // 게임화면 우측상단 버튼들
         getLetterBtn = worldUI.transform.Find("StageUI/Right/0_Line/Letter").GetComponent<Button>(); // 우편함
@@ -221,6 +227,15 @@ public class WorldUI_Manager : MonoBehaviour
             }
         });
 
+        testBtn[2].onClick.AddListener(() => // 도감
+        {
+            DogamManager.inst.Set_DogamListAcitve(1,true);
+        });
+
+        testBtn[3].onClick.AddListener(() => // 도감
+        {
+            DogamManager.inst.Set_DogamListAcitve(0, true);
+        });
         questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
         getLetterBtn.onClick.AddListener(() => { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
