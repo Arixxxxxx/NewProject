@@ -182,17 +182,19 @@ public class CalCulator : MonoBehaviour
 
         // 펫 버프량 체크
         result = DigidPlus(GameStatus.inst.TotalAtk.ToString(), GameStatus.inst.AddPetAtkBuff);
-        Debug.Log($"펫버프 {GameStatus.inst.AddPetAtkBuff} / 합산량 {result}");
+
         // 15분 버프량 체크
         result = DigidPlus(result, GameStatus.inst.BuffAddATK);
-        Debug.Log($"공 버프 {GameStatus.inst.BuffAddATK} / 합산량 {result}");
 
         //// 5분 버프량 체크 (화면광고)
         result =  DigidPlus(result, GameStatus.inst.BuffAddAdATK);
-        Debug.Log($"5분 버프 {GameStatus.inst.BuffAddAdATK} / 합산량 {result}");
+
         //// 초심자 버프
         result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
-        Debug.Log($"초심자 버프 {GameStatus.inst.NewbieATKBuffValue} / 합산량 {result}");
+
+        /// 무기도감 카운트만큼 % 합산
+        result = DigitPercentMultiply(result, DogamManager.inst.weaponDogamGetCount);
+
         return result;
     }
 

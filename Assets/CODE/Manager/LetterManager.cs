@@ -13,7 +13,7 @@ public class LetterManager : MonoBehaviour
     GameObject fontUIRef;
     GameObject postOfficeRef;
     Button xBtn;
-
+ 
 
     ///// 메인 수신함 참조관련
     GameObject letterViewr, letterBox, notthingLetter;
