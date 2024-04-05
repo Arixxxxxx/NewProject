@@ -1,12 +1,6 @@
-using JetBrains.Annotations;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.ConstrainedExecution;
 using System.Text;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CalCulator : MonoBehaviour
@@ -132,42 +126,20 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string DigitPercentMultiply(string a, int percent)
     {
-        sb.Clear();
+        // 입력 문자열을 BigInteger로 파싱
+        BigInteger original = BigInteger.Parse(a);
 
-        int wordIndex = a.Count(x => char.IsLetter(x));
+        // percent를 사용하여 증가할 비율을 BigInteger로 계산
+        // 예: percent가 5라면, totalPercent는 105% 즉, 1.05가 되어야함
+        // BigInteger는 소수점을 지원하지 않으므로, 분수로 처리
+        BigInteger numerator = 100 + percent;
+        BigInteger denominator = 100;
 
-        if (wordIndex == 0)
-        {
-            float sum = int.Parse(a) * (1 + 0.01f * percent);
-            int temp = (int)Mathf.Floor(sum);
-            return StringFourDigitChanger(temp.ToString());
+        // 결과 계산: (original * numerator) / denominator
+        // 분자에 original과 numerator를 곱하고, 분모로 denominator를 사용
+        BigInteger result = (original * numerator) / denominator;
 
-        }
-        else if (wordIndex > 0)
-        {
-
-            int numTemp = int.Parse(string.Join("", a.Where(x => char.IsDigit(x)).Select(x => x).ToArray())); //숫자꺼냄
-            string letter = new string(a.Where(x => char.IsLetter(x)).Select(x => x).ToArray());  //문자 꺼냄
-
-            int calcul = (int)Mathf.Floor(numTemp * (1 + 0.01f * percent));
-
-            string numberPart = calcul.ToString(); // 숫자 문자화
-            int digitLength = numberPart.Length; //문자 길이
-            int index = 0;
-
-            while (digitLength > 3)
-            {
-                index++;
-                digitLength -= 3; // 뒷자리 3개씩 지움
-                numberPart = numberPart.Substring(0, digitLength); // 지우고앞자리만 가져옴
-            }
-
-            sb.Append(numberPart + (char)((int)letter[0] + index));
-
-            return sb.ToString();
-        }
-
-        return string.Empty;
+        return result.ToString();
     }
 
 
