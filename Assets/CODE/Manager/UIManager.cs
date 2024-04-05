@@ -76,6 +76,14 @@ public class UIManager : MonoBehaviour
         haveWeaponLv = _num;
     }
 
+    [Header("Shop")]
+    [SerializeField] Button ShopOpenBtn;
+
+    public Button GetShopOpenBtn()
+    {
+        return ShopOpenBtn;
+    }
+
     private void Awake()
     {
         if (Instance == null)
