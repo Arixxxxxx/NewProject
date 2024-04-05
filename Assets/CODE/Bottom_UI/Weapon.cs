@@ -101,6 +101,7 @@ public class Weapon : MonoBehaviour
             {
                 objBtn.SetActive(false);
                 UIManager.Instance.WeaponUpComplete(transform);
+                DogamManager.inst.GetWeaponCheck(Number + 1);
             }
         }
         else

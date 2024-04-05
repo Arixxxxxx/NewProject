@@ -23,6 +23,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] Transform m_QuestParents;//퀘스트 컨텐츠 트래스폼
     [SerializeField] List<Image> m_list_QuestBuyCountBtn = new List<Image>(); //퀘스트 구매갯수 조절 버튼
     [SerializeField] TextMeshProUGUI m_totalGold;// 초당 골드 생산량 텍스트
+
+
     public TextMeshProUGUI GettotalGoldText()
     {
         return m_totalGold;
@@ -53,6 +55,7 @@ public class UIManager : MonoBehaviour
     }
     [SerializeField] Transform m_WeaponParents;
     [SerializeField] TextMeshProUGUI m_totalAtk;
+    [SerializeField] Button WeaponBook;
     public TextMeshProUGUI GettotalAtkText()
     {
         return m_totalAtk;
@@ -88,7 +91,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(GameStatus.inst.TotalProdGold.ToString());
-        m_totalAtk.text = "총 공격력 : " + CalCulator.inst.StringFourDigitChanger(GameStatus.inst.TotalAtk.ToString());
+        SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         InvokeRepeating("getGoldPerSceond", 0, 1);
 
         int weaponCount = m_WeaponParents.childCount;
@@ -117,6 +120,8 @@ public class UIManager : MonoBehaviour
         {
             PetDetailViewr_UI.inst.TopArrayBtnActive(2);
         });
+
+        WeaponBook.onClick.AddListener(() => DogamManager.inst.Set_DogamListAcitve(0,true));
     }
     public Sprite GetSelectUISprite(int num)
     {
@@ -198,5 +203,10 @@ public class UIManager : MonoBehaviour
             nextcost = ScWeapon.GetNextCost();
             Number = lv / 5;
         }
+    }
+
+    public void SetAtkText(string _atk)
+    {
+        m_totalAtk.text = "초당 데미지 : " + _atk; 
     }
 }

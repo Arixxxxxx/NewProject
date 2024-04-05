@@ -301,7 +301,7 @@ public class DogamManager : MonoBehaviour
     /// 무기 업그레이드시 최초 1회 획득정보 저장 (겸희가 해줘야댐)
     /// </summary>
     /// <param name="indexNum">무기인덱스 번호</param>
-    private void GetWeaponCheck(int indexNum)
+    public void GetWeaponCheck(int indexNum)
     {
         if (IsgotThisWeapon[indexNum] == true) { return; }
 

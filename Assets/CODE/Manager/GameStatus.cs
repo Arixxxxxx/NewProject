@@ -214,7 +214,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             totalAtk = value;
-            UIManager.Instance.GettotalAtkText().text = "รั ฐ๘ฐÝทย : " + CalCulator.inst.StringFourDigitChanger(totalAtk.ToString());
+            UIManager.Instance.SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         }
     }
 
@@ -393,7 +393,7 @@ public class GameStatus : MonoBehaviour
 
     }
 
-    int[] aryWeaponLv;
+    int[] aryWeaponLv = new int[30];
     public int[] AryWeaponLv
     {
         get => aryWeaponLv;
