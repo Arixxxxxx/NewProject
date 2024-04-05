@@ -42,7 +42,7 @@ public class MissionData : MonoBehaviour
         int dailyCount = obj_DailyContents.transform.childCount;
         for (int iNum = 0; iNum < dailyCount; iNum++)
         {
-            list_DailyImageBar.Add(obj_DailyContents.GetChild(iNum).Find("Space").Find("Playbar").Find("PlayBar(Front)test").GetComponent<Image>());
+            list_DailyImageBar.Add(obj_DailyContents.GetChild(iNum).Find("Space/Playbar/PlayBar(Front)test").GetComponent<Image>());
         }
 
         int weeklyCount = obj_WeeklyContents.transform.childCount;

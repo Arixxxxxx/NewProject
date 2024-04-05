@@ -38,8 +38,8 @@ public class QuestListWindow : MonoBehaviour
 
         //오브젝트 참조
         worldUI = GameObject.Find("---[FrontUICanvas]").gameObject;
-        mainWindow = worldUI.transform.Find("Active_WindowUI").gameObject;
-        window = mainWindow.transform.Find("Mission/Window").gameObject;
+        //mainWindow = worldUI.transform.Find("Active_WindowUI").gameObject;//겸희가 가져감
+        //window = mainWindow.transform.Find("Mission/Window").gameObject;
         topQuestInfo = window.transform.Find("TopBar_Mission").gameObject;
         scrollViewr[0] = window.transform.Find("Daily(Scroll View)").gameObject;
         scrollViewr[1] = window.transform.Find("Weekly(Scroll View)").gameObject;
@@ -68,13 +68,13 @@ public class QuestListWindow : MonoBehaviour
 
     }
 
-
-    public void F_QuestList_ActiveWindow(int indexNum)
-    {
-        if(mainWindow.activeSelf) { return; }
-        ViewScroolBarSetActive(indexNum);
-        mainWindow.gameObject.SetActive(true);
-    }
+    //겸희가 가져감
+    //public void F_QuestList_ActiveWindow(int indexNum)
+    //{
+    //    if(mainWindow.activeSelf) { return; }
+    //    ViewScroolBarSetActive(indexNum);
+    //    mainWindow.gameObject.SetActive(true);
+    //}
    
 
     private void Btn_Init()
@@ -85,7 +85,7 @@ public class QuestListWindow : MonoBehaviour
         topBtn[2].onClick.AddListener(() => { ViewScroolBarSetActive(2); });
 
         // 2. 종료 버튼 (X)
-        mainWindowCloseBtn.onClick.AddListener(() => { if (mainWindow.activeSelf) { mainWindow.SetActive(false); } }); 
+        //mainWindowCloseBtn.onClick.AddListener(() => { if (mainWindow.activeSelf) { mainWindow.SetActive(false); } }); 
     }
 
 

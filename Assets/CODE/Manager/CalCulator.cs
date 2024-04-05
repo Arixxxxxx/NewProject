@@ -189,14 +189,14 @@ public class CalCulator : MonoBehaviour
         //// 초심자 버프
         result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
 
+        // 펫 버프량 체크
+        result = DigidPlus(result, GameStatus.inst.AddPetAtkBuff);
+
         /// 무기도감 카운트만큼 % 합산
         result = DigitPercentMultiply(result, DogamManager.inst.weaponDogamGetCount);
 
         // 하단 UI 텍스트 표시
         UIManager.Instance.SetAtkText(inst.StringFourDigitAddFloatChanger(result));
-
-        // 펫 버프량 체크
-        result = DigidPlus(result, GameStatus.inst.AddPetAtkBuff);
 
         return result;
     }
