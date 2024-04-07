@@ -14,7 +14,7 @@ public class GoldShop : MonoBehaviour
     [Header("∞°∞› ≈∏¿‘")]
     [SerializeField] ProductTag priceType;
     [Space]
-    [SerializeField] Sprite[] list_prodSprite;
+    
     [SerializeField] TMP_Text priceText;
     [SerializeField] Transform imageParents;
     [SerializeField] GameObject obj_EmptyObj;
@@ -35,12 +35,14 @@ public class GoldShop : MonoBehaviour
             switch (prodtag)
             {
                 case ProductTag.Gold:
+                    GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(count));
                     Debug.Log("∞ÒµÂ " + count + "∏∏≈≠ »πµÊ!");
                     break;
                 case ProductTag.Ruby:
-                    Debug.Log("∑Á∫Ò " + count + "∏∏≈≠ »πµÊ!");
+                    GameStatus.inst.Ruby += int.Parse(count);
                     break;
                 case ProductTag.Star:
+                    GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(count));
                     Debug.Log("∫∞ " + count + "∏∏≈≠ »πµÊ!");
                     break;
             }
@@ -50,7 +52,7 @@ public class GoldShop : MonoBehaviour
     private void Start()
     {
         priceText.text = price;
-        priceImage.sprite = list_prodSprite[(int)priceType];
+        priceImage.sprite = UIManager.Instance.GetProdSprite((int)priceType);
         int prodCount = list_product.Count;
         for (int iNum = 0; iNum < prodCount; iNum++)
         {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Numerics;
 
@@ -44,7 +45,7 @@ public class Quest : MonoBehaviour
             GameStatus.inst.TotalProdGold += totalProd;
         }
     }
-
+    [SerializeField] Button UpBtn;
     [SerializeField] TextMeshProUGUI priceText;
     [SerializeField] TextMeshProUGUI upGoldText;
     [SerializeField] TextMeshProUGUI LvText;
@@ -54,6 +55,8 @@ public class Quest : MonoBehaviour
     {
         initValue();
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
+        UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);
+        GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
     }
 
     void initValue()//초기값 설정
@@ -88,6 +91,7 @@ public class Quest : MonoBehaviour
         if (haveGold >= nextCost)
         {
             Lv += buyCount;
+            MissionData.Instance.SetWeeklyMission("퀘스트 레벨업", buyCount);
             if (Lv >= 25 * LvCur)
             {
                 LvCur *= 2;
@@ -134,7 +138,19 @@ public class Quest : MonoBehaviour
         buyCount = UIManager.Instance.QuestBuyCount;
         setNextCost();
         setText();
+    }
 
+    private void SetbtnActive()
+    {
+        BigInteger havegold = BigInteger.Parse(GameStatus.inst.Gold);
+        if (havegold < nextCost)
+        {
+            UpBtn.interactable = false;
+        }
+        else
+        {
+            UpBtn.interactable = true;
+        }
     }
 
     public int GetLv()

@@ -48,18 +48,11 @@ public class UIManager : MonoBehaviour
 
     [Header("무기")]
     [SerializeField] List<Transform> m_list_Weapon = new List<Transform>();
-    public void WeaponUpComplete(Transform _trs)
-    {
-        int index = m_list_Weapon.FindIndex(x => x == _trs);
-        m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
-    }
     [SerializeField] Transform m_WeaponParents;
+    [SerializeField] RectTransform m_WeaponParentRect;
     [SerializeField] TextMeshProUGUI m_totalAtk;
     [SerializeField] Button WeaponBook;
-    public TextMeshProUGUI GettotalAtkText()
-    {
-        return m_totalAtk;
-    }
+
     int haveWeaponLv;//보유중인 무기중 제일 최상위 무기 번호
     int equipWeaponNum;//장착중인 무기 이미지 번호
     public int EquipWeaponNum
@@ -71,14 +64,30 @@ public class UIManager : MonoBehaviour
             ActionManager.inst.Set_WeaponSprite_Changer(value);
         }
     }
+
+    public void WeaponUpComplete(Transform _trs)
+    {
+        int index = m_list_Weapon.FindIndex(x => x == _trs);
+        m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
+    }
+
+    public TextMeshProUGUI GettotalAtkText()
+    {
+        return m_totalAtk;
+    }
+
     public void SetTopWeaponNum(int _num)
     {
-        haveWeaponLv = _num;
+        haveWeaponLv = _num / 5;
     }
 
     [Header("Shop")]
+    [SerializeField] Sprite[] list_prodSprite;
+    public Sprite GetProdSprite(int index)
+    {
+        return list_prodSprite[index];
+    }
     [SerializeField] Button ShopOpenBtn;
-
     public Button GetShopOpenBtn()
     {
         return ShopOpenBtn;
@@ -98,6 +107,8 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
+        m_WeaponParentRect = m_WeaponParents.GetComponent<RectTransform>();
+        m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(GameStatus.inst.TotalProdGold.ToString());
         SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         InvokeRepeating("getGoldPerSceond", 0, 1);
@@ -141,15 +152,20 @@ public class UIManager : MonoBehaviour
         GameStatus.inst.GetGold(GameStatus.inst.GetTotalGold());
     }
 
+    void SetWeaponScroll()
+    {
+        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * haveWeaponLv - 64);
+    }
+
     public void changeSortOder(int value)
     {
         canvas.sortingOrder = value;
     }
 
-    public int GetQuestLv(int index)//원하는 퀘스트의 레벨 가져오기
-    {
-        return m_list_Quest[index].GetComponent<Quest>().GetLv();
-    }
+    //public int GetQuestLv(int index)//원하는 퀘스트의 레벨 가져오기
+    //{
+    //    return m_list_Quest[index].GetComponent<Quest>().GetLv();
+    //}
 
     public void ClickBotBtn(int _num)
     {

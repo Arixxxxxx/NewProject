@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 [System.Serializable]
@@ -128,6 +129,7 @@ public class GameStatus : MonoBehaviour
     /////////////////////[ 플에이어 재화 변수]//////////////////////////////
 
     // 1. 소지 골드
+    public UnityEvent OnGoldChanged;
     string gold = "0";
     public string Gold
     {
@@ -139,6 +141,7 @@ public class GameStatus : MonoBehaviour
         {
             gold = value;
             WorldUI_Manager.inst.CurMaterialUpdate(0, gold);
+            OnGoldChanged?.Invoke();
         }
     }
 
@@ -183,6 +186,11 @@ public class GameStatus : MonoBehaviour
 
         set
         {
+            int UseRuby = ruby - value;
+            if (UseRuby > 0)
+            {
+                MissionData.Instance.SetDailyMission("루비 사용", UseRuby);
+            }
             ruby = value;
             WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString());
         }

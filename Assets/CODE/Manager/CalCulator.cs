@@ -281,7 +281,11 @@ public class CalCulator : MonoBehaviour
         }
         return result;
     }
-
+    /// <summary>
+    /// 숫자뒤의 문자를 숫자로 합산시켜주는 함수
+    /// </summary>
+    /// <param name="_text"></param>
+    /// <returns></returns>
     public string ConvertChartoIndex(string _text)
     {
         char firalp = _text[_text.Length - 1];

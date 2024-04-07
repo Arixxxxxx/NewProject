@@ -91,6 +91,7 @@ public class Weapon : MonoBehaviour
         if (haveGold >= nextCost)
         {
             Lv++;
+            MissionData.Instance.SetWeeklyMission("무기 강화", 1);
             Atk = BigInteger.Multiply(resultPowNum, Lv);
             GameStatus.inst.MinusGold(nextCost.ToString());
             UIManager.Instance.SetTopWeaponNum(Lv);
