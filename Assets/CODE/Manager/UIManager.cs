@@ -93,6 +93,13 @@ public class UIManager : MonoBehaviour
         return ShopOpenBtn;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ShopManager.Instance.OpenRubyShop();
+        }
+    }
     private void Awake()
     {
         if (Instance == null)

@@ -19,6 +19,13 @@ public enum ProductTag
     Ruby
 }
 
+public enum MissionType
+{ 
+    Quest,
+    Weapon,
+    Relic
+}
+
 public interface ITypeGetable
 {
     Vector2 GetMyType();

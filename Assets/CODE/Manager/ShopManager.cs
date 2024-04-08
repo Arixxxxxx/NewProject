@@ -11,6 +11,7 @@ public class ShopManager : MonoBehaviour
     public static ShopManager Instance;
 
     [Header("상점")]
+    [SerializeField] GameObject obj_shop;// 상점 오브젝트
     [SerializeField] Button mainShopCloseBtn;// 상점 닫기버튼
     [SerializeField] GameObject[] list_ShopUi;// 상점 하단버튼 리스트
     [SerializeField] Image[] list_BottomBtn;//메인UI 하단 버튼
@@ -56,7 +57,13 @@ public class ShopManager : MonoBehaviour
 
     void Update()
     {
+    
+    }
 
+    public void OpenRubyShop()
+    {
+        obj_shop.SetActive(true);
+        ClickShopBtn(3);
     }
 
     public void ClickShopBtn(int _num)
@@ -113,6 +120,10 @@ public class ShopManager : MonoBehaviour
                     }
                     obj_BuyCheck.SetActive(false);
                 }
+                else
+                {
+                    Debug.Log("골드가 부족합니다");
+                }
                 break;
             case ProductTag.Ruby:
                 int haveRuby = int.Parse(GameStatus.inst.Gold);
@@ -127,6 +138,10 @@ public class ShopManager : MonoBehaviour
                     }
                     obj_BuyCheck.SetActive(false);
                 }
+                else
+                {
+                    Debug.Log("루비가 부족합니다");
+                }
                 break;
             case ProductTag.Star:
                 string convertStar = CalCulator.inst.ConvertChartoIndex(waitingPrice);//문자로 표기돼있는 숫자를 풀어서 반환
@@ -140,6 +155,10 @@ public class ShopManager : MonoBehaviour
                         list_buyWaiting[iNum].buyProduct();
                     }
                     obj_BuyCheck.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("별이 부족합니다");
                 }
                 break;
         }

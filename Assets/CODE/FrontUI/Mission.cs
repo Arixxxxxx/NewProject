@@ -17,6 +17,7 @@ public class Mission : MonoBehaviour
     [SerializeField] TMP_Text rewardText;
     [SerializeField] TMP_Text BarText;
     [SerializeField] Image imageBar;
+    [SerializeField] GameObject Mask;
     int count;
     public int Count
     {
@@ -77,5 +78,7 @@ public class Mission : MonoBehaviour
                 break;
         }
         clearBtn.gameObject.SetActive(false);
+        transform.SetAsLastSibling();
+        Mask.SetActive(true);
     }
 }

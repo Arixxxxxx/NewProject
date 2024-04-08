@@ -92,7 +92,6 @@ public class Quest : MonoBehaviour
         {
             Lv += buyCount;
             MissionData.Instance.SetWeeklyMission("퀘스트 레벨업", buyCount);
-            MissionData.Instance.SetSpecialMission(Number, buyCount);
             if (Lv >= 25 * LvCur)
             {
                 LvCur *= 2;

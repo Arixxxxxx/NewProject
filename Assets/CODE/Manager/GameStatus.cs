@@ -411,15 +411,28 @@ public class GameStatus : MonoBehaviour
     public void SetAryQuestLv(int Num, int Value)
     {
         aryQuestLv[Num] = Value;
+        MissionData.Instance.SetSpecialMission(Num, Value, MissionType.Quest);
     }
 
     int[] aryWeaponLv = new int[30];
-    public int[] AryWeaponLv
+    //public int[] AryWeaponLv
+    //{
+    //    get => aryWeaponLv;
+    //    set 
+    //    {
+    //        aryWeaponLv = value;
+    //    }
+    //}
+    public int GetAryWeaponLv(int Num)
     {
-        get => aryWeaponLv;
-        set { aryWeaponLv = value; }
+        return aryWeaponLv[Num];
     }
 
+    public void SetAryWeaponLv(int Num, int Value)
+    {
+        aryWeaponLv[Num] = Value;
+        MissionData.Instance.SetSpecialMission(Num, Value, MissionType.Weapon);
+    }
     UnityEngine.Vector2[] aryRelic;
     public UnityEngine.Vector2[] AryRelic
     {

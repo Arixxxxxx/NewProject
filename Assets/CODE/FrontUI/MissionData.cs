@@ -14,37 +14,72 @@ public class MissionData : MonoBehaviour
     Transform obj_DailyContents; //일일미션 컨텐츠
     Transform obj_WeeklyContents; //주간미션 컨텐츠
     Transform obj_SpecialContents; //스페셜미션 컨텐츠
+    Transform trs_NowMissionParents; //현재진행중인 미션 부모
     Button MissionOpenBtn;//미션창 여는 버튼
 
     [SerializeField] GameObject[] list_MissionWindow;// 일일,주간,특별미션창
-    [SerializeField] Image[] list_MissionTopBtnImage;
-    [SerializeField] Sprite[] list_topBtnSelectSprite;
-    [SerializeField] Sprite[] list_topBtnNonSelectSprite;
-    int missionTypeNum = 0;
-
+    [SerializeField] Image[] list_MissionTopBtnImage;// 상단 버튼 이미지
+    [SerializeField] Sprite[] list_topBtnSelectSprite;// 상단 버튼 선택 스프라이트
+    [SerializeField] Sprite[] list_topBtnNonSelectSprite;// 상단 버튼 비선택 스프라이트
+    int missionTypeIndex = 0;//선택한 미션 인덱스번호
+    int nowSpecialIndex { get; set; } = 0;//현재 진행중인 스페셜 미션 인덱스
 
     //일일미션
     List<Mission> list_DailyMission = new List<Mission>();
-
+    public void SetDailyMission(string Name, int count)
+    {
+        int listNum = -1;
+        int listcount = list_DailyMission.Count;
+        for (int iNum = 0; iNum < listcount; iNum++)
+        {
+            if (list_DailyMission[iNum].Name == Name)
+            {
+                listNum = iNum;
+            }
+        }
+         
+        list_DailyMission[listNum].Count += count;
+    }
     //주간미션
     List<Mission> list_WeeklyMission = new List<Mission>();
-
+    public void SetWeeklyMission(string Name, int count)
+    {
+        int listNum = -1;
+        int listcount = list_WeeklyMission.Count;
+        for (int iNum = 0; iNum < listcount; iNum++)
+        {
+            if (list_WeeklyMission[iNum].Name == Name)
+            {
+                listNum = iNum;
+            }
+        }
+        if (listNum != -1)
+        {
+            list_WeeklyMission[listNum].Count += count;
+        }
+    }
     //스페셜 미션
-    [SerializeField] List<Special> list_SpecialMission = new List<Special>();
     [Serializable]
     public class Special
     {
         [SerializeField] public string Name;
         [SerializeField] int maxCount;
-        [SerializeField] int CountGap;
-        [SerializeField] public int QuestNum;
+        [SerializeField] public MissionType missionType;
+        [SerializeField] int typeindex;
         [SerializeField] string rewardCount;
         [SerializeField] ProductTag rewardTag;
+        [HideInInspector] public Transform trs;
         Image imageIcon;
-        Button moveBtn;
+        GameObject mask;
         Button clearBtn;
+        Button moveBtn;
         TMP_Text NameText;
+        TMP_Text MissionText;
         TMP_Text rewardText;
+        GameObject needClearText;
+
+        bool isActive = false;
+
         int count;
         public int Count
         {
@@ -56,7 +91,11 @@ public class MissionData : MonoBehaviour
                     count = value;
                     if (count >= maxCount)
                     {
-                        clearBtn.gameObject.SetActive(true);
+                        if (isActive)
+                        {
+                            moveBtn.gameObject.SetActive(false);
+                            clearBtn.gameObject.SetActive(true);
+                        }
                     }
                 }
             }
@@ -64,13 +103,18 @@ public class MissionData : MonoBehaviour
 
         public void initSpecialMission(Transform _trs)
         {
+            trs = _trs;
             imageIcon = _trs.Find("Icon_IMG").GetComponent<Image>();
             moveBtn = _trs.Find("MoveBtn").GetComponent<Button>();
             clearBtn = _trs.Find("ClearBtn").GetComponent<Button>();
-            NameText = _trs.Find("Space/MissionText").GetComponent<TMP_Text>();
+            NameText = _trs.Find("Space/Title_Text").GetComponent<TMP_Text>();
+            MissionText = _trs.Find("Space/MissionText").GetComponent<TMP_Text>();
             rewardText = _trs.Find("Space/RewardText").GetComponent<TMP_Text>();
+            needClearText = _trs.Find("NeedClearText").gameObject;
+            mask = _trs.Find("Mask").gameObject;
 
-            NameText.text = Name + $"{maxCount}달성";
+            NameText.text = $"{Instance.GetSpecialMyIndex(this) + 1}단계 미션";
+            MissionText.text = Name;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
 
             switch (rewardTag)
@@ -85,9 +129,128 @@ public class MissionData : MonoBehaviour
                     rewardText.text = $"별 +{rewardCount}개";
                     break;
             }
+
+            clearBtn.onClick.AddListener(() =>
+            {
+                clearBtn.gameObject.SetActive(false);
+                mask.SetActive(true);
+                trs.SetParent(Instance.GetSpecialParents());
+                trs.GetComponent<RectTransform>().sizeDelta = new Vector2(298, 60);
+                trs.SetAsLastSibling();
+
+                Instance.nowSpecialIndex = Instance.GetSpecialMyIndex(this) + 1;
+                Instance.SetSpecialMissionRectPosition();
+
+                switch (rewardTag)
+                {
+                    case ProductTag.Gold:
+                        GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(rewardCount));
+                        break;
+                    case ProductTag.Ruby:
+                        GameStatus.inst.Ruby += int.Parse(CalCulator.inst.ConvertChartoIndex(rewardCount));
+                        break;
+                    case ProductTag.Star:
+                        GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
+                        break;
+                }
+            });
+        }
+
+        public void ActiveTrue()
+        {
+            isActive = true;
+            if (count >= maxCount)
+            {
+                clearBtn.gameObject.SetActive(true);
+            }
+            else
+            {
+                moveBtn.gameObject.SetActive(true);
+            }
+            needClearText.SetActive(false);
+            mask.SetActive(false);
+        }
+    }
+    [Header("스페셜 미션 목록")]
+    [SerializeField] List<Special> list_SpecialMIssion = new List<Special>();
+
+    List<Special> list_SpecialQuest = new List<Special>();//스페셜 미션 퀘스트
+    List<Special> list_SpecialWeapon = new List<Special>();//스페셜 미션 무기
+    List<Special> list_SpecialRelic = new List<Special>();//스페셜 미션 유물
+
+    /// <summary>
+    /// 스페셜 미션 맨위에 고정시키고 사이즈 조절
+    /// </summary>
+    public void SetSpecialMissionRectPosition()
+    {
+        if (nowSpecialIndex <= list_SpecialMIssion.Count -1)
+        {
+            list_SpecialMIssion[nowSpecialIndex].ActiveTrue();
+            Transform nowtrs = list_SpecialMIssion[nowSpecialIndex].trs;
+            nowtrs.SetParent(trs_NowMissionParents);
+            RectTransform nowRect = nowtrs.GetComponent<RectTransform>();
+            nowRect.anchorMin = new Vector2(0, 0);
+            nowRect.anchorMax = new Vector2(1, 1);
+            nowRect.offsetMin = Vector2.zero;
+            nowRect.offsetMax = Vector2.zero;
         }
     }
 
+    /// <summary>
+    /// 스페셜 미션 값 설정
+    /// </summary>
+    /// <param name="Num"></param>
+    /// <param name="count"></param>
+    /// <param name="_type"></param>
+    public void SetSpecialMission(int Num, int count, MissionType _type)
+    {
+        switch (_type)
+        {
+            case MissionType.Quest:
+                if (list_SpecialQuest.Count - 1 >= Num)
+                {
+                    list_SpecialQuest[Num].Count = count;
+                }
+                break;
+            case MissionType.Weapon:
+                if (list_SpecialWeapon.Count >= Num && Num > 0)
+                {
+                    list_SpecialWeapon[Num-1].Count = count;
+                }
+                break;
+            case MissionType.Relic:
+                if (list_SpecialRelic.Count - 1 >= Num)
+                {
+                    list_SpecialRelic[Num].Count = count;
+                }
+                break;
+        }
+    }
+    /// <summary>
+    /// 스페셜 미션 본인 인덱스번호 리턴
+    /// </summary>
+    /// <param name="_sp"></param>
+    /// <returns></returns>
+    public int GetSpecialMyIndex(Special _sp)
+    {
+        int count = list_SpecialMIssion.Count;
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            if (list_SpecialMIssion[iNum] == _sp)
+            {
+                return iNum;
+            }
+        }
+        return -1;
+    }
+    public Transform GetSpecialParents()
+    {
+        return obj_SpecialContents;
+    }
+    public Transform GetNowSpecialParents()
+    {
+        return trs_NowMissionParents;
+    }
     private void Awake()
     {
         if (Instance == null)
@@ -108,24 +271,45 @@ public class MissionData : MonoBehaviour
         obj_DailyContents = obj_MissionWindow.Find("Mission/Window/Daily(Scroll View)").GetComponent<ScrollRect>().content;
         obj_WeeklyContents = obj_MissionWindow.Find("Mission/Window/Weekly(Scroll View)").GetComponent<ScrollRect>().content;
         obj_SpecialContents = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)").GetComponent<ScrollRect>().content;
+        trs_NowMissionParents = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)/NowMission");
 
+        //일일 미션 초기화
         int DailyCount = obj_DailyContents.childCount;
         for (int iNum = 0; iNum < DailyCount; iNum++)
         {
             list_DailyMission.Add(obj_DailyContents.GetChild(iNum).GetComponent<Mission>());
         }
 
+        //주간 미션 초기화
         int WeeklyCount = obj_WeeklyContents.childCount;
         for (int iNum = 0; iNum < WeeklyCount; iNum++)
         {
             list_WeeklyMission.Add(obj_WeeklyContents.GetChild(iNum).GetComponent<Mission>());
         }
 
+        //스페셜 미션 리스트 초기화
         int SpecialCount = obj_SpecialContents.childCount;
         for (int iNum = 0; iNum < SpecialCount; iNum++)
         {
-            list_SpecialMission[iNum].initSpecialMission(obj_SpecialContents.GetChild(iNum));
+            if (list_SpecialMIssion[iNum].missionType == MissionType.Quest)
+            {
+                list_SpecialQuest.Add(list_SpecialMIssion[iNum]);
+            }
+
+            if (list_SpecialMIssion[iNum].missionType == MissionType.Weapon)
+            {
+                list_SpecialWeapon.Add(list_SpecialMIssion[iNum]);
+            }
+
+            if (list_SpecialMIssion[iNum].missionType == MissionType.Relic)
+            {
+                list_SpecialRelic.Add(list_SpecialMIssion[iNum]);
+            }
+
+            list_SpecialMIssion[iNum].initSpecialMission(obj_SpecialContents.GetChild(iNum));
         }
+        SetSpecialMissionRectPosition();//현재 진행중인 특별미션 맨위로 고정
+
 
         UIManager.Instance.GetShopOpenBtn().onClick.AddListener(() => SetDailyMission("상점 방문", 1));
         MissionOpenBtn.onClick.AddListener(() =>
@@ -135,49 +319,12 @@ public class MissionData : MonoBehaviour
         });
     }
 
-    public void SetDailyMission(string Name, int count)
-    {
-        int listNum = -1;
-        int listcount = list_DailyMission.Count;
-        for (int iNum = 0; iNum < listcount; iNum++)
-        {
-            if (list_DailyMission[iNum].Name == Name)
-            {
-                listNum = iNum;
-            }
-        }
-
-        list_DailyMission[listNum].Count += count;
-    }
-
-    public void SetWeeklyMission(string Name, int count)
-    {
-        int listNum = -1;
-        int listcount = list_WeeklyMission.Count;
-        for (int iNum = 0; iNum < listcount; iNum++)
-        {
-            if (list_WeeklyMission[iNum].Name == Name)
-            {
-                listNum = iNum;
-            }
-        }
-        if (listNum != -1)
-        {
-            list_WeeklyMission[listNum].Count += count;
-        }
-    }
-
-    public void SetSpecialMission(int Num, int count)
-    {
-        list_SpecialMission[Num].Count += count;
-    }
-
     public void ClickMissionType(int value)
     {
-        list_MissionWindow[missionTypeNum].SetActive(false);
-        list_MissionTopBtnImage[missionTypeNum].sprite = list_topBtnNonSelectSprite[missionTypeNum];
-        missionTypeNum = value;
-        list_MissionWindow[missionTypeNum].SetActive(true);
-        list_MissionTopBtnImage[missionTypeNum].sprite = list_topBtnSelectSprite[missionTypeNum];
+        list_MissionWindow[missionTypeIndex].SetActive(false);
+        list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnNonSelectSprite[missionTypeIndex];
+        missionTypeIndex = value;
+        list_MissionWindow[missionTypeIndex].SetActive(true);
+        list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnSelectSprite[missionTypeIndex];
     }
 }

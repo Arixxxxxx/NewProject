@@ -7,9 +7,10 @@ using TMPro;
 public class SpecialMission : MonoBehaviour
 {
     [SerializeField] public string Name;
+    [SerializeField] public int MissionIndex;
+    [SerializeField] public MissionType missionType;
     [SerializeField] int index;
     [SerializeField] int maxCount;
-    [SerializeField] public int QuestNum;
     [SerializeField] string rewardCount;
     [SerializeField] ProductTag rewardTag;
     [SerializeField] Image imageIcon;
@@ -74,7 +75,6 @@ public class SpecialMission : MonoBehaviour
                 break;
         }
         clearBtn.gameObject.SetActive(false);
-        CheckMIssion(QuestNum);
     }
 
     public void CheckMIssion(int index)
