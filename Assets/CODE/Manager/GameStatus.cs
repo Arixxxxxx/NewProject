@@ -392,13 +392,26 @@ public class GameStatus : MonoBehaviour
     }
 
     /////////////////////////////// 하단 UI 데이터 //////////////////////////////////
-
-    int[] aryQuestLv = new int[4];
-    public int[] AryQuestLv
+    public UnityEvent OnQuestLvChanged;
+    private int[] aryQuestLv = new int[4];
+    //public int[] AryQuestLv
+    //{
+    //    get => aryQuestLv; 
+    //    set
+    //    {
+    //        aryQuestLv = value;
+    //        OnQuestLvChanged?.Invoke();
+    //    }
+    //}
+    public int GetAryQuestLv(int Num)
     {
-        get => aryQuestLv;
-        set{aryQuestLv = value;}
+        return aryQuestLv[Num];
+    }
 
+    public void SetAryQuestLv(int Num, int Value)
+    {
+        aryQuestLv[Num] = Value;
+        MissionData.Instance.SetSpecialMission(Num, Value);
     }
 
     int[] aryWeaponLv = new int[30];

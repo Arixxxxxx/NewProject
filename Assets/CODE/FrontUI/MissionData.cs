@@ -30,7 +30,7 @@ public class MissionData : MonoBehaviour
     List<Mission> list_WeeklyMission = new List<Mission>();
 
     //스페셜 미션
-    List<Mission> list_SpecialMission = new List<Mission>();
+    List<SpecialMission> list_SpecialMission = new List<SpecialMission>();
 
 
     private void Awake()
@@ -60,14 +60,14 @@ public class MissionData : MonoBehaviour
             list_DailyMission.Add(obj_DailyContents.GetChild(iNum).GetComponent<Mission>());
         }
         int WeeklyCount = obj_WeeklyContents.childCount;
-        for (int iNum = 0; iNum < DailyCount; iNum++)
+        for (int iNum = 0; iNum < WeeklyCount; iNum++)
         {
-            list_WeeklyMission.Add(obj_DailyContents.GetChild(iNum).GetComponent<Mission>());
+            list_WeeklyMission.Add(obj_WeeklyContents.GetChild(iNum).GetComponent<Mission>());
         }
         int SpecialCount = obj_SpecialContents.childCount;
-        for (int iNum = 0; iNum < DailyCount; iNum++)
+        for (int iNum = 0; iNum < SpecialCount; iNum++)
         {
-            list_SpecialMission.Add(obj_DailyContents.GetChild(iNum).GetComponent<Mission>());
+            list_SpecialMission.Add(obj_SpecialContents.GetChild(iNum).GetComponent<SpecialMission>());
         }
 
         UIManager.Instance.GetShopOpenBtn().onClick.AddListener(() => SetDailyMission("상점 방문", 1));
@@ -111,13 +111,13 @@ public class MissionData : MonoBehaviour
         }
     }
 
-    public void SetSpecialMission(string Name, int count)
+    public void SetSpecialMission(int Num, int count)
     {
         int listNum = -1;
         int listcount = list_SpecialMission.Count;
         for (int iNum = 0; iNum < listcount; iNum++)
         {
-            if (list_SpecialMission[iNum].Name == Name)
+            if (list_SpecialMission[iNum].QuestNum == Num)
             {
                 listNum = iNum;
             }

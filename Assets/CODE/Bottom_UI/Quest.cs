@@ -24,7 +24,7 @@ public class Quest : MonoBehaviour
         set
         {
             lv = value;
-            GameStatus.inst.AryQuestLv[Number] = value;
+            GameStatus.inst.SetAryQuestLv(Number,value);
         }
     }
     int LvCur = 1; //레벨보정
@@ -91,6 +91,7 @@ public class Quest : MonoBehaviour
         if (haveGold >= nextCost)
         {
             Lv += buyCount;
+            GameStatus.inst.SetAryQuestLv(Number,Lv);
             MissionData.Instance.SetWeeklyMission("퀘스트 레벨업", buyCount);
             if (Lv >= 25 * LvCur)
             {

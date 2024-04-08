@@ -94,6 +94,7 @@ public class Weapon : MonoBehaviour
             MissionData.Instance.SetWeeklyMission("무기 강화", 1);
             Atk = BigInteger.Multiply(resultPowNum, Lv);
             GameStatus.inst.MinusGold(nextCost.ToString());
+            GameStatus.inst.AryWeaponLv[Number] = Lv - Number * 5;
             UIManager.Instance.SetTopWeaponNum(Lv);
             clickWeaponImage();
             setNextCost();

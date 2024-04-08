@@ -10,13 +10,13 @@ public class Mission : MonoBehaviour
     [SerializeField] int maxCount;
     [SerializeField] string rewardCount;
     [SerializeField] ProductTag rewardTag;
-     Image imageIcon;
-     Button moveBtn;
-     Button clearBtn;
-     TMP_Text NameText;
-     TMP_Text rewardText;
-     TMP_Text BarText;
-     Image imageBar;
+    [SerializeField] Image imageIcon;
+    [SerializeField] Button moveBtn;
+    [SerializeField] Button clearBtn;
+    [SerializeField] TMP_Text NameText;
+    [SerializeField] TMP_Text rewardText;
+    [SerializeField] TMP_Text BarText;
+    [SerializeField] Image imageBar;
     int count;
     public int Count
     {
@@ -42,19 +42,9 @@ public class Mission : MonoBehaviour
             }
         }
     }
-
     private void Start()
     {
-        imageIcon = transform.Find("Icon_IMG").GetComponent<Image>();
-        moveBtn = transform.Find("MoveBtn").GetComponent<Button>();
-        clearBtn = transform.Find("ClearBtn").GetComponent<Button>();
-        NameText = transform.Find("Space/Title_Text").GetComponent<TMP_Text>();
-        rewardText = transform.Find("Space/ReturnItem_Text").GetComponent<TMP_Text>();
-        BarText = transform.Find("Space/Playbar/Text (TMP)").GetComponent<TMP_Text>();
-        imageBar = transform.Find("Space/Playbar/PlayBar(Front)").GetComponent<Image>();
-
         NameText.text = Name;
-        
         switch (rewardTag)
         {
             case ProductTag.Gold:
@@ -78,7 +68,7 @@ public class Mission : MonoBehaviour
         {
             case ProductTag.Gold:
                 GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(rewardCount));
-            break;
+                break;
             case ProductTag.Ruby:
                 GameStatus.inst.Ruby += int.Parse(CalCulator.inst.ConvertChartoIndex(rewardCount));
                 break;
