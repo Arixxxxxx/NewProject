@@ -7,8 +7,8 @@ using TMPro;
 public class SpecialMission : MonoBehaviour
 {
     [SerializeField] public string Name;
+    [SerializeField] int index;
     [SerializeField] int maxCount;
-    [SerializeField] int CountGap;
     [SerializeField] public int QuestNum;
     [SerializeField] string rewardCount;
     [SerializeField] ProductTag rewardTag;
@@ -42,21 +42,21 @@ public class SpecialMission : MonoBehaviour
         //NameText = transform.Find("Space/MissionText").GetComponent<TMP_Text>();
         //rewardText = transform.Find("Space/RewardText").GetComponent<TMP_Text>();
 
-        NameText.text = Name + $"{maxCount}달성";
+        //NameText.text = Name + $"{maxCount}달성";
 
-        switch (rewardTag)
-        {
-            case ProductTag.Gold:
-                rewardText.text = $"골드 +{rewardCount}개";
-                break;
-            case ProductTag.Ruby:
-                rewardText.text = $"루비 +{rewardCount}개";
-                break;
-            case ProductTag.Star:
-                rewardText.text = $"별 +{rewardCount}개";
-                break;
-        }
-        imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
+        //switch (rewardTag)
+        //{
+        //    case ProductTag.Gold:
+        //        rewardText.text = $"골드 +{rewardCount}개";
+        //        break;
+        //    case ProductTag.Ruby:
+        //        rewardText.text = $"루비 +{rewardCount}개";
+        //        break;
+        //    case ProductTag.Star:
+        //        rewardText.text = $"별 +{rewardCount}개";
+        //        break;
+        //}
+        //imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
     }
 
     public void ClickClearBtn()
@@ -74,8 +74,6 @@ public class SpecialMission : MonoBehaviour
                 break;
         }
         clearBtn.gameObject.SetActive(false);
-        maxCount += CountGap;
-        NameText.text = Name + $"{maxCount}달성";
         CheckMIssion(QuestNum);
     }
 

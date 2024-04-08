@@ -411,7 +411,6 @@ public class GameStatus : MonoBehaviour
     public void SetAryQuestLv(int Num, int Value)
     {
         aryQuestLv[Num] = Value;
-        MissionData.Instance.SetSpecialMission(Num, Value);
     }
 
     int[] aryWeaponLv = new int[30];

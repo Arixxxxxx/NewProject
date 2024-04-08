@@ -91,8 +91,8 @@ public class Quest : MonoBehaviour
         if (haveGold >= nextCost)
         {
             Lv += buyCount;
-            GameStatus.inst.SetAryQuestLv(Number,Lv);
             MissionData.Instance.SetWeeklyMission("퀘스트 레벨업", buyCount);
+            MissionData.Instance.SetSpecialMission(Number, buyCount);
             if (Lv >= 25 * LvCur)
             {
                 LvCur *= 2;

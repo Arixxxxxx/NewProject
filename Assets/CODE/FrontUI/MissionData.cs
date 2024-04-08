@@ -30,8 +30,63 @@ public class MissionData : MonoBehaviour
     List<Mission> list_WeeklyMission = new List<Mission>();
 
     //스페셜 미션
-    List<SpecialMission> list_SpecialMission = new List<SpecialMission>();
+    [SerializeField] List<Special> list_SpecialMission = new List<Special>();
+    [Serializable]
+    public class Special
+    {
+        [SerializeField] public string Name;
+        [SerializeField] int maxCount;
+        [SerializeField] int CountGap;
+        [SerializeField] public int QuestNum;
+        [SerializeField] string rewardCount;
+        [SerializeField] ProductTag rewardTag;
+        Image imageIcon;
+        Button moveBtn;
+        Button clearBtn;
+        TMP_Text NameText;
+        TMP_Text rewardText;
+        int count;
+        public int Count
+        {
+            get => count;
+            set
+            {
+                if (count < maxCount)
+                {
+                    count = value;
+                    if (count >= maxCount)
+                    {
+                        clearBtn.gameObject.SetActive(true);
+                    }
+                }
+            }
+        }
 
+        public void initSpecialMission(Transform _trs)
+        {
+            imageIcon = _trs.Find("Icon_IMG").GetComponent<Image>();
+            moveBtn = _trs.Find("MoveBtn").GetComponent<Button>();
+            clearBtn = _trs.Find("ClearBtn").GetComponent<Button>();
+            NameText = _trs.Find("Space/MissionText").GetComponent<TMP_Text>();
+            rewardText = _trs.Find("Space/RewardText").GetComponent<TMP_Text>();
+
+            NameText.text = Name + $"{maxCount}달성";
+            imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
+
+            switch (rewardTag)
+            {
+                case ProductTag.Gold:
+                    rewardText.text = $"골드 +{rewardCount}개";
+                    break;
+                case ProductTag.Ruby:
+                    rewardText.text = $"루비 +{rewardCount}개";
+                    break;
+                case ProductTag.Star:
+                    rewardText.text = $"별 +{rewardCount}개";
+                    break;
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -59,15 +114,17 @@ public class MissionData : MonoBehaviour
         {
             list_DailyMission.Add(obj_DailyContents.GetChild(iNum).GetComponent<Mission>());
         }
+
         int WeeklyCount = obj_WeeklyContents.childCount;
         for (int iNum = 0; iNum < WeeklyCount; iNum++)
         {
             list_WeeklyMission.Add(obj_WeeklyContents.GetChild(iNum).GetComponent<Mission>());
         }
+
         int SpecialCount = obj_SpecialContents.childCount;
         for (int iNum = 0; iNum < SpecialCount; iNum++)
         {
-            list_SpecialMission.Add(obj_SpecialContents.GetChild(iNum).GetComponent<SpecialMission>());
+            list_SpecialMission[iNum].initSpecialMission(obj_SpecialContents.GetChild(iNum));
         }
 
         UIManager.Instance.GetShopOpenBtn().onClick.AddListener(() => SetDailyMission("상점 방문", 1));
@@ -75,7 +132,6 @@ public class MissionData : MonoBehaviour
         {
             obj_MissionWindow.gameObject.SetActive(true);
             UIManager.Instance.changeSortOder(4);
-
         });
     }
 
@@ -113,19 +169,7 @@ public class MissionData : MonoBehaviour
 
     public void SetSpecialMission(int Num, int count)
     {
-        int listNum = -1;
-        int listcount = list_SpecialMission.Count;
-        for (int iNum = 0; iNum < listcount; iNum++)
-        {
-            if (list_SpecialMission[iNum].QuestNum == Num)
-            {
-                listNum = iNum;
-            }
-        }
-        if (listNum != -1)
-        {
-            list_SpecialMission[listNum].Count += count;
-        }
+        list_SpecialMission[Num].Count += count;
     }
 
     public void ClickMissionType(int value)
