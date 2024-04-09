@@ -116,7 +116,7 @@ public class UIManager : MonoBehaviour
     {
         m_WeaponParentRect = m_WeaponParents.GetComponent<RectTransform>();
         m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
-        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitChanger(GameStatus.inst.TotalProdGold.ToString());
+        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
         SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         InvokeRepeating("getGoldPerSceond", 0, 1);
 
