@@ -74,6 +74,14 @@ public class ActionManager : MonoBehaviour
 
     int floorCount;
 
+    //피버 체크
+    bool isFever;
+    public bool IsFever
+    {
+        get { return isFever; }
+        set { isFever = value; }
+    }
+
 
     private void Awake()
     {
@@ -146,7 +154,7 @@ public class ActionManager : MonoBehaviour
     bool doEnemyMove = true;
     private void FixedUpdate()
     {
-        if (attackReady == false) //배경 이동
+        if (attackReady == false && IsFever == false) //배경 이동
         {
             MoveMap();
 
@@ -158,13 +166,24 @@ public class ActionManager : MonoBehaviour
     }
 
     int index = 1;
-    
 
+    float feverCountTimer = 0.8f;
+    float feverNextTimer;
     void Update()
     {
-        if (attackReady == true) // 전투
+        if (attackReady == true && IsFever == false) // 전투
         {
             AttackEnemy();
+        }
+
+        if( IsFever == true) // 피버일시 스테이지 올려줌
+        {
+            feverNextTimer += Time.deltaTime;
+            if( feverNextTimer > feverCountTimer)
+            {
+                feverNextTimer = 0;
+                FeverFloorUp();
+            }
         }
 
         //테스트용
@@ -427,6 +446,38 @@ public class ActionManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 피버시 출력
+    /// </summary>
+    private void FeverFloorUp()
+    {
+        floorCount++;
+        // 현재 받아야되는 돈 계산
+        string getGold = Get_EnemyDeadGold();
+        GameStatus.inst.PlusGold(getGold); // 골드 얻기
+
+        if (floorCount < 4)
+        {
+            Enemyinit();
+            GameStatus.inst.FloorLv++;
+            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
+
+        }
+        else if (floorCount == 4)
+        {
+            Enemyinit();
+            GameStatus.inst.FloorLv++;
+            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
+            //보스피통 늘려주는 ~
+        }
+        else if (floorCount == 5)
+        {
+            Enemyinit();
+            floorCount = 0;
+            GameStatus.inst.FloorLv++;
+            WorldUI_Manager.inst.Reset_StageUiBar();
+        }
+    }
 
     IEnumerator NextStageAction()
     {

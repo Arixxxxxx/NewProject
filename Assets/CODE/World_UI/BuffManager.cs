@@ -65,7 +65,7 @@ public class BuffManager : MonoBehaviour
 
         viewAdATKBuff = Random.Range(10f, 15f);
         worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
-        adBuffBtn = worldUI.transform.Find("StageUI/ADBuff").GetComponent<Button>(); // 인게임 팝업 버프아이콘
+        adBuffBtn = worldUI.transform.Find("ADBuff").GetComponent<Button>(); // 인게임 팝업 버프아이콘
 
         buffWindow = GameObject.Find("---[FrontUICanvas]").gameObject;
 

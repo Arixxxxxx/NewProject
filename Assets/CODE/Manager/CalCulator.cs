@@ -2,6 +2,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using UnityEngine;
+using static Cinemachine.DocumentationSortingAttribute;
 
 public class CalCulator : MonoBehaviour
 {
@@ -178,13 +179,17 @@ public class CalCulator : MonoBehaviour
         return value.ToString();
     }
 
-    BigInteger hpA = new BigInteger();
+
+    public BigInteger baseHP = new BigInteger(100);  // 기본 체력
+    public BigInteger hpIncreaseFactor = new BigInteger(15);  // 층당 체력 증가 계수 (밸런스 변수)
+
     public string EnemyHpSetup()
     {
-        hpA = 2; // 기존 2 임시로 200
-        hpA = BigInteger.Pow(hpA, GameStatus.inst.AccumlateFloor);
+        int floor = GameStatus.inst.AccumlateFloor;
+        BigInteger health = baseHP + hpIncreaseFactor * floor * floor; // 층수의 제곱을 이용한 체력 계산
 
-        return hpA.ToString();
+        Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
+        return health.ToString();
     }
 
 
@@ -534,7 +539,7 @@ public class CalCulator : MonoBehaviour
       readonly BigInteger b = new BigInteger(50404005900);  // 0.504040059 * 100000000
       readonly BigInteger c = new BigInteger(-12776764200);  // -127.767642 * 100000000
       readonly BigInteger d = new BigInteger(2229519577);  // 22295.19577017339 * 100
-      readonly BigInteger scale = new BigInteger(20000000000);  // 스케일링 팩터
+      readonly BigInteger scale = new BigInteger(10000000000);  // 스케일링 팩터
 
 
     /// <summary>
@@ -543,7 +548,7 @@ public class CalCulator : MonoBehaviour
     /// <returns> 알파벳부호처리 안한 string 정수형 타입 Data </returns>
     public string CurHwansengPoint(int AddFloor)
     {
-        int curStage = GameStatus.inst.AccumlateFloor + AddFloor;
+        int curStage = GameStatus.inst.StageLv + AddFloor;
 
         // BigInteger를 사용한 3차, 2차, 1차 계산
         BigInteger term1 = BigInteger.Multiply(BigInteger.Pow(curStage, 3), a);
@@ -552,8 +557,7 @@ public class CalCulator : MonoBehaviour
 
         // 최종 환산 포인트 계산
         string result = ((term1 + term2 + term3 + d) / scale).ToString();  // 마지막에 스케일 조정
-
-        Debug.Log($"입력값 : {curStage} 현재 환생리턴 스타값 : {result}");
+       
         return result;
     }
 }

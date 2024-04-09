@@ -390,6 +390,26 @@ public class WorldUI_Manager : MonoBehaviour
         StopCoroutine(PlayAD());
         StartCoroutine(PlayAD());
     }
+
+    /// <summary>
+    /// 샘플 광고보고 피버타임 
+    /// </summary>
+ 
+    public void SampleAD_Ad_FeverTIme(int Time, int Type, bool isAd)
+    {
+        adXbtn.onClick.RemoveAllListeners();
+        adXbtn.onClick.AddListener(() =>
+        {
+            HwanSengSystem.inst.FeverTimeActive(Time,Type, isAd);
+
+            adXbtn.gameObject.SetActive(false);
+            adSample.SetActive(false);
+            buffSelectUIWindow.SetActive(false);
+        });
+
+        StopCoroutine(PlayAD());
+        StartCoroutine(PlayAD());
+    }
     IEnumerator PlayAD()
     {
         adSample.SetActive(true);
