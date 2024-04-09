@@ -285,6 +285,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             stageLv = value;
+            
         }
     }
 
@@ -300,7 +301,7 @@ public class GameStatus : MonoBehaviour
         {
             floorLv = value;
             AccumlateFloor++;
-
+            HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate();
             if (floorLv == 6)
             {
                 floorLv = 1;

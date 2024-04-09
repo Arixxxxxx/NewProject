@@ -525,6 +525,35 @@ public class CalCulator : MonoBehaviour
         // 소수점 이하 불필요한 0 제거 (옵션)
         finalResult = finalResult.TrimEnd('0').TrimEnd('.');
         return float.Parse(finalResult);
+    }
 
+
+    // 환생 포인트계산 읽기전용 변수들
+
+      readonly BigInteger a = new BigInteger(115105889);  // 0.00115105889 * 100000000
+      readonly BigInteger b = new BigInteger(50404005900);  // 0.504040059 * 100000000
+      readonly BigInteger c = new BigInteger(-12776764200);  // -127.767642 * 100000000
+      readonly BigInteger d = new BigInteger(2229519577);  // 22295.19577017339 * 100
+      readonly BigInteger scale = new BigInteger(20000000000);  // 스케일링 팩터
+
+
+    /// <summary>
+    /// 현재 스테이지 레벨비례하여 환생시 지급되는 포인트양을 계산하여 스트링으로 받음
+    /// </summary>
+    /// <returns> 알파벳부호처리 안한 string 정수형 타입 Data </returns>
+    public string CurHwansengPoint(int AddFloor)
+    {
+        int curStage = GameStatus.inst.AccumlateFloor + AddFloor;
+
+        // BigInteger를 사용한 3차, 2차, 1차 계산
+        BigInteger term1 = BigInteger.Multiply(BigInteger.Pow(curStage, 3), a);
+        BigInteger term2 = BigInteger.Multiply(BigInteger.Pow(curStage, 2), b);
+        BigInteger term3 = BigInteger.Multiply(curStage, c);
+
+        // 최종 환산 포인트 계산
+        string result = ((term1 + term2 + term3 + d) / scale).ToString();  // 마지막에 스케일 조정
+
+        Debug.Log($"입력값 : {curStage} 현재 환생리턴 스타값 : {result}");
+        return result;
     }
 }

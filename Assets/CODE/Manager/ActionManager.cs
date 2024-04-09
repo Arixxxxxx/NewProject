@@ -49,6 +49,7 @@ public class ActionManager : MonoBehaviour
     Animator enemyAnim;
     Image hpBar_IMG;
     TMP_Text hpBar_Text;
+    int curEnemyNum;
     [SerializeField] string enemyCurHP;
     [SerializeField] string enemyMaxHP;
     [SerializeField] Sprite[] enemySprite;
@@ -330,10 +331,11 @@ public class ActionManager : MonoBehaviour
             }
             else if (checkDMG == "Dead")//에너미 사망 및 초기화
             {
-                StartCoroutine(GetGoldActionParticle());
+                DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
+                StartCoroutine(GetGoldActionParticle()); // 골드 획득하는 파티클 재생
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
-                GameStatus.inst.PlusGold(getGold);
+                GameStatus.inst.PlusGold(getGold); // 골드 얻기
                 EnemyDeadFloorUp();
                 GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
             }
@@ -366,6 +368,7 @@ public class ActionManager : MonoBehaviour
             }
             else if (MinusValue == "Dead")//에너미 사망 및 초기화
             {
+                DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
                 StartCoroutine(GetGoldActionParticle());
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
@@ -501,8 +504,8 @@ public class ActionManager : MonoBehaviour
 
         //스프라이트 값 할당
         int spriteCount = enemySprite.Length;
-        int spirteRanValue = Random.Range(0, spriteCount);
-        enemySr.sprite = enemySprite[spirteRanValue];
+        curEnemyNum = Random.Range(0, spriteCount);
+        enemySr.sprite = enemySprite[curEnemyNum];
     }
 
 
@@ -535,7 +538,11 @@ public class ActionManager : MonoBehaviour
     {
         if (GameStatus.inst.AtkSpeedLv >= 10) { return; }
 
-        playerAnim.SetFloat("AttackSpeed", 1 + (0.15f * GameStatus.inst.AtkSpeedLv) + GameStatus.inst.NewbieAttackSpeed);
+        if(playerAnim != null)
+        {
+            playerAnim.SetFloat("AttackSpeed", 1 + ((0.15f * GameStatus.inst.AtkSpeedLv)) + GameStatus.inst.NewbieAttackSpeed);
+        }
+        
     }
 
 
