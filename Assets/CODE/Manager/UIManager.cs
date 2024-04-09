@@ -78,7 +78,7 @@ public class UIManager : MonoBehaviour
 
     public void SetTopWeaponNum(int _num)
     {
-        haveWeaponLv = _num / 5;
+        haveWeaponLv = _num;
     }
 
     [Header("Shop")]
@@ -147,7 +147,7 @@ public class UIManager : MonoBehaviour
             PetDetailViewr_UI.inst.TopArrayBtnActive(2);
         });
 
-        WeaponBook.onClick.AddListener(() => DogamManager.inst.Set_DogamListAcitve(0,true));
+        WeaponBook.onClick.AddListener(() => DogamManager.inst.Set_DogamListAcitve(0, true));
     }
     public Sprite GetSelectUISprite(int num)
     {
@@ -161,7 +161,7 @@ public class UIManager : MonoBehaviour
 
     void SetWeaponScroll()
     {
-        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * haveWeaponLv - 64);
+        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * (haveWeaponLv / 5) - 64);
     }
 
     public void changeSortOder(int value)
@@ -238,6 +238,6 @@ public class UIManager : MonoBehaviour
 
     public void SetAtkText(string _atk)
     {
-        m_totalAtk.text = "초당 데미지 : " + _atk; 
+        m_totalAtk.text = "초당 데미지 : " + _atk;
     }
 }

@@ -532,13 +532,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4186791186084235285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28ec8a9c4042b0d4f861790e9bfb93bf, type: 3}
+  m_Script: {fileID: 11500000, guid: 7777ad3804f444e44adf9bcfdc3eb6e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Name: 
-  maxCount: 100
-  rewardCount: 100
-  rewardTag: 2
+  maxCount: 0
+  rewardCount: 
+  rewardTag: 0
   imageIcon: {fileID: 7231731824517967194}
   moveBtn: {fileID: 466201168338754575}
   clearBtn: {fileID: 7003148664855964622}
@@ -810,7 +810,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1101357936424092962}
         m_TargetAssemblyTypeName: Mission, Assembly-CSharp
         m_MethodName: ClickClearBtn
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

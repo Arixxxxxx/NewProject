@@ -32,12 +32,12 @@ public class MissionData : MonoBehaviour
         int listcount = list_DailyMission.Count;
         for (int iNum = 0; iNum < listcount; iNum++)
         {
-            if (list_DailyMission[iNum].Name == Name)
+            if (list_DailyMission[iNum].GetMissionName() == Name)
             {
                 listNum = iNum;
             }
         }
-         
+
         list_DailyMission[listNum].Count += count;
     }
     //주간미션
@@ -48,7 +48,7 @@ public class MissionData : MonoBehaviour
         int listcount = list_WeeklyMission.Count;
         for (int iNum = 0; iNum < listcount; iNum++)
         {
-            if (list_WeeklyMission[iNum].Name == Name)
+            if (list_WeeklyMission[iNum].GetMissionName() == Name)
             {
                 listNum = iNum;
             }
@@ -183,7 +183,7 @@ public class MissionData : MonoBehaviour
     /// </summary>
     public void SetSpecialMissionRectPosition()
     {
-        if (nowSpecialIndex <= list_SpecialMIssion.Count -1)
+        if (nowSpecialIndex <= list_SpecialMIssion.Count - 1)
         {
             list_SpecialMIssion[nowSpecialIndex].ActiveTrue();
             Transform nowtrs = list_SpecialMIssion[nowSpecialIndex].trs;
@@ -215,7 +215,7 @@ public class MissionData : MonoBehaviour
             case MissionType.Weapon:
                 if (list_SpecialWeapon.Count >= Num && Num > 0)
                 {
-                    list_SpecialWeapon[Num-1].Count = count;
+                    list_SpecialWeapon[Num - 1].Count = count;
                 }
                 break;
             case MissionType.Relic:
@@ -319,6 +319,7 @@ public class MissionData : MonoBehaviour
         });
     }
 
+
     public void ClickMissionType(int value)
     {
         list_MissionWindow[missionTypeIndex].SetActive(false);
@@ -326,5 +327,40 @@ public class MissionData : MonoBehaviour
         missionTypeIndex = value;
         list_MissionWindow[missionTypeIndex].SetActive(true);
         list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnSelectSprite[missionTypeIndex];
+    }
+
+    void initDailyMission()//일일 미션 초기화
+    {
+        int count = list_DailyMission.Count;
+
+        for (int iNum = count - 1; iNum >= 0; iNum--)
+        {
+            for (int jNum = 0; jNum < count; jNum++)
+            {
+                if (list_DailyMission[jNum].GetIndex() == iNum)
+                {
+                    list_DailyMission[jNum].transform.SetAsFirstSibling();
+                    list_DailyMission[jNum].initMission();
+                    break;
+                }
+            }
+        }
+    }
+    void initWeeklyMission()//주간 미션 초기화
+    {
+        int count = list_WeeklyMission.Count;
+
+        for (int iNum = count - 1; iNum >= 0; iNum--)
+        {
+            for (int jNum = 0; jNum < count; jNum++)
+            {
+                if (list_WeeklyMission[jNum].GetIndex() == iNum)
+                {
+                    list_WeeklyMission[jNum].transform.SetAsFirstSibling();
+                    list_WeeklyMission[jNum].initMission();
+                    break;
+                }
+            }
+        }
     }
 }

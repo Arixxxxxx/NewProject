@@ -6,7 +6,8 @@ using TMPro;
 
 public class Mission : MonoBehaviour
 {
-    [SerializeField] public string Name;
+    [SerializeField] int index;
+    [SerializeField] string Name;
     [SerializeField] int maxCount;
     [SerializeField] string rewardCount;
     [SerializeField] ProductTag rewardTag;
@@ -24,22 +25,19 @@ public class Mission : MonoBehaviour
         get => count;
         set
         {
-            if (count < maxCount)
+            if (count <= maxCount)
             {
                 count = value;
 
-                BarText.text = $"{count} / {maxCount}";
-                imageBar.fillAmount = (float)Count / maxCount;
                 if (count >= maxCount)
                 {
                     count = maxCount;
                     moveBtn.gameObject.SetActive(false);
                     clearBtn.gameObject.SetActive(true);
-                    if (Name == "老老固记 努府绢")
-                    {
-                        MissionData.Instance.SetWeeklyMission("老老固记 葛滴 努府绢", 1);
-                    }
                 }
+
+                BarText.text = $"{count} / {maxCount}";
+                imageBar.fillAmount = (float)count / maxCount;
             }
         }
     }
@@ -63,7 +61,7 @@ public class Mission : MonoBehaviour
         imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
     }
 
-    public void ClickClearBtn()
+    public void ClickClearBtn(int Type)
     {
         switch (rewardTag)
         {
@@ -77,8 +75,34 @@ public class Mission : MonoBehaviour
                 GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
                 break;
         }
+        if (Type == 0 && Name != "老老固记 努府绢")
+        {
+            MissionData.Instance.SetDailyMission("老老固记 努府绢", 1);
+        }
+        else if (Name == "老老固记 努府绢")
+        {
+            MissionData.Instance.SetWeeklyMission("老老固记 葛滴 努府绢", 1);
+        }
         clearBtn.gameObject.SetActive(false);
         transform.SetAsLastSibling();
         Mask.SetActive(true);
+    }
+
+    public int GetIndex()
+    {
+        return index;
+    }
+
+    public string GetMissionName()
+    {
+        return Name;
+    }
+
+    public void initMission()
+    {
+        Count = 0;
+        Mask.SetActive(false);
+        moveBtn.gameObject.SetActive(true);
+        Debug.Log(Count);
     }
 }
