@@ -352,6 +352,7 @@ public class ActionManager : MonoBehaviour
             {
                 DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
                 StartCoroutine(GetGoldActionParticle()); // 골드 획득하는 파티클 재생
+
                 // 현재 받아야되는 돈 계산
                 string getGold = Get_EnemyDeadGold();
                 GameStatus.inst.PlusGold(getGold); // 골드 얻기
