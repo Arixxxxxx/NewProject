@@ -298,7 +298,7 @@ public class HwanSengSystem : MonoBehaviour
         {
             NoHaveRubyAlrimWindowActive(false);
             Set_HwansengUIActive(false);
-            // 추후에 상점이동 함수 넣어야함
+            ShopManager.Instance.OpenRubyShop();
         });
 
         // 무료 강화 환생버튼 
