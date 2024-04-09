@@ -93,7 +93,7 @@ public class BuffBtns : MonoBehaviour
                 GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 4);
                 GameStatus.inst.NewbieAttackSpeed = 0.2f;
                 GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 4);
-                GameStatus.inst.NewbieMoveSpeedBuffValue = 0.5f;
+                GameStatus.inst.NewbieMoveSpeedBuffValue = 0.3f;
                 break;
         }
        
@@ -133,7 +133,7 @@ public class BuffBtns : MonoBehaviour
                 break;
 
             case buffType.Speed: // 이동속도 증가
-                GameStatus.inst.BuffAddSpeed = 1f;
+                GameStatus.inst.BuffAddSpeed = 0.8f;
                 break;
         }
     }

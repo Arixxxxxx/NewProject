@@ -10,6 +10,8 @@ public class DogamManager : MonoBehaviour
 {
     public static DogamManager inst;
 
+    [SerializeField] GameObject get_jungsuPrefabs;
+
     // Ref
     GameObject frontUI, mainMenuRef, windowRef, weaponInfoRef, monsterInfoRef;
     Button xBtn;
@@ -72,7 +74,7 @@ public class DogamManager : MonoBehaviour
         set { mosterCollectionConut = value; }
     }
 
-
+    float getChance = 5f; // <ㅡ 몬스터 처치시 도감조각 얻을 확률
 
     // 무기정보
     string[,] weaponInfoTextLog;
@@ -97,8 +99,9 @@ public class DogamManager : MonoBehaviour
     int monsterCollectionCount;
 
 
-
-
+    // 풀링
+    GameObject worldUI, poolParent;
+    
     private void Awake()
     {
         if (inst == null)
@@ -112,10 +115,16 @@ public class DogamManager : MonoBehaviour
 
         // Ref
         frontUI = GameObject.Find("---[FrontUICanvas]").gameObject;
+        worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
+        poolParent = worldUI.transform.Find("Get_DogamJungsu").gameObject;
+
         mainMenuRef = frontUI.transform.Find("Dogam").gameObject;
         windowRef = mainMenuRef.transform.Find("Window").gameObject;
         weaponInfoRef = windowRef.transform.Find("Weapon").gameObject;
         monsterInfoRef = windowRef.transform.Find("Monster").gameObject;
+
+        //풀링
+        ObjPoolingIntit();
 
 
         // Title 
@@ -449,5 +458,64 @@ public class DogamManager : MonoBehaviour
         mosterInfoTextLog[1, 1] = "딱 봐도 애자같이 생겨서 애자임";
     }
 
+
+    /// <summary>
+    /// 몬스터 처치시 도감조각 얻는 함수
+    /// </summary>
+    /// <param name="dogamIndex"></param>
+    public void MosterDogamIndexValueUP(int dogamIndex)
+    {
+        float randomValue = Random.Range(0,100f);
+        if (randomValue > getChance) { return; };
+        Get_DogamIconPooling(); // 정수얻은 폰트연출
+        mosterCollectionConut[dogamIndex]++; // 값 올림
+
+    }
+
+
+
+
+
+
+
+    //////////////////////////////////정수 프리펩 풀링 ////////////////////////////////
     
+    Queue<GameObject> dogamFontQue = new Queue<GameObject>();
+
+    private void ObjPoolingIntit()
+    {
+        GameObject obj;
+
+        for(int index = 0; index < 3; index++)
+        {
+            obj = Instantiate(get_jungsuPrefabs, poolParent.transform);
+            obj.transform.localPosition = Vector3.zero;
+            obj.SetActive(false);
+            dogamFontQue.Enqueue(obj);
+        }
+    }
+
+    public GameObject Get_DogamIconPooling()
+    {
+        if (dogamFontQue.Count == 0)
+        {
+            GameObject obj = Instantiate(get_jungsuPrefabs, poolParent.transform);
+            obj.SetActive(false);
+            dogamFontQue.Enqueue(obj);
+        }
+
+        GameObject result = dogamFontQue.Dequeue();
+        result.transform.localPosition = Vector3.zero;
+        result.SetActive(true);
+
+        return result;
+    }
+
+    public void Return_DogamIcon(GameObject obj)
+    {
+        obj.SetActive(false);
+        obj.transform.localPosition = Vector3.zero;
+        dogamFontQue.Enqueue(obj);
+    }
+
 }

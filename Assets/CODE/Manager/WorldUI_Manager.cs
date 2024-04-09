@@ -52,6 +52,13 @@ public class WorldUI_Manager : MonoBehaviour
     // 메인메뉴 버튼
     Button mainMenuBtn;
 
+    // 몬스터도감 버튼
+    Button mosterDogamBtn;
+
+    //환생버튼
+    Button hwanSengBtn;
+
+
     //레드심볼 관리
     List<GameObject> redSimBall_Icons = new List<GameObject>();
 
@@ -110,10 +117,13 @@ public class WorldUI_Manager : MonoBehaviour
         mainMenuBtn = worldUI.transform.Find("StageUI/Right/0_Line/MainMenu").GetComponent<Button>();
         mainMenuBtn.onClick.AddListener(() => MainMenuManager.inst.Set_MainMenuActive(true));
 
+        hwanSengBtn = worldUI.transform.Find("StageUI/HwanSeng").GetComponent<Button>();
+
         // 게임화면 우측상단 버튼들
         getLetterBtn = worldUI.transform.Find("StageUI/Right/0_Line/Letter").GetComponent<Button>(); // 우편함
         dailyPlayCheckBtn = worldUI.transform.Find("StageUI/Right/0_Line/DailyCheck").GetComponent<Button>(); //출석체크
         newBieBtn = worldUI.transform.Find("StageUI/Right/1_Line/NewBie").GetComponent<Button>(); //출석체크
+        mosterDogamBtn = worldUI.transform.Find("StageUI/Right/1_Line/MosterDogam").GetComponent<Button>(); //몬스터도감
 
         Prefabs_Awake();
         redSimballI_Icons_List_Init();
@@ -227,19 +237,22 @@ public class WorldUI_Manager : MonoBehaviour
             }
         });
 
-        testBtn[2].onClick.AddListener(() => // 도감
-        {
-            DogamManager.inst.Set_DogamListAcitve(1,true);
-        });
+        //testBtn[2].onClick.AddListener(() => 
+        //{
 
-        testBtn[3].onClick.AddListener(() => // 도감
-        {
-            DogamManager.inst.Set_DogamListAcitve(0, true);
-        });
-        //questListBtn.onClick.AddListener(() => { QuestListWindow.inst.F_QuestList_ActiveWindow(0); });
+        //});
+
+        //testBtn[3].onClick.AddListener(() =>
+        //{
+
+        //});
+
+        hwanSengBtn.onClick.AddListener(() => HwanSengSystem.inst.Set_HwansengUIActive(true)); //환생버튼
         getLetterBtn.onClick.AddListener(() => { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
         newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
+        mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
+
     }
 
     private void Prefabs_Awake()
@@ -368,6 +381,26 @@ public class WorldUI_Manager : MonoBehaviour
                     GameStatus.inst.PlusGold($"{value}");
                     break;
             }
+
+            adXbtn.gameObject.SetActive(false);
+            adSample.SetActive(false);
+            buffSelectUIWindow.SetActive(false);
+        });
+
+        StopCoroutine(PlayAD());
+        StartCoroutine(PlayAD());
+    }
+
+    /// <summary>
+    /// 샘플 광고보고 피버타임 
+    /// </summary>
+ 
+    public void SampleAD_Ad_FeverTIme(int Time, int Type, bool isAd)
+    {
+        adXbtn.onClick.RemoveAllListeners();
+        adXbtn.onClick.AddListener(() =>
+        {
+            HwanSengSystem.inst.FeverTimeActive(Time,Type, isAd);
 
             adXbtn.gameObject.SetActive(false);
             adSample.SetActive(false);

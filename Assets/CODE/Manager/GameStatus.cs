@@ -293,6 +293,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             stageLv = value;
+            
         }
     }
 
@@ -308,7 +309,7 @@ public class GameStatus : MonoBehaviour
         {
             floorLv = value;
             AccumlateFloor++;
-
+            HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate();
             if (floorLv == 6)
             {
                 floorLv = 1;
@@ -317,10 +318,18 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+    // 4. 환생횟수
+    int hwansengCount;
+    public int HWansengCount
+    {
+        get { return hwansengCount; }
+        set { hwansengCount = value; } 
+    }
+
 
     /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
 
-    // 1. 공격력증가 버프
+        // 1. 공격력증가 버프
     string buffAddATK = "0";
     public string BuffAddATK { get { return buffAddATK; } set { buffAddATK = value; } }
 
@@ -493,5 +502,17 @@ public class GameStatus : MonoBehaviour
     {
         string result = CalCulator.inst.DigidMinus(gold, getValue, false);
         Gold = result;
+    }
+
+    /// <summary>
+    /// 환생시 스테이지 레벨 및 층수 초기화
+    /// </summary>
+    public void HwansengPointReset()
+    {
+        stageLv = 1;
+        floorLv = 1;
+        AccumlateFloor = 1;
+        HWansengCount++;
+        HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate(); // 환생아이콘 수치 리셋
     }
 }
