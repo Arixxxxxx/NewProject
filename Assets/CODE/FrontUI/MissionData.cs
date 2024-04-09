@@ -21,10 +21,10 @@ public class MissionData : MonoBehaviour
     [SerializeField] Image[] list_MissionTopBtnImage;// 상단 버튼 이미지
     [SerializeField] Sprite[] list_topBtnSelectSprite;// 상단 버튼 선택 스프라이트
     [SerializeField] Sprite[] list_topBtnNonSelectSprite;// 상단 버튼 비선택 스프라이트
-    int missionTypeIndex = 0;//선택한 미션 인덱스번호
+    int missionTypeIndex = 0;//선택한 상단 미션 버튼 인덱스번호
     int nowSpecialIndex { get; set; } = 0;//현재 진행중인 스페셜 미션 인덱스
 
-    //일일미션
+    //////////////////일일 미션//////////////////
     List<Mission> list_DailyMission = new List<Mission>();
     public void SetDailyMission(string Name, int count)
     {
@@ -40,7 +40,8 @@ public class MissionData : MonoBehaviour
 
         list_DailyMission[listNum].Count += count;
     }
-    //주간미션
+
+    //////////////////주간 미션//////////////////
     List<Mission> list_WeeklyMission = new List<Mission>();
     public void SetWeeklyMission(string Name, int count)
     {
@@ -58,7 +59,8 @@ public class MissionData : MonoBehaviour
             list_WeeklyMission[listNum].Count += count;
         }
     }
-    //스페셜 미션
+
+    //////////////////스페셜 미션//////////////////
     [Serializable]
     public class Special
     {
@@ -76,7 +78,7 @@ public class MissionData : MonoBehaviour
         TMP_Text NameText;
         TMP_Text MissionText;
         TMP_Text rewardText;
-        GameObject needClearText;
+        TMP_Text needClearText;
 
         bool isActive = false;
 
@@ -110,7 +112,7 @@ public class MissionData : MonoBehaviour
             NameText = _trs.Find("Space/Title_Text").GetComponent<TMP_Text>();
             MissionText = _trs.Find("Space/MissionText").GetComponent<TMP_Text>();
             rewardText = _trs.Find("Space/RewardText").GetComponent<TMP_Text>();
-            needClearText = _trs.Find("NeedClearText").gameObject;
+            needClearText = _trs.Find("NeedClearText").GetComponent<TMP_Text>();
             mask = _trs.Find("Mask").gameObject;
 
             NameText.text = $"{Instance.GetSpecialMyIndex(this) + 1}단계 미션";
@@ -133,6 +135,8 @@ public class MissionData : MonoBehaviour
             clearBtn.onClick.AddListener(() =>
             {
                 clearBtn.gameObject.SetActive(false);
+                needClearText.gameObject.SetActive(true);
+                needClearText.text = "클리어!";
                 mask.SetActive(true);
                 trs.SetParent(Instance.GetSpecialParents());
                 trs.GetComponent<RectTransform>().sizeDelta = new Vector2(298, 60);
@@ -140,7 +144,7 @@ public class MissionData : MonoBehaviour
 
                 Instance.nowSpecialIndex = Instance.GetSpecialMyIndex(this) + 1;
                 Instance.SetSpecialMissionRectPosition();
-
+                
                 switch (rewardTag)
                 {
                     case ProductTag.Gold:
@@ -167,7 +171,7 @@ public class MissionData : MonoBehaviour
             {
                 moveBtn.gameObject.SetActive(true);
             }
-            needClearText.SetActive(false);
+            needClearText.gameObject.SetActive(false);
             mask.SetActive(false);
         }
     }
@@ -243,10 +247,14 @@ public class MissionData : MonoBehaviour
         }
         return -1;
     }
+
+    // 스페셜 미션 부모 리턴
     public Transform GetSpecialParents()
     {
         return obj_SpecialContents;
     }
+
+    // 스페셜 미션 상단 고정 부모 리턴
     public Transform GetNowSpecialParents()
     {
         return trs_NowMissionParents;
@@ -310,7 +318,7 @@ public class MissionData : MonoBehaviour
         }
         SetSpecialMissionRectPosition();//현재 진행중인 특별미션 맨위로 고정
 
-
+        //버튼 초기화
         UIManager.Instance.GetShopOpenBtn().onClick.AddListener(() => SetDailyMission("상점 방문", 1));
         MissionOpenBtn.onClick.AddListener(() =>
         {
@@ -320,7 +328,7 @@ public class MissionData : MonoBehaviour
     }
 
 
-    public void ClickMissionType(int value)
+    public void ClickMissionType(int value)//상부 일일,주간,스페셜 미션 버튼 클릭
     {
         list_MissionWindow[missionTypeIndex].SetActive(false);
         list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnNonSelectSprite[missionTypeIndex];

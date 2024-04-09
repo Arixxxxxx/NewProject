@@ -7,16 +7,16 @@ using System.Numerics;
 
 public class Quest : MonoBehaviour
 {
-    [Tooltip("퀘스트단계")]
+    [Header("퀘스트단계")]
     [SerializeField] int Number;//퀘스트 단계
-    [Tooltip("성장률")]
+    [Header("성장률")]
     [SerializeField] float growthRate;//성장률
-    [Tooltip("초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐")]
+    [Header("초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐")]
     [SerializeField] float initalProdRate;//초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐
-    [Tooltip("기초 생산량")]
+    [Header("기초 생산량")]
     [SerializeField] float baseProd;//기초 생산량
-    [Tooltip("초기생산량 지수")]
-    [SerializeField] float powNumRate;//초기생산량지수
+    [Header("단계별 상승량 지수")]
+    [SerializeField] float powNumRate;//단계별 상승량 지수
     int lv;//퀘스트 업그레이드 레벨
     int Lv
     {
@@ -45,6 +45,8 @@ public class Quest : MonoBehaviour
             GameStatus.inst.TotalProdGold += totalProd;
         }
     }
+    [Space]
+    [Space]
     [SerializeField] Button UpBtn;
     [SerializeField] TextMeshProUGUI priceText;
     [SerializeField] TextMeshProUGUI upGoldText;

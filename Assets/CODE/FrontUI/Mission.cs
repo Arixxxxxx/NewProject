@@ -17,6 +17,7 @@ public class Mission : MonoBehaviour
     [SerializeField] TMP_Text NameText;
     [SerializeField] TMP_Text rewardText;
     [SerializeField] TMP_Text BarText;
+    [SerializeField] GameObject ClearText;
     [SerializeField] Image imageBar;
     [SerializeField] GameObject Mask;
     int count;
@@ -86,6 +87,7 @@ public class Mission : MonoBehaviour
         clearBtn.gameObject.SetActive(false);
         transform.SetAsLastSibling();
         Mask.SetActive(true);
+        ClearText.SetActive(true);
     }
 
     public int GetIndex()
@@ -102,6 +104,7 @@ public class Mission : MonoBehaviour
     {
         Count = 0;
         Mask.SetActive(false);
+        ClearText.SetActive(false);
         moveBtn.gameObject.SetActive(true);
         Debug.Log(Count);
     }
