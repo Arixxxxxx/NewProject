@@ -575,7 +575,7 @@ public class HwanSengSystem : MonoBehaviour
                 adViewrCount = 5;
             }
 
-            WorldUI_Manager.inst.SampleAD_Ad_FeverTIme(Time, Type, true); // »ùÇÃ±¤°í
+            ADViewManager.inst.SampleAD_Ad_FeverTIme(Time, Type, true); // »ùÇÃ±¤°í
         });
     }
 

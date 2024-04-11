@@ -7,6 +7,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager inst;
 
+    //타 스크립트에서 안찾아도되게 찾아서 나눠줌
+    GameObject worldUiRef;
+    public GameObject WorldUiRef { get { return worldUiRef; } }
+
+    GameObject frontUiRef;
+    public GameObject FrontUiRef { get { return frontUiRef; } }
+
     private void Awake()
     {
         if(inst == null)
@@ -17,7 +24,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this);
         }
-     
+
+        worldUiRef = GameObject.Find("---[World UI Canvas]").gameObject;
+        frontUiRef = GameObject.Find("---[FrontUICanvas]").gameObject;
+    
     }
     void Start()
     {

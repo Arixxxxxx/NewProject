@@ -74,7 +74,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         
         adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
         {
-            WorldUI_Manager.inst.SampleAD_Get_Currency(0, 100); //재화주기
+            ADViewManager.inst.SampleAD_Get_Currency(0, 100); //재화주기
             adViewAndGetRubyBtn.GetComponent<Image>().sprite = adBtnSprite[1]; //스프라이트 교체
             adViewAndGetRubyBtn.onClick.RemoveAllListeners(); // 버튼기능 -> 창종료로 바꿈
             adViewAndGetRubyBtn.onClick.AddListener(() => MainWindow_Acitve(false));

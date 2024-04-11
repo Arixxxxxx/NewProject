@@ -157,15 +157,15 @@ public class BuffManager : MonoBehaviour
     {
         exitBtn.onClick.AddListener(() => { WorldUI_Manager.inst.buffSelectUIWindowAcitve(false); });
 
-        viewAdBtn[0].onClick.AddListener(() => WorldUI_Manager.inst.SampleADBuff("buff", 0)); ;
-        viewAdBtn[1].onClick.AddListener(() => WorldUI_Manager.inst.SampleADBuff("buff", 1));
-        viewAdBtn[2].onClick.AddListener(() => WorldUI_Manager.inst.SampleADBuff("buff", 2));
+        viewAdBtn[0].onClick.AddListener(() => ADViewManager.inst.SampleADBuff("buff", 0)); ;
+        viewAdBtn[1].onClick.AddListener(() => ADViewManager.inst.SampleADBuff("buff", 1));
+        viewAdBtn[2].onClick.AddListener(() => ADViewManager.inst.SampleADBuff("buff", 2));
 
         // 인게임 광고 보고 공격력증가 버튼
         adBuffBtn.onClick.AddListener(() => {
 
             adBuffBtn.gameObject.SetActive(false);
-            WorldUI_Manager.inst.SampleADBuff("buff", 3);
+            ADViewManager.inst.SampleADBuff("buff", 3);
             viewAdATKBuff += 15f; // Re PopUp CoomTime
 
         });
@@ -219,7 +219,7 @@ public class BuffManager : MonoBehaviour
                 alrimWindow.SetActive(false); //창닫기
                 mainWindow.SetActive(false);
 
-                WorldUI_Manager.inst.Set_TextAlrim(MakeAlrimMSG(indexNum, (int)RubyBuffTime[indexNum])); // 알림바 넣어주기
+                ADViewManager.inst.Set_TextAlrim(MakeAlrimMSG(indexNum, (int)RubyBuffTime[indexNum])); // 알림바 넣어주기
             });
 
             alrimWindow.SetActive(true);
