@@ -519,6 +519,7 @@ public class HwanSengSystem : MonoBehaviour
         }
 
         GameStatus.inst.Star = addStarValue;
+        
         // Àç»ý
         StartCoroutine(FeverPlay(InputTime));
     }
