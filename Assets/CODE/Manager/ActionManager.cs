@@ -370,6 +370,9 @@ public class ActionManager : MonoBehaviour
                 GameStatus.inst.PlusGold(getGold); // 골드 얻기
                 EnemyDeadFloorUp();
                 GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
+
+                // 누적 기록
+                GameStatus.inst.TotalEnemyKill++;
             }
 
             // 한타 떄려서 버프값 0으로 초기화
@@ -408,6 +411,9 @@ public class ActionManager : MonoBehaviour
                 GameStatus.inst.PlusGold(getGold);
                 EnemyDeadFloorUp();
                 GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
+
+                // 누적 기록
+                GameStatus.inst.TotalEnemyKill++;
             }
         }
 

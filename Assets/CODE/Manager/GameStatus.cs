@@ -212,7 +212,7 @@ public class GameStatus : MonoBehaviour
         return TotalProdGold.ToString();
     }
 
-    /////////////////////[ 캐릭터 공격 스탯 ]//////////////////////////////
+    /////////////////////[ 플레이어 관련 변수 ]//////////////////////////////
 
     // 1. 공격력
     BigInteger totalAtk = 5;
@@ -264,6 +264,21 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+    // 4. 몬스터 누적 킬수
+    int totalEnemyKill;
+    public int TotalEnemyKill
+    {
+        get { return totalEnemyKill; }
+        set { totalEnemyKill = value; }
+    }
+
+    // 5. 환생횟수
+    int hwansengCount;
+    public int HWansengCount
+    {
+        get { return hwansengCount; }
+        set { hwansengCount = value; }
+    }
     /////////////////////[ 스테이지 현황 ]//////////////////////////////
 
     // 1. 총 누적층수
@@ -318,13 +333,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    // 4. 환생횟수
-    int hwansengCount;
-    public int HWansengCount
-    {
-        get { return hwansengCount; }
-        set { hwansengCount = value; } 
-    }
+ 
 
 
     /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
