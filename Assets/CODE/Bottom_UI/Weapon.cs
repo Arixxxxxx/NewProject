@@ -123,7 +123,10 @@ public class Weapon : MonoBehaviour
 
     public void clickWeaponImage()
     {
-        UIManager.Instance.EquipWeaponNum = WeaponNum;
+        if (Lv % 5 != 0)
+        {
+            UIManager.Instance.EquipWeaponNum = WeaponNum;
+        }
     }
 
     public void SetMaskActive(bool value)

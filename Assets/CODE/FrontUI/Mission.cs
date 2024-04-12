@@ -67,12 +67,15 @@ public class Mission : MonoBehaviour
         switch (rewardTag)
         {
             case ProductTag.Gold:
+                LetterManager.inst.MakeLetter(1, "미션", "미션 클리어!", int.Parse(rewardCount));
                 GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(rewardCount));
                 break;
             case ProductTag.Ruby:
+                LetterManager.inst.MakeLetter(1, "미션", "미션 클리어!", int.Parse(rewardCount));
                 GameStatus.inst.Ruby += int.Parse(CalCulator.inst.ConvertChartoIndex(rewardCount));
                 break;
             case ProductTag.Star:
+                LetterManager.inst.MakeLetter(1, "미션", "미션 클리어!", int.Parse(rewardCount));
                 GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
                 break;
         }
