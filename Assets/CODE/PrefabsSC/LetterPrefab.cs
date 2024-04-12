@@ -16,6 +16,10 @@ public class LetterPrefab : MonoBehaviour
     TMP_Text returnItemText;
 
     Button getBtn;
+
+    // 편지내용 확인 변수들
+    int[] itemtypeAndCount = new int[2];
+
     private void Awake()
     {
         AwakeInit();
@@ -54,9 +58,12 @@ public class LetterPrefab : MonoBehaviour
         {
             AwakeInit();
         }
+        // 내부변수 초기화
+        itemtypeAndCount[0] = ItemType;
+        itemtypeAndCount[1] = ItemCount;
 
+        // 이미지아이콘 및 텍스트 초기화
         string itemTypetext = ItemType == 0 ? "루비" : ItemType == 1 ? "골드" : "별";
-       
         mainIMG.sprite = sprites[ItemType];
 
         title.text = From;
@@ -71,5 +78,23 @@ public class LetterPrefab : MonoBehaviour
         });
 
     }
+
+    /// <summary>
+    /// 편지의 들어있는 아이템타입과 수량을 리턴
+    /// </summary>
+    /// <returns></returns>
+    public int[] ReturnThisLetterItemTypeAndCount()
+    {
+        return itemtypeAndCount;
+    }
+
+    /// <summary>
+    /// 편지 사용후 풀로 돌아감
+    /// </summary>
+    public void ReturnObjPool()
+    {
+        LetterManager.inst.ReturnLetter(gameObject);
+    }
+        
 
 }

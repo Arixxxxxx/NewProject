@@ -18,7 +18,7 @@ public class ActionManager : MonoBehaviour
     CinemachineBasicMultiChannelPerlin camShake;
 
     //배경
-    GameObject worldSpaceGroup;
+    GameObject worldSpaceRef;
 
     Material mat;
     [SerializeField] float backGroundSpeed;
@@ -32,6 +32,7 @@ public class ActionManager : MonoBehaviour
 
     //플레이어
     Animator playerAnim;
+    GameObject playerRef;
     int attackSpeedLv;
     float attackSpeed;
     string atkPower;
@@ -40,8 +41,7 @@ public class ActionManager : MonoBehaviour
     [SerializeField] Sprite[] backGroudSprite;
     SpriteRenderer backGroundIMG;
     GameObject moveWindParticle;
-    ParticleSystem swordEffect;
-
+    ParticleSystem playerDustPs;
 
     // 에너미
     GameObject enemyObj;
@@ -55,8 +55,13 @@ public class ActionManager : MonoBehaviour
     [SerializeField] Sprite[] enemySprite;
 
     //타격 이펙트
-    ParticleSystem[] enemyEffect;
-    ParticleSystem[] enemyCriEffect;
+    GameObject effectRef;
+
+    [SerializeField]
+    ParticleSystem[] playerAtkEffect;
+    [SerializeField]
+    ParticleSystem[] playerAtkCriEffect;
+    ParticleSystem swordEffect;
 
     Transform enemy_StartPoint;
     Transform enemy_StopPoint;
@@ -94,46 +99,51 @@ public class ActionManager : MonoBehaviour
             Destroy(this);
         }
 
-        worldSpaceGroup = GameObject.Find("---[World Space]").gameObject;
+        worldSpaceRef = GameManager.inst.WorldSpaceRef;
+
         petManager = GetComponent<PetContollerManager>();
+        effectRef = worldSpaceRef.transform.Find("Effect").gameObject;
 
-        goldActionParent = worldSpaceGroup.transform.Find("GoldActionDynamic").GetComponent<Transform>();
+        goldActionParent = worldSpaceRef.transform.Find("GoldActionDynamic").GetComponent<Transform>();
 
-        backGroundIMG = worldSpaceGroup.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>();
+        backGroundIMG = worldSpaceRef.transform.Find("BackGround_IMG").GetComponent<SpriteRenderer>();
         mat = backGroundIMG.material;
-        playerAnim = worldSpaceGroup.transform.Find("Player_Obj/Sprite").GetComponent<Animator>();
+        playerAnim = worldSpaceRef.transform.Find("Player_Obj").GetComponent<Animator>();
+        playerRef = playerAnim.transform.Find("Player").gameObject;
+        playerDustPs = playerRef.transform.Find("Dust").GetComponent<ParticleSystem>();
 
-        moveWindParticle = playerAnim.transform.Find("MoveWind").gameObject;
+        moveWindParticle = playerRef.transform.Find("MoveWind").gameObject;
 
-        palyerWeapenSr = playerAnim.transform.Find("Weapon").GetComponent<SpriteRenderer>();
-        swordEffect = playerAnim.transform.Find("0").GetComponent<ParticleSystem>();
+        palyerWeapenSr = playerRef.transform.Find("Weapon").GetComponent<SpriteRenderer>();
+        swordEffect = playerRef.transform.Find("SwordEffect").GetComponent<ParticleSystem>();
 
-        enemyObj = worldSpaceGroup.transform.Find("Enemy").gameObject;
+        enemyObj = worldSpaceRef.transform.Find("Enemy").gameObject;
         enemySr = enemyObj.transform.Find("Sprite").GetComponent<SpriteRenderer>();
 
         enemyAnim = enemySr.GetComponent<Animator>();
-        int forcount = enemyObj.transform.Find("Effect").childCount;
 
-        enemyEffect = new ParticleSystem[forcount];
-        for (int i = 0; i < forcount; i++)
+        int atkEffectCount = effectRef.transform.Find("AtkEffect").childCount;
+        playerAtkEffect = new ParticleSystem[atkEffectCount];
+        for (int index=0; index < atkEffectCount; index++)
         {
-            enemyEffect[i] = enemyObj.transform.Find("Effect").GetChild(i).GetComponent<ParticleSystem>();
+            playerAtkEffect[index] = effectRef.transform.Find("AtkEffect").GetChild(index).GetComponent<ParticleSystem>();
         }
 
-        forcount = enemyObj.transform.Find("CriEffect").childCount;
-        enemyCriEffect = new ParticleSystem[forcount];
-        for (int i = 0; i < forcount; i++)
+        int atkCriEffectCount = effectRef.transform.Find("CriEffect").childCount;
+        playerAtkCriEffect = new ParticleSystem[atkCriEffectCount];
+
+        for (int index = 0; index < atkCriEffectCount; index++)
         {
-            enemyCriEffect[i] = enemyObj.transform.Find("CriEffect").GetChild(i).GetComponent<ParticleSystem>();
+            playerAtkCriEffect[index] = effectRef.transform.Find("CriEffect").GetChild(index).GetComponent<ParticleSystem>();
         }
+             
 
-
-        dmgFontParent = enemyObj.transform.Find("HPBar_Canvas/FontPosition").GetComponent<Transform>();
+        dmgFontParent = worldSpaceRef.transform.Find("DmgFontCanvas/FontPosition").GetComponent<Transform>();
         hpBar_IMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Front").GetComponent<Image>();
         hpBar_Text = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Text").GetComponent<TMP_Text>();
 
-        enemy_StartPoint = worldSpaceGroup.transform.Find("SpawnPoint").GetComponent<Transform>();
-        enemy_StopPoint = worldSpaceGroup.transform.Find("StopPoint").GetComponent<Transform>();
+        enemy_StartPoint = worldSpaceRef.transform.Find("SpawnPoint").GetComponent<Transform>();
+        enemy_StopPoint = worldSpaceRef.transform.Find("StopPoint").GetComponent<Transform>();
 
         cam = GameObject.Find("---[Cams]/Cam_0").GetComponent<CinemachineVirtualCamera>();
         camShake = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
@@ -232,6 +242,7 @@ public class ActionManager : MonoBehaviour
 
             if (playerAnim.GetBool("Move") == false)
             {
+                playerDustPs.gameObject.SetActive(true);
                 petManager.PetAllParticle_Stop();
                 playerAnim.SetBool("Move", true);
                 petManager.PetAnimPlay(true);
@@ -257,6 +268,7 @@ public class ActionManager : MonoBehaviour
     {
         if (playerAnim.GetBool("Move") == true) // 공격 Animation On
         {
+            playerDustPs.gameObject.SetActive(false);
             playerAnim.SetBool("Move", false);
             petManager.PetAnimPlay(false);
             playerAnim.transform.position = new Vector2(-0.706f, 5.45f);
@@ -514,22 +526,22 @@ public class ActionManager : MonoBehaviour
     {
         if (cri == false)
         {
-            if (effectIndexCount == enemyEffect.Length - 1)
+            if (effectIndexCount == playerAtkEffect.Length - 1)
             {
                 effectIndexCount = 0;
             }
 
-            enemyEffect[effectIndexCount].Play();
+            playerAtkEffect[effectIndexCount].Play();
             effectIndexCount++;
         }
         else
         {
-            if (effectCriIndexCount == enemyCriEffect.Length - 1)
+            if (effectCriIndexCount == playerAtkCriEffect.Length - 1)
             {
                 effectCriIndexCount = 0;
             }
 
-            enemyCriEffect[effectCriIndexCount].Play();
+            playerAtkCriEffect[effectCriIndexCount].Play();
             effectCriIndexCount++;
         }
 

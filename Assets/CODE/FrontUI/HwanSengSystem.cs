@@ -250,7 +250,6 @@ public class HwanSengSystem : MonoBehaviour
             else if (curRuby < needRuby)// false¸é »óÁ¡À¸·Î ÀÌµ¿ ÇÊ¿ä
             {
                 NoHaveRubyAlrimWindowActive(true);
-                Debug.Log($"·çºñ {needRuby - curRuby} ºÎÁ·");
             }
 
 
@@ -575,7 +574,7 @@ public class HwanSengSystem : MonoBehaviour
                 adViewrCount = 5;
             }
 
-            WorldUI_Manager.inst.SampleAD_Ad_FeverTIme(Time, Type, true); // »ùÇÃ±¤°í
+            ADViewManager.inst.SampleAD_Ad_FeverTIme(Time, Type, true); // »ùÇÃ±¤°í
         });
     }
 

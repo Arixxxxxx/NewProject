@@ -7,15 +7,18 @@ public class PetContollerManager : MonoBehaviour
     public static PetContollerManager inst;
 
     GameObject playerObj;
-    GameObject enemyObj;
+    GameObject effectRef;
 
     Animator[] petAnim = new Animator[3];
     int animCount = 0;
 
     // Æê0¹ø
     ParticleSystem[] pet0Ps = new ParticleSystem[2];
+    ParticleSystem pet0Dust;
+
     ParticleSystem[] pet1Ps = new ParticleSystem[4];
     ParticleSystem[] pet2Ps = new ParticleSystem[2];
+
     private void Awake()
     {
         if (inst == null)
@@ -31,12 +34,13 @@ public class PetContollerManager : MonoBehaviour
     void Start()
     {
         playerObj = ActionManager.inst.ReturnPlayerObjInHierachy();
-        enemyObj = ActionManager.inst.ReturnEnemyObjInHierachy().transform.Find("PetEffect").gameObject;
+        effectRef = GameManager.inst.WorldSpaceRef.transform.Find("Effect").gameObject;
 
         //0¹ø °ø°Ý
         petAnim[0] = playerObj.transform.Find("Pet_0").GetComponent<Animator>();
+        pet0Dust = petAnim[0].transform.Find("Dust").GetComponent<ParticleSystem>();
         pet0Ps[0] = petAnim[0].transform.Find("Charge").GetComponent<ParticleSystem>();
-        pet0Ps[1] = enemyObj.transform.Find("0").GetComponent<ParticleSystem>();
+        pet0Ps[1] = effectRef.transform.Find("PetEffect/Pet_0_AtkEffect").GetComponent<ParticleSystem>();
 
         //0¹ø ¹öÆÛ
         petAnim[1] = playerObj.transform.Find("Pet_1").GetComponent<Animator>();
@@ -62,6 +66,8 @@ public class PetContollerManager : MonoBehaviour
         {
             petAnim[index].SetBool("Move", action);
         }
+
+        pet0Dust.gameObject.SetActive(action);
     }
 
     // Æê 0¹ø
@@ -74,12 +80,14 @@ public class PetContollerManager : MonoBehaviour
         if (Value == "Charge")
         {
             pet0Ps[0].Play();
+            
         }
         else if (Value == "Attack")
         {
             ActionManager.inst.A_Pet0AttackToEnemy();
             pet0Ps[0].Stop();
             pet0Ps[1].Play();
+            
         }
     }
 
