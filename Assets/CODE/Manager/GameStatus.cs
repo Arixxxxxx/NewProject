@@ -204,7 +204,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             totalProdGold = value;
-            UIManager.Instance.GettotalGoldText().text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(totalProdGold.ToString());
+            UIManager.Instance.SettotalGoldText(CalCulator.inst.StringFourDigitAddFloatChanger(totalProdGold.ToString()));
         }
     }
     public string GetTotalGold()

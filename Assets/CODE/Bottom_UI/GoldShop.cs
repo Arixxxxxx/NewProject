@@ -51,39 +51,38 @@ public class GoldShop : MonoBehaviour
 
     private void Start()
     {
-        priceText.text = price;
-        priceImage.sprite = UIManager.Instance.GetProdSprite((int)priceType);
-        int prodCount = list_product.Count;
-        for (int iNum = 0; iNum < prodCount; iNum++)
-        {
-            Instantiate(obj_EmptyObj, imageParents);
-        }
+        //priceText.text = price;
+        //priceImage.sprite = UIManager.Instance.GetProdSprite((int)priceType);
+        //int prodCount = list_product.Count;
+        //for (int iNum = 0; iNum < prodCount; iNum++)
+        //{
+        //    Instantiate(obj_EmptyObj, imageParents);
+        //}
 
-        int imageCount = imageParents.childCount;
-        for (int iNum = 0; iNum < imageCount; iNum++)
-        {
-            list_rewordImage.Add(imageParents.GetChild(iNum).GetComponent<Image>());
-        }
+        //int imageCount = imageParents.childCount;
+        //for (int iNum = 0; iNum < imageCount; iNum++)
+        //{
+        //    list_rewordImage.Add(imageParents.GetChild(iNum).GetComponent<Image>());
+        //}
 
-        for (int iNum = 0; iNum < imageCount; iNum++)
-        {
-            list_rewordText.Add(list_rewordImage[iNum].transform.GetChild(0).GetComponent<TMP_Text>());
-        }
+        //for (int iNum = 0; iNum < imageCount; iNum++)
+        //{
+        //    list_rewordText.Add(list_rewordImage[iNum].transform.GetChild(0).GetComponent<TMP_Text>());
+        //}
 
-        for (int iNum = 0; iNum < imageCount; iNum++)
-        {
-            list_rewordImage[iNum].sprite = list_product[iNum].sprite;
-        }
+        //for (int iNum = 0; iNum < imageCount; iNum++)
+        //{
+        //    list_rewordImage[iNum].sprite = list_product[iNum].sprite;
+        //}
 
-        for (int iNum = 0; iNum < imageCount; iNum++)
-        {
-            list_rewordText[iNum].text = list_product[iNum].count;
-        }
+        //for (int iNum = 0; iNum < imageCount; iNum++)
+        //{
+        //    list_rewordText[iNum].text = list_product[iNum].count;
+        //}
     }
 
     public void ClickBuy()
     {
-        ShopManager.Instance.SetCheckBuyActive(true);
-        ShopManager.Instance.SetCheckBuy(list_product, price, priceType);
+        //ShopManager.Instance.SetCheckBuy(list_product, price, priceType);
     }
 }
