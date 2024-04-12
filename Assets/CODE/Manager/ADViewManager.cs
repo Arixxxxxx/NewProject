@@ -64,9 +64,32 @@ public class ADViewManager : MonoBehaviour
     /// <param name="value">0 ~ 2 버프선택 창에있는 버프들 / 3 = 클릭하는 화면버프 </param>
     public void SampleADBuff(string witch, int value)
     {
+        if(AdDelete.inst.IsAdDeleteBuy == false)
+        {
+            adXbtn.onClick.RemoveAllListeners();
+            adXbtn.onClick.AddListener(() =>
+            {
+                if (witch == "buff" && value != 3)
+                {
+                    BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
+                    BuffManager.inst.AddBuffCoolTime(value, (int)BuffManager.inst.AdbuffTime(value)); // 쿨타임 시간추가
+                    Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(value, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
 
-        adXbtn.onClick.RemoveAllListeners();
-        adXbtn.onClick.AddListener(() =>
+                }
+                else if (value == 3) // 클릭하는 화면 버프
+                {
+                    BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
+                    Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
+                }
+                adXbtn.gameObject.SetActive(false);
+                adSample.SetActive(false);
+                buffSelectUIWindow.SetActive(false);
+            });
+
+            StopCoroutine(PlayAD());
+            StartCoroutine(PlayAD());
+        }
+        else
         {
             if (witch == "buff" && value != 3)
             {
@@ -80,13 +103,10 @@ public class ADViewManager : MonoBehaviour
                 BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
                 Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
             }
-            adXbtn.gameObject.SetActive(false);
-            adSample.SetActive(false);
-            buffSelectUIWindow.SetActive(false);
-        });
 
-        StopCoroutine(PlayAD());
-        StartCoroutine(PlayAD());
+            buffSelectUIWindow.SetActive(false);
+        }
+     
 
     }
 
@@ -176,21 +196,35 @@ public class ADViewManager : MonoBehaviour
         alrimText.color = orijinColor;
     }
 
-    public void SampleAD_Active_Funtion()
+    /// <summary>
+    /// 광고 실행 후 델리게이트 호출
+    /// </summary>
+    /// <param name="funtion"> 실행시킬 함수 </param>
+    public void SampleAD_Active_Funtion(Action funtion)
     {
-        adXbtn.onClick.RemoveAllListeners();
-        adXbtn.onClick.AddListener(() =>
+        if(AdDelete.inst.IsAdDeleteBuy == false) // 광고 삭제 미구입시
         {
+            adXbtn.onClick.RemoveAllListeners();
+            adXbtn.onClick.AddListener(() =>
+            {
+                AdAfterInvokeFuntion += funtion;
+                AdAfterInvokeFuntion?.Invoke();
+                AdAfterInvokeFuntion = null;
+                adXbtn.gameObject.SetActive(false);
+                adSample.SetActive(false);
+            });
+
+            if (AdDelete.inst.IsAdDeleteBuy == false)
+            {
+                StopCoroutine(PlayAD());
+                StartCoroutine(PlayAD());
+            }
+        }
+        else if(AdDelete.inst.IsAdDeleteBuy == true) //광고구입시 바로바로 발동
+        {
+            AdAfterInvokeFuntion += funtion;
             AdAfterInvokeFuntion?.Invoke();
             AdAfterInvokeFuntion = null;
-            adXbtn.gameObject.SetActive(false);
-            adSample.SetActive(false);
-        });
-
-        if (AdDelete.inst.IsAdDeleteBuy == false)
-        {
-            StopCoroutine(PlayAD());
-            StartCoroutine(PlayAD());
         }
     }
 }

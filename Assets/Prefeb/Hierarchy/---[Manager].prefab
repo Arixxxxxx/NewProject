@@ -445,6 +445,8 @@ MonoBehaviour:
   enemySprite:
   - {fileID: 876536713, guid: 76670a6a306dad34bb538dd9f1e47adb, type: 3}
   - {fileID: 1307528843, guid: 76670a6a306dad34bb538dd9f1e47adb, type: 3}
+  playerAtkEffect: []
+  playerAtkCriEffect: []
   attackReady: 0
   checkPosition: 0
   enemySpawnSpeed: 0.12
@@ -629,7 +631,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffRubyPrice: 64000000fa00000064000000
-  adDeletePrice: 4999
+  adDeletePrice: 10
 --- !u!114 &4904963902540086993
 MonoBehaviour:
   m_ObjectHideFlags: 0

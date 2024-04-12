@@ -9,6 +9,7 @@ public class RubyPrice : MonoBehaviour
 
     [SerializeField] int[] buffRubyPrice = new int[3];
     [SerializeField] int adDeletePrice;
+    
     public int AdDeletePrice { get { return adDeletePrice; } }
     private void Awake()
     {

@@ -250,7 +250,6 @@ public class HwanSengSystem : MonoBehaviour
             else if (curRuby < needRuby)// false면 상점으로 이동 필요
             {
                 NoHaveRubyAlrimWindowActive(true);
-                Debug.Log($"루비 {needRuby - curRuby} 부족");
             }
 
 

@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     GameObject frontUiRef;
     public GameObject FrontUiRef { get { return frontUiRef; } }
 
+    GameObject worldSpaceRef;
+    public GameObject WorldSpaceRef { get { return worldSpaceRef; } }
+
     private void Awake()
     {
         if(inst == null)
@@ -27,7 +30,7 @@ public class GameManager : MonoBehaviour
 
         worldUiRef = GameObject.Find("---[World UI Canvas]").gameObject;
         frontUiRef = GameObject.Find("---[FrontUICanvas]").gameObject;
-    
+        worldSpaceRef = GameObject.Find("---[World Space]").gameObject;
     }
     void Start()
     {

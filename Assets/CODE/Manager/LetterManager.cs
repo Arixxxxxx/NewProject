@@ -179,7 +179,6 @@ public class LetterManager : MonoBehaviour
     }
 
     //모두수락
-
     private void GetEveryLetter()
     {
         //초기화
@@ -232,6 +231,7 @@ public class LetterManager : MonoBehaviour
         //확인창 열어주고
         EveryGetAlrimRef.SetActive(true);
         LetterBoxOnlyInit(); // 빈박스 표기
+        WorldUI_Manager.inst.OnEnableRedSimball(0, false); // 심볼 꺼줌
         //
     }
 
@@ -268,6 +268,7 @@ public class LetterManager : MonoBehaviour
             {
                 letterViewr.gameObject.SetActive(false);
                 notthingLetter.gameObject.SetActive(true);
+                WorldUI_Manager.inst.OnEnableRedSimball(0, false); // 심볼 꺼줌
             }
         }
 

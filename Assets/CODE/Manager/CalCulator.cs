@@ -188,7 +188,7 @@ public class CalCulator : MonoBehaviour
         int floor = GameStatus.inst.AccumlateFloor;
         BigInteger health = baseHP + hpIncreaseFactor * floor * floor; // 층수의 제곱을 이용한 체력 계산
 
-        Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
+        //Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
         return health.ToString();
     }
 

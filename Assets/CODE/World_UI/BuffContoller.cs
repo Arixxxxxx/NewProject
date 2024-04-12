@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -23,6 +24,8 @@ public class BuffContoller : MonoBehaviour
 
     GameObject[] buffActive;
     TMP_Text[] buffTime;
+    Image[] buffIconBg;
+
     [SerializeField]
     double[] buffTimer;
 
@@ -49,13 +52,14 @@ public class BuffContoller : MonoBehaviour
         buffTime = new TMP_Text[buffChild];
         buffTimer = new double[buffChild];
         buffIconPs = new ParticleSystem[buffChild];
-
+        buffIconBg = new Image[buffChild];
 
 
         for (int index = 0; index < buffBtns.Length; index++)
         {
             buffBtns[index] = buffParent.transform.GetChild(index).GetComponent<Button>();
-            buffActive[index] = buffBtns[index].transform.GetChild(0).gameObject;
+            buffIconBg[index] = buffBtns[index].transform.GetChild(0).GetComponent<Image>();
+            buffActive[index] = buffBtns[index].transform.GetChild(1).gameObject;
             buffTime[index] = buffActive[index].GetComponentInChildren<TMP_Text>();
             buffIconPs[index] = buffActive[index].GetComponentInChildren<ParticleSystem>();
         }
@@ -91,7 +95,7 @@ public class BuffContoller : MonoBehaviour
     public void ActiveBuff(int Num, float Time)
     {
         buffTimer[Num] += Time * 60;
-
+        buffIconBg[Num].gameObject.SetActive(true);
         switch (Num)
         {
             case 0:  //공
@@ -121,11 +125,6 @@ public class BuffContoller : MonoBehaviour
                 break;
         }
 
-
-
-
-
-
         //버프활성화되엇다고 알림 
     }
 
@@ -137,6 +136,8 @@ public class BuffContoller : MonoBehaviour
     {
         if (buffTimer[index] <= 0 && buffActive[index].activeSelf)
         {
+            buffIconBg[index].gameObject.SetActive(false);
+
             switch (index)
             {
                 case 0: // 공격력 버프
@@ -154,6 +155,11 @@ public class BuffContoller : MonoBehaviour
         }
         else if (buffTimer[index] > 0 && buffActive[index].activeSelf)
         {
+            if(buffIconBg[index].gameObject.activeSelf == true)
+            {
+                buffIconBg[index].gameObject.SetActive(false);
+            }
+
             buffTimer[index] -= Time.deltaTime;
 
             int timeValue = 0;
@@ -190,6 +196,11 @@ public class BuffContoller : MonoBehaviour
         else if (buffTimer[4] > 0 && newBieObj.activeSelf)
         {
             buffTimer[4] -= Time.deltaTime;
+
+            if (buffIconBg[4].gameObject.activeSelf == true)
+            {
+                buffIconBg[4].gameObject.SetActive(false);
+            }
         }
     }
 

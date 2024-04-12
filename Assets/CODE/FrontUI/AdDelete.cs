@@ -87,7 +87,11 @@ public class AdDelete : MonoBehaviour
 
     }
 
-  
+    public void ActiveAdDeleteWindow()
+    { 
+        AdDeleteUiRef.SetActive(true);
+    }
+
     //
     private void BuffUpdater()
     {
@@ -155,8 +159,4 @@ public class AdDelete : MonoBehaviour
         buffTime += 2592000;
     }
 
-    public void ActiveAdDeleteWindow()
-    {
-        AdDeleteUiRef.SetActive(true);
-    }
 }
