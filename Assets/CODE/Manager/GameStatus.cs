@@ -269,7 +269,11 @@ public class GameStatus : MonoBehaviour
     public int TotalEnemyKill
     {
         get { return totalEnemyKill; }
-        set { totalEnemyKill = value; }
+        set 
+        { 
+            totalEnemyKill = value;
+            MissionData.Instance.SetDailyMission("몬스터 처치", 1);
+        }
     }
 
     // 5. 환생횟수
@@ -277,7 +281,11 @@ public class GameStatus : MonoBehaviour
     public int HWansengCount
     {
         get { return hwansengCount; }
-        set { hwansengCount = value; }
+        set 
+        {
+            hwansengCount = value;
+            MissionData.Instance.SetWeeklyMission("환생하기", 1);
+        }
     }
     /////////////////////[ 스테이지 현황 ]//////////////////////////////
 

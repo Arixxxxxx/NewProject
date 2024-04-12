@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
         return m_totalGold;
     }
 
-    [SerializeField] private int questBuyCount = 1;//퀘스트 구매하려는 갯수
+    int questBuyCount = 1;//퀘스트 구매하려는 갯수
     int questBuyCountBtnNum = 0;//선택한 퀘스트 한번에 구매 버튼 번호
     public int QuestBuyCountBtnNum
     {
@@ -47,7 +47,7 @@ public class UIManager : MonoBehaviour
     }
 
     [Header("무기")]
-    [SerializeField] List<Transform> m_list_Weapon = new List<Transform>();
+    List<Transform> m_list_Weapon = new List<Transform>();
     [SerializeField] Transform m_WeaponParents;
     [SerializeField] RectTransform m_WeaponParentRect;
     [SerializeField] TextMeshProUGUI m_totalAtk;

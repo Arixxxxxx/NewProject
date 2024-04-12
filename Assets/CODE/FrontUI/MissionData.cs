@@ -35,6 +35,7 @@ public class MissionData : MonoBehaviour
             if (list_DailyMission[iNum].GetMissionName() == Name)
             {
                 listNum = iNum;
+                break;
             }
         }
 
@@ -52,6 +53,7 @@ public class MissionData : MonoBehaviour
             if (list_WeeklyMission[iNum].GetMissionName() == Name)
             {
                 listNum = iNum;
+                break;
             }
         }
         if (listNum != -1)
