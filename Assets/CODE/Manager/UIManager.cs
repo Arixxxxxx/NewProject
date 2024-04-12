@@ -81,7 +81,10 @@ public class UIManager : MonoBehaviour
         haveWeaponLv = _num;
     }
 
-    [Header("Shop")]
+    [Header("Æê")]
+    [SerializeField] Button[] list_PetUpBtn;
+
+    [Header("»óÁ¡")]
     [SerializeField] Sprite[] list_prodSprite;
     public Sprite GetProdSprite(int index)
     {
@@ -132,23 +135,29 @@ public class UIManager : MonoBehaviour
             m_list_Quest.Add(m_QuestParents.GetChild(iNum));
         }
 
-        m_aryPetDetailInforBtns[0].onClick.AddListener(() =>
+        initButton();
+    }
+
+    void initButton()
+    {
+        m_aryPetDetailInforBtns[0].onClick.AddListener(() =>//1¹ø Æê »ó¼¼º¸±â
         {
             PetDetailViewr_UI.inst.TopArrayBtnActive(0);
         });
 
-        m_aryPetDetailInforBtns[1].onClick.AddListener(() =>
+        m_aryPetDetailInforBtns[1].onClick.AddListener(() =>//2¹ø Æê »ó¼¼º¸±â
         {
             PetDetailViewr_UI.inst.TopArrayBtnActive(1);
         });
 
-        m_aryPetDetailInforBtns[2].onClick.AddListener(() =>
+        m_aryPetDetailInforBtns[2].onClick.AddListener(() =>//3¹ø Æê »ó¼¼º¸±â
         {
             PetDetailViewr_UI.inst.TopArrayBtnActive(2);
         });
 
         WeaponBook.onClick.AddListener(() => DogamManager.inst.Set_DogamListAcitve(0, true));
     }
+
     public Sprite GetSelectUISprite(int num)
     {
         return m_BtnSprite[num];
