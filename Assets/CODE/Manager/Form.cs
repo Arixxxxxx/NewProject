@@ -26,6 +26,13 @@ public enum MissionType
     Relic
 }
 
+public enum PetType
+{ 
+    AtkPet,
+    BuffPet,
+    GoldPet,
+}
+
 public interface ITypeGetable
 {
     Vector2 GetMyType();

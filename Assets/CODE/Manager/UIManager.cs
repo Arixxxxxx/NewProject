@@ -82,7 +82,10 @@ public class UIManager : MonoBehaviour
     [Serializable]
     public class Pet
     {
+        [SerializeField] string Name;
+        [SerializeField] string Explane;
         [SerializeField] int baseCost;
+        [SerializeField] PetType type;
         Transform trs;
         public Transform Trs { get => trs; set { trs = value; } }
         int nextCost;
@@ -100,10 +103,31 @@ public class UIManager : MonoBehaviour
             NameText = Trs.Find("NameText").GetComponent<TMP_Text>();
             ExText = Trs.Find("ExplaneText").GetComponent<TMP_Text>();
 
-            upBtn.onClick.AddListener(ClickUp);
-
-            nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
+            NameText.text = Name;
+            ExText.text = Explane;
             costText.text = $"{nextCost}";
+            switch (type)
+            {
+                case PetType.AtkPet:
+                    lvText.text = $"{GameStatus.inst.Pet0_Lv}";
+                    nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
+                    break;
+
+                case PetType.BuffPet:
+                    lvText.text = $"{GameStatus.inst.Pet1_Lv}";
+                    nextCost = baseCost + GameStatus.inst.Pet1_Lv * 100;
+                    break;
+
+                case PetType.GoldPet:
+                    lvText.text = $"{GameStatus.inst.Pet2_Lv}";
+                    nextCost = baseCost + GameStatus.inst.Pet2_Lv * 100;
+                    break;
+            }
+        }
+
+        public void GetUpBtn()
+        {
+        
         }
 
         void ClickUp()
@@ -115,6 +139,7 @@ public class UIManager : MonoBehaviour
                 GameStatus.inst.Pet0_Lv++;
                 nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
                 costText.text = $"{nextCost}";
+                lvText.text = $"{GameStatus.inst.Pet0_Lv}";
             }
         }
     }
@@ -201,8 +226,9 @@ public class UIManager : MonoBehaviour
         for (int iNum = 0; iNum < petCount; iNum++)
         {
             Transform trs = Instantiate(obj_Pet, trsPetContents).transform;
-            m_aryPetDetailInforBtns[iNum] = trsPetContents.GetChild(iNum).Find("imageBtn").GetComponent<Button>();
-            list_PetUpBtn[iNum] = trsPetContents.GetChild(iNum).Find("Button").GetComponent<Button>();
+            m_aryPetDetailInforBtns[iNum] = trs.Find("imageBtn").GetComponent<Button>();
+            list_Pet[iNum].Trs = trs;
+            list_Pet[iNum].initStart();
         }
 
 
