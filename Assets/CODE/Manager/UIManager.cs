@@ -5,6 +5,7 @@ using System.Numerics;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -76,6 +77,47 @@ public class UIManager : MonoBehaviour
     }
 
     [Header("펫")]
+    [SerializeField] List<Pet> list_Pet;
+    [SerializeField] GameObject obj_Pet;
+    [Serializable]
+    public class Pet
+    {
+        [SerializeField] int baseCost;
+        Transform trs;
+        public Transform Trs { get => trs; set { trs = value; } }
+        int nextCost;
+        Button upBtn;
+        TMP_Text costText;
+        TMP_Text lvText;
+        TMP_Text NameText;
+        TMP_Text ExText;
+
+        public void initStart()
+        {
+            upBtn = Trs.Find("Button").GetComponent<Button>();
+            costText = Trs.Find("Button/PriceText").GetComponent<TMP_Text>();
+            lvText = Trs.Find("LvText").GetComponent<TMP_Text>();
+            NameText = Trs.Find("NameText").GetComponent<TMP_Text>();
+            ExText = Trs.Find("ExplaneText").GetComponent<TMP_Text>();
+
+            upBtn.onClick.AddListener(ClickUp);
+
+            nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
+            costText.text = $"{nextCost}";
+        }
+
+        void ClickUp()
+        {
+            int haveruby = GameStatus.inst.Ruby;
+            if (haveruby >= nextCost)
+            {
+                GameStatus.inst.Ruby -= nextCost;
+                GameStatus.inst.Pet0_Lv++;
+                nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
+                costText.text = $"{nextCost}";
+            }
+        }
+    }
     Button[] list_PetUpBtn;
 
     [Header("상품 스프라이트")]
@@ -153,11 +195,12 @@ public class UIManager : MonoBehaviour
 
         //펫 초기화
         Transform trsPetContents = canvas.transform.Find("BackGround/Pet/Scroll View/Viewport/Content");
-        int petDetailBtnCount = trsPetContents.childCount;
-        m_aryPetDetailInforBtns = new Button[petDetailBtnCount];
-        list_PetUpBtn = new Button[petDetailBtnCount];
-        for (int iNum = 0; iNum < petDetailBtnCount; iNum++)
+        int petCount = list_Pet.Count;
+        m_aryPetDetailInforBtns = new Button[petCount];
+        list_PetUpBtn = new Button[petCount];
+        for (int iNum = 0; iNum < petCount; iNum++)
         {
+            Transform trs = Instantiate(obj_Pet, trsPetContents).transform;
             m_aryPetDetailInforBtns[iNum] = trsPetContents.GetChild(iNum).Find("imageBtn").GetComponent<Button>();
             list_PetUpBtn[iNum] = trsPetContents.GetChild(iNum).Find("Button").GetComponent<Button>();
         }
