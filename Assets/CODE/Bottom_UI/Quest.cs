@@ -88,7 +88,6 @@ public class Quest : MonoBehaviour
 
     public void ClickBuy()
     {
-
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
         if (haveGold >= nextCost)
         {
