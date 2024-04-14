@@ -86,10 +86,12 @@ public class UIManager : MonoBehaviour
         [SerializeField] string Explane;
         [SerializeField] int baseCost;
         [SerializeField] PetType type;
+        [SerializeField] Sprite sprite;
         Transform trs;
         public Transform Trs { get => trs; set { trs = value; } }
         int nextCost;
         Button upBtn;
+        Image petImage;
         TMP_Text costText;
         TMP_Text lvText;
         TMP_Text NameText;
@@ -102,10 +104,8 @@ public class UIManager : MonoBehaviour
             lvText = Trs.Find("LvText").GetComponent<TMP_Text>();
             NameText = Trs.Find("NameText").GetComponent<TMP_Text>();
             ExText = Trs.Find("ExplaneText").GetComponent<TMP_Text>();
+            petImage = Trs.Find("imageBtn/Image").GetComponent<Image>();
 
-            NameText.text = Name;
-            ExText.text = Explane;
-            costText.text = $"{nextCost}";
             switch (type)
             {
                 case PetType.AtkPet:
@@ -123,11 +123,22 @@ public class UIManager : MonoBehaviour
                     nextCost = baseCost + GameStatus.inst.Pet2_Lv * 100;
                     break;
             }
+            NameText.text = Name;
+            ExText.text = Explane;
+            costText.text = $"{nextCost}";
+
+            petImage.sprite = sprite;
+            petImage.SetNativeSize();
+            RectTransform rect = petImage.GetComponent<RectTransform>();
+            float ratio = rect.sizeDelta.x / rect.sizeDelta.y;
+            rect.sizeDelta = new UnityEngine.Vector2(40 * ratio, 40);
+
+            upBtn.onClick.AddListener(ClickUp);
         }
 
-        public void GetUpBtn()
+        public Button GetUpBtn()
         {
-        
+            return upBtn;
         }
 
         void ClickUp()
@@ -136,14 +147,30 @@ public class UIManager : MonoBehaviour
             if (haveruby >= nextCost)
             {
                 GameStatus.inst.Ruby -= nextCost;
-                GameStatus.inst.Pet0_Lv++;
-                nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
+                switch (type)
+                {
+                    case PetType.AtkPet:
+                        GameStatus.inst.Pet0_Lv++;
+                        nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
+                        lvText.text = $"{GameStatus.inst.Pet0_Lv}";
+                        break;
+
+                    case PetType.BuffPet:
+                        GameStatus.inst.Pet1_Lv++;
+                        nextCost = baseCost + GameStatus.inst.Pet1_Lv * 100;
+                        lvText.text = $"{GameStatus.inst.Pet1_Lv}";
+                        break;
+
+                    case PetType.GoldPet:
+                        GameStatus.inst.Pet2_Lv++;
+                        nextCost = baseCost + GameStatus.inst.Pet2_Lv * 100;
+                        lvText.text = $"{GameStatus.inst.Pet2_Lv}";
+                        break;
+                }
                 costText.text = $"{nextCost}";
-                lvText.text = $"{GameStatus.inst.Pet0_Lv}";
             }
         }
     }
-    Button[] list_PetUpBtn;
 
     [Header("상품 스프라이트")]
     [SerializeField] Sprite[] list_prodSprite;
@@ -222,7 +249,6 @@ public class UIManager : MonoBehaviour
         Transform trsPetContents = canvas.transform.Find("BackGround/Pet/Scroll View/Viewport/Content");
         int petCount = list_Pet.Count;
         m_aryPetDetailInforBtns = new Button[petCount];
-        list_PetUpBtn = new Button[petCount];
         for (int iNum = 0; iNum < petCount; iNum++)
         {
             Transform trs = Instantiate(obj_Pet, trsPetContents).transform;
@@ -230,8 +256,6 @@ public class UIManager : MonoBehaviour
             list_Pet[iNum].Trs = trs;
             list_Pet[iNum].initStart();
         }
-
-
 
         m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
         m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
