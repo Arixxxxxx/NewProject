@@ -30,91 +30,31 @@ public class ShopManager : MonoBehaviour
     [Header("상품 목록")]
     Transform GoldShopParnets;
     Transform RubyShopParnets;
-    [SerializeField] List<ProductList> list_GoldProductList;
-    [SerializeField] List<ProductList> list_RubyProductList;
+    [SerializeField] List<ProductValue> list_GoldProductValueList;
+    [SerializeField] List<ProductValue> list_RubyProductValueList;
     [Serializable]
-    public class ProductList
+    public class ProductValue
     {
         [Header("상품 목록")]
-        [SerializeField] List<Product> list_product = new List<Product>();
+        [SerializeField] List<Product.ProductList> list_product = new List<Product.ProductList>();
         [Header("상품 가격")]
         [SerializeField] string price;
         [Header("가격 타입")]
         [SerializeField] ProductTag priceType;
-        [Space]
 
-        Transform trs;
-        public Transform Trs { get => trs; set { trs = value; } }
-        TMP_Text priceText;
-        Transform imageParents;
-        Image priceImage;
-        List<Image> list_rewordImage = new List<Image>();
-        List<TMP_Text> list_rewordText = new List<TMP_Text>();
-
-
-        [Serializable]
-        public class Product
+        public List<Product.ProductList> GetList()
         {
-            [SerializeField] public ProductTag prodtag;
-            [SerializeField] public string count;
-
-            public void buyProduct()
-            {
-                switch (prodtag)
-                {
-                    case ProductTag.Gold:
-                        GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(count));
-                        break;
-                    case ProductTag.Ruby:
-                        GameStatus.inst.Ruby += int.Parse(count);
-                        break;
-                    case ProductTag.Star:
-                        GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(count));
-                        break;
-                }
-            }
-
-            public Sprite GetSprite()
-            {
-                switch (prodtag)
-                {
-                    case ProductTag.Gold:
-                        return UIManager.Instance.GetProdSprite(0);
-
-                    case ProductTag.Star:
-                        return UIManager.Instance.GetProdSprite(1);
-
-                    case ProductTag.Ruby:
-                        return UIManager.Instance.GetProdSprite(2);
-
-                }
-                return null;
-            }
+            return list_product;
         }
 
-        public void InitStart()
+        public string GetPrice()
         {
-            priceText = Trs.Find("PriceText").GetComponent<TMP_Text>();
-            imageParents = Trs.Find("ProductList");
-            priceImage = Trs.Find("priceImage").GetComponent<Image>();
-            trs.GetComponent<Button>().onClick.AddListener(ClickBuy);
-
-            priceText.text = price;
-            priceImage.sprite = UIManager.Instance.GetProdSprite((int)priceType);
-            int prodCount = list_product.Count;//상품 이미지 생성
-            for (int iNum = 0; iNum < prodCount; iNum++)
-            {
-                GameObject obj = Instantiate(Instance.GetEmptyImage(), imageParents);
-                list_rewordImage.Add(obj.transform.Find("Image").GetComponent<Image>());
-                list_rewordText.Add(obj.transform.Find("RewordText").GetComponent<TMP_Text>());
-                list_rewordImage[iNum].sprite = list_product[iNum].GetSprite();
-                list_rewordText[iNum].text = list_product[iNum].count;
-            }
+            return price;
         }
 
-        public void ClickBuy()
+        public ProductTag GetPriceType()
         {
-            Instance.SetCheckBuy(list_product, price, priceType);
+            return priceType;
         }
     }
 
@@ -159,21 +99,21 @@ public class ShopManager : MonoBehaviour
         RubyShopParnets = obj_shop.transform.Find("ShopList/Ruby/Scroll View").GetComponent<ScrollRect>().content;
 
         //골드상점 물품 초기화
-        int goldShopCount = list_GoldProductList.Count;
+        int goldShopCount = list_GoldProductValueList.Count;
         for (int iNum = 0; iNum < goldShopCount; iNum++)
         {
-            Transform trs = Instantiate(obj_Product, GoldShopParnets).transform;
-            list_GoldProductList[iNum].Trs = trs;
-            list_GoldProductList[iNum].InitStart();
+            List<ProductValue> list = list_GoldProductValueList;
+            Transform trs = GoldShopParnets.transform;
+           GoldShopParnets.GetChild(iNum).GetComponent<Product>().InitStart(list[iNum].GetList(), list[iNum].GetPrice(),list[iNum].GetPriceType());
         }
 
         //루비상점 물품 초기화
-        int rubyShopCount = list_RubyProductList.Count;
+        int rubyShopCount = list_RubyProductValueList.Count;
         for (int iNum = 0; iNum < rubyShopCount; iNum++)
         {
             Transform trs = Instantiate(obj_Product, RubyShopParnets).transform;
-            list_RubyProductList[iNum].Trs = trs;
-            list_RubyProductList[iNum].InitStart();
+            //list_RubyProductList[iNum].Trs = trs;
+            //list_RubyProductList[iNum].InitStart();
         }
 
         obj_BuyCheck = obj_shop.transform.Find("CheckBuy").gameObject;
@@ -235,7 +175,7 @@ public class ShopManager : MonoBehaviour
     }
 
 
-    public void SetCheckBuy(List<ProductList.Product> _list, string _price, ProductTag _priceType)
+    public void SetCheckBuy(List<Product.ProductList> _list, string _price, ProductTag _priceType)
     {
         int count;
         switch (_priceType)
