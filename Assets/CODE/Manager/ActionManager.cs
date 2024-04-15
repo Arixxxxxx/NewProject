@@ -124,7 +124,7 @@ public class ActionManager : MonoBehaviour
 
         int atkEffectCount = effectRef.transform.Find("AtkEffect").childCount;
         playerAtkEffect = new ParticleSystem[atkEffectCount];
-        for (int index=0; index < atkEffectCount; index++)
+        for (int index = 0; index < atkEffectCount; index++)
         {
             playerAtkEffect[index] = effectRef.transform.Find("AtkEffect").GetChild(index).GetComponent<ParticleSystem>();
         }
@@ -136,7 +136,7 @@ public class ActionManager : MonoBehaviour
         {
             playerAtkCriEffect[index] = effectRef.transform.Find("CriEffect").GetChild(index).GetComponent<ParticleSystem>();
         }
-             
+
 
         dmgFontParent = worldSpaceRef.transform.Find("DmgFontCanvas/FontPosition").GetComponent<Transform>();
         hpBar_IMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Front").GetComponent<Image>();
@@ -186,10 +186,10 @@ public class ActionManager : MonoBehaviour
             AttackEnemy();
         }
 
-        if( IsFever == true) // 피버일시 스테이지 올려줌
+        if (IsFever == true) // 피버일시 스테이지 올려줌
         {
             feverNextTimer += Time.deltaTime;
-            if( feverNextTimer > feverCountTimer)
+            if (feverNextTimer > feverCountTimer)
             {
                 feverNextTimer = 0;
                 FeverFloorUp();
@@ -221,7 +221,7 @@ public class ActionManager : MonoBehaviour
     // UI Bar 초기화
     private void UI_Init()
     {
-      
+
         statusManager = GameStatus.inst;
         if (statusManager.FloorLv > 1)
         {
@@ -289,7 +289,7 @@ public class ActionManager : MonoBehaviour
 
         if (checkPosition > 0.85f) // 거리값 체크 2이상 이동
         {
-            enemyPosX += (Time.deltaTime * enemySpawnSpeed) * ( 1 +  (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
+            enemyPosX += (Time.deltaTime * enemySpawnSpeed) * (1 + (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
@@ -302,21 +302,26 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    // 애니메이션 공격 
+    // 메인캐릭터 애니메이션 공격 
     public void A_PlayerAttackToEnemy()
     {
-        StopCoroutine(EnemyOnHitDMG(0));
-        StartCoroutine(EnemyOnHitDMG(0));
+        StopCoroutine(PlayerOnHitDMG());
+        StartCoroutine(PlayerOnHitDMG());
     }
 
-    public void A_Pet0AttackToEnemy()
+
+    /// <summary>
+    /// 동료들 애니메이션 공격 함수
+    /// </summary>
+    /// <param name="CrewTypeIndex"> 0 폭탄마/ 1 사령술사 </param>
+    public void A_CrewAttackToEnemy(int CrewTypeIndex)
     {
-        StopCoroutine(EnemyOnHitDMG(1));
-        StartCoroutine(EnemyOnHitDMG(1));
+        StopCoroutine(CrewAttackToEnemyDMG(CrewTypeIndex));
+        StartCoroutine(CrewAttackToEnemyDMG(CrewTypeIndex));
     }
 
     // 공격 함수!! //
-    IEnumerator EnemyOnHitDMG(int index) // < =
+    IEnumerator PlayerOnHitDMG() // < =
     {
         enemyAnim.SetTrigger("Hit");
         PlayerInit();
@@ -329,98 +334,137 @@ public class ActionManager : MonoBehaviour
         }
 
         string DMG = atkPower;
+        swordEffect.Play();
 
-        if (index == 0) // 플레이어일시
+        // 크리티컬 계산
+        float randomDice = Random.Range(0f, 100f);
+        bool cri = false;
+
+        //크리티컬 판정시 캠흔들림
+        if (randomDice < GameStatus.inst.CriticalChance)
         {
-            swordEffect.Play();
-            // 크리티컬 계산
-            float randomDice = Random.Range(0f, 100f);
-            bool cri = false;
-
-            //크리티컬 판정시 캠흔들림
-            if (randomDice < GameStatus.inst.CriticalChance)
-            {
-                F_PlayerOnHitCamShake();
-                DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
-                cri = true;
-            }
-
-            string checkDMG = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
-            //Debug.Log($"현재 체력 : {enemyCurHP} / 최대체력 : {enemyMaxHP} / 가한 대미지 {DMG}");
-
-            if (checkDMG != "Dead" && attackReady == true)
-            {
-                // 대미지폰트
-                GameObject obj = Get_Pooling_Prefabs(0);
-                obj.transform.position = dmgFontParent.position;
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
-                obj.SetActive(true);
-
-                enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
-                EnemyHPBarUI_Updater();
-                EnemyOnHitEffect(cri);
-            }
-            else if (checkDMG == "Dead")//에너미 사망 및 초기화
-            {
-                DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
-                StartCoroutine(GetGoldActionParticle()); // 골드 획득하는 파티클 재생
-
-                // 현재 받아야되는 돈 계산
-                string getGold = Get_EnemyDeadGold();
-                GameStatus.inst.PlusGold(getGold); // 골드 얻기
-                EnemyDeadFloorUp();
-                GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
-
-                // 누적 기록
-                GameStatus.inst.TotalEnemyKill++;
-            }
-
-            // 한타 떄려서 버프값 0으로 초기화
-            PetContollerManager.inst.AttackBuffDisable();
-
+            F_PlayerOnHitCamShake();
+            DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
+            cri = true;
         }
 
+        string checkDMG = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
 
-        else if (index == 1)
+        if (checkDMG != "Dead" && attackReady == true)
         {
-            // 펫대미지 공식 => 플레이어 대미지 * 펫레벨+1
+            // 대미지폰트
+            GameObject obj = Get_Pooling_Prefabs(0);
+            obj.transform.position = dmgFontParent.position;
+            obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
+            obj.SetActive(true);
 
-            string PetDmg = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
-            string MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, PetDmg, true); // 총체력에서 공격력을 뺀값
-
-            if (MinusValue != "Dead" && attackReady == true)
-            {
-                enemyCurHP = MinusValue;
-                EnemyHPBarUI_Updater();
-
-                // 대미지폰트
-                GameObject obj = Get_Pooling_Prefabs(0);
-                obj.transform.position = dmgFontParent.position;
-
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(PetDmg), false, 0);
-                obj.SetActive(true);
-
-            }
-            else if (MinusValue == "Dead")//에너미 사망 및 초기화
-            {
-                DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
-                StartCoroutine(GetGoldActionParticle());
-                // 현재 받아야되는 돈 계산
-                string getGold = Get_EnemyDeadGold();
-                WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
-                GameStatus.inst.PlusGold(getGold);
-                EnemyDeadFloorUp();
-                GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
-
-                // 누적 기록
-                GameStatus.inst.TotalEnemyKill++;
-            }
+            enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
+            EnemyHPBarUI_Updater();
+            EnemyOnHitEffect(cri);
         }
+        else if (checkDMG == "Dead")//에너미 사망 및 초기화
+        {
+            DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
+            StartCoroutine(GetGoldActionParticle()); // 골드 획득하는 파티클 재생
+
+            // 현재 받아야되는 돈 계산
+            string getGold = Get_EnemyDeadGold();
+            GameStatus.inst.PlusGold(getGold); // 골드 얻기
+            EnemyDeadFloorUp();
+            GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
+
+            // 누적 기록
+            GameStatus.inst.TotalEnemyKill++;
+        }
+
+        // 한타 떄려서 버프값 0으로 초기화
+        PetContollerManager.inst.AttackBuffDisable();
+
+
+        yield return null;
+    }
+
+
+    // 동료 공격 코루틴
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="CrewType"> 0 폭탄마 / 1 사령술사</param>
+    /// <returns></returns>
+    IEnumerator CrewAttackToEnemyDMG(int CrewType)
+    {
+        enemyAnim.SetTrigger("Hit");
+        PlayerInit();
+
+        // 뉴비버프 어택카운트 및 버프 
+        GameStatus.inst.NewbieAttackCountUp(true);
+        if (GameStatus.inst.IsNewBie)
+        {
+            atkPower = CalCulator.inst.StringAndIntMultiPly(atkPower, GameStatus.inst.Get_NewBieAttackBuff_MultiplyValue());
+        }
+
+        string DMG = atkPower;
+        string CrewATK = string.Empty;
+        string MinusValue = string.Empty;
+
+        if (CrewType == 0) // 폭탄마 ( 총체력에서 공격력을 뺀값 )
+        {
+            CrewATK = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
+            MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, CrewATK, true);
+        }
+        else if (CrewType == 1) // 사령술사
+        {
+            CrewATK = CalCulator.inst.CrewNumber2AtkCalculator(enemyCurHP);
+
+            if (CrewATK == null) // 몬스터가 도중에 죽었다면 종료
+            {
+                yield break;
+            }
+
+            MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, CrewATK, true);
+        }
+        
+
+        if (MinusValue != "Dead" && attackReady == true)
+        {
+            enemyCurHP = MinusValue;
+            EnemyHPBarUI_Updater();
+
+            // 대미지폰트
+            GameObject obj = Get_Pooling_Prefabs(0);
+            obj.transform.position = dmgFontParent.position;
+
+            if(CrewType == 0)
+            {
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 0); // 빨간색 대미지 폰트
+            }
+            else if(CrewType == 1)
+            {
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 1); // 시얀색 대미지폰트
+            }
+            obj.SetActive(true);
+
+        }
+        else if (MinusValue == "Dead")//에너미 사망 및 초기화
+        {
+            
+            DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
+            StartCoroutine(GetGoldActionParticle());
+            // 현재 받아야되는 돈 계산
+            string getGold = Get_EnemyDeadGold();
+            WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
+            GameStatus.inst.PlusGold(getGold);
+            EnemyDeadFloorUp();
+            GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
+
+            // 누적 기록
+            GameStatus.inst.TotalEnemyKill++;
+        }
+
 
         yield return null;
 
     }
-
     // 몬스터 죽엇을때 돈이 팡 튀는 파티클 재생 
     IEnumerator GetGoldActionParticle()
     {
@@ -591,7 +635,7 @@ public class ActionManager : MonoBehaviour
     }
 
     // 에너미 HP 바 업데이터
-  
+
     private void EnemyHPBarUI_Updater()
     {
         hpBar_IMG.fillAmount = CalCulator.inst.StringAndStringDivideReturnFloat(enemyCurHP, enemyMaxHP, 3);
@@ -599,20 +643,20 @@ public class ActionManager : MonoBehaviour
     }
 
 
-    
+
     ////////////////////////////// [ 플레이어 속도증가 관련 ] /////////////////////////////////////////
-    
+
 
     //플레이어 공격속도 증가 함수
     public void PlayerAttackSpeedLvUp()
     {
         if (GameStatus.inst.AtkSpeedLv >= 10) { return; }
 
-        if(playerAnim != null)
+        if (playerAnim != null)
         {
             playerAnim.SetFloat("AttackSpeed", 1 + ((0.15f * GameStatus.inst.AtkSpeedLv)) + GameStatus.inst.NewbieAttackSpeed);
         }
-        
+
     }
 
 
@@ -695,7 +739,7 @@ public class ActionManager : MonoBehaviour
     }
 
     int mapint = 0;
-    private void TestMapChanger() 
+    private void TestMapChanger()
     {
         mapint++;
         mapint = mapint == 2 ? 0 : 1;

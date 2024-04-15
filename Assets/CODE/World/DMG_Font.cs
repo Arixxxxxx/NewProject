@@ -79,6 +79,10 @@ public class DMG_Font : MonoBehaviour
         
         if(colorType == 0)
         {
+            Dmg_Text.color = Color.red;
+        }
+        if(colorType == 1)
+        {
             Dmg_Text.color = Color.cyan;
         }
     }

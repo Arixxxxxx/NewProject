@@ -19,6 +19,9 @@ public class PetContollerManager : MonoBehaviour
     ParticleSystem[] pet1Ps = new ParticleSystem[4];
     ParticleSystem[] pet2Ps = new ParticleSystem[2];
 
+    // 펫2번 공격 이펙트
+    Animator pet2AtkEffectAnim;
+
     private void Awake()
     {
         if (inst == null)
@@ -42,18 +45,20 @@ public class PetContollerManager : MonoBehaviour
         pet0Ps[0] = petAnim[0].transform.Find("Charge").GetComponent<ParticleSystem>();
         pet0Ps[1] = effectRef.transform.Find("PetEffect/Pet_0_AtkEffect").GetComponent<ParticleSystem>();
 
-        //0번 버퍼
+        //1번 버퍼
         petAnim[1] = playerObj.transform.Find("Pet_1").GetComponent<Animator>();
         pet1Ps[0] = petAnim[1].transform.Find("Charge").GetComponent<ParticleSystem>();
         pet1Ps[1] = petAnim[1].transform.Find("AttackBuff").GetComponent<ParticleSystem>();
         pet1Ps[2] = petAnim[1].transform.Find("CriBuff").GetComponent<ParticleSystem>();
         pet1Ps[3] = petAnim[1].transform.Find("AllBuff").GetComponent<ParticleSystem>();
 
-        //1번 골드
+        //2번 사령술사
 
         petAnim[2] = playerObj.transform.Find("Pet_2").GetComponent<Animator>();
-        pet2Ps[0] = petAnim[2].transform.Find("Charge").GetComponent<ParticleSystem>();
-        pet2Ps[1] = petAnim[2].transform.Find("Gold").GetComponent<ParticleSystem>(); //골드펑
+        pet2AtkEffectAnim = petAnim[2].transform.Find("AttackEffect/Enemy").GetComponent<Animator>();
+
+        //pet2Ps[0] = petAnim[2].transform.Find("Charge").GetComponent<ParticleSystem>();
+        //pet2Ps[1] = petAnim[2].transform.Find("Gold").GetComponent<ParticleSystem>(); //골드펑
 
         animCount = petAnim.Length;
     }
@@ -84,7 +89,7 @@ public class PetContollerManager : MonoBehaviour
         }
         else if (Value == "Attack")
         {
-            ActionManager.inst.A_Pet0AttackToEnemy();
+            ActionManager.inst.A_CrewAttackToEnemy(0);
             pet0Ps[0].Stop();
             pet0Ps[1].Play();
             
@@ -175,21 +180,13 @@ public class PetContollerManager : MonoBehaviour
     /// <param name="Value"> Charge , Attack </param>
     public void Pet_2_StartEffect(string Value)
     {
-        if (Value == "Charge")
+        if (Value == "Charge") // 충전시
         {
-            pet2Ps[0].Play();
+            
         }
-        else if (Value == "Attack")
+        else if (Value == "Attack") //공격
         {
-            pet2Ps[0].Stop();
-            pet2Ps[1].Play();
-
-            string curGetGold = GameStatus.inst.GetTotalGold();
-            int Pet2Lv = GameStatus.inst.Pet2_Lv + 1;  // 레벨당 2배 3배 4배 계속늘어남
-            //골드 증가
-            string curGetGoldValue = CalCulator.inst.StringAndIntMultiPly(curGetGold, Pet2Lv);
-            GameStatus.inst.PlusGold(curGetGoldValue);
-
+            pet2AtkEffectAnim.SetTrigger("Hit");
         }
     }
     /// <summary>
@@ -199,7 +196,7 @@ public class PetContollerManager : MonoBehaviour
     {
         pet0Ps[0].Stop();
         pet1Ps[0].Stop();
-        pet2Ps[0].Stop();
+        //pet2Ps[0].Stop();
     }
 
 

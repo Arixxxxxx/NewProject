@@ -409,7 +409,7 @@ public class GameStatus : MonoBehaviour
         set { addPetCriChanceBuff = value; }
     }
 
-    // 3. °ñµåÆê
+    // 3. »ç·É¼ú»ç
     int pet2_Lv = 1;
     public int Pet2_Lv
     {
