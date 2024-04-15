@@ -16,9 +16,4 @@ public class TestRelic : Relic
     {
         
     }
-    public override void ClickUp()
-    {
-        base.ClickUp();
-        //공격력 증가
-    }
 }

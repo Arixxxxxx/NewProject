@@ -85,13 +85,13 @@ public class Gacha : MonoBehaviour
 
             if (ishave)//같은 아이템을 가지고 있다면 1레벨 업
             {
-                list_haveRelic[haveObjNum].GetComponent<Relic>().Lv += 1;
+                list_haveRelic[haveObjNum].GetComponent<Relic>().SetLv(1);
                 ListResultSprite.Add(list_haveRelic[haveObjNum].GetComponent<Relic>().GetSprite());
             }
             else//아니면 아이템 획득
             {
                 GameObject obj = Instantiate(aryRankClass[rankNum].AryObj[objPercent], RelicParents);
-                obj.GetComponent<Relic>().Lv += 1;
+                obj.GetComponent<Relic>().SetLv(1);
                 list_haveRelic.Add(obj);
                 ListResultSprite.Add(obj.GetComponent<Relic>().GetSprite());
             }

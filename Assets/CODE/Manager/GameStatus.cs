@@ -269,8 +269,8 @@ public class GameStatus : MonoBehaviour
     public int TotalEnemyKill
     {
         get { return totalEnemyKill; }
-        set 
-        { 
+        set
+        {
             totalEnemyKill = value;
             MissionData.Instance.SetDailyMission("몬스터 처치", 1);
         }
@@ -281,7 +281,7 @@ public class GameStatus : MonoBehaviour
     public int HWansengCount
     {
         get { return hwansengCount; }
-        set 
+        set
         {
             hwansengCount = value;
             MissionData.Instance.SetWeeklyMission("환생하기", 1);
@@ -316,7 +316,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             stageLv = value;
-            
+
         }
     }
 
@@ -341,12 +341,12 @@ public class GameStatus : MonoBehaviour
         }
     }
 
- 
+
 
 
     /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
 
-        // 1. 공격력증가 버프
+    // 1. 공격력증가 버프
     string buffAddATK = "0";
     public string BuffAddATK { get { return buffAddATK; } set { buffAddATK = value; } }
 
@@ -444,11 +444,19 @@ public class GameStatus : MonoBehaviour
         aryWeaponLv[Num] = Value;
         MissionData.Instance.SetSpecialMission(Num, Value, MissionType.Weapon);
     }
-    UnityEngine.Vector2[] aryRelic;
+    UnityEngine.Vector2[] aryRelic = new UnityEngine.Vector2[4];
     public UnityEngine.Vector2[] AryRelic
     {
         get => aryRelic;
         set { aryRelic = value; }
+    }
+
+    int[] aryNormalRelicLv = new int[4];
+
+    public int[] AryNormalRelicLv
+    {
+        get => aryNormalRelicLv;
+        set { aryNormalRelicLv = value; }
     }
 
     /////////////////////////////////////////////////////////////////////////////////

@@ -2,17 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
+using System;
 
 public class RelicManager : MonoBehaviour
 {
+    public static RelicManager instance;
+
+    GameObject[] list_RelicWindow = new GameObject[2];
     Transform UiCanvas;
     Transform RelicParents;
     Button nomalRelicBtn;
     Button ancientRelicBtn;
+    Transform normalRelicContents;
     int RelicBtnIndex = 0;
-    GameObject[] list_RelicWindow = new GameObject[2];
 
+    public UnityEvent OnPercentageChanged;
+    float[] aryPercentage = new float[4];
+    public float GetAryPercent(int index)
+    {
+        return aryPercentage[index];
+    }
+    public void SetAryPercent(int index,float value)
+    {
+        aryPercentage[index] = value;
+        OnPercentageChanged?.Invoke();
+    }
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -22,7 +50,7 @@ public class RelicManager : MonoBehaviour
         ancientRelicBtn = RelicParents.Find("TopBtn/AncientRelicBtn").GetComponent<Button>();
         list_RelicWindow[0] = RelicParents.Find("NormalScroll View").gameObject;
         list_RelicWindow[1] = RelicParents.Find("AncientScroll View").gameObject;
-
+        normalRelicContents = list_RelicWindow[0].GetComponent<ScrollRect>().content;
         initbutton();
     }
 
@@ -38,5 +66,4 @@ public class RelicManager : MonoBehaviour
         RelicBtnIndex = index;
         list_RelicWindow[RelicBtnIndex].SetActive(true);
     }
-
 }

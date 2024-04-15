@@ -12,6 +12,14 @@ public enum ItemTag
     Test
 }
 
+public enum NormalRelicTag
+{ 
+    Atk,
+    Critical,
+    QuestGold,
+    EnemyGold
+}
+
 public enum ProductTag
 { 
     Gold,
