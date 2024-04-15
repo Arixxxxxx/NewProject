@@ -355,7 +355,7 @@ public class ActionManager : MonoBehaviour
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
             obj.transform.position = dmgFontParent.position;
-            obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 1);
+            obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 2);
             obj.SetActive(true);
 
             enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);

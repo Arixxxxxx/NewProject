@@ -71,19 +71,23 @@ public class DMG_Font : MonoBehaviour
         }
         else
         {
-            transform.position = new Vector3(transform.position.x + Random.Range(-0.5f, 0.5f), transform.position.y + Random.Range(-0.3f, 0.9f));
+            transform.position = new Vector3(transform.position.x + Random.Range(-0.8f, 0.8f), transform.position.y + Random.Range(-0.35f, 1.2f));
             Dmg_Text.font = fonts[0];
             Dmg_Text.color = originColor;
             Dmg_Text.text = $"<b>{text}</b>";
         }
-        
-        if(colorType == 0)
+
+        if (colorType == 0)
         {
             Dmg_Text.color = Color.red;
         }
-        if(colorType == 1)
+        else if (colorType == 1)
         {
             Dmg_Text.color = Color.cyan;
+        }
+        else if(colorType == 2)
+        {
+            Dmg_Text.color = Color.yellow;
         }
     }
 
