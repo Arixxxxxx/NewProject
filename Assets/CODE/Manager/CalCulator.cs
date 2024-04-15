@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Cinemachine.DocumentationSortingAttribute;
 
@@ -64,12 +65,13 @@ public class CalCulator : MonoBehaviour
 
 
 
-    /// <summary>
-    /// 스트링끼리의 뺄셈 함수
-    /// </summary>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <returns></returns>
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="a"> A 값</param>
+  /// <param name="b"> B 값</param>
+  /// <param name="areYouEnemy"> 만약 몬스터라면 true 로 매개변수 입력 / 일반 계산이라면 false</param>
+  /// <returns></returns>
     public string DigidMinus(string a, string b, bool areYouEnemy)
     {
         sb.Clear();
@@ -563,5 +565,23 @@ public class CalCulator : MonoBehaviour
         string result = ((term1 + term2 + term3 + d) / scale).ToString();  // 마지막에 스케일 조정
        
         return result;
+    }
+
+    /// <summary>
+    /// 사령술사 공격력계산 : 현재 몬스터체력의 3% + 레벨당1% 추가
+    /// </summary>
+    /// <param name="curEnemyHP"> 현재 몬스터체력 stirng Data </param>
+    /// <returns></returns>
+    public string CrewNumber2AtkCalculator(string curEnemyHP)
+    {
+        BigInteger hp = BigInteger.Parse(curEnemyHP);
+        hp = ((hp / 100) * 3) + ((hp / 100) * (GameStatus.inst.Pet2_Lv - 1));
+
+        if (hp == 0)
+        {
+            return null;
+        }
+
+        return hp.ToString();
     }
 }

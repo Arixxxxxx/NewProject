@@ -42,4 +42,9 @@ public class PetAnimatorContoller : MonoBehaviour
         PetContollerManager.inst.Pet_2_StartEffect("Attack");
     }
 
+    // 공격이펙트 대미지 주는 함수
+    public void A_Pet2_EffectFuntion()
+    {
+        ActionManager.inst.A_CrewAttackToEnemy(1);
+    }
 }
