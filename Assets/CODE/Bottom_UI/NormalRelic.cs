@@ -16,16 +16,26 @@ public class NormalRelic : MonoBehaviour
     TextMeshProUGUI ExText;
     TextMeshProUGUI PercentText;
     TextMeshProUGUI PriceText;
+    int lv;
+    public int Lv
+    {
+        get => lv;
+        set
+        {
+            lv = value;
+            GameStatus.inst.AryNormalRelicLv[(int)relicTag] = value;
+        }
+    }
     float percentage;
-    float Percnetage 
-    { 
-        get => percentage; 
-        set 
-        { 
+    float Percnetage
+    {
+        get => percentage;
+        set
+        {
             percentage = value;
+            RelicManager.instance.SetAryPercent((int)relicTag ,value);
             PercentText.text = ((int)(Percnetage * 100f)).ToString() + "%";
-
-        } 
+        }
     }
 
     protected virtual void Start()
@@ -38,18 +48,18 @@ public class NormalRelic : MonoBehaviour
         upBtn = transform.Find("Button").GetComponent<Button>();
 
         NameText.text = Name;
-        LvText.text = $"Lv = {GameStatus.inst.AryNormalRelicLv[(int)relicTag]}";
         ExText.text = Explane;
-        Percnetage = Mathf.Pow(1.1f, GameStatus.inst.AryNormalRelicLv[(int)relicTag]);
-        
+        LvText.text = $"Lv = {Lv}";
+        Percnetage = Mathf.Pow(1.1f, Lv);
+
         PriceText.text = "가격 정해야됨";
         upBtn.onClick.AddListener(ClickUp);
     }
 
-     void ClickUp()
+    void ClickUp()
     {
-        GameStatus.inst.AryNormalRelicLv[(int)relicTag]++;
-        LvText.text = $"Lv {GameStatus.inst.AryNormalRelicLv[(int)relicTag]}";
-        Percnetage = Mathf.Pow(1.1f, GameStatus.inst.AryNormalRelicLv[(int)relicTag]);
+        Lv++;
+        LvText.text = $"Lv {Lv}";
+        Percnetage = Mathf.Pow(1.1f, Lv);
     }
 }

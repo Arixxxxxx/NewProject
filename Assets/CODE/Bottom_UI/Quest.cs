@@ -28,7 +28,7 @@ public class Quest : MonoBehaviour
         }
     }
     int LvCur = 1; //레벨보정
-    int itemCur = 1; //아이템보정
+    float itemCur = 1; //아이템보정
     float powNum;//단계별 지수
     int buyCount = 1;
 
@@ -59,6 +59,7 @@ public class Quest : MonoBehaviour
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
         UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
+        RelicManager.instance.OnPercentageChanged.AddListener(_OnItemPercentChanged);
     }
 
     void initValue()//초기값 설정
@@ -74,7 +75,7 @@ public class Quest : MonoBehaviour
 
         baseCost = BigInteger.Multiply(initialProd, (BigInteger)initalProdRate);
         setNextCost();
-        TotalProd = initialProd * Lv;
+        TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
         setText();
     }
 
@@ -138,6 +139,13 @@ public class Quest : MonoBehaviour
     {
         buyCount = UIManager.Instance.QuestBuyCount;
         setNextCost();
+        setText();
+    }
+
+    private void _OnItemPercentChanged()
+    {
+        itemCur = RelicManager.instance.GetAryPercent((int)NormalRelicTag.QuestGold);
+        TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
         setText();
     }
 

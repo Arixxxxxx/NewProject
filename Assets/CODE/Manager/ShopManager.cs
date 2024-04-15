@@ -103,7 +103,7 @@ public class ShopManager : MonoBehaviour
             for (int iNum = 0; iNum < prodCount; iNum++)
             {
                 GameObject obj =  Instantiate(Instance.GetEmptyImage(), imageParents);
-                list_rewordImage.Add(obj.GetComponent<Image>());
+                list_rewordImage.Add(obj.transform.Find("Image").GetComponent<Image>());
                 list_rewordText.Add(obj.transform.Find("RewordText").GetComponent<TMP_Text>());
                 list_rewordImage[iNum].sprite = list_product[iNum].GetSprite();
                 list_rewordText[iNum].text = list_product[iNum].count;
@@ -174,13 +174,13 @@ public class ShopManager : MonoBehaviour
         int productImageCount = productImageParents.childCount;
         for (int iNum = 0; iNum < productImageCount; iNum++)
         {
-            list_productImage.Add(productImageParents.GetChild(iNum).GetComponent<Image>());
+            list_productImage.Add(productImageParents.GetChild(iNum).Find("Image").GetComponent<Image>());
         }
 
         int productImageTextCount = list_productImage.Count;
         for (int iNum = 0; iNum < productImageTextCount; iNum++)
         {
-            list_productCountText.Add(list_productImage[iNum].transform.GetChild(0).GetComponent<TMP_Text>());
+            list_productCountText.Add(productImageParents.GetChild(iNum).Find("RewordText").GetComponent<TMP_Text>());
         }
     }
 
@@ -294,14 +294,14 @@ public class ShopManager : MonoBehaviour
         {
             if (list_productImage[iNum].gameObject.activeSelf)
             {
-                list_productImage[iNum].gameObject.SetActive(false);
+                list_productImage[iNum].transform.parent.gameObject.SetActive(false);
             }
         }
 
         count = _list.Count;
         for (int iNum = 0; iNum < count; iNum++)// 이미지 갯수에 맞게 켜주고 이미지 변경
         {
-            list_productImage[iNum].gameObject.SetActive(true);
+            list_productImage[iNum].transform.parent.gameObject.SetActive(true);
             list_productImage[iNum].sprite = _list[iNum].GetSprite();
             list_productCountText[iNum].text = _list[iNum].count;
         }

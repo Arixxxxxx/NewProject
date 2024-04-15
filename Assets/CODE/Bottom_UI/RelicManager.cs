@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 using System;
 
@@ -9,7 +10,6 @@ public class RelicManager : MonoBehaviour
 {
     public static RelicManager instance;
 
-    [SerializeField] GameObject obj_normalRelic;
     GameObject[] list_RelicWindow = new GameObject[2];
     Transform UiCanvas;
     Transform RelicParents;
@@ -18,7 +18,17 @@ public class RelicManager : MonoBehaviour
     Transform normalRelicContents;
     int RelicBtnIndex = 0;
 
-    public float[] aryPercentage { get => aryPercentage; set { aryPercentage = value; } }
+    public UnityEvent OnPercentageChanged;
+    float[] aryPercentage = new float[4];
+    public float GetAryPercent(int index)
+    {
+        return aryPercentage[index];
+    }
+    public void SetAryPercent(int index,float value)
+    {
+        aryPercentage[index] = value;
+        OnPercentageChanged?.Invoke();
+    }
 
     private void Awake()
     {
