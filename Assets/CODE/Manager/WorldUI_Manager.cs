@@ -232,10 +232,10 @@ public class WorldUI_Manager : MonoBehaviour
             }
         });
 
-        testBtn[2].onClick.AddListener(() =>
-        {
-            CrewGatchaContent.inst.CrewMaterialGatchaActive(true);
-        });
+        //testBtn[2].onClick.AddListener(() =>
+        //{
+            
+        //});
 
         //testBtn[3].onClick.AddListener(() =>
         //{
