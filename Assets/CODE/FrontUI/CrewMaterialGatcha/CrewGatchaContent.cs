@@ -216,7 +216,7 @@ public class CrewGatchaContent : MonoBehaviour
     /// </summary>
     /// <param name="index"> 0¿µÈ¥ / 1 »À / 2 Ã¥</param>
     /// <param name="Value"> ¼Ò¸ð°ª </param>
-    private void Use_Crew_Material(int index, int Value)
+    public void Use_Crew_Material(int index, int Value)
     {
         if (materialCount[index] - Value < 0)
         {

@@ -89,10 +89,14 @@ public class UIManager : MonoBehaviour
         [SerializeField] Sprite sprite;
         Transform trs;
         public Transform Trs { get => trs; set { trs = value; } }
-        int nextCost;
+        int nextSoul;
+        int nextBorn;
+        int nextBook;
         Button upBtn;
         Image petImage;
-        TMP_Text costText;
+        TMP_Text SoulText;
+        TMP_Text BornText;
+        TMP_Text BookText;
         TMP_Text lvText;
         TMP_Text NameText;
         TMP_Text ExText;
@@ -100,32 +104,17 @@ public class UIManager : MonoBehaviour
         public void initStart()
         {
             upBtn = Trs.Find("Button").GetComponent<Button>();
-            costText = Trs.Find("Button/PriceText").GetComponent<TMP_Text>();
+            SoulText = Trs.Find("Button/Soul/PriceText").GetComponent<TMP_Text>();
+            BornText = Trs.Find("Button/Born/PriceText").GetComponent<TMP_Text>();
+            BookText = Trs.Find("Button/Book/PriceText").GetComponent<TMP_Text>();
             lvText = Trs.Find("LvText").GetComponent<TMP_Text>();
             NameText = Trs.Find("NameText").GetComponent<TMP_Text>();
             ExText = Trs.Find("ExplaneText").GetComponent<TMP_Text>();
             petImage = Trs.Find("imageBtn/Image").GetComponent<Image>();
 
-            switch (type)
-            {
-                case PetType.AtkPet:
-                    lvText.text = $"{GameStatus.inst.Pet0_Lv}";
-                    nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
-                    break;
-
-                case PetType.BuffPet:
-                    lvText.text = $"{GameStatus.inst.Pet1_Lv}";
-                    nextCost = baseCost + GameStatus.inst.Pet1_Lv * 100;
-                    break;
-
-                case PetType.GoldPet:
-                    lvText.text = $"{GameStatus.inst.Pet2_Lv}";
-                    nextCost = baseCost + GameStatus.inst.Pet2_Lv * 100;
-                    break;
-            }
+            setNextCost();
             NameText.text = Name;
             ExText.text = Explane;
-            costText.text = $"{nextCost}";
 
             petImage.sprite = sprite;
             petImage.SetNativeSize();
@@ -143,32 +132,61 @@ public class UIManager : MonoBehaviour
 
         void ClickUp()
         {
-            int haveruby = GameStatus.inst.Ruby;
-            if (haveruby >= nextCost)
+            int[] petMoney = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+
+            if (petMoney[0] >= nextSoul && petMoney[1] >= nextBorn && petMoney[2] >= nextBook)
             {
-                GameStatus.inst.Ruby -= nextCost;
+                CrewGatchaContent.inst.Use_Crew_Material(0, nextSoul);
+                CrewGatchaContent.inst.Use_Crew_Material(1, nextBorn);
+                CrewGatchaContent.inst.Use_Crew_Material(2, nextBook);
                 switch (type)
                 {
                     case PetType.AtkPet:
                         GameStatus.inst.Pet0_Lv++;
-                        nextCost = baseCost + GameStatus.inst.Pet0_Lv * 100;
-                        lvText.text = $"{GameStatus.inst.Pet0_Lv}";
+                        setNextCost();
                         break;
 
                     case PetType.BuffPet:
                         GameStatus.inst.Pet1_Lv++;
-                        nextCost = baseCost + GameStatus.inst.Pet1_Lv * 100;
-                        lvText.text = $"{GameStatus.inst.Pet1_Lv}";
+                        setNextCost();
                         break;
 
                     case PetType.GoldPet:
                         GameStatus.inst.Pet2_Lv++;
-                        nextCost = baseCost + GameStatus.inst.Pet2_Lv * 100;
-                        lvText.text = $"{GameStatus.inst.Pet2_Lv}";
+                        setNextCost();
                         break;
                 }
-                costText.text = $"{nextCost}";
             }
+        }
+
+        void setNextCost()
+        {
+            switch (type)
+            {
+                case PetType.AtkPet:
+                    nextSoul = baseCost + GameStatus.inst.Pet0_Lv * 100;
+                    nextBorn = baseCost + GameStatus.inst.Pet0_Lv * 100;
+                    nextBook = baseCost + GameStatus.inst.Pet0_Lv * 100;
+                    lvText.text = $"{GameStatus.inst.Pet0_Lv}";
+                    break;
+
+                case PetType.BuffPet:
+                    nextSoul = baseCost + GameStatus.inst.Pet1_Lv * 100;
+                    nextBorn = baseCost + GameStatus.inst.Pet1_Lv * 100;
+                    nextBook = baseCost + GameStatus.inst.Pet1_Lv * 100;
+                    lvText.text = $"{GameStatus.inst.Pet1_Lv}";
+                    break;
+
+                case PetType.GoldPet:
+                    nextSoul = baseCost + GameStatus.inst.Pet2_Lv * 100;
+                    nextBorn = baseCost + GameStatus.inst.Pet2_Lv * 100;
+                    nextBook = baseCost + GameStatus.inst.Pet2_Lv * 100;
+                    lvText.text = $"{GameStatus.inst.Pet2_Lv}";
+                    break;
+            }
+            SoulText.text = $"{nextSoul}";
+            BornText.text = $"{nextBorn}";
+            BookText.text = $"{nextBook}";
         }
     }
 

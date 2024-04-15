@@ -65,13 +65,13 @@ public class CalCulator : MonoBehaviour
 
 
 
-  /// <summary>
-  /// 
-  /// </summary>
-  /// <param name="a"> A 값</param>
-  /// <param name="b"> B 값</param>
-  /// <param name="areYouEnemy"> 만약 몬스터라면 true 로 매개변수 입력 / 일반 계산이라면 false</param>
-  /// <returns></returns>
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="a"> A 값</param>
+    /// <param name="b"> B 값</param>
+    /// <param name="areYouEnemy"> 만약 몬스터라면 true 로 매개변수 입력 / 일반 계산이라면 false</param>
+    /// <returns></returns>
     public string DigidMinus(string a, string b, bool areYouEnemy)
     {
         sb.Clear();
@@ -159,7 +159,7 @@ public class CalCulator : MonoBehaviour
         result = DigidPlus(GameStatus.inst.TotalAtk.ToString(), GameStatus.inst.BuffAddATK);
 
         //// 5분 버프량 체크 (화면광고)
-        result =  DigidPlus(result, GameStatus.inst.BuffAddAdATK);
+        result = DigidPlus(result, GameStatus.inst.BuffAddAdATK);
 
         //// 초심자 버프
         result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
@@ -295,30 +295,74 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string ConvertChartoIndex(string _text)
     {
-        char firalp = _text[_text.Length - 1];
-        char secAlp = _text[_text.Length - 2];
-        int firNum = firalp - 64;
-        int secNum = secAlp - 64;
-        int firindex = 0;
-        int secindex = 0;
-        if (firNum >= 1 && firNum <= 26)
-        {
-            firindex = firNum * 3;
-            _text = _text.Remove(_text.Length - 1);
-        }
-        if (secNum >= 1 && secNum <= 26)
-        {
-            secindex = secNum * 26;
-            _text = _text.Remove(_text.Length - 1);
-        }
-        string result = _text;
-        int count = firindex + secindex;
+        int pointindex = -1;
+        int count = _text.Length;
         for (int iNum = 0; iNum < count; iNum++)
         {
-            result += '0';
+            if (Equals(_text[iNum], '.'))
+            {
+                pointindex = iNum;
+                break;
+            }
+
         }
 
-        return result;
+        if (pointindex == -1)
+        {
+
+            char firalp = _text[_text.Length - 1];
+            char secAlp = _text[_text.Length - 2];
+            int firNum = firalp - 64;
+            int secNum = secAlp - 64;
+            int firindex = 0;
+            int secindex = 0;
+            if (firNum >= 1 && firNum <= 26)
+            {
+                firindex = firNum * 3;
+                _text = _text.Remove(_text.Length - 1);
+            }
+            if (secNum >= 1 && secNum <= 26)
+            {
+                secindex = secNum * 26;
+                _text = _text.Remove(_text.Length - 1);
+            }
+            string result = _text;
+            count = firindex + secindex;
+            for (int iNum = 0; iNum < count; iNum++)
+            {
+                result += '0';
+            }
+
+            return result;
+        }
+        else
+        {
+            _text = _text.Remove(pointindex,1);
+            char firalp = _text[_text.Length - 1];
+            char secAlp = _text[_text.Length - 2];
+            int firNum = firalp - 64;
+            int secNum = secAlp - 64;
+            int firindex = 0;
+            int secindex = 0;
+            if (firNum >= 1 && firNum <= 26)
+            {
+                firindex = firNum * 3;
+                _text = _text.Remove(_text.Length - 1);
+            }
+            if (secNum >= 1 && secNum <= 26)
+            {
+                secindex = secNum * 26;
+                _text = _text.Remove(_text.Length - 1);
+            }
+            string result = _text;
+            count = firindex + secindex - 1;
+            for (int iNum = 0; iNum < count; iNum++)
+            {
+                result += '0';
+            }
+
+            return result;
+        }
     }
     /// <summary>
     /// 문자 제외 앞자리 숫자만 리턴
@@ -541,11 +585,11 @@ public class CalCulator : MonoBehaviour
 
     // 환생 포인트계산 읽기전용 변수들
 
-      readonly BigInteger a = new BigInteger(115105889);  // 0.00115105889 * 100000000
-      readonly BigInteger b = new BigInteger(50404005900);  // 0.504040059 * 100000000
-      readonly BigInteger c = new BigInteger(-12776764200);  // -127.767642 * 100000000
-      readonly BigInteger d = new BigInteger(2229519577);  // 22295.19577017339 * 100
-      readonly BigInteger scale = new BigInteger(10000000000);  // 스케일링 팩터
+    readonly BigInteger a = new BigInteger(115105889);  // 0.00115105889 * 100000000
+    readonly BigInteger b = new BigInteger(50404005900);  // 0.504040059 * 100000000
+    readonly BigInteger c = new BigInteger(-12776764200);  // -127.767642 * 100000000
+    readonly BigInteger d = new BigInteger(2229519577);  // 22295.19577017339 * 100
+    readonly BigInteger scale = new BigInteger(10000000000);  // 스케일링 팩터
 
 
     /// <summary>
@@ -563,7 +607,7 @@ public class CalCulator : MonoBehaviour
 
         // 최종 환산 포인트 계산
         string result = ((term1 + term2 + term3 + d) / scale).ToString();  // 마지막에 스케일 조정
-       
+
         return result;
     }
 

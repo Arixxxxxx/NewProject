@@ -18,13 +18,13 @@ public class RelicManager : MonoBehaviour
     Transform normalRelicContents;
     int RelicBtnIndex = 0;
 
-    public UnityEvent OnPercentageChanged;
+    [HideInInspector] public UnityEvent OnPercentageChanged;
     float[] aryPercentage = new float[4];
     public float GetAryPercent(int index)
     {
         return aryPercentage[index];
     }
-    public void SetAryPercent(int index,float value)
+    public void SetAryPercent(int index, float value)
     {
         aryPercentage[index] = value;
         OnPercentageChanged?.Invoke();

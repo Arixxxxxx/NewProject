@@ -29,7 +29,9 @@ public class ShopManager : MonoBehaviour
 
     [Header("상품 목록")]
     Transform GoldShopParnets;
-    [SerializeField] List<ProductList> list_ProductList;
+    Transform RubyShopParnets;
+    [SerializeField] List<ProductList> list_GoldProductList;
+    [SerializeField] List<ProductList> list_RubyProductList;
     [Serializable]
     public class ProductList
     {
@@ -78,13 +80,13 @@ public class ShopManager : MonoBehaviour
                 {
                     case ProductTag.Gold:
                         return UIManager.Instance.GetProdSprite(0);
-                        
+
                     case ProductTag.Star:
                         return UIManager.Instance.GetProdSprite(1);
 
                     case ProductTag.Ruby:
                         return UIManager.Instance.GetProdSprite(2);
-                        
+
                 }
                 return null;
             }
@@ -102,7 +104,7 @@ public class ShopManager : MonoBehaviour
             int prodCount = list_product.Count;//상품 이미지 생성
             for (int iNum = 0; iNum < prodCount; iNum++)
             {
-                GameObject obj =  Instantiate(Instance.GetEmptyImage(), imageParents);
+                GameObject obj = Instantiate(Instance.GetEmptyImage(), imageParents);
                 list_rewordImage.Add(obj.transform.Find("Image").GetComponent<Image>());
                 list_rewordText.Add(obj.transform.Find("RewordText").GetComponent<TMP_Text>());
                 list_rewordImage[iNum].sprite = list_product[iNum].GetSprite();
@@ -154,14 +156,24 @@ public class ShopManager : MonoBehaviour
         }
 
         GoldShopParnets = obj_shop.transform.Find("ShopList/Gold/Scroll View").GetComponent<ScrollRect>().content;
+        RubyShopParnets = obj_shop.transform.Find("ShopList/Ruby/Scroll View").GetComponent<ScrollRect>().content;
 
         //골드상점 물품 초기화
-        int goldShopCount = list_ProductList.Count;
+        int goldShopCount = list_GoldProductList.Count;
         for (int iNum = 0; iNum < goldShopCount; iNum++)
         {
             Transform trs = Instantiate(obj_Product, GoldShopParnets).transform;
-            list_ProductList[iNum].Trs = trs;
-            list_ProductList[iNum].InitStart();
+            list_GoldProductList[iNum].Trs = trs;
+            list_GoldProductList[iNum].InitStart();
+        }
+
+        //루비상점 물품 초기화
+        int rubyShopCount = list_RubyProductList.Count;
+        for (int iNum = 0; iNum < rubyShopCount; iNum++)
+        {
+            Transform trs = Instantiate(obj_Product, RubyShopParnets).transform;
+            list_RubyProductList[iNum].Trs = trs;
+            list_RubyProductList[iNum].InitStart();
         }
 
         obj_BuyCheck = obj_shop.transform.Find("CheckBuy").gameObject;
@@ -199,14 +211,27 @@ public class ShopManager : MonoBehaviour
         ClickShopBtn(3);
     }
 
+    public void SetShopActive(bool value)
+    {
+        obj_shop.SetActive(value);
+    }
+
     public void ClickShopBtn(int _num)
     {
-        list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
-        list_ShopUi[botBtnNum].SetActive(false);
+        if (_num == 2)
+        {
+            CrewGatchaContent.inst.CrewMaterialGatchaActive(true);
+        }
+        else
+        {
+            CrewGatchaContent.inst.CrewMaterialGatchaActive(false);
+            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
+            list_ShopUi[botBtnNum].SetActive(false);
 
-        botBtnNum = _num;
-        list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
-        list_ShopUi[botBtnNum].SetActive(true);
+            botBtnNum = _num;
+            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
+            list_ShopUi[botBtnNum].SetActive(true);
+        }
     }
 
 
