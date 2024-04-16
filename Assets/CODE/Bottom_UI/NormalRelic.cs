@@ -33,7 +33,7 @@ public class NormalRelic : MonoBehaviour
         set
         {
             percentage = value;
-            RelicManager.instance.SetAryPercent((int)relicTag ,value);
+            GameStatus.inst.SetAryPercent((int)relicTag ,value);
             PercentText.text = ((int)(Percnetage * 100f)).ToString() + "%";
         }
     }

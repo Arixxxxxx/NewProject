@@ -16,6 +16,10 @@ public class MissionData : MonoBehaviour
     Transform obj_SpecialContents; //스페셜미션 컨텐츠
     Transform trs_NowMissionParents; //현재진행중인 미션 부모
     Button MissionOpenBtn;//미션창 여는 버튼
+    TMP_Text topTitleText;//미션창 상단 타이틀 텍스트
+    TMP_Text topDetailText;//미션창 상단 세부텍스트
+    TMP_Text worldTitleText;//메인화면 미션 타이틀 텍스트
+    TMP_Text worldDetailText;//메인화면 미션 세부 텍스트
 
     [SerializeField] GameObject obj_Mission;
     [SerializeField] GameObject obj_SpecialMission;
@@ -26,12 +30,15 @@ public class MissionData : MonoBehaviour
     int missionTypeIndex = 0;//선택한 상단 미션 버튼 인덱스번호
     int nowSpecialIndex { get; set; } = 0;//현재 진행중인 스페셜 미션 인덱스
 
+    bool isCanResetDaily = true;
+    bool isCanResetWeekly = true;
+
     //////////////////일일 미션//////////////////
     [Serializable]
     public class DailyMission
     {
-        [SerializeField] int index;
         [SerializeField] string Name;
+        [SerializeField] int index;
         [SerializeField] int maxCount;
         [SerializeField] string rewardCount;
         [SerializeField] ProductTag rewardTag;
@@ -171,8 +178,8 @@ public class MissionData : MonoBehaviour
     [Serializable]
     public class WeeklyMission
     {
-        [SerializeField] int index;
         [SerializeField] string Name;
+        [SerializeField] int index;
         [SerializeField] int maxCount;
         [SerializeField] string rewardCount;
         [SerializeField] ProductTag rewardTag;
@@ -238,9 +245,11 @@ public class MissionData : MonoBehaviour
             BarText.text = $"{count} / {maxCount}";
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
+
+            clearBtn.onClick.AddListener(ClickClearBtn);
         }
 
-        public void ClickClearBtn(int Type)
+        public void ClickClearBtn()
         {
             switch (rewardTag)
             {
@@ -444,6 +453,11 @@ public class MissionData : MonoBehaviour
             nowRect.anchorMax = new Vector2(1, 1);
             nowRect.offsetMin = Vector2.zero;
             nowRect.offsetMax = Vector2.zero;
+
+            topTitleText.text = $"{nowSpecialIndex + 1}단계 미션";
+            topDetailText.text = list_SpecialMIssion[nowSpecialIndex].Name;
+            worldTitleText.text = $"{nowSpecialIndex + 1}단계 미션";
+            worldDetailText.text = list_SpecialMIssion[nowSpecialIndex].Name;
         }
     }
 
@@ -506,6 +520,7 @@ public class MissionData : MonoBehaviour
     {
         return trs_NowMissionParents;
     }
+
     private void Awake()
     {
         if (Instance == null)
@@ -521,11 +536,17 @@ public class MissionData : MonoBehaviour
     void Start()
     {
         obj_UICanvas = GameObject.Find("---[UI Canvas]");
-        MissionOpenBtn = GameObject.Find("---[World UI Canvas]").transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
+        Transform worldUiCanvas = GameObject.Find("---[World UI Canvas]").transform;
+        MissionOpenBtn = worldUiCanvas.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
+        worldTitleText = worldUiCanvas.Find("StageUI/Right/QeustList/BG/Step").GetComponent<TMP_Text>();
+        worldDetailText = worldUiCanvas.Find("StageUI/Right/QeustList/BG/Text").GetComponent<TMP_Text>();
+
         obj_MissionWindow = obj_UICanvas.transform.Find("Mission");
         list_MissionWindow[0] = obj_MissionWindow.Find("Mission/Window/Daily(Scroll View)").gameObject;
         list_MissionWindow[1] = obj_MissionWindow.Find("Mission/Window/Weekly(Scroll View)").gameObject;
         list_MissionWindow[2] = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)").gameObject;
+        topTitleText = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/Title_Text").GetComponent<TMP_Text>();
+        topDetailText = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/Detail_Text").GetComponent<TMP_Text>();
 
         Transform trsTopBtn = obj_MissionWindow.Find("Mission/Window/Top_Btn");
         int TopBtnCount = trsTopBtn.childCount;
@@ -599,6 +620,38 @@ public class MissionData : MonoBehaviour
         missionTypeIndex = value;
         list_MissionWindow[missionTypeIndex].SetActive(true);
         list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnSelectSprite[missionTypeIndex];
+    }
+
+    private void Update()
+    {
+        checkDay();
+        checkWeek();
+
+    }
+
+    void checkDay()
+    {
+        if (DateTime.Now.ToString("HH") == "00" && isCanResetDaily == true)
+        {
+            isCanResetDaily = false;
+            initDailyMission();
+        }
+        else if(DateTime.Now.ToString("HH") != "00")
+        {
+            isCanResetDaily = true;
+        }
+    }
+    void checkWeek()
+    {
+        if (DateTime.Today.DayOfWeek == DayOfWeek.Monday && isCanResetWeekly == true)
+        {
+            isCanResetWeekly = false;
+            initWeeklyMission();
+        }
+        else if (DateTime.Today.DayOfWeek != DayOfWeek.Monday)
+        {
+            isCanResetWeekly = true;
+        }
     }
 
     void initDailyMission()//일일 미션 초기화

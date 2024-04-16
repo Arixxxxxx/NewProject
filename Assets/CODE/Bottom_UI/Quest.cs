@@ -59,7 +59,7 @@ public class Quest : MonoBehaviour
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
         UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
-        RelicManager.instance.OnPercentageChanged.AddListener(_OnItemPercentChanged);
+        GameStatus.inst.OnPercentageChanged.AddListener(_OnItemPercentChanged);
     }
 
     void initValue()//초기값 설정
@@ -144,7 +144,7 @@ public class Quest : MonoBehaviour
 
     private void _OnItemPercentChanged()
     {
-        itemCur = RelicManager.instance.GetAryPercent((int)NormalRelicTag.QuestGold);
+        itemCur = GameStatus.inst.GetAryPercent((int)NormalRelicTag.QuestGold);
         TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
         setText();
     }

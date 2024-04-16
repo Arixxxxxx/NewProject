@@ -22,6 +22,8 @@ public class Weapon : MonoBehaviour
     [SerializeField] float atkpowNumRate;//초기공격력지수
     [SerializeField] int WeaponNum; //무기 이미지번호
 
+    Image weaponImage;
+
     BigInteger baseCost;//초기 비용
     BigInteger nextCost;//다음레벨 비용
     BigInteger resultPowNum;//보정값 빅인트로 전환
@@ -50,6 +52,7 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
+        weaponImage = transform.Find("imageBtn").GetComponent<Image>();
         initValue();
     }
 

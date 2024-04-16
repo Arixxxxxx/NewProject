@@ -15,20 +15,9 @@ public class RelicManager : MonoBehaviour
     Transform RelicParents;
     Button nomalRelicBtn;
     Button ancientRelicBtn;
-    Transform normalRelicContents;
     int RelicBtnIndex = 0;
 
-    [HideInInspector] public UnityEvent OnPercentageChanged;
-    float[] aryPercentage = new float[4];
-    public float GetAryPercent(int index)
-    {
-        return aryPercentage[index];
-    }
-    public void SetAryPercent(int index, float value)
-    {
-        aryPercentage[index] = value;
-        OnPercentageChanged?.Invoke();
-    }
+
 
     private void Awake()
     {
@@ -50,7 +39,6 @@ public class RelicManager : MonoBehaviour
         ancientRelicBtn = RelicParents.Find("TopBtn/AncientRelicBtn").GetComponent<Button>();
         list_RelicWindow[0] = RelicParents.Find("NormalScroll View").gameObject;
         list_RelicWindow[1] = RelicParents.Find("AncientScroll View").gameObject;
-        normalRelicContents = list_RelicWindow[0].GetComponent<ScrollRect>().content;
         initbutton();
     }
 
