@@ -44,10 +44,10 @@ public class CrewGatchaContent : MonoBehaviour
         {
             openCount = value;
 
-            if (setCount == openCount) // 상자를 연횟수가 모든 횟수와 같다면 확인 버튼 팝업
+            if (setCount == openCount && setCount > 0) // 상자를 연횟수가 모든 횟수와 같다면 확인 버튼 팝업
             {
-                allOpenBtn.gameObject.SetActive(false);
-                closeBtn.gameObject.SetActive(true); 
+                StartCoroutine(PopupCloseWindow());
+                
             }
         }
     }
@@ -56,10 +56,10 @@ public class CrewGatchaContent : MonoBehaviour
     public int CreateBoxCount
     {
         get { return createBoxCount; }
-        set 
+        set
         {
-            createBoxCount = value; 
-            if(createBoxCount == setCount)
+            createBoxCount = value;
+            if (createBoxCount == setCount)
             {
                 allOpenBtn.gameObject.SetActive(true);
             }
@@ -68,7 +68,7 @@ public class CrewGatchaContent : MonoBehaviour
 
     // 구매버튼\
     [SerializeField]
-    Button [] buyBtn = new Button[4];
+    Button[] buyBtn = new Button[4];
     GameObject noCoolBtnRef;
     [SerializeField]
     GameObject coolBtnRef;
@@ -130,17 +130,27 @@ public class CrewGatchaContent : MonoBehaviour
         AdviewTimeChaker();
     }
 
+    WaitForSeconds waitPopup = new WaitForSeconds(1.25f);
+    IEnumerator PopupCloseWindow()
+    {
+        allOpenBtn.gameObject.SetActive(false);
+        yield return waitPopup;
+        closeBtn.gameObject.SetActive(true);
+    }
 
     private void BtnInit()
     {
-        xBtn.onClick.AddListener(() => CrewMaterialGatchaActive(false));
+        xBtn.onClick.AddListener(() =>
+        {
+            ShopManager.Instance.SetShopActive(false);
+            CrewMaterialGatchaActive(false);
+        });
 
         // 모두 열기
         allOpenBtn.onClick.AddListener(() =>
         {
             AllBoxOpen(setCount);
-            allOpenBtn.gameObject.SetActive(false);
-            closeBtn.gameObject.SetActive(true);
+            StartCoroutine(PopupCloseWindow());
         });
 
 
@@ -158,7 +168,7 @@ public class CrewGatchaContent : MonoBehaviour
         // 1회 뽑기 / 100원
         buyBtn[0].onClick.AddListener(() =>
         {
-            RubyPayment.inst.RubyPaymentUiActive(100, ()=>ActiveGatchaBox(1));
+            RubyPayment.inst.RubyPaymentUiActive(100, () => ActiveGatchaBox(1));
         });
 
         // 5회 뽑기 / 400원
@@ -258,9 +268,21 @@ public class CrewGatchaContent : MonoBehaviour
         {
             //랜덤값 생성
             int ranType = Random.Range(0, 3);
-            int ranitemCount = Random.Range(20, 99);
 
+            int criticalDice = Random.Range(0, 100);
             
+            int ranitemCount = 0;
+
+            if (criticalDice <= 5) // 5% 확률로 재료 뻥튀기
+            {
+                ranitemCount = Random.Range(150, 300);
+            }
+            else if(criticalDice > 5)
+            {
+                ranitemCount = Random.Range(20, 99);
+            }
+
+
             //갑 초기화
             gatchaBoxSc[index].Set_MaterialCount(crewMaterialItemIMG[ranType], ranType, ranitemCount);
             gatchaBox[index].gameObject.SetActive(true);
@@ -277,7 +299,7 @@ public class CrewGatchaContent : MonoBehaviour
     // 모두 열기
     private void AllBoxOpen(int count)
     {
-        for(int index = 0; index < count; index++)
+        for (int index = 0; index < count; index++)
         {
             gatchaBoxSc[index].OpenBox();
         }
@@ -294,7 +316,7 @@ public class CrewGatchaContent : MonoBehaviour
         {
             gatchaBoxSc[index].gameObject.SetActive(false);
         }
-    } 
+    }
     // 모두 확인시 확인버튼 활성화 & 모두수락버튼 없애기
 
     float coolTime;
@@ -312,9 +334,9 @@ public class CrewGatchaContent : MonoBehaviour
     /// </summary>
     private void AdviewTimeChaker()
     {
-        if(coolTime <= 0) // 기본
+        if (coolTime <= 0) // 기본
         {
-            if(noCoolBtnRef.activeSelf == false)
+            if (noCoolBtnRef.activeSelf == false)
             {
                 coolTime = 0;
                 coolBtnRef.SetActive(false);
@@ -322,7 +344,7 @@ public class CrewGatchaContent : MonoBehaviour
                 buyBtn[3].interactable = true;
             }
         }
-        else if(coolTime > 0)  // 쿨돌때
+        else if (coolTime > 0)  // 쿨돌때
         {
             if (coolBtnRef.activeSelf == false)
             {
@@ -331,7 +353,7 @@ public class CrewGatchaContent : MonoBehaviour
                 buyBtn[3].interactable = false;
             }
 
-            coolTime -=Time.deltaTime;
+            coolTime -= Time.deltaTime;
             int min = (int)coolTime / 60;
             int sec = (int)coolTime % 60;
             adCoolTImeText.text = $"{min} : {sec}";

@@ -212,23 +212,17 @@ public class WorldUI_Manager : MonoBehaviour
 
     private void BtnInIt()
     {
-        testBtn[0].onClick.AddListener(() =>
-        {
-            //weaponNum++;
-            //weapbtnText[0].text = $"무기 교체 {weaponNum}번";
-            ActionManager.inst.TestBtnWeaponChange();
-        });
 
-        testBtn[1].onClick.AddListener(() =>
+        testBtn[0].onClick.AddListener(() =>
         {
             GameStatus.inst.AtkSpeedLv++;
             if (GameStatus.inst.AtkSpeedLv < 10)
             {
-                weapbtnText[1].text = $"공격 속도 x {GameStatus.inst.AtkSpeedLv}";
+                weapbtnText[0].text = $"공격 속도 x {GameStatus.inst.AtkSpeedLv}";
             }
             else if (GameStatus.inst.AtkSpeedLv >= 10)
             {
-                weapbtnText[1].text = $"만렙";
+                weapbtnText[0].text = $"만렙";
             }
         });
 

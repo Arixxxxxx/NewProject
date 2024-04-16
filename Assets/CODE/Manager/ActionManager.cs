@@ -149,12 +149,10 @@ public class ActionManager : MonoBehaviour
         camShake = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
 
         Prefabs_Awake();
-
     }
 
     void Start()
     {
-
         //최초 init
         Enemyinit();
         UI_Init();
@@ -206,7 +204,7 @@ public class ActionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             //BuffContoller.inst.ActiveBuff(4, 3);
-            LetterManager.inst.MakeLetter(0, "이동은", "테스트 (루비)편지입니다", 100);
+            LetterManager.inst.MakeLetter(0, "이동은", "테스트 (루비)편지입니다", 5000);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -443,7 +441,6 @@ public class ActionManager : MonoBehaviour
                 obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 1); // 시얀색 대미지폰트
             }
             obj.SetActive(true);
-
         }
         else if (MinusValue == "Dead")//에너미 사망 및 초기화
         {

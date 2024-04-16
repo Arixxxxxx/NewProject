@@ -18,14 +18,23 @@ public class BoxPrefabs : MonoBehaviour
     TMP_Text countText;
 
     ParticleSystem psEffect;
+    [SerializeField]
+    Image boxLightEffect;
+
+    Color normalEffectColor = new Color(1, 0.9f, 0.3f, 1f); // 노란빛
+    Color criEffectColor = new Color(1, 0.3f, 0.9f, 1f); // 보라빛
+    Animator screenEffectAnim;
 
 
     private void OnDisable()
     {
         boxFontAnim.gameObject.SetActive(false);
     }
+    private void Awake()
+    {
+        AwakeInit();
+    }
 
-    
     void Start()
     {
         // 상자 클릭시
@@ -36,7 +45,7 @@ public class BoxPrefabs : MonoBehaviour
 
        
     }
-
+   
     private void AwakeInit()
     {
         thisBtn = GetComponent<Button>();
@@ -45,8 +54,11 @@ public class BoxPrefabs : MonoBehaviour
         materialIMG = boxFontAnim.GetComponent<Image>();
         countText = boxFontAnim.GetComponentInChildren<TMP_Text>();
         psEffect = transform.Find("Ps").GetComponent<ParticleSystem>();
-        
+        boxLightEffect = transform.Find("Light").GetComponent<Image>();
+        screenEffectAnim = transform.parent.parent.parent.Find("OpenEffect").GetComponent<Animator>();
+
     }
+
     
     /// <summary>
     /// 상자 염
@@ -56,8 +68,6 @@ public class BoxPrefabs : MonoBehaviour
         psEffect.gameObject.SetActive(true);
         thisBtn.interactable = false;
         boxAnim.SetTrigger("Open");
-        
-        
 
         //자원생성
         CrewGatchaContent.inst.OpenCount++; //상자연 횟수 저장
@@ -74,7 +84,7 @@ public class BoxPrefabs : MonoBehaviour
     }
 
     /// <summary>
-    ///  생성된 아이템메테리얼을 상자열었을떄 이미지, 숫자 출력
+    ///  동료강화재료 뽑기상자 내부 초기화
     /// </summary>
     /// <param name="typeIMG"> 받는 Sprtie </param>
     /// <param name="type"> 0영혼/1뼈/2책</param>
@@ -88,6 +98,17 @@ public class BoxPrefabs : MonoBehaviour
 
         itemType = type;
         itemCount = count;
+
+        if(itemCount < 100)
+        {
+            boxLightEffect.color = normalEffectColor;
+        }
+        else if(itemCount > 100)
+        {
+            boxLightEffect.color = criEffectColor;
+            screenEffectAnim.SetTrigger("Effect");
+        }
+
         thisBtn.interactable = true;
         materialIMG.sprite = typeIMG; // 출력되는 아이템 이미지 초기화
         countText.text = $"x {itemCount.ToString()}";  // 출력되는 아이템 갯수 초기화
