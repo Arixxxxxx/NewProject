@@ -11,18 +11,20 @@ public class ShopManager : MonoBehaviour
     public static ShopManager Instance;
 
     [Header("상점")]
-    GameObject obj_shop;// 상점 오브젝트
-    Button mainShopCloseBtn;// 상점 닫기버튼
-    GameObject[] list_ShopUi;// 상점 리스트
-    Image[] list_BottomBtn;//상점 하단 버튼 리스트
-    int botBtnNum = 0;// 상점 하단버튼 번호
     [SerializeField] GameObject obj_Product;
     [SerializeField] GameObject obj_EmptyImage;
+    GameObject[] list_ShopUi;// 상점 리스트
+    GameObject obj_shop;// 상점 오브젝트
+    Button mainShopCloseBtn;// 상점 닫기버튼
+    Image[] list_BottomBtn;//상점 하단 버튼 리스트
+    TMP_Text GoldText;
+    TMP_Text StarText;
+    TMP_Text RubyText;
+    int botBtnNum = 0;// 상점 하단버튼 번호
 
     [Header("상품 구매")]
     GameObject obj_BuyCheck;
     Button BuyYesBtn;
-    TMP_Text text_price;
     Transform productImageParents;//상품 이미지 부모
     List<Image> list_productImage = new List<Image>();//상품 이미지 리스트
     List<TMP_Text> list_productCountText = new List<TMP_Text>();//상품 갯수 텍스트
@@ -76,6 +78,9 @@ public class ShopManager : MonoBehaviour
     {
         obj_shop = GameObject.Find("---[UI Canvas]").transform.Find("Shop").gameObject;
         mainShopCloseBtn = obj_shop.transform.Find("MainShopClosdBtn").GetComponent<Button>();
+        GoldText = obj_shop.transform.Find("TopUi/MoneyText/Gold/Text").GetComponent<TMP_Text>();
+        StarText = obj_shop.transform.Find("TopUi/MoneyText/Star/Text").GetComponent<TMP_Text>();
+        RubyText = obj_shop.transform.Find("TopUi/MoneyText/Ruby/Text").GetComponent<TMP_Text>();
 
         //상점 리스트 초기화
         Transform trsShopParent = obj_shop.transform.Find("ShopList");
@@ -103,25 +108,29 @@ public class ShopManager : MonoBehaviour
         for (int iNum = 0; iNum < goldShopCount; iNum++)
         {
             List<ProductValue> list = list_GoldProductValueList;
-            Transform trs = GoldShopParnets.transform;
-           GoldShopParnets.GetChild(iNum).GetComponent<Product>().InitStart(list[iNum].GetList(), list[iNum].GetPrice(),list[iNum].GetPriceType());
+            GoldShopParnets.GetChild(iNum).GetComponent<Product>().InitStart(list[iNum].GetList(), list[iNum].GetPrice(), list[iNum].GetPriceType());
         }
 
         //루비상점 물품 초기화
         int rubyShopCount = list_RubyProductValueList.Count;
         for (int iNum = 0; iNum < rubyShopCount; iNum++)
         {
-            Transform trs = Instantiate(obj_Product, RubyShopParnets).transform;
-            //list_RubyProductList[iNum].Trs = trs;
-            //list_RubyProductList[iNum].InitStart();
+            List<ProductValue> list = list_RubyProductValueList;
+            RubyShopParnets.GetChild(iNum).GetComponent<Product>().InitStart(list[iNum].GetList(), list[iNum].GetPrice(), list[iNum].GetPriceType());
         }
 
+        //구매확인창 초기화
         obj_BuyCheck = obj_shop.transform.Find("CheckBuy").gameObject;
-        text_price = obj_BuyCheck.transform.Find("PriceText").GetComponent<TMP_Text>();
-        productImageParents = obj_BuyCheck.transform.Find("ProductImage");
-        BuyYesBtn = obj_BuyCheck.transform.Find("YesBtn").GetComponent<Button>();
+        productImageParents = obj_BuyCheck.transform.Find("BackGround/ProductImage");
+        BuyYesBtn = obj_BuyCheck.transform.Find("BackGround/YesBtn").GetComponent<Button>();
 
         mainShopCloseBtn.onClick.AddListener(() => UIManager.Instance.changeSortOder(0));
+        GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}";
+        GameStatus.inst.OnGoldChanged.AddListener(() => { GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}"; });//상점 골드 텍스트 갱신
+        StarText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star)}";
+        GameStatus.inst.OnStartChanged.AddListener(() => { StarText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star)}"; });//상점 별 텍스트 갱신
+        RubyText.text = $"{GameStatus.inst.Ruby}";
+        GameStatus.inst.OnRubyChanged.AddListener(() => { RubyText.text = $"{GameStatus.inst.Ruby}"; });//상점 골드텍스트 갱신
 
         int productImageCount = productImageParents.childCount;
         for (int iNum = 0; iNum < productImageCount; iNum++)
@@ -161,6 +170,10 @@ public class ShopManager : MonoBehaviour
         if (_num == 2)
         {
             CrewGatchaContent.inst.CrewMaterialGatchaActive(true);
+            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
+            list_ShopUi[botBtnNum].SetActive(false);
+            botBtnNum = _num;
+            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
         }
         else
         {
@@ -270,7 +283,6 @@ public class ShopManager : MonoBehaviour
             list_productImage[iNum].sprite = _list[iNum].GetSprite();
             list_productCountText[iNum].text = _list[iNum].count;
         }
-        text_price.text = _price;
     }
 }
 

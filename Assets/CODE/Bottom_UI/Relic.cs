@@ -12,7 +12,16 @@ public class Relic : MonoBehaviour, ITypeGetable
     [SerializeField] string Name;
     [SerializeField] Sprite m_Sprite;
     [SerializeField] string Explane;
-
+    int lv;
+    public int Lv
+    {
+        get => lv;
+        set
+        {
+            lv = value;
+            LvText.text = $"Lv = {lv}";
+        }
+    }
     Button upBtn;
     Image relicImgae;
     TextMeshProUGUI NameText;
@@ -24,6 +33,11 @@ public class Relic : MonoBehaviour, ITypeGetable
 
     protected virtual void Start()
     {
+
+    }
+
+    public void initRelic()
+    {
         NameText = transform.Find("NameText").GetComponent<TextMeshProUGUI>();
         LvText = transform.Find("LvText").GetComponent<TextMeshProUGUI>();
         ExText = transform.Find("ExplaneText").GetComponent<TextMeshProUGUI>();
@@ -34,7 +48,7 @@ public class Relic : MonoBehaviour, ITypeGetable
 
         relicImgae.sprite = m_Sprite;
         NameText.text = Name;
-        LvText.text = $"Lv = {GameStatus.inst.AryNormalRelicLv[index]}";
+        LvText.text = $"Lv = {lv}";
         ExText.text = Explane;
         PercentText.text = "공식 정해야됨";
         PriceText.text = "가격 정해야됨";
@@ -43,8 +57,7 @@ public class Relic : MonoBehaviour, ITypeGetable
 
     protected virtual void ClickUp()
     {
-        GameStatus.inst.AryNormalRelicLv[index]++;
-        LvText.text = $"Lv {GameStatus.inst.AryNormalRelicLv[index]}";
+        Lv++;
     }
 
     public Sprite GetSprite()
@@ -52,12 +65,6 @@ public class Relic : MonoBehaviour, ITypeGetable
         return m_Sprite;
     }
 
-    public void SetLv(int num)
-    {
-        GameStatus.inst.AryNormalRelicLv[index] += num;
-        LvText.text = $"Lv = {GameStatus.inst.AryNormalRelicLv[index]}";
-
-    }
     public Vector2 GetMyType()
     {
         return new Vector2((int)rankNum, (int)itemNum);

@@ -7,13 +7,9 @@ using System;
 
 public class Product : MonoBehaviour
 {
-    [Header("상품 목록")]
-     List<ProductList> list_product = new List<ProductList>();
-    [Header("상품 가격")]
+    List<ProductList> list_product = new List<ProductList>();
     string price;
-    [Header("가격 타입")]
-     ProductTag priceType;
-
+    ProductTag priceType;
     TMP_Text priceText;
     Transform imageParents;
     Image priceImage;
@@ -61,7 +57,7 @@ public class Product : MonoBehaviour
         }
     }
 
-    public void InitStart(List<ProductList> _list,string _price,ProductTag _priceType)
+    public void InitStart(List<ProductList> _list, string _price, ProductTag _priceType)
     {
         list_product = _list;
         price = _price;

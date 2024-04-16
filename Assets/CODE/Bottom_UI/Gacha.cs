@@ -11,7 +11,7 @@ public class Gacha : MonoBehaviour
 
     [SerializeField] GameObject gachaResultObj;
     [SerializeField] List<Image> list_resultImage = new List<Image>();
-    
+
     List<GameObject> list_haveRelic = new List<GameObject>();
 
     [Serializable]
@@ -85,15 +85,18 @@ public class Gacha : MonoBehaviour
 
             if (ishave)//같은 아이템을 가지고 있다면 1레벨 업
             {
-                list_haveRelic[haveObjNum].GetComponent<Relic>().SetLv(1);
-                ListResultSprite.Add(list_haveRelic[haveObjNum].GetComponent<Relic>().GetSprite());
+                Relic sc = list_haveRelic[haveObjNum].GetComponent<Relic>();
+                sc.Lv += 1;
+                ListResultSprite.Add(sc.GetSprite());
             }
             else//아니면 아이템 획득
             {
                 GameObject obj = Instantiate(aryRankClass[rankNum].AryObj[objPercent], RelicParents);
-                obj.GetComponent<Relic>().SetLv(1);
+                Relic sc = obj.GetComponent<Relic>();
+                sc.initRelic();
+                sc.Lv += 1;
                 list_haveRelic.Add(obj);
-                ListResultSprite.Add(obj.GetComponent<Relic>().GetSprite());
+                ListResultSprite.Add(sc.GetSprite());
             }
         }
         int count = ListResultSprite.Count;

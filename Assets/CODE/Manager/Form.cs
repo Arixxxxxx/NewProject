@@ -15,9 +15,10 @@ public enum ItemTag
 public enum NormalRelicTag
 { 
     Atk,
+    AtkSpeed,
     Critical,
     QuestGold,
-    EnemyGold
+    EnemyGold,
 }
 
 public enum ProductTag

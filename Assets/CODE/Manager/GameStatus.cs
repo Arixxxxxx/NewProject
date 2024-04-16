@@ -146,6 +146,7 @@ public class GameStatus : MonoBehaviour
     }
 
     // 2. 소지 별
+    public UnityEvent OnStartChanged;
     string star = "0"; // 환생시 주는 화폐
     public string Star
     {
@@ -157,6 +158,7 @@ public class GameStatus : MonoBehaviour
         {
             star = value;
             WorldUI_Manager.inst.CurMaterialUpdate(1, star);
+            OnStartChanged?.Invoke();
         }
     }
 
@@ -175,6 +177,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+    public UnityEvent OnRubyChanged;
     // 4. 소지 루비
     int ruby = 0;
     public int Ruby
@@ -193,6 +196,7 @@ public class GameStatus : MonoBehaviour
             }
             ruby = value;
             WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString());
+            OnRubyChanged?.Invoke();
         }
     }
 
@@ -444,14 +448,20 @@ public class GameStatus : MonoBehaviour
         aryWeaponLv[Num] = Value;
         MissionData.Instance.SetSpecialMission(Num, Value, MissionType.Weapon);
     }
-    UnityEngine.Vector2[] aryRelic = new UnityEngine.Vector2[4];
-    public UnityEngine.Vector2[] AryRelic
+
+    [HideInInspector] public UnityEvent OnPercentageChanged;
+    float[] aryPercentage = new float[5];
+    public float GetAryPercent(int index)
     {
-        get => aryRelic;
-        set { aryRelic = value; }
+        return aryPercentage[index];
+    }
+    public void SetAryPercent(int index, float value)
+    {
+        aryPercentage[index] = value;
+        OnPercentageChanged?.Invoke();
     }
 
-    int[] aryNormalRelicLv = new int[4];
+    int[] aryNormalRelicLv = new int[5];
 
     public int[] AryNormalRelicLv
     {
