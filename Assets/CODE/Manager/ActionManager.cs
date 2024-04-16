@@ -149,15 +149,15 @@ public class ActionManager : MonoBehaviour
         camShake = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
 
         Prefabs_Awake();
-
     }
 
     void Start()
     {
-
         //최초 init
         Enemyinit();
         UI_Init();
+        
+        
     }
 
     Vector2 matVec;
@@ -206,7 +206,7 @@ public class ActionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             //BuffContoller.inst.ActiveBuff(4, 3);
-            LetterManager.inst.MakeLetter(0, "이동은", "테스트 (루비)편지입니다", 100);
+            LetterManager.inst.MakeLetter(0, "이동은", "테스트 (루비)편지입니다", 5000);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -231,6 +231,8 @@ public class ActionManager : MonoBehaviour
         {
             WorldUI_Manager.inst.Reset_StageUiBar();
         }
+
+        
     }
 
     // 움직이기전 초기화
@@ -285,15 +287,18 @@ public class ActionManager : MonoBehaviour
     private void EnemyMove()
     {
         //에너미 스폰 및 대기장소까지 전진
-        checkPosition = Vector2.Distance(enemyObj.transform.position, enemy_StopPoint.position);
+        //checkPosition = Vector2.Distance(enemyObj.transform.position, enemy_StopPoint.position);
+        //float spriteDistance = (enemySr.bounds.size.x / 2);
 
-        if (checkPosition > 0.85f) // 거리값 체크 2이상 이동
+        checkPosition = enemyObj.transform.position.x - enemy_StopPoint.position.x;
+
+        if (checkPosition > 1.35f) // 거리값 체크 2이상 이동
         {
             enemyPosX += (Time.deltaTime * enemySpawnSpeed) * (1 + (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
-        else if (checkPosition < 0.85f) // 2미만 공격
+        else if (checkPosition < 1.35f) // 2미만 공격
         {
             attackReady = true;
 
@@ -443,7 +448,6 @@ public class ActionManager : MonoBehaviour
                 obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 1); // 시얀색 대미지폰트
             }
             obj.SetActive(true);
-
         }
         else if (MinusValue == "Dead")//에너미 사망 및 초기화
         {
@@ -620,6 +624,7 @@ public class ActionManager : MonoBehaviour
         int spriteCount = enemySprite.Length;
         curEnemyNum = Random.Range(0, spriteCount);
         enemySr.sprite = enemySprite[curEnemyNum];
+   
     }
 
 
@@ -814,6 +819,11 @@ public class ActionManager : MonoBehaviour
     public GameObject ReturnPlayerObjInHierachy() => playerAnim.gameObject;
     public GameObject ReturnEnemyObjInHierachy() => enemyObj;
 
-
+    /// <summary>
+    /// 무기 스프라이트 가져가는함수
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public Sprite Get_WeaponSprite(int index) => weaponSprite[index];
 
 }
