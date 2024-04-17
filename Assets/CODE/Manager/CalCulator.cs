@@ -1,9 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using Unity.VisualScripting;
 using UnityEngine;
-using static Cinemachine.DocumentationSortingAttribute;
 
 public class CalCulator : MonoBehaviour
 {
