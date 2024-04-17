@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 2968815664667207561}
   - component: {fileID: 8750440378185091202}
   - component: {fileID: 6767617472122134259}
+  - component: {fileID: 3980596178529644447}
   m_Layer: 0
   m_Name: FrontUI
   m_TagString: Untagged
@@ -253,6 +254,18 @@ MonoBehaviour:
   - {fileID: 0}
   coolBtnRef: {fileID: 0}
   adCoolTImeText: {fileID: 0}
+--- !u!114 &3980596178529644447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2214145803004256810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d5c5c494eed364eae9b0e78ab76c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2736036513137762766
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,9 +482,9 @@ MonoBehaviour:
   enemyCurHP: 0
   enemyMaxHP: 0
   enemySprite:
-  - {fileID: 21300000, guid: b566804174818d54c860ea604ebd65a0, type: 3}
-  - {fileID: 21300000, guid: b810d09dcc90c2f4fa60094b4441a196, type: 3}
-  - {fileID: 21300000, guid: ea2918d0a4b63524ebeea3cefd07f72b, type: 3}
+  - {fileID: 21300000, guid: 64819c3240cc6f54b91b6582658f87b0, type: 3}
+  - {fileID: 21300000, guid: 7a3aec9896391e54f973346b706303b1, type: 3}
+  - {fileID: 21300000, guid: d3694fabefd0b0747985d8fb7235c444, type: 3}
   playerAtkEffect: []
   playerAtkCriEffect: []
   attackReady: 0
@@ -592,6 +605,7 @@ GameObject:
   - component: {fileID: 8406171563017925295}
   - component: {fileID: 4904963902540086993}
   - component: {fileID: 5206211488151109852}
+  - component: {fileID: 6982764872065819019}
   - component: {fileID: 4419585097905868713}
   m_Layer: 0
   m_Name: GameManager
@@ -642,7 +656,16 @@ MonoBehaviour:
   OnGoldChanged:
     m_PersistentCalls:
       m_Calls: []
+  OnStartChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRubyChanged:
+    m_PersistentCalls:
+      m_Calls: []
   OnQuestLvChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPercentageChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &8406171563017925295
@@ -688,6 +711,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7554db3b13343d84493d4bf1fe5435bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6982764872065819019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9049315439970797926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dec1fb15a62427e4c9d3d95f57b5ff98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buffIMG:
+  - {fileID: 21300000, guid: 517ebcd2f62ed144885f3e79169f63ab, type: 3}
+  - {fileID: 21300000, guid: d96c33b628c19404c81997071865b4db, type: 3}
+  - {fileID: 21300000, guid: 8dcf63d73324c454e976558fae067ced, type: 3}
+  - {fileID: 21300000, guid: d2990f462a51f6e4890e059432026d4a, type: 3}
+  coinMG: []
 --- !u!114 &4419585097905868713
 MonoBehaviour:
   m_ObjectHideFlags: 0

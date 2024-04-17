@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class DMG_Font : MonoBehaviour
 {

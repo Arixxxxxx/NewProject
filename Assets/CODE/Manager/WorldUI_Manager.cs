@@ -34,9 +34,10 @@ public class WorldUI_Manager : MonoBehaviour
     GameObject frontUICanvas;
     GameObject buffSelectUIWindow;
 
- 
-
-
+    // 리워드UI 관련
+    GameObject rewardRef;
+    Reward_Parts[] rewards;
+    int rewardChildCount;
 
     //우편 수신함
     Button getLetterBtn;
@@ -75,7 +76,10 @@ public class WorldUI_Manager : MonoBehaviour
         worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
         frontUICanvas = GameObject.Find("---[FrontUICanvas]").gameObject;
 
-
+        //리워드관련
+        rewardRef = frontUICanvas.transform.Find("ReWard").gameObject;
+        rewards = rewardRef.GetComponentsInChildren<Reward_Parts>(true);
+        rewardChildCount = rewardRef.transform.childCount;
 
 
         //버프창
@@ -326,7 +330,19 @@ public class WorldUI_Manager : MonoBehaviour
         
     }
 
-   
+    int curIndex = 0;
+    /// <summary>
+    /// 월드 중앙 상단 Reward창 호출
+    /// </summary>
+    /// <param name="sprite"></param>
+    /// <param name="text"> 아이템 설명내용</param>
+   public void Set_RewardUI_Invoke(Sprite sprite, string text)
+    {
+        curIndex = (int)Mathf.Repeat(curIndex, rewardChildCount);
+        rewards[curIndex].Set_Reward(sprite, text);
+    }
+
+
 
     /// <summary>
     /// 버프 선택창 호출

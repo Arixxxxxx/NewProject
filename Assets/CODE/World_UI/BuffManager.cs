@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class BuffManager : MonoBehaviour
 {
     public static BuffManager inst;
@@ -9,7 +10,7 @@ public class BuffManager : MonoBehaviour
     [Header("# Input Buff Time (Min) / View ToolTip")]
 
     [Space]
-    [SerializeField][Tooltip("0번 : UI창 광고 ATK \n1번 : UI 창 광고 이동속도\n2번: UI창 광고 골드획득량\n3번: 인게임 팝업광고 공격력// 4번 뉴비버프")] float[] adBuffTime; 
+    [SerializeField][Tooltip("0번 : UI창 광고 ATK \n1번 : UI 창 광고 이동속도\n2번: UI창 광고 골드획득량\n3번: 인게임 팝업광고 공격력// 4번 뉴비버프")] float[] adBuffTime;
     public float AdbuffTime(int index) => adBuffTime[index];
 
     [SerializeField][Tooltip("0번 : UI창 루비 ATK \n1번 : UI 창 루비 이동속도\n2번: UI창 루비 골드획득량")] float[] RubyBuffTime;
@@ -17,6 +18,7 @@ public class BuffManager : MonoBehaviour
     GameObject mainWindow;
     GameObject buffWindow;
     GameObject buffSelectUIWindow;
+  
 
     Button exitBtn;
     int btnCount;
@@ -52,6 +54,8 @@ public class BuffManager : MonoBehaviour
     GameObject newbiebuffIcon;
     GameObject newbiebuffIconActive;
 
+    // 화면메인 Reward 문구
+    string[] buffstringText = new string[4];
     private void Awake()
     {
         if (inst == null)
@@ -68,7 +72,7 @@ public class BuffManager : MonoBehaviour
         adBuffBtn = worldUI.transform.Find("ADBuff").GetComponent<Button>(); // 인게임 팝업 버프아이콘
 
         buffWindow = GameObject.Find("---[FrontUICanvas]").gameObject;
-
+      
         //기본 버프선택창
         mainWindow = buffWindow.transform.Find("Buff_Window").gameObject;
         buffSelectUIWindow = buffWindow.transform.Find("Buff_Window/Window").gameObject;
@@ -101,7 +105,7 @@ public class BuffManager : MonoBehaviour
         buffIconBottomTime[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/Space/ReturnItem_Text").GetComponent<TMP_Text>();
         uiWindowTimeInfo[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD/Cock_IMG/Add_Time_Info").GetComponent<TMP_Text>();
         uiWindowTimeInfo[1] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_Ruby/Cock_IMG/Add_Time_Info").GetComponent<TMP_Text>();
-        
+
 
         viewAdBtn[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD").GetComponent<Button>();
         btnAdActiveIMG[1] = buffSelectUIWindow.transform.Find("Buff_Layout/Speed_Up/ChoiseBtn_AD/AD").gameObject;
@@ -133,6 +137,11 @@ public class BuffManager : MonoBehaviour
         uiWindowTimeInfo[3].text = $"+{RubyBuffTime[1]}M";
         uiWindowTimeInfo[4].text = $"+{adBuffTime[2]}M";
         uiWindowTimeInfo[5].text = $"+{RubyBuffTime[2]}M";
+
+        buffstringText[0] = $"공격력x5 버프 {AdbuffTime(0)} 분";
+        buffstringText[1] = $"이동속도 버프 {AdbuffTime(1)} 분";
+        buffstringText[2] = $"골드획득량 버프 {AdbuffTime(2)} 분";
+        buffstringText[3] = $" 공격력x9 버프 {AdbuffTime(3)} 분";
     }
 
     private void Start()
@@ -152,23 +161,25 @@ public class BuffManager : MonoBehaviour
         ViewAdAtkBuff_CoolTimer();
     }
 
-
     private void BtnInIt()
     {
+
+        
         exitBtn.onClick.AddListener(() => { WorldUI_Manager.inst.buffSelectUIWindowAcitve(false); });
 
-        viewAdBtn[0].onClick.AddListener(() => ADViewManager.inst.SampleADBuff("buff", 0)); ;
-        viewAdBtn[1].onClick.AddListener(() => ADViewManager.inst.SampleADBuff("buff", 1));
-        viewAdBtn[2].onClick.AddListener(() => ADViewManager.inst.SampleADBuff("buff", 2));
+        //광고 버프활성화 버튼들
+        viewAdBtn[0].onClick.AddListener(() => AdBuffActive(0));
+        viewAdBtn[1].onClick.AddListener(() => AdBuffActive(1));
+        viewAdBtn[2].onClick.AddListener(() => AdBuffActive(2));
 
         // 인게임 광고 보고 공격력증가 버튼
-        adBuffBtn.onClick.AddListener(() => {
-
+        adBuffBtn.onClick.AddListener(() => ADViewManager.inst.SampleAD_Active_Funtion(() =>
+        {
             adBuffBtn.gameObject.SetActive(false);
-            ADViewManager.inst.SampleADBuff("buff", 3);
+            BuffContoller.inst.ActiveBuff(3, AdbuffTime(3)); //버프활성화
             viewAdATKBuff += 15f; // Re PopUp CoomTime
-
-        });
+            WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(3), buffstringText[3]);
+        }));
 
         // 루비로 구매버튼 => 정말 구매하시껍니까 창으로 연결
         useRubyBtn[0].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(0));
@@ -188,7 +199,25 @@ public class BuffManager : MonoBehaviour
 
     }
 
+  
+    
+    private void AdBuffActive(int value)
+    { 
+        ADViewManager.inst.SampleAD_Active_Funtion(() =>
+        {
+            BuffContoller.inst.ActiveBuff(value, AdbuffTime(value)); //버프활성화
+            AddBuffCoolTime(value, (int)AdbuffTime(value)); // 쿨타임 시간추가
+            mainWindow.gameObject.SetActive(false);
+            //Set_TextAlrim(MakeAlrimMSG(0, (int)AdbuffTime(0))); // 알림띄우기
+            WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(value), buffstringText[value]);
+        });
+    }
 
+    public void ActiveBuff(int type, int Time, string text)
+    {
+        BuffContoller.inst.ActiveBuff(type, Time); //버프활성화
+        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(type), text);
+    }
     /// <summary>
     /// 정말 구매하실껀지 물어보는창 초기화 및 yes버튼 초기화
     /// </summary>
@@ -281,19 +310,19 @@ public class BuffManager : MonoBehaviour
     /// </summary>
     private void ViewAdAtkBuff_CoolTimer()
     {
-        if(viewAdATKBuff > 0 && adBuffBtn.gameObject.activeSelf == false)
+        if (viewAdATKBuff > 0 && adBuffBtn.gameObject.activeSelf == false)
         {
             viewAdATKBuff -= Time.deltaTime;
         }
-        else if(viewAdATKBuff <= 0)
+        else if (viewAdATKBuff <= 0)
         {
             viewAdATKBuff = 0;
 
-            if(adBuffBtn.gameObject.activeSelf == false)
+            if (adBuffBtn.gameObject.activeSelf == false)
             {
                 adBuffBtn.gameObject.SetActive(true);
             }
-            
+
         }
     }
 

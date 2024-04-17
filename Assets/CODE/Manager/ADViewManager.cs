@@ -10,7 +10,7 @@ public class ADViewManager : MonoBehaviour
     public static Action AdAfterInvokeFuntion;
 
     //Ref
-    GameObject worldUiRef, frontUIRef, buffSelectUIWindow;
+    GameObject worldUiRef, frontUIRef, buffSelectUIWindow, QuestionWindowRef;
 
     //샘플 광고테스트
     GameObject adSample;
@@ -20,7 +20,14 @@ public class ADViewManager : MonoBehaviour
     Animator textAlrim;
     TMP_Text alrimText;
 
-
+    //광고 보고 할껀지말껀지 물어보는창 -> Reward 창 연결
+    // 이미지 상자
+    Image itemicon;
+    // 버튼2개
+    Button backBtn;
+    Button acceptBtn;
+    Action questionWindowAction;
+    TMP_Text itemInfoText;
 
     private void Awake()
     {
@@ -45,6 +52,16 @@ public class ADViewManager : MonoBehaviour
         //텍스트 알림
         textAlrim = worldUiRef.transform.Find("TextAlrim").GetComponent<Animator>();
         alrimText = textAlrim.GetComponentInChildren<TMP_Text>();
+
+        //광고시청 전 질문창
+        QuestionWindowRef = frontUIRef.transform.Find("QuestionWindow").gameObject;
+        itemicon = QuestionWindowRef.transform.Find("Window/IMG_Frame/IMG").GetComponent<Image>();
+        itemInfoText = QuestionWindowRef.transform.Find("Window/ItemText").GetComponent<TMP_Text>();
+
+        backBtn = QuestionWindowRef.transform.Find("Window/Btns/BackBtn").GetComponent<Button>();
+        backBtn.onClick.AddListener(() => QuestionWindowRef.SetActive(false));
+        
+        acceptBtn = QuestionWindowRef.transform.Find("Window/Btns/AcceptBtn").GetComponent<Button>();
     }
     void Start()
     {
@@ -57,58 +74,6 @@ public class ADViewManager : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// 광고보고 버프 활성화시켜주는 함수
-    /// </summary>
-    /// <param name="witch"> buff ~~</param>
-    /// <param name="value">0 ~ 2 버프선택 창에있는 버프들 / 3 = 클릭하는 화면버프 </param>
-    public void SampleADBuff(string witch, int value)
-    {
-        if(AdDelete.inst.IsAdDeleteBuy == false)
-        {
-            adXbtn.onClick.RemoveAllListeners();
-            adXbtn.onClick.AddListener(() =>
-            {
-                if (witch == "buff" && value != 3)
-                {
-                    BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
-                    BuffManager.inst.AddBuffCoolTime(value, (int)BuffManager.inst.AdbuffTime(value)); // 쿨타임 시간추가
-                    Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(value, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
-
-                }
-                else if (value == 3) // 클릭하는 화면 버프
-                {
-                    BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
-                    Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
-                }
-                adXbtn.gameObject.SetActive(false);
-                adSample.SetActive(false);
-                buffSelectUIWindow.SetActive(false);
-            });
-
-            StopCoroutine(PlayAD());
-            StartCoroutine(PlayAD());
-        }
-        else
-        {
-            if (witch == "buff" && value != 3)
-            {
-                BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
-                BuffManager.inst.AddBuffCoolTime(value, (int)BuffManager.inst.AdbuffTime(value)); // 쿨타임 시간추가
-                Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(value, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
-
-            }
-            else if (value == 3) // 클릭하는 화면 버프
-            {
-                BuffContoller.inst.ActiveBuff(value, BuffManager.inst.AdbuffTime(value)); //버프활성화
-                Set_TextAlrim(BuffManager.inst.MakeAlrimMSG(0, (int)BuffManager.inst.AdbuffTime(value))); // 알림띄우기
-            }
-
-            buffSelectUIWindow.SetActive(false);
-        }
-     
-
-    }
 
     /// <summary>
     /// 광고보고 루비 혹은 돈
@@ -202,7 +167,7 @@ public class ADViewManager : MonoBehaviour
     /// <param name="funtion"> 실행시킬 함수 </param>
     public void SampleAD_Active_Funtion(Action funtion)
     {
-        if(AdDelete.inst.IsAdDeleteBuy == false) // 광고 삭제 미구입시
+        if (AdDelete.inst.IsAdDeleteBuy == false) // 광고 삭제 미구입시
         {
             adXbtn.onClick.RemoveAllListeners();
             adXbtn.onClick.AddListener(() =>
@@ -220,11 +185,54 @@ public class ADViewManager : MonoBehaviour
                 StartCoroutine(PlayAD());
             }
         }
-        else if(AdDelete.inst.IsAdDeleteBuy == true) //광고구입시 바로바로 발동
+        else if (AdDelete.inst.IsAdDeleteBuy == true) //광고구입시 바로바로 발동
         {
             AdAfterInvokeFuntion += funtion;
             AdAfterInvokeFuntion?.Invoke();
             AdAfterInvokeFuntion = null;
+        }
+    }
+
+    /// <summary>
+    ///  광고보고 보상받을껀지 물어보는 창 초기화
+    /// </summary>
+    /// <param name="value"> Acitve => true / false </param>
+    /// <param name="type">0buff / 1 coin</param>
+    /// <param name="index">SpriteResource에 잇는 index</param>
+    /// <param name="action"> 수락 후 실행될 함수 </param>
+    public void ActiveQuestionWindow(bool value, int type, int index, string ItemInfo, Action action)
+    {
+        if (value)
+        {
+            //이미지 초기화
+            switch (type)
+            {
+                case 0:
+                    itemicon.sprite = SpriteResource.inst.BuffIMG(index);
+                    break;
+
+                case 1:
+                    itemicon.sprite = SpriteResource.inst.CoinIMG(index);
+                    break;
+            }
+            //텍스트 초기화
+            itemInfoText.text = ItemInfo;
+
+            //수락 버튼 초기화
+            acceptBtn.onClick.RemoveAllListeners();
+            acceptBtn.onClick.AddListener(() =>
+            {
+                questionWindowAction = null;
+                questionWindowAction += action;
+                questionWindowAction?.Invoke();
+                QuestionWindowRef.SetActive(false);
+            });
+
+            QuestionWindowRef.SetActive(true);
+        }
+        else
+        {
+            QuestionWindowRef.SetActive(false);
         }
     }
 }
