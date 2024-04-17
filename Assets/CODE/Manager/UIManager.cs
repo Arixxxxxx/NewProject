@@ -79,6 +79,9 @@ public class UIManager : MonoBehaviour
     [Header("펫")]
     [SerializeField] List<Pet> list_Pet;
     [SerializeField] GameObject obj_Pet;
+    TMP_Text soulText;
+    TMP_Text bornText;
+    TMP_Text bookText;
     [Serializable]
     public class Pet
     {
@@ -189,7 +192,12 @@ public class UIManager : MonoBehaviour
             BookText.text = $"{nextBook}";
         }
     }
+    private void setPetMaterial()
+    {
 
+    }
+
+    ////////////////////////////////////////////상점///////////////////////////////////////
     [Header("상품 스프라이트")]
     [SerializeField] Sprite[] list_prodSprite;
     /// <summary>
@@ -207,6 +215,8 @@ public class UIManager : MonoBehaviour
     {
         return ShopOpenBtn;
     }
+
+
 
     private void Update()
     {

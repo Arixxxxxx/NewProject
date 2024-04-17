@@ -20,7 +20,6 @@ public class Weapon : MonoBehaviour
     }
     [SerializeField] float costGrowthRate;//비용 성장률
     [SerializeField] float atkpowNumRate;//초기공격력지수
-    [SerializeField] int WeaponNum; //무기 이미지번호
 
     Image weaponImage;
 
@@ -53,6 +52,7 @@ public class Weapon : MonoBehaviour
     private void Start()
     {
         weaponImage = transform.Find("imageBtn").GetComponent<Image>();
+        weaponImage.sprite = ActionManager.inst.Get_WeaponSprite(Number);
         initValue();
     }
 
@@ -128,7 +128,7 @@ public class Weapon : MonoBehaviour
     {
         if (Lv % 5 != 0)
         {
-            UIManager.Instance.EquipWeaponNum = WeaponNum;
+            UIManager.Instance.EquipWeaponNum = Number;
         }
     }
 
