@@ -1,18 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class WorldEventRewardContent : MonoBehaviour
 {
     public static WorldEventRewardContent inst;
-    
+
 
     // Ref
     GameObject worldUiRef, frontUIRef, eventBoxRef;
     Vector3 startPos, endPos;
-
+    FlyEventPrefabs boxSc;
 
 
 
@@ -32,8 +33,8 @@ public class WorldEventRewardContent : MonoBehaviour
         eventBoxRef = worldUiRef.transform.Find("EventPresent/ClickPresent").gameObject;
         startPos = worldUiRef.transform.Find("EventPresent/Trs/Start").transform.localPosition;
         endPos = worldUiRef.transform.Find("EventPresent/Trs/End").transform.localPosition;
+        boxSc = eventBoxRef.GetComponent<FlyEventPrefabs>();
 
-  
     }
     void Start()
     {
@@ -41,6 +42,7 @@ public class WorldEventRewardContent : MonoBehaviour
     }
     void Update()
     {
+        BoxPostionCheker();
         // 시간
         // 초기화
         // 팝업
@@ -80,7 +82,7 @@ public class WorldEventRewardContent : MonoBehaviour
             case 4:
 
                 string curgold = ActionManager.inst.Get_EnemyDeadGold();
-                
+
                 //물어보는창 오픈
                 ADViewManager.inst.ActiveQuestionWindow(true, 1, 1, $"골드 +{curgold}", () => {
                     //광고보고
@@ -94,10 +96,17 @@ public class WorldEventRewardContent : MonoBehaviour
                 break;
         }
 
-        //eventBoxReset();
+        eventBoxReset();
 
     }
 
+    private void BoxPostionCheker()
+    {
+        if (eventBoxRef.transform.position.x > endPos.x && eventBoxRef.activeSelf)
+        {
+            eventBoxReset();
+        }
+    }
 
     /// <summary>
     /// 박스 위치 초기화 및 엑티브False
@@ -105,6 +114,9 @@ public class WorldEventRewardContent : MonoBehaviour
     public void eventBoxReset()
     {
         eventBoxRef.gameObject.SetActive(false);
+        boxSc.ResetVelocity();
         eventBoxRef.transform.localPosition = startPos;
     }
+
+   
 }

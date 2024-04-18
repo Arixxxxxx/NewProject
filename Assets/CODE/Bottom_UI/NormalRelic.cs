@@ -41,18 +41,17 @@ public class NormalRelic : MonoBehaviour
     protected virtual void Start()
     {
         NameText = transform.Find("NameText").GetComponent<TextMeshProUGUI>();
-        LvText = transform.Find("LvText").GetComponent<TextMeshProUGUI>();
-        ExText = transform.Find("ExplaneText").GetComponent<TextMeshProUGUI>();
-        PercentText = transform.Find("PercentageText").GetComponent<TextMeshProUGUI>();
+        ExText = transform.Find("TextBox/ExplaneText").GetComponent<TextMeshProUGUI>();
+        PercentText = transform.Find("TextBox/PercentageText").GetComponent<TextMeshProUGUI>();
         PriceText = transform.Find("Button/PriceText").GetComponent<TextMeshProUGUI>();
+        LvText = transform.Find("Button/LvText").GetComponent<TextMeshProUGUI>();
         upBtn = transform.Find("Button").GetComponent<Button>();
-
-        NameText.text = Name;
+        NameText.text = $"{transform.GetSiblingIndex()+1}. {Name}";
         ExText.text = Explane;
-        LvText.text = $"Lv = {Lv}";
+        LvText.text = $"Lv. {Lv}";
         Percnetage = Mathf.Pow(1.1f, Lv);
 
-        PriceText.text = "가격 정해야됨";
+        //PriceText.text = "가격 정해야됨";
         upBtn.onClick.AddListener(ClickUp);
     }
 

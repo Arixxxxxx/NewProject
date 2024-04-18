@@ -209,6 +209,7 @@ public class GameStatus : MonoBehaviour
         {
             totalProdGold = value;
             UIManager.Instance.SettotalGoldText(CalCulator.inst.StringFourDigitAddFloatChanger(totalProdGold.ToString()));
+            //UIManager.Instance.SettotalGoldText();
         }
     }
     public string GetTotalGold()

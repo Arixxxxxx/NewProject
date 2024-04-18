@@ -41,7 +41,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] TextMeshProUGUI upAtkText;
     [SerializeField] TextMeshProUGUI LvText;
     [SerializeField] TextMeshProUGUI totalAtkText;
-    [SerializeField] GameObject objBtn;
+    [SerializeField] Button objBtn;
     [SerializeField] GameObject mask;
 
     private void Awake()
@@ -51,12 +51,12 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
-        weaponImage = transform.Find("imageBtn").GetComponent<Image>();
+        weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
         weaponImage.sprite = ActionManager.inst.Get_WeaponSprite(Number);
         initValue();
     }
 
-    void initValue()//초기값 설정
+    void initValue() //초기값 설정
     {
         float powNum = 0;
         for (int iNum = 0; iNum <= Number; iNum++)// 단계별 지수 설정
@@ -82,15 +82,16 @@ public class Weapon : MonoBehaviour
 
     private void setText()
     {
-        priceText.text = "가격 : " + CalCulator.inst.StringFourDigitChanger(nextCost.ToString());
-        LvText.text = $"Lv : {Lv - Number * 5} / 5";
-        upAtkText.text = "+" + CalCulator.inst.StringFourDigitChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString());
-        totalAtkText.text = "공격력 : " + CalCulator.inst.StringFourDigitChanger(atk.ToString());
+        priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
+        LvText.text = $"Lv. {Lv - Number * 5} / 5";
+        upAtkText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString());
+        totalAtkText.text = CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString());
     }
 
     public void ClickBuy()
     {
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
+
         if (haveGold >= nextCost)
         {
             Lv++;
@@ -103,7 +104,11 @@ public class Weapon : MonoBehaviour
             setText();
             if (Lv - Number * 5 >= 5)
             {
-                objBtn.SetActive(false);
+                if(objBtn == null)
+                {
+                    objBtn = transform.Find("Button").GetComponent<Button>();
+                }
+                objBtn.interactable = false;
                 UIManager.Instance.WeaponUpComplete(transform);
                 DogamManager.inst.GetWeaponCheck(Number + 1);
             }

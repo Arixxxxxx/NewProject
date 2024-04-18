@@ -81,8 +81,9 @@ public class Quest : MonoBehaviour
 
     private void setText()
     {
-        priceText.text = "АЁАн : " + CalCulator.inst.StringFourDigitChanger(nextCost.ToString());
-        upGoldText.text = "+" + CalCulator.inst.StringFourDigitChanger($"{initialProd * (Lv + buyCount) - initialProd * (Lv)}");
+        upGoldText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger($"{initialProd * (Lv + buyCount) - initialProd * (Lv)}");
+        priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
+        
         LvText.text = "Lv : " + CalCulator.inst.StringFourDigitChanger(Lv.ToString());
         totalGoldText.text = "Gps : " + CalCulator.inst.StringFourDigitChanger($"{totalProd}");
     }

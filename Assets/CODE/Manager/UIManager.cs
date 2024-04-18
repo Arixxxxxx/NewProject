@@ -112,7 +112,7 @@ public class UIManager : MonoBehaviour
             BookText = Trs.Find("Button/Book/PriceText").GetComponent<TMP_Text>();
             lvText = Trs.Find("LvText").GetComponent<TMP_Text>();
             NameText = Trs.Find("NameText").GetComponent<TMP_Text>();
-            ExText = Trs.Find("ExplaneText").GetComponent<TMP_Text>();
+            ExText = Trs.Find("ExplaneBox/ExplaneText").GetComponent<TMP_Text>();
             petImage = Trs.Find("imageBtn/Image").GetComponent<Image>();
 
             setNextCost();
@@ -170,26 +170,26 @@ public class UIManager : MonoBehaviour
                     nextSoul = baseCost + GameStatus.inst.Pet0_Lv * 100;
                     nextBorn = baseCost + GameStatus.inst.Pet0_Lv * 100;
                     nextBook = baseCost + GameStatus.inst.Pet0_Lv * 100;
-                    lvText.text = $"{GameStatus.inst.Pet0_Lv}";
+                    lvText.text = $"Lv.{GameStatus.inst.Pet0_Lv}";
                     break;
 
                 case PetType.BuffPet:
                     nextSoul = baseCost + GameStatus.inst.Pet1_Lv * 100;
                     nextBorn = baseCost + GameStatus.inst.Pet1_Lv * 100;
                     nextBook = baseCost + GameStatus.inst.Pet1_Lv * 100;
-                    lvText.text = $"{GameStatus.inst.Pet1_Lv}";
+                    lvText.text = $"Lv.{GameStatus.inst.Pet1_Lv}";
                     break;
 
                 case PetType.GoldPet:
                     nextSoul = baseCost + GameStatus.inst.Pet2_Lv * 100;
                     nextBorn = baseCost + GameStatus.inst.Pet2_Lv * 100;
                     nextBook = baseCost + GameStatus.inst.Pet2_Lv * 100;
-                    lvText.text = $"{GameStatus.inst.Pet2_Lv}";
+                    lvText.text = $"Lv.{GameStatus.inst.Pet2_Lv}";
                     break;
             }
-            SoulText.text = $"{nextSoul}";
-            BornText.text = $"{nextBorn}";
-            BookText.text = $"{nextBook}";
+            SoulText.text = $"{nextSoul.ToString("N0")}";
+            BornText.text = $"{nextBorn.ToString("N0")}";
+            BookText.text = $"{nextBook.ToString("N0")}";
         }
     }
     private void setPetMaterial()

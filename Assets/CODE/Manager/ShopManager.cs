@@ -175,7 +175,7 @@ public class ShopManager : MonoBehaviour
             botBtnNum = _num;
             list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
         }
-        else
+         else
         {
             CrewGatchaContent.inst.CrewMaterialGatchaActive(false);
             list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);

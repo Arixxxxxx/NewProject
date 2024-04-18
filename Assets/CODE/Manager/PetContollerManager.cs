@@ -15,8 +15,11 @@ public class PetContollerManager : MonoBehaviour
     // Æê0¹ø
     ParticleSystem[] pet0Ps = new ParticleSystem[2];
     ParticleSystem pet0Dust;
+    
 
     ParticleSystem[] pet1Ps = new ParticleSystem[4];
+    ParticleSystem pet1Dust;
+
     ParticleSystem[] pet2Ps = new ParticleSystem[2];
 
     // Æê2¹ø °ø°Ý ÀÌÆåÆ®
@@ -51,6 +54,7 @@ public class PetContollerManager : MonoBehaviour
         pet1Ps[1] = petAnim[1].transform.Find("AttackBuff").GetComponent<ParticleSystem>();
         pet1Ps[2] = petAnim[1].transform.Find("CriBuff").GetComponent<ParticleSystem>();
         pet1Ps[3] = petAnim[1].transform.Find("AllBuff").GetComponent<ParticleSystem>();
+        pet1Dust = petAnim[1].transform.Find("Dust").GetComponent<ParticleSystem>();
 
         //2¹ø »ç·É¼ú»ç
 
@@ -73,6 +77,7 @@ public class PetContollerManager : MonoBehaviour
         }
 
         pet0Dust.gameObject.SetActive(action);
+        pet1Dust.gameObject.SetActive(action);
     }
 
     // Æê 0¹ø
