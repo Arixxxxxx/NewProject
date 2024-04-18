@@ -12,7 +12,7 @@ public class Quest : MonoBehaviour
     [Header("성장률")]
     [SerializeField] float growthRate;//성장률
     [Header("초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐")]
-    [SerializeField] float initalProdRate;//초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐
+    [SerializeField] float initalProdRate;//초기 생산량과 초기비용의
     [Header("기초 생산량")]
     [SerializeField] float baseProd;//기초 생산량
     [Header("단계별 상승량 지수")]
@@ -116,7 +116,7 @@ public class Quest : MonoBehaviour
         {
             nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
         }
-        else
+        else//max일 때
         {
             buyCount = 1;
             BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
@@ -153,7 +153,7 @@ public class Quest : MonoBehaviour
     private void SetbtnActive()
     {
         BigInteger havegold = BigInteger.Parse(GameStatus.inst.Gold);
-        if (havegold < nextCost)
+        if (havegold < nextCost || nextCost == 0)
         {
             UpBtn.interactable = false;
         }

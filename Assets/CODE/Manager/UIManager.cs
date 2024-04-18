@@ -63,7 +63,10 @@ public class UIManager : MonoBehaviour
     public void WeaponUpComplete(Transform _trs)
     {
         int index = m_list_Weapon.FindIndex(x => x == _trs);
-        m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
+        if (m_list_Weapon.Count > index +1)
+        {
+            m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
+        }
     }
 
     public TextMeshProUGUI GettotalAtkText()
@@ -402,16 +405,26 @@ public class UIManager : MonoBehaviour
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
         int lv = haveWeaponLv;
         int Number = lv / 5;
-        BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
-        while (haveGold >= nextcost)
+        if (m_list_Weapon.Count > Number)
         {
-            Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
-            ScWeapon.ClickBuy();
-            haveGold -= nextcost;
+            BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
+            while (haveGold >= nextcost)
+            {
+                if (m_list_Weapon.Count > Number)
+                {
+                    Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
+                    ScWeapon.ClickBuy();
+                    haveGold -= nextcost;
 
-            lv = haveWeaponLv;
-            nextcost = ScWeapon.GetNextCost();
-            Number = lv / 5;
+                    lv = haveWeaponLv;
+                    nextcost = ScWeapon.GetNextCost();
+                    Number = lv / 5;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
     }
 
