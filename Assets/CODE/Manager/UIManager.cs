@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     List<Image> m_list_BottomBtn = new List<Image>();//메인UI 하단 버튼
     int bottomBtnNum = 0;//선택한 하단 버튼 번호
     Button[] m_aryPetDetailInforBtns;//펫 상세보기버튼
+    Image BackGround;
 
     [Header("퀘스트")]
     List<Transform> m_list_Quest = new List<Transform>();//퀘스트 리스트
@@ -257,6 +258,12 @@ public class UIManager : MonoBehaviour
         m_listMainUI.Add(canvas.transform.Find("BackGround/Weapon").gameObject);
         m_listMainUI.Add(canvas.transform.Find("BackGround/Pet").gameObject);
         m_listMainUI.Add(canvas.transform.Find("BackGround/Relic").gameObject);
+        BackGround = canvas.transform.Find("BackGround").GetComponent<Image>();
+        //BackGround.rectTransform.offsetMax = new UnityEngine.Vector2(BackGround.rectTransform.offsetMax.x, canvas.pixelRect.y);
+        CanvasScaler cs = canvas.GetComponent<CanvasScaler>();
+        float hightratio = Screen.height / cs.referenceResolution.y;
+        float ratio = hightratio * cs.matchWidthOrHeight;
+        Debug.Log(hightratio);
 
         //퀘스트 초기화
         m_QuestParents = canvas.transform.Find("BackGround/Quest/Scroll View").GetComponent<ScrollRect>().content;

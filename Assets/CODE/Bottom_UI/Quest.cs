@@ -12,7 +12,7 @@ public class Quest : MonoBehaviour
     [Header("성장률")]
     [SerializeField] float growthRate;//성장률
     [Header("초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐")]
-    [SerializeField] float initalProdRate;//초기 생산량과 초기비용의
+    [SerializeField] float initalProdRate;//초기 생산량과 초기비용의 비율
     [Header("기초 생산량")]
     [SerializeField] float baseProd;//기초 생산량
     [Header("단계별 상승량 지수")]
