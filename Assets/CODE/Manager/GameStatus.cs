@@ -521,7 +521,7 @@ public class GameStatus : MonoBehaviour
 
     public void MinusGold(string getValue)
     {
-        string result = CalCulator.inst.DigidMinus(gold, getValue, false);
+        string result = CalCulator.inst.BigIntigerMinus(gold, getValue);
         Gold = result;
     }
 

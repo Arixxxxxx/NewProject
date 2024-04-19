@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,7 +11,7 @@ public class Reward_Parts : MonoBehaviour
     Animator anim;
     Image itemIMG;
     TMP_Text itemInfoText;
-
+    Action rewardAction;
     private void Awake()
     {
         init();
@@ -41,7 +42,23 @@ public class Reward_Parts : MonoBehaviour
         parentRef.SetActive(true);
         gameObject.SetActive(true);
     }
+    public void Set_RewardIncludeAction(Sprite sprite, string text, Action funtion)
+    {
+        if (itemIMG == null)
+        {
+            init();
+        }
 
+        itemIMG.sprite = sprite;
+        itemInfoText.text = text;
+
+        parentRef.SetActive(true);
+        gameObject.SetActive(true);
+
+        rewardAction = null;
+        rewardAction += funtion;
+        rewardAction?.Invoke();
+    }
 
     private void A_GameObjectActiveFalse()
     {

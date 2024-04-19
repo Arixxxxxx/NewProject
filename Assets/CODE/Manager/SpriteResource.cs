@@ -11,6 +11,8 @@ public class SpriteResource : MonoBehaviour
     [Space]
     [Header("# 재화 아이콘")]
     [SerializeField] private Sprite[] coinMG;
+    [Header("# 동료 강화 재료 아이콘")]
+    [SerializeField] private Sprite[] crewMaterialIMG;
     /// <summary>
     /// 버프 아이콘 스프라이트
     /// </summary>
@@ -24,6 +26,7 @@ public class SpriteResource : MonoBehaviour
     /// <param name="value"> 0루비 / 1골드 </param>
     /// <returns></returns>
     public Sprite CoinIMG(int value) => coinMG[value];
+    public Sprite CrewMaterialIMG(int value) => crewMaterialIMG[value];
     private void Awake()
     {
         if(inst == null)

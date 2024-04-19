@@ -340,8 +340,20 @@ public class WorldUI_Manager : MonoBehaviour
     {
         curIndex = (int)Mathf.Repeat(curIndex, rewardChildCount);
         rewards[curIndex].Set_Reward(sprite, text);
+        curIndex++;
     }
 
+    /// <summary>
+    /// 월드 중앙 상단 Reward + Action 포함 호출
+    /// </summary>
+    /// <param name="sprite"></param>
+    /// <param name="text"> 아이템 설명내용</param>
+    public void Set_Reward_InclueAction(Sprite sprite, string text,Action funtion)
+    {
+        curIndex = (int)Mathf.Repeat(curIndex, rewardChildCount);
+        rewards[curIndex].Set_RewardIncludeAction(sprite, text, funtion);
+        curIndex++;
+    }
 
 
     /// <summary>

@@ -123,20 +123,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charactorBG:
-  - {fileID: 21300000, guid: 8133ed8f7f55e3a42ac44a4c998f2efe, type: 3}
-  - {fileID: 21300000, guid: 7fac775ea1f1d784cbbf830da93c2556, type: 3}
-  - {fileID: 21300000, guid: 024c7eb7f2c08ad45b69d0eed51f55d7, type: 3}
+  - {fileID: 21300000, guid: 78511d394c8c37d47b4f69838414d981, type: 3}
+  - {fileID: 1248989535, guid: 964c4382b0645dc40b56b9d401478ae7, type: 3}
+  - {fileID: 21300000, guid: a7be8fc6faf771f4baef74990efe02b0, type: 3}
   topArrayBtnIMG:
   - {fileID: 539993994, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
   - {fileID: -477037525, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
   middleArrayBtnIMG:
   - {fileID: 1538992618, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
   - {fileID: 623041215, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
-  midArrayBtns: []
-  midArrayBtnsImage:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &2814709135380697339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,9 +147,6 @@ MonoBehaviour:
   adBtnSprite:
   - {fileID: 156669073, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
   - {fileID: -222251119, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
-  GetBtn:
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &390421881016182503
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,15 +238,6 @@ MonoBehaviour:
   - {fileID: -480492995, guid: 031e097540eb98646b85e31442c57b72, type: 3}
   - {fileID: 394849108, guid: 031e097540eb98646b85e31442c57b72, type: 3}
   - {fileID: 838485112, guid: 031e097540eb98646b85e31442c57b72, type: 3}
-  boxLayout: {fileID: 0}
-  gatchaBox: []
-  buyBtn:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  coolBtnRef: {fileID: 0}
-  adCoolTImeText: {fileID: 0}
 --- !u!114 &3980596178529644447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +250,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d5c5c494eed364eae9b0e78ab76c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reSpawnTimer: 0
+  startTimeRange: {x: 10, y: 20}
+  clickTimeRange: {x: 60, y: 80}
 --- !u!114 &1002357639231264430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +265,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39ec026b60160ba46aafb8ae89800080, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxItemCount: 030000000300000001000000010000000100000001000000
+  ItemRewardCount: e8030000c8000000e8030000960000009600000096000000
+  curItemCount: 
+  coolTimeTimer: []
+  coolTime: 300
 --- !u!1 &2736036513137762766
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,14 +485,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 50b080c0f7473f945b140d29f6baa4cd, type: 3}
   enemyCurHP: 0
   enemyMaxHP: 0
+  attackReady: 0
   enemySprite:
   - {fileID: 21300000, guid: 64819c3240cc6f54b91b6582658f87b0, type: 3}
   - {fileID: 21300000, guid: 7a3aec9896391e54f973346b706303b1, type: 3}
   - {fileID: 21300000, guid: d3694fabefd0b0747985d8fb7235c444, type: 3}
-  playerAtkEffect: []
-  playerAtkCriEffect: []
-  attackReady: 0
-  checkPosition: 0
   enemySpawnSpeed: 0.12
   shakeTime: 0.25
 --- !u!114 &7882652714519950570
@@ -744,6 +732,12 @@ MonoBehaviour:
   coinMG:
   - {fileID: 21300000, guid: d9242b4c1ae7a9b40b0b61b2a8d5889a, type: 3}
   - {fileID: 21300000, guid: 3d4561e7dba3d75429ec4decc6176723, type: 3}
+  - {fileID: 21300000, guid: 23666430086f9594e8bb3e7680b12c23, type: 3}
+  crewMaterialIMG:
+  - {fileID: -480492995, guid: 031e097540eb98646b85e31442c57b72, type: 3}
+  - {fileID: 394849108, guid: 031e097540eb98646b85e31442c57b72, type: 3}
+  - {fileID: 838485112, guid: 031e097540eb98646b85e31442c57b72, type: 3}
+  - {fileID: 2048784362, guid: 031e097540eb98646b85e31442c57b72, type: 3}
 --- !u!114 &4419585097905868713
 MonoBehaviour:
   m_ObjectHideFlags: 0

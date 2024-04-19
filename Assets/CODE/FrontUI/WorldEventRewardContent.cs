@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class WorldEventRewardContent : MonoBehaviour
 {
@@ -14,9 +12,16 @@ public class WorldEventRewardContent : MonoBehaviour
     GameObject worldUiRef, frontUIRef, eventBoxRef;
     Vector3 startPos, endPos;
     FlyEventPrefabs boxSc;
-
-
-
+    [Header("# Check Box Spawn Time ★ ( Read Only )")]
+    [Space]
+    [SerializeField] float reSpawnTimer;
+    [Header("# Setup Respawn Range <Color=yellow>(ToolTip include)</color>")]
+    [Tooltip("BoxPopupTimeRange for GameStart\nGameStart X = RangeMin Second Sec \nY = RangeMin Second")]
+    [Space]
+    [SerializeField] Vector2 startTimeRange;
+    [Tooltip("BoxPopupTimeRange for Runtime\nGameStart X = RangeMin Second Sec \nY = RangeMin Second")]
+    [Space]
+    [SerializeField] Vector2 clickTimeRange;
 
     private void Awake()
     {
@@ -34,6 +39,7 @@ public class WorldEventRewardContent : MonoBehaviour
         startPos = worldUiRef.transform.Find("EventPresent/Trs/Start").transform.localPosition;
         endPos = worldUiRef.transform.Find("EventPresent/Trs/End").transform.localPosition;
         boxSc = eventBoxRef.GetComponent<FlyEventPrefabs>();
+        reSpawnTimer = UnityEngine.Random.Range(startTimeRange.x, startTimeRange.y);
 
     }
     void Start()
@@ -42,27 +48,27 @@ public class WorldEventRewardContent : MonoBehaviour
     }
     void Update()
     {
+        // 맵벗어날시
         BoxPostionCheker();
-        // 시간
-        // 초기화
-        // 팝업
+        // 리스폰
+        reSpawnCheker();
     }
 
     public void EventActive(int type)
     {
         switch (type)
         {
-            // 즉시 버프 3분
+            // 즉시 버프 2분
             case 0:
-                BuffManager.inst.ActiveBuff(type, 3, "공격력x5 버프 3분");
+                BuffManager.inst.ActiveBuff(type, 1, "공격력x5 버프 1분");
                 break;
 
             case 1:
-                BuffManager.inst.ActiveBuff(type, 3, "이속증가 버프 3분");
+                BuffManager.inst.ActiveBuff(type, 1, "이속증가 버프 1분");
                 break;
 
             case 2:
-                BuffManager.inst.ActiveBuff(type, 3, "골드획득증가 버프 3분");
+                BuffManager.inst.ActiveBuff(type, 1, "골드획득증가 버프 1분");
                 break;
 
             //루비 (광고시청후)
@@ -106,6 +112,21 @@ public class WorldEventRewardContent : MonoBehaviour
         {
             eventBoxReset();
         }
+
+        
+    }
+
+    private void reSpawnCheker()
+    {
+        if(reSpawnTimer > 0 && eventBoxRef.activeSelf == false)
+        {
+            reSpawnTimer -= Time.deltaTime;
+        }
+        else if(reSpawnTimer <= 0 && eventBoxRef.activeSelf == false)
+        {
+            reSpawnTimer = 0;
+            eventBoxRef.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -113,9 +134,12 @@ public class WorldEventRewardContent : MonoBehaviour
     /// </summary>
     public void eventBoxReset()
     {
+        reSpawnTimer += UnityEngine.Random.Range(clickTimeRange.x, clickTimeRange.y);
         eventBoxRef.gameObject.SetActive(false);
-        boxSc.ResetVelocity();
-        eventBoxRef.transform.localPosition = startPos;
+        boxSc.ResetVelocity(); // 속도값 초기화
+        eventBoxRef.transform.localPosition = startPos; // 위치초기화
+        
+        //시간넣어줌 시간다되면 켜줌
     }
 
    

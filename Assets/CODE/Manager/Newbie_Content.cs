@@ -8,7 +8,11 @@ public class Newbie_Content : MonoBehaviour
 {
     public static Newbie_Content inst;
 
+    [Header("# Input IMGBox Layout <Color=yellow>( Sprite File )</Color>")]
+    [Space]
     [SerializeField][Tooltip("0 = 활성 / 1 = 비활성 ")] Sprite[] imgBoxSideSprite;
+    [Header("# Input GetItemLine  <Color=green>( Cyan Color )</Color>")]
+    [Space]
     [SerializeField] Color gotItemColor;
 
     /// Ref

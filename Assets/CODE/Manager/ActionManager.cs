@@ -21,8 +21,17 @@ public class ActionManager : MonoBehaviour
     GameObject worldSpaceRef;
 
     Material mat;
+
+
+    [Header("1. Input BG Tilling Speed <Color=yellow>( Float Data )</Color>")]
+    [Space]
     [SerializeField] float backGroundSpeed;
+    [Space]
+    [Header("2. Insert Object Prefabs  <Color=#6699FF>( Prefabs )")]
+    [Tooltip("대미지폰트, 몬스터죽고나서 돈튀는 이펙트")]
+    [Space]
     [SerializeField] GameObject[] pooling_Obj;
+    [Space]
     Transform dmgFontParent;
     Transform goldActionParent;
 
@@ -37,7 +46,11 @@ public class ActionManager : MonoBehaviour
     float attackSpeed;
     string atkPower;
     SpriteRenderer palyerWeapenSr;
+    [Header("3. Insert Weapon => <Color=#47C832>( Sprite File )")]
+    [Space]
     [SerializeField] Sprite[] weaponSprite;
+    [Header("4. Insert World BackGround => <Color=#47C832>( Sprite File )")]
+    [Space]
     [SerializeField] Sprite[] backGroudSprite;
     SpriteRenderer backGroundIMG;
     GameObject moveWindParticle;
@@ -50,16 +63,20 @@ public class ActionManager : MonoBehaviour
     Image hpBar_IMG;
     TMP_Text hpBar_Text;
     int curEnemyNum;
+    [Header("5. ReadOnly ★ <Color=#CC3D3D>( Check Data )")]
+    [Space]
     [SerializeField] string enemyCurHP;
     [SerializeField] string enemyMaxHP;
+    [SerializeField] bool attackReady;
+    [Space]
+    [Header("6. Insert Enemy List => <Color=#47C832>( Sprite File )")]
+    [Space]
     [SerializeField] Sprite[] enemySprite;
+    [Space]
 
     //타격 이펙트
     GameObject effectRef;
-
-    [SerializeField]
     ParticleSystem[] playerAtkEffect;
-    [SerializeField]
     ParticleSystem[] playerAtkCriEffect;
     ParticleSystem swordEffect;
 
@@ -68,14 +85,20 @@ public class ActionManager : MonoBehaviour
 
     bool actionStart;
     bool isatk, ismove;
-    [SerializeField] bool attackReady;
+    
 
     // 이동애니메이션
-    [SerializeField] float checkPosition;
+    
+    float checkPosition;
     Vector2 enemyVec;
     float enemyPosX;
+    [Header("7. Insert Value => <Color=yellow>( Float Data )")]
+    [Space]
     [SerializeField] float enemySpawnSpeed;
 
+    // 카메라 쉐이크
+    [SerializeField] float shakeTime;
+    float shakeCount;
 
     int floorCount;
 
@@ -353,9 +376,9 @@ public class ActionManager : MonoBehaviour
             cri = true;
         }
 
-        string checkDMG = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
+        string checkDMG = CalCulator.inst.BigIntigerMinus(enemyCurHP, DMG);/* DigidMinus(enemyCurHP, DMG, true);*/
 
-        if (checkDMG != "Dead" && attackReady == true)
+        if (checkDMG != "0" && attackReady == true)
         {
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
@@ -363,11 +386,11 @@ public class ActionManager : MonoBehaviour
             obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 2);
             obj.SetActive(true);
 
-            enemyCurHP = CalCulator.inst.DigidMinus(enemyCurHP, DMG, true);
+            enemyCurHP = CalCulator.inst.BigIntigerMinus(enemyCurHP, DMG);
             EnemyHPBarUI_Updater();
             EnemyOnHitEffect(cri);
         }
-        else if (checkDMG == "Dead")//에너미 사망 및 초기화
+        else if (checkDMG == "0")//에너미 사망 및 초기화
         {
             DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
             StartCoroutine(GetGoldActionParticle()); // 골드 획득하는 파티클 재생
@@ -415,7 +438,7 @@ public class ActionManager : MonoBehaviour
         if (CrewType == 0) // 폭탄마 ( 총체력에서 공격력을 뺀값 )
         {
             CrewATK = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
-            MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, CrewATK, true);
+            MinusValue = CalCulator.inst.BigIntigerMinus(enemyCurHP, CrewATK);
         }
         else if (CrewType == 1) // 사령술사
         {
@@ -426,11 +449,11 @@ public class ActionManager : MonoBehaviour
                 yield break;
             }
 
-            MinusValue = CalCulator.inst.DigidMinus(enemyCurHP, CrewATK, true);
+            MinusValue = CalCulator.inst.BigIntigerMinus(enemyCurHP, CrewATK);
         }
         
 
-        if (MinusValue != "Dead" && attackReady == true)
+        if (MinusValue != "0" && attackReady == true)
         {
             enemyCurHP = MinusValue;
             EnemyHPBarUI_Updater();
@@ -449,7 +472,7 @@ public class ActionManager : MonoBehaviour
             }
             obj.SetActive(true);
         }
-        else if (MinusValue == "Dead")//에너미 사망 및 초기화
+        else if (MinusValue == "0")//에너미 사망 및 초기화
         {
             
             DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
@@ -765,8 +788,7 @@ public class ActionManager : MonoBehaviour
     }
 
 
-    [SerializeField] float shakeTime;
-    float shakeCount;
+   
     IEnumerator ShakeCam()
     {
         camShake.m_AmplitudeGain = 2.5f;
