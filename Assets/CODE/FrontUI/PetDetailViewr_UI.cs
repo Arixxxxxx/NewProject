@@ -10,10 +10,14 @@ public class PetDetailViewr_UI : MonoBehaviour
 
     // 해당 스크립트 index는 0 = 공격펫 / 1 버프펫 / 2 골드펫 기준
 
-    [Header("Input Charactor BackGround Sprite")]
+    [Header("# Input Charactor BackGround <Color=yellow>( Sprite File )</Color>")]
     [Space]
     [SerializeField][Tooltip("공격펫배경 / 버프펫배경 / 골드펫배경")] Sprite[] charactorBG;
+    [Header("# Input Top Btn <Color=yellow>( Sprite File )</Color>")]
+    [Space]
     [SerializeField][Tooltip("활성화 / 비활성화")] Sprite[] topArrayBtnIMG;
+    [Header("# Input Middle Btn <Color=yellow>( Sprite File )</Color>")]
+    [Space]
     [SerializeField][Tooltip("활성화 / 비활성화")] Sprite[] middleArrayBtnIMG;
 
     GameObject frontUIObj;
@@ -37,10 +41,8 @@ public class PetDetailViewr_UI : MonoBehaviour
     Image[] topArrayBtnsImage = new Image[3];
 
     // 중단 버튼
-    [SerializeField]
     Button[] midArrayBtns;
-    [SerializeField]
-    Image[] midArrayBtnsImage = new Image[3];
+    Image[] midArrayBtnsImage = new Image[2];
 
 
     // 정보 오브젝트들
@@ -49,8 +51,8 @@ public class PetDetailViewr_UI : MonoBehaviour
     // 각성 오브젝트들
     GameObject[] petGakSeong = new GameObject[3];
 
-    // 강화 오브젝트들
-    GameObject[] petUpgrade = new GameObject[3];
+    //// 강화 오브젝트들 (24.04.19 => 삭제함)
+    //GameObject[] petUpgrade = new GameObject[4];
 
     private void Awake()
     {
@@ -81,8 +83,9 @@ public class PetDetailViewr_UI : MonoBehaviour
         petChar[0] = ViewBG.transform.Find("PET_0").gameObject;
         petChar[1] = ViewBG.transform.Find("PET_1").gameObject;
         petChar[2] = ViewBG.transform.Find("PET_2").gameObject;
+        
 
-        // 펫 해금조건 설명칸
+        // 펫 해금조건 설명 텍스트
         viewLeftBotText = ViewBG.transform.Find("TextBar").GetComponentInChildren<TMP_Text>();
 
         // 상단 펫선택 버튼
@@ -90,27 +93,30 @@ public class PetDetailViewr_UI : MonoBehaviour
         topArrayBtnsImage[0] = topArrayBtns[0].GetComponent<Image>();
         topArrayBtnsImage[1] = topArrayBtns[1].GetComponent<Image>();
         topArrayBtnsImage[2] = topArrayBtns[2].GetComponent<Image>();
+        
 
         // 중단 어레이 버튼
         midArrayBtns = hiearchySurchPoint.transform.Find("Middle_Btn_Array").GetComponentsInChildren<Button>();
         midArrayBtnsImage[0] = midArrayBtns[0].GetComponent<Image>();
         midArrayBtnsImage[1] = midArrayBtns[1].GetComponent<Image>();
-        midArrayBtnsImage[2] = midArrayBtns[2].GetComponent<Image>();
+        //midArrayBtnsImage[2] = midArrayBtns[2].GetComponent<Image>();
 
         // 하단 정보 설명탭
         petInfo[0] = hiearchySurchPoint.transform.Find("PetInfo").GetChild(0).gameObject;
         petInfo[1] = hiearchySurchPoint.transform.Find("PetInfo").GetChild(1).gameObject;
         petInfo[2] = hiearchySurchPoint.transform.Find("PetInfo").GetChild(2).gameObject;
+        
 
         // 각성
         petGakSeong[0] = hiearchySurchPoint.transform.Find("GakSeong").GetChild(0).gameObject;
         petGakSeong[1] = hiearchySurchPoint.transform.Find("GakSeong").GetChild(1).gameObject;
         petGakSeong[2] = hiearchySurchPoint.transform.Find("GakSeong").GetChild(2).gameObject;
+        
 
         // 강화
-        petUpgrade[0] = hiearchySurchPoint.transform.Find("Upgrade").GetChild(0).gameObject;
-        petUpgrade[1] = hiearchySurchPoint.transform.Find("Upgrade").GetChild(1).gameObject;
-        petUpgrade[2] = hiearchySurchPoint.transform.Find("Upgrade").GetChild(2).gameObject;
+        //petUpgrade[0] = hiearchySurchPoint.transform.Find("Upgrade").GetChild(0).gameObject;
+        //petUpgrade[1] = hiearchySurchPoint.transform.Find("Upgrade").GetChild(1).gameObject;
+        //petUpgrade[2] = hiearchySurchPoint.transform.Find("Upgrade").GetChild(2).gameObject;
 
         BtnInIt();
     }
@@ -137,7 +143,6 @@ public class PetDetailViewr_UI : MonoBehaviour
             BottomInformationActive(curCharNum, true);
 
             BottomGaksungActive(false);
-            BottomUpGradeActive(false);
         });
 
         midArrayBtns[1].onClick.AddListener(() =>
@@ -147,20 +152,19 @@ public class PetDetailViewr_UI : MonoBehaviour
 
             BottomInformationActive(curCharNum, false);
             BottomGaksungActive(true);
-            BottomUpGradeActive(false);
         });
 
 
-        midArrayBtns[2].onClick.AddListener(() =>
-        {
-            curBotNum = 2;
-            middleBtnImageChanger(2);
+        //midArrayBtns[2].onClick.AddListener(() =>
+        //{
+        //    curBotNum = 2;
+        //    middleBtnImageChanger(2);
 
-            BottomInformationActive(curCharNum, false);
-            BottomGaksungActive(false);
-            BottomUpGradeActive(true);
+        //    BottomInformationActive(curCharNum, false);
+        //    BottomGaksungActive(false);
+        //    BottomUpGradeActive(true);
 
-        });
+        //});
     }
 
     /// <summary>
@@ -225,18 +229,18 @@ public class PetDetailViewr_UI : MonoBehaviour
             case 0:
                 BottomInformationActive(curCharNum, true); // 하단 켜줌
                 BottomGaksungActive(false);
-                BottomUpGradeActive(false);
+
                 break;
 
             case 1:
-                BottomUpGradeActive(false);
+
                 BottomInformationActive(curCharNum, false);
                 BottomGaksungActive(true);
                 
                 break;
 
             case 2:
-                BottomUpGradeActive(true);
+
                 BottomInformationActive(curCharNum, false);
                 BottomGaksungActive(false);
                 break;
@@ -321,28 +325,28 @@ public class PetDetailViewr_UI : MonoBehaviour
         }
     }
 
-    private void BottomUpGradeActive(bool value)
-    {
-        if (value)
-        {
-            for (int index = 0; index < petInfo.Length; index++)
-            {
-                if (curCharNum == index)
-                {
-                    petUpgrade[index].gameObject.SetActive(true);
-                }
-                else
-                {
-                    petUpgrade[index].gameObject.SetActive(false);
-                }
-            }
-        }
-        else
-        {
-            for (int index = 0; index < petInfo.Length; index++)
-            {
-                petUpgrade[index].gameObject.SetActive(false);
-            }
-        }
-    }
+    //private void BottomUpGradeActive(bool value)
+    //{
+    //    if (value)
+    //    {
+    //        for (int index = 0; index < petInfo.Length; index++)
+    //        {
+    //            if (curCharNum == index)
+    //            {
+    //                petUpgrade[index].gameObject.SetActive(true);
+    //            }
+    //            else
+    //            {
+    //                petUpgrade[index].gameObject.SetActive(false);
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        for (int index = 0; index < petInfo.Length; index++)
+    //        {
+    //            petUpgrade[index].gameObject.SetActive(false);
+    //        }
+    //    }
+    //}
 }

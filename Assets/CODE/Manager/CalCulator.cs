@@ -117,7 +117,33 @@ public class CalCulator : MonoBehaviour
         return result; // 결과가 빈 문자열인 경우 0이니깐 "Dead"을 반환
     }
 
+    /// <summary>
+    /// String - String = return String (Bigintiger Type Calcluator)
+    /// </summary>
+    /// <param name="a">string data</param>
+    /// <param name="b">string data</param>
+    /// <returns></returns>
+    public string BigIntigerMinus(string a, string b)
+    {
+        string result = string.Empty;
 
+        BigInteger enemyHP = BigInteger.Parse(a); 
+        BigInteger DMG = BigInteger.Parse(b);
+
+        BigInteger curHP = enemyHP - DMG;
+
+        
+        if(curHP <= 0) 
+        {
+            result = "0";
+        }
+        else if(curHP > 0) 
+        {
+            result = curHP.ToString();
+        }
+
+        return result;
+    }
 
     /// <summary>
     /// %계산기 : StringFourDigitChanger 함수 들어갔다 나온 문자열 + % 집어넣어야함

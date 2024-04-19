@@ -9,7 +9,8 @@ using UnityEngine.UI;
 public class DogamManager : MonoBehaviour
 {
     public static DogamManager inst;
-
+    [Header("# Input World GetJungsu  <Color=green>( Font Prefab )</Color>")]
+    [Space]
     [SerializeField] GameObject get_jungsuPrefabs;
 
     // Ref
@@ -19,6 +20,9 @@ public class DogamManager : MonoBehaviour
 
     ////////////////////// 무기 도감
 
+
+    [Header("# Input Layout IMG  <Color=yellow>( Sprite File )</Color>")]
+    [Space]
     // Input Sprite
     [SerializeField][Tooltip("0 = 활성화 / 1 = 비활성화")] Sprite[] topArrayBtnSpirte;
     [SerializeField][Tooltip("0 = 셀렉트 / 1 = 비선택 / 2 = 컬렉션")] Sprite[] weaponIcon;

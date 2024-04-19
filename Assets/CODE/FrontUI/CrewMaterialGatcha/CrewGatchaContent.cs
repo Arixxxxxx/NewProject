@@ -11,11 +11,13 @@ public class CrewGatchaContent : MonoBehaviour
     int[] materialCount = new int[3]; // 영혼 , 뼈, 책
 
     //Ref 아이템이미지
+    [Header("# Input Material <Color=yellow>( Sprite File )</Color>")]
+    [Space]
     [SerializeField] Sprite[] crewMaterialItemIMG;
 
     //Ref
     GameObject frontUi, crewGatchaRef, window;
-    [SerializeField] GameObject boxLayout; // 상자 박스함
+    GameObject boxLayout; // 상자 박스함
 
     // 자원현황창
     TMP_Text[] materialCountText = new TMP_Text[3];
@@ -29,7 +31,7 @@ public class CrewGatchaContent : MonoBehaviour
     GameObject gatchaBoxBg;
 
     // 갓챠 박스들
-    [SerializeField]
+    
     Button[] gatchaBox;
     BoxPrefabs[] gatchaBoxSc;
 
@@ -66,13 +68,10 @@ public class CrewGatchaContent : MonoBehaviour
         }
     }
 
-    // 구매버튼\
-    [SerializeField]
+    // 구매버튼
     Button[] buyBtn = new Button[4];
     GameObject noCoolBtnRef;
-    [SerializeField]
     GameObject coolBtnRef;
-    [SerializeField]
     TMP_Text adCoolTImeText;
 
     private void Awake()

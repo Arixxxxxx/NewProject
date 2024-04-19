@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class DailyPlayCheckUIManager : MonoBehaviour
 {
     public static DailyPlayCheckUIManager inst;
-
+    [Header("# Input Ad Wide Btn <Color=yellow>( Sprite File )</Color>")]
+    [Space]
     [SerializeField] Sprite[] adBtnSprite;
     
     GameObject worldFrontRef, dailyCheckObjRef, dailyWindowRef, layoutRef;
@@ -17,7 +18,6 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     Button xBtn;
 
     //받기 버튼 혹은 없는
-    [SerializeField]
     GameObject[] GetBtn = new GameObject[2];
     TMP_Text mainTaxt;
 
