@@ -92,7 +92,7 @@ public class UIManager : MonoBehaviour
 
     ////////////////////////////////////////////À¯¹°///////////////////////////////////////
 
-    public UnityEvent OnRelicBuyCountChanged;
+    [HideInInspector] public UnityEvent OnRelicBuyCountChanged;
     Button GotoRelicShopBtn;
     List<Image> m_list_RelicBuyCountBtn = new List<Image>();
     int relicBuyCountBtnNum = 0;
