@@ -10,6 +10,7 @@ public class DataManager : MonoBehaviour
 
     public SaveData savedata = new SaveData();
     string path = Path.Combine(Application.dataPath, "TestData.json");
+    RectTransform ScreenArea;
 
     public class SaveData
     {
@@ -31,8 +32,50 @@ public class DataManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(inst);
+        setScreen();
+        //Screen.SetResolution(Screen.width, Screen.width / 9 * 16, true);
+    }
 
-        Screen.SetResolution(Screen.width, Screen.width / 9 * 16, true);
+    void setScreen()
+    {
+        ScreenArea = GameObject.Find("---[UI Canvas]").transform.Find("ScreenArea").GetComponent<RectTransform>();
+
+        int setWidth = 1080;
+        int setheight = 1920;
+        float setRatio = (float)setWidth / setheight;
+
+        int deviceWitdh = Screen.width;
+        int deviceHeight = Screen.height;
+        float deviceRatio = (float)Screen.width / Screen.height;
+
+        Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWitdh) * setWidth), true);
+        if (setRatio < deviceRatio)
+        {
+            float newWidth = setRatio / deviceRatio;
+            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f);
+        }
+        else
+        {
+            float newHeight = deviceRatio / setRatio;
+            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
+        }
+
+
+
+        //Vector2 minAnchor = Screen.safeArea.min;
+        //Vector2 maxAnchor = Screen.safeArea.max;
+
+
+
+        //minAnchor.x /= setWidth;
+        //minAnchor.y /= setheight;
+
+        //maxAnchor.x /= setWidth;
+        //maxAnchor.y /= setheight;
+
+        //ScreenArea.anchorMin = minAnchor;
+        //ScreenArea.anchorMax = maxAnchor;
+
     }
 
     public void SavePath()

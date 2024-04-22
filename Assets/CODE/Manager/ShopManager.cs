@@ -84,7 +84,7 @@ public class ShopManager : MonoBehaviour
 
         mainShopCloseBtn.onClick.AddListener(() => 
         { 
-            UIManager.Instance.changeSortOder(0);
+            UIManager.Instance.changeSortOder(17);
             AdMarket.inst.ActiveAdMarket(false);
         });
         GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}";
