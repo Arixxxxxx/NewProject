@@ -18,6 +18,7 @@ public class Gacha : MonoBehaviour
     List<GameObject> list_haveRelic = new List<GameObject>();
     int openCount = 0;
     int maxOpenCount = 10;
+    Button adRelicBtn;
 
     [Serializable]
     class GachaRank
@@ -61,6 +62,12 @@ public class Gacha : MonoBehaviour
         {
             OkBtn.gameObject.SetActive(false);
             gachaResultObj.SetActive(false);
+        });
+
+        adRelicBtn = transform.Find("Btns/RelicGachaBtn (2)").GetComponent<Button>();
+        adRelicBtn.onClick.AddListener(() =>
+        {
+            ADViewManager.inst.SampleAD_Active_Funtion(() => clickGacha(10));
         });
     }
 
@@ -129,6 +136,7 @@ public class Gacha : MonoBehaviour
                 ListResultSprite.Add(sc.GetSprite());
             }
         }
+        sortingRelicList();
         int count = ListResultSprite.Count;
         gachaResultObj.SetActive(true);
         for (int iNum = 0; iNum < count; iNum++)
@@ -155,6 +163,30 @@ public class Gacha : MonoBehaviour
             list_resultImage[iNum].GetOpenBtn().onClick?.Invoke();
         }
 
+    }
+
+    void sortingRelicList()
+    {
+        list_haveRelic.Sort(compareRelic);
+        int count = list_haveRelic.Count;
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            int indexNum = (int)list_haveRelic[iNum].GetComponent<Relic>().GetMyType().y;
+            list_haveRelic[iNum].transform.SetSiblingIndex(indexNum);
+        }
+    }
+
+    int compareRelic(GameObject A, GameObject B)
+    {
+        if (A.GetComponent<Relic>().GetMyType().y < B.GetComponent<Relic>().GetMyType().y)
+        {
+            return -1;
+        }
+        else
+        {
+            return 1;
+        }
+        
     }
 
     void allOpenBtnActive()

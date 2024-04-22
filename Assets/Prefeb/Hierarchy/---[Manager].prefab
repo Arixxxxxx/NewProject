@@ -343,6 +343,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d9e4182687b82e4d8ee243bd1b6b685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectMenu:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  mainScrrenSelectIndex: 2
 --- !u!1 &2736036513137762766
 GameObject:
   m_ObjectHideFlags: 0
@@ -554,8 +559,8 @@ MonoBehaviour:
   - {fileID: -1545356654, guid: a16dbe52a146326449633afd4f9b9006, type: 3}
   - {fileID: 1730077009, guid: a16dbe52a146326449633afd4f9b9006, type: 3}
   backGroudSprite:
-  - {fileID: 21300000, guid: 50b080c0f7473f945b140d29f6baa4cd, type: 3}
-  - {fileID: 21300000, guid: 50b080c0f7473f945b140d29f6baa4cd, type: 3}
+  - {fileID: 21300000, guid: 82103446c89d6f545a0c10bd09fc2fd7, type: 3}
+  - {fileID: 21300000, guid: 82103446c89d6f545a0c10bd09fc2fd7, type: 3}
   enemyCurHP: 0
   enemyMaxHP: 0
   attackReady: 0

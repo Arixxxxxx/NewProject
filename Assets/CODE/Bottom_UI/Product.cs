@@ -59,12 +59,12 @@ public class Product : MonoBehaviour
 
     void Start()
     {
-        priceText = transform.Find("PriceText").GetComponent<TMP_Text>();
+        //priceText = transform.Find("PriceText").GetComponent<TMP_Text>();
         imageParents = transform.Find("ProductList");
         priceImage = transform.Find("priceImage").GetComponent<Image>();
         transform.GetComponent<Button>().onClick.AddListener(ClickBuy);
 
-        priceText.text = price;
+        //priceText.text = price;
         priceImage.sprite = UIManager.Instance.GetProdSprite((int)priceType);
     }
 

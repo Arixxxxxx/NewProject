@@ -33,9 +33,6 @@ public class ShopManager : MonoBehaviour
     Transform GoldShopParnets;
     Transform RubyShopParnets;
 
-
-
-
     private void Awake()
     {
         if (Instance == null)
@@ -55,6 +52,7 @@ public class ShopManager : MonoBehaviour
         GoldText = obj_shop.transform.Find("TopUi/MoneyText/Gold/Text").GetComponent<TMP_Text>();
         StarText = obj_shop.transform.Find("TopUi/MoneyText/Star/Text").GetComponent<TMP_Text>();
         RubyText = obj_shop.transform.Find("TopUi/MoneyText/Ruby/Text").GetComponent<TMP_Text>();
+        
 
         //상점 리스트 초기화
         Transform trsShopParent = obj_shop.transform.Find("ShopList");
@@ -82,17 +80,18 @@ public class ShopManager : MonoBehaviour
         productImageParents = obj_BuyCheck.transform.Find("BackGround/ProductImage");
         BuyYesBtn = obj_BuyCheck.transform.Find("BackGround/YesBtn").GetComponent<Button>();
 
+        //상점닫기버튼 초기화
         mainShopCloseBtn.onClick.AddListener(() => 
         { 
-            UIManager.Instance.changeSortOder(17);
             AdMarket.inst.ActiveAdMarket(false);
         });
+
         GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}";
         GameStatus.inst.OnGoldChanged.AddListener(() => { GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}"; });//상점 골드 텍스트 갱신
         StarText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star)}";
         GameStatus.inst.OnStartChanged.AddListener(() => { StarText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star)}"; });//상점 별 텍스트 갱신
         RubyText.text = $"{GameStatus.inst.Ruby}";
-        GameStatus.inst.OnRubyChanged.AddListener(() => { RubyText.text = $"{GameStatus.inst.Ruby}"; });//상점 골드텍스트 갱신
+        GameStatus.inst.OnRubyChanged.AddListener(() => { RubyText.text =string.Format("{0:#,0}",GameStatus.inst.Ruby); });//상점 루비 텍스트 갱신
 
         int productImageCount = productImageParents.childCount;
         for (int iNum = 0; iNum < productImageCount; iNum++)

@@ -140,6 +140,11 @@ public class UIManager : MonoBehaviour
             GameStatus.inst.Ruby += 1000;
             GameStatus.inst.PlusStar("100000000");
         }
+
+        int[] petmat = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+        soulText.text = string.Format("{0:#,###}" ,petmat[0]);
+        bornText.text = petmat[1].ToString();
+        bookText.text = petmat[2].ToString();
     }
     private void Awake()
     {
@@ -206,6 +211,11 @@ public class UIManager : MonoBehaviour
             m_list_RelicBuyCountBtn.Add(RelicAllUpBtnParents.GetChild(iNum).GetComponent<Image>());
         }
 
+        //∆Í √ ±‚»≠
+        soulText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Soul/Text (TMP)").GetComponent<TMP_Text>();
+        bornText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Born/Text (TMP)").GetComponent<TMP_Text>();
+        bookText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Book/Text (TMP)").GetComponent<TMP_Text>();
+
         int weaponCount = m_WeaponParents.childCount;
         for (int iNum = 0; iNum < weaponCount; iNum++)
         {
@@ -217,48 +227,7 @@ public class UIManager : MonoBehaviour
         {
             m_list_Quest.Add(m_QuestParents.GetChild(iNum));
         }
-        setScreen();
         initButton();
-    }
-
-    void setScreen()
-    {
-        int setWidth = 1080;
-        int setheight = 1920;
-        float setRatio = (float)setWidth / setheight;
-
-        int deviceWitdh = Screen.width;
-        int deviceHeight = Screen.height;
-        float deviceRatio = (float)Screen.width / Screen.height;
-
-        Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWitdh) * setWidth), true);
-        if (setRatio < deviceRatio)
-        {
-            float newWidth = setRatio / deviceRatio;
-            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f);
-        }
-        else
-        {
-            float newHeight = deviceRatio / setRatio;
-            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
-        }
-
-
-
-        //UnityEngine.Vector2 minAnchor = Screen.safeArea.min;
-        //UnityEngine.Vector2 maxAnchor = Screen.safeArea.max;
-
-        
-
-        //minAnchor.x /= setWidth;
-        //minAnchor.y /= setheight;
-
-        //maxAnchor.x /= setWidth;
-        //maxAnchor.y /= setheight;
-
-        //ScreenArea.anchorMin = minAnchor;
-        //ScreenArea.anchorMax = maxAnchor;
-
     }
 
     void initButton()
@@ -304,11 +273,9 @@ public class UIManager : MonoBehaviour
         m_listMainUI[_num].SetActive(true);
     }
 
-
     public void ClickOpenThisTab(GameObject _obj)
     {
-        _obj.SetActive(true);
-        canvas.sortingOrder = 17;
+        _obj.SetActive(true);        
     }
 
     public void ClickCloseThisTab(GameObject _obj)

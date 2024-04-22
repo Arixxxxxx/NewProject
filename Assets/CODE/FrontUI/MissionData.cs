@@ -690,7 +690,6 @@ public class MissionData : MonoBehaviour
         MissionOpenBtn.onClick.AddListener(() =>
         {
             obj_MissionWindow.gameObject.SetActive(true);
-            UIManager.Instance.changeSortOder(17);
         });
     }
 

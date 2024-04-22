@@ -76,7 +76,7 @@ public class DataManager : MonoBehaviour
         //ScreenArea.anchorMin = minAnchor;
         //ScreenArea.anchorMax = maxAnchor;
 
-    }
+    } 
 
     public void SavePath()
     {
