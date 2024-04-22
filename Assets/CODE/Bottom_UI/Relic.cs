@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Numerics;
 
-public class Relic : MonoBehaviour, ITypeGetable
+public class Relic : MonoBehaviour
 {
-    [SerializeField] int index;
     [SerializeField] RankType rankNum;
     [SerializeField] ItemTag itemNum;
-    [SerializeField] string Name;
-    [SerializeField] Sprite m_Sprite;
-    [SerializeField] string Explane;
+    [SerializeField] float costGrowthRate;
+
+    BigInteger nextCost;
+    float percentage;
+    int buyCount = 1;
+
     int lv;
     public int Lv
     {
@@ -19,54 +22,93 @@ public class Relic : MonoBehaviour, ITypeGetable
         set
         {
             lv = value;
-            LvText.text = $"Lv = {lv}";
+            setNextCost();
+            setText();
         }
     }
     Button upBtn;
     Image relicImgae;
-    TextMeshProUGUI NameText;
     TextMeshProUGUI LvText;
-    TextMeshProUGUI ExText;
     TextMeshProUGUI PercentText;
     TextMeshProUGUI PriceText;
 
-
-    protected virtual void Start()
-    {
-
-    }
-
     public void initRelic()
     {
-        NameText = transform.Find("NameText").GetComponent<TextMeshProUGUI>();
-        LvText = transform.Find("LvText").GetComponent<TextMeshProUGUI>();
-        ExText = transform.Find("ExplaneText").GetComponent<TextMeshProUGUI>();
-        PercentText = transform.Find("PercentageText").GetComponent<TextMeshProUGUI>();
+        LvText = transform.Find("Button/LvText").GetComponent<TextMeshProUGUI>();
+        PercentText = transform.Find("TextBox/PercentageText").GetComponent<TextMeshProUGUI>();
         PriceText = transform.Find("Button/PriceText").GetComponent<TextMeshProUGUI>();
         upBtn = transform.Find("Button").GetComponent<Button>();
-        relicImgae = transform.Find("Image").GetComponent<Image>();
+        relicImgae = transform.Find("IMG_Layout/IMG").GetComponent<Image>();
+        UIManager.Instance.OnRelicBuyCountChanged.AddListener(() => _OnCountChanged());
+        setNextCost();
+        setText();
 
-        relicImgae.sprite = m_Sprite;
-        NameText.text = Name;
-        LvText.text = $"Lv = {lv}";
-        ExText.text = Explane;
-        PercentText.text = "공식 정해야됨";
-        PriceText.text = "가격 정해야됨";
+
         upBtn.onClick.AddListener(ClickUp);
     }
 
-    protected virtual void ClickUp()
+    void setNextCost()
     {
-        Lv++;
+        //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f);
+        int btnnum = UIManager.Instance.RelicBuyCountBtnNum;
+        if (btnnum != 3)//max가 아닐때
+        {
+            nextCost = /*baseCost **/ (CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)));
+        }
+        else//max일 때
+        {
+            buyCount = 1;
+            BigInteger haveStar = BigInteger.Parse(GameStatus.inst.Star);
+            setNextCost(buyCount);
+            while (haveStar >= nextCost)
+            {
+                buyCount++;
+                setNextCost(buyCount);
+            }
+            buyCount--;
+            nextCost = /*baseCost * */(CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)));
+        }
+        percentage = 100 * Mathf.Pow(1.05f, Lv);
+    }
+
+    void setNextCost(int count)
+    {
+        nextCost = /*baseCost **/ (CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, count) - 1) / (costGrowthRate - 1)));
+    }
+
+    void setText()
+    {
+        LvText.text = $"Lv. {lv}";
+        PercentText.text = percentage.ToString("N0") + "%";
+        PriceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
+    }
+
+    void ClickUp()
+    {
+        BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
+        if (haveStar >= nextCost)
+        {
+            Lv += buyCount;
+        }
+    }
+
+    private void _OnCountChanged()
+    {
+        buyCount = UIManager.Instance.RelicBuyCount;
+        setNextCost();
+        setText();
     }
 
     public Sprite GetSprite()
     {
-        return m_Sprite;
+        return relicImgae.sprite;
     }
-
-    public Vector2 GetMyType()
+    /// <summary>
+    /// x = rankNum, y = ItemNum
+    /// </summary>
+    /// <returns></returns>
+    public UnityEngine.Vector2 GetMyType()
     {
-        return new Vector2((int)rankNum, (int)itemNum);
+        return new UnityEngine.Vector2((int)rankNum, (int)itemNum);
     }
 }

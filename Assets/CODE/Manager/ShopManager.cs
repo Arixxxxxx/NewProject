@@ -32,33 +32,7 @@ public class ShopManager : MonoBehaviour
     [Header("상품 목록")]
     Transform GoldShopParnets;
     Transform RubyShopParnets;
-    [SerializeField] List<ProductValue> list_GoldProductValueList;
-    [SerializeField] List<ProductValue> list_RubyProductValueList;
-    [Serializable]
-    public class ProductValue
-    {
-        [Header("상품 목록")]
-        [SerializeField] List<Product.ProductList> list_product = new List<Product.ProductList>();
-        [Header("상품 가격")]
-        [SerializeField] string price;
-        [Header("가격 타입")]
-        [SerializeField] ProductTag priceType;
 
-        public List<Product.ProductList> GetList()
-        {
-            return list_product;
-        }
-
-        public string GetPrice()
-        {
-            return price;
-        }
-
-        public ProductTag GetPriceType()
-        {
-            return priceType;
-        }
-    }
 
 
 
@@ -76,7 +50,7 @@ public class ShopManager : MonoBehaviour
 
     void Start()
     {
-        obj_shop = GameObject.Find("---[UI Canvas]").transform.Find("Shop").gameObject;
+        obj_shop = GameObject.Find("---[UI Canvas]").transform.Find("ScreenArea/Shop").gameObject;
         mainShopCloseBtn = obj_shop.transform.Find("MainShopClosdBtn").GetComponent<Button>();
         GoldText = obj_shop.transform.Find("TopUi/MoneyText/Gold/Text").GetComponent<TMP_Text>();
         StarText = obj_shop.transform.Find("TopUi/MoneyText/Star/Text").GetComponent<TMP_Text>();
@@ -93,7 +67,7 @@ public class ShopManager : MonoBehaviour
 
         //상점 하단버튼 초기화
         Transform trsBotBtn = obj_shop.transform.Find("BotBtn");
-        int BotBtnCount = trsShopParent.childCount;
+        int BotBtnCount = trsBotBtn.childCount;
         list_BottomBtn = new Image[BotBtnCount];
         for (int iNum = 0; iNum < BotBtnCount; iNum++)
         {
@@ -103,28 +77,16 @@ public class ShopManager : MonoBehaviour
         GoldShopParnets = obj_shop.transform.Find("ShopList/Gold/Scroll View").GetComponent<ScrollRect>().content;
         RubyShopParnets = obj_shop.transform.Find("ShopList/Ruby/Scroll View").GetComponent<ScrollRect>().content;
 
-        //골드상점 물품 초기화
-        int goldShopCount = list_GoldProductValueList.Count;
-        for (int iNum = 0; iNum < goldShopCount; iNum++)
-        {
-            List<ProductValue> list = list_GoldProductValueList;
-            GoldShopParnets.GetChild(iNum).GetComponent<Product>().InitStart(list[iNum].GetList(), list[iNum].GetPrice(), list[iNum].GetPriceType());
-        }
-
-        //루비상점 물품 초기화
-        int rubyShopCount = list_RubyProductValueList.Count;
-        for (int iNum = 0; iNum < rubyShopCount; iNum++)
-        {
-            List<ProductValue> list = list_RubyProductValueList;
-            RubyShopParnets.GetChild(iNum).GetComponent<Product>().InitStart(list[iNum].GetList(), list[iNum].GetPrice(), list[iNum].GetPriceType());
-        }
-
         //구매확인창 초기화
         obj_BuyCheck = obj_shop.transform.Find("CheckBuy").gameObject;
         productImageParents = obj_BuyCheck.transform.Find("BackGround/ProductImage");
         BuyYesBtn = obj_BuyCheck.transform.Find("BackGround/YesBtn").GetComponent<Button>();
 
-        mainShopCloseBtn.onClick.AddListener(() => UIManager.Instance.changeSortOder(0));
+        mainShopCloseBtn.onClick.AddListener(() => 
+        { 
+            UIManager.Instance.changeSortOder(0);
+            AdMarket.inst.ActiveAdMarket(false);
+        });
         GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}";
         GameStatus.inst.OnGoldChanged.AddListener(() => { GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}"; });//상점 골드 텍스트 갱신
         StarText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star)}";
@@ -143,6 +105,19 @@ public class ShopManager : MonoBehaviour
         {
             list_productCountText.Add(productImageParents.GetChild(iNum).Find("RewordText").GetComponent<TMP_Text>());
         }
+
+        //상점 오픈버튼 초기화
+        UIManager.Instance.GetShopOpenBtn().onClick.AddListener(() => 
+        {
+            if (botBtnNum == 2)
+            {
+                CrewGatchaContent.inst.CrewMaterialGatchaActive(true);
+            }
+            else if (botBtnNum == 3)
+            {
+                AdMarket.inst.ActiveAdMarket(true);
+            }
+        });
     }
 
     public GameObject GetEmptyImage()
@@ -157,7 +132,16 @@ public class ShopManager : MonoBehaviour
     public void OpenRubyShop()
     {
         obj_shop.SetActive(true);
-        ClickShopBtn(3);
+        ClickShopBtn(4);
+    }
+    /// <summary>
+    /// 0 = 골드상점, 1 = 유물상점, 2 = 펫재료 상점, 3 = 광고 상점, 4 = 루비상점
+    /// </summary>
+    /// <param name="num"></param>
+    public void OpenShop(int num)
+    {
+        obj_shop.SetActive(true);
+        ClickShopBtn(num);
     }
 
     public void SetShopActive(bool value)
@@ -170,14 +154,25 @@ public class ShopManager : MonoBehaviour
         if (_num == 2)
         {
             CrewGatchaContent.inst.CrewMaterialGatchaActive(true);
+            AdMarket.inst.ActiveAdMarket(false);
             list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
             list_ShopUi[botBtnNum].SetActive(false);
             botBtnNum = _num;
             list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
         }
-         else
+        else if (_num == 3)
+        {
+            AdMarket.inst.ActiveAdMarket(true);
+            CrewGatchaContent.inst.CrewMaterialGatchaActive(false);
+            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
+            list_ShopUi[botBtnNum].SetActive(false);
+            botBtnNum = _num;
+            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
+        }
+        else
         {
             CrewGatchaContent.inst.CrewMaterialGatchaActive(false);
+            AdMarket.inst.ActiveAdMarket(false);
             list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
             list_ShopUi[botBtnNum].SetActive(false);
 

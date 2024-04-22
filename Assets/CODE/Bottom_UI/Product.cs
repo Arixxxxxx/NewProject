@@ -7,9 +7,9 @@ using System;
 
 public class Product : MonoBehaviour
 {
-    List<ProductList> list_product = new List<ProductList>();
-    string price;
-    ProductTag priceType;
+    [SerializeField] List<ProductList> list_product = new List<ProductList>();
+    [SerializeField] string price;
+    [SerializeField] ProductTag priceType;
     TMP_Text priceText;
     Transform imageParents;
     Image priceImage;
@@ -57,27 +57,15 @@ public class Product : MonoBehaviour
         }
     }
 
-    public void InitStart(List<ProductList> _list, string _price, ProductTag _priceType)
+    void Start()
     {
-        list_product = _list;
-        price = _price;
-        priceType = _priceType;
         priceText = transform.Find("PriceText").GetComponent<TMP_Text>();
         imageParents = transform.Find("ProductList");
         priceImage = transform.Find("priceImage").GetComponent<Image>();
         transform.GetComponent<Button>().onClick.AddListener(ClickBuy);
 
-        priceText.text = _price;
-        priceImage.sprite = UIManager.Instance.GetProdSprite((int)_priceType);
-        int prodCount = list_product.Count;//상품 이미지 생성
-        for (int iNum = 0; iNum < prodCount; iNum++)
-        {
-            GameObject obj = Instantiate(ShopManager.Instance.GetEmptyImage(), imageParents);
-            list_rewordImage.Add(obj.transform.Find("Image").GetComponent<Image>());
-            list_rewordText.Add(obj.transform.Find("RewordText").GetComponent<TMP_Text>());
-            list_rewordImage[iNum].sprite = list_product[iNum].GetSprite();
-            list_rewordText[iNum].text = list_product[iNum].count;
-        }
+        priceText.text = price;
+        priceImage.sprite = UIManager.Instance.GetProdSprite((int)priceType);
     }
 
     public void ClickBuy()

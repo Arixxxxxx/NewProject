@@ -10,9 +10,14 @@ public class Gacha : MonoBehaviour
     [SerializeField] Transform RelicParents;
 
     [SerializeField] GameObject gachaResultObj;
-    [SerializeField] List<Image> list_resultImage = new List<Image>();
+    [SerializeField] Transform ResultImageParents;
+    [SerializeField] Button allOpenBtn;
+    [SerializeField] Button OkBtn;
+    List<GaChaEffect> list_resultImage = new List<GaChaEffect>();
 
     List<GameObject> list_haveRelic = new List<GameObject>();
+    int openCount = 0;
+    int maxOpenCount = 10;
 
     [Serializable]
     class GachaRank
@@ -41,8 +46,30 @@ public class Gacha : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        int count = ResultImageParents.childCount;
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            GaChaEffect sc = ResultImageParents.GetChild(iNum).GetComponent<GaChaEffect>();
+            list_resultImage.Add(sc);
+            sc.GetOpenBtn().onClick.AddListener(() => SetOpenCount());
+
+        }
+        allOpenBtn.onClick.AddListener(() => ClickAllOpen());
+        OkBtn.onClick.AddListener(() =>
+        {
+            OkBtn.gameObject.SetActive(false);
+            gachaResultObj.SetActive(false);
+        });
+    }
+
     IEnumerator gachaEffect(int GachaCount)
     {
+        if (list_haveRelic.Count == 0)
+        {
+            UIManager.Instance.SetGotoGachaBtn(false);
+        }
         int imagecount = list_resultImage.Count;
         for (int iNum = 0; iNum < imagecount; iNum++)
         {
@@ -50,6 +77,7 @@ public class Gacha : MonoBehaviour
         }
 
         List<Sprite> ListResultSprite = new List<Sprite>();//연차 결과이미지 저장
+        List<int> ListRank = new List<int>();
 
         for (int jNum = 0; jNum < GachaCount; jNum++)//연차 결과 연산
         {
@@ -67,15 +95,17 @@ public class Gacha : MonoBehaviour
 
             int objCount = aryRankClass[rankNum].AryObj.Length;
 
-            int objPercent = UnityEngine.Random.Range(0, objCount);
+            int objPercent = UnityEngine.Random.Range(0, objCount);//랭크내 아이템 가챠
             GameObject targetObj = aryRankClass[rankNum].AryObj[objPercent];
 
             int SerchCount = list_haveRelic.Count;
             bool ishave = false;
             int haveObjNum = -1;
-            for (int iNum = 0; iNum < SerchCount; iNum++)//랭크내 아이템 가챠
+            Vector2 targetType = targetObj.GetComponent<Relic>().GetMyType();
+            ListRank.Add((int)targetType.x);
+            for (int iNum = 0; iNum < SerchCount; iNum++)//같은 아이템이 있는지 비교
             {
-                if (list_haveRelic[iNum].GetComponent<ITypeGetable>().GetMyType() == targetObj.GetComponent<ITypeGetable>().GetMyType())
+                if (list_haveRelic[iNum].GetComponent<Relic>().GetMyType() == targetType)
                 {
                     ishave = true;
                     haveObjNum = iNum;
@@ -104,13 +134,47 @@ public class Gacha : MonoBehaviour
         for (int iNum = 0; iNum < count; iNum++)
         {
             yield return new WaitForSecondsRealtime(0.2f);
-            list_resultImage[iNum].sprite = ListResultSprite[iNum];
+            list_resultImage[iNum].Setsprite(ListResultSprite[iNum], (RankType)ListRank[iNum]);
             list_resultImage[iNum].gameObject.SetActive(true);
         }
+        Invoke("allOpenBtnActive", 1f);
     }
 
     public void clickGacha(int GachaCount)
     {
         StartCoroutine(gachaEffect(GachaCount));
+        maxOpenCount = GachaCount;
+    }
+
+    public void ClickAllOpen()
+    {
+        allOpenBtn.gameObject.SetActive(false);
+        int count = list_resultImage.Count;
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            list_resultImage[iNum].GetOpenBtn().onClick?.Invoke();
+        }
+
+    }
+
+    void allOpenBtnActive()
+    {
+        allOpenBtn.gameObject.SetActive(true);
+    }
+
+    public void OkBtnActive()
+    {
+        OkBtn.gameObject.SetActive(true);
+    }
+
+    void SetOpenCount()
+    {
+        openCount++;
+        if (openCount >= maxOpenCount)
+        {
+            openCount = 0;
+            allOpenBtn.gameObject.SetActive(false);
+            Invoke("OkBtnActive", 1f);
+        }
     }
 }

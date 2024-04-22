@@ -334,7 +334,7 @@ public class ActionManager : MonoBehaviour
     public void A_PlayerAttackToEnemy()
     {
         StopCoroutine(PlayerOnHitDMG());
-        StartCoroutine(PlayerOnHitDMG());
+        StartCoroutine(PlayerOnHitDMG()); 
     }
 
 

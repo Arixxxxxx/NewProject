@@ -10,17 +10,20 @@ using System;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
-    Canvas canvas;
-    [HideInInspector] public UnityEvent OnBuyCountChanged;//퀘스트 구매갯수 바뀌는 이벤트
+
     [Header("버튼 선택, 비선택 스프라이트")]
     [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();//버튼 선택, 비선택 스프라이트
+
+    Canvas canvas;
     List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
     List<Image> m_list_BottomBtn = new List<Image>();//메인UI 하단 버튼
     int bottomBtnNum = 0;//선택한 하단 버튼 번호
-    Button[] m_aryPetDetailInforBtns;//펫 상세보기버튼
-    Image BackGround;
+    RectTransform ScreenArea;
 
-    [Header("퀘스트")]
+
+    ////////////////////////////////////////////퀘스트///////////////////////////////////////
+    
+    [HideInInspector] public UnityEvent OnBuyCountChanged;//퀘스트 구매갯수 바뀌는 이벤트
     List<Transform> m_list_Quest = new List<Transform>();//퀘스트 리스트
     Transform m_QuestParents;//퀘스트 컨텐츠 트래스폼
     List<Image> m_list_QuestBuyCountBtn = new List<Image>(); //퀘스트 구매갯수 조절 버튼
@@ -42,7 +45,8 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    [Header("무기")]
+    ////////////////////////////////////////////무기///////////////////////////////////////
+    
     List<Transform> m_list_Weapon = new List<Transform>();
     Transform m_WeaponParents;
     RectTransform m_WeaponParentRect;
@@ -64,7 +68,7 @@ public class UIManager : MonoBehaviour
     public void WeaponUpComplete(Transform _trs)
     {
         int index = m_list_Weapon.FindIndex(x => x == _trs);
-        if (m_list_Weapon.Count > index +1)
+        if (m_list_Weapon.Count > index + 1)
         {
             m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
         }
@@ -80,128 +84,35 @@ public class UIManager : MonoBehaviour
         haveWeaponLv = _num;
     }
 
-    [Header("펫")]
-    [SerializeField] List<Pet> list_Pet;
-    [SerializeField] GameObject obj_Pet;
+    ////////////////////////////////////////////펫///////////////////////////////////////
+    
     TMP_Text soulText;
     TMP_Text bornText;
     TMP_Text bookText;
-    [Serializable]
-    public class Pet
+
+    ////////////////////////////////////////////유물///////////////////////////////////////
+
+    public UnityEvent OnRelicBuyCountChanged;
+    Button GotoRelicShopBtn;
+    List<Image> m_list_RelicBuyCountBtn = new List<Image>();
+    int relicBuyCountBtnNum = 0;
+    public int RelicBuyCountBtnNum
     {
-        [SerializeField] string Name;
-        [SerializeField] string Explane;
-        [SerializeField] int baseCost;
-        [SerializeField] PetType type;
-        [SerializeField] Sprite sprite;
-        Transform trs;
-        public Transform Trs { get => trs; set { trs = value; } }
-        int nextSoul;
-        int nextBorn;
-        int nextBook;
-        Button upBtn;
-        Image petImage;
-        TMP_Text SoulText;
-        TMP_Text BornText;
-        TMP_Text BookText;
-        TMP_Text lvText;
-        TMP_Text NameText;
-        TMP_Text ExText;
-
-        public void initStart()
-        {
-            upBtn = Trs.Find("Button").GetComponent<Button>();
-            SoulText = Trs.Find("Button/Soul/PriceText").GetComponent<TMP_Text>();
-            BornText = Trs.Find("Button/Born/PriceText").GetComponent<TMP_Text>();
-            BookText = Trs.Find("Button/Book/PriceText").GetComponent<TMP_Text>();
-            lvText = Trs.Find("LvText").GetComponent<TMP_Text>();
-            NameText = Trs.Find("NameText").GetComponent<TMP_Text>();
-            ExText = Trs.Find("ExplaneBox/ExplaneText").GetComponent<TMP_Text>();
-            petImage = Trs.Find("imageBtn/Image").GetComponent<Image>();
-
-            setNextCost();
-            NameText.text = Name;
-            ExText.text = Explane;
-
-            petImage.sprite = sprite;
-            petImage.SetNativeSize();
-            RectTransform rect = petImage.GetComponent<RectTransform>();
-            float ratio = rect.sizeDelta.x / rect.sizeDelta.y;
-            rect.sizeDelta = new UnityEngine.Vector2(40 * ratio, 40);
-
-            upBtn.onClick.AddListener(ClickUp);
-        }
-
-        public Button GetUpBtn()
-        {
-            return upBtn;
-        }
-
-        void ClickUp()
-        {
-            int[] petMoney = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
-
-            if (petMoney[0] >= nextSoul && petMoney[1] >= nextBorn && petMoney[2] >= nextBook)
-            {
-                CrewGatchaContent.inst.Use_Crew_Material(0, nextSoul);
-                CrewGatchaContent.inst.Use_Crew_Material(1, nextBorn);
-                CrewGatchaContent.inst.Use_Crew_Material(2, nextBook);
-                switch (type)
-                {
-                    case PetType.AtkPet:
-                        GameStatus.inst.Pet0_Lv++;
-                        setNextCost();
-                        break;
-
-                    case PetType.BuffPet:
-                        GameStatus.inst.Pet1_Lv++;
-                        setNextCost();
-                        break;
-
-                    case PetType.GoldPet:
-                        GameStatus.inst.Pet2_Lv++;
-                        setNextCost();
-                        break;
-                }
-            }
-        }
-
-        void setNextCost()
-        {
-            switch (type)
-            {
-                case PetType.AtkPet:
-                    nextSoul = baseCost + GameStatus.inst.Pet0_Lv * 100;
-                    nextBorn = baseCost + GameStatus.inst.Pet0_Lv * 100;
-                    nextBook = baseCost + GameStatus.inst.Pet0_Lv * 100;
-                    lvText.text = $"Lv.{GameStatus.inst.Pet0_Lv}";
-                    break;
-
-                case PetType.BuffPet:
-                    nextSoul = baseCost + GameStatus.inst.Pet1_Lv * 100;
-                    nextBorn = baseCost + GameStatus.inst.Pet1_Lv * 100;
-                    nextBook = baseCost + GameStatus.inst.Pet1_Lv * 100;
-                    lvText.text = $"Lv.{GameStatus.inst.Pet1_Lv}";
-                    break;
-
-                case PetType.GoldPet:
-                    nextSoul = baseCost + GameStatus.inst.Pet2_Lv * 100;
-                    nextBorn = baseCost + GameStatus.inst.Pet2_Lv * 100;
-                    nextBook = baseCost + GameStatus.inst.Pet2_Lv * 100;
-                    lvText.text = $"Lv.{GameStatus.inst.Pet2_Lv}";
-                    break;
-            }
-            SoulText.text = $"{nextSoul.ToString("N0")}";
-            BornText.text = $"{nextBorn.ToString("N0")}";
-            BookText.text = $"{nextBook.ToString("N0")}";
-        }
+        get => relicBuyCountBtnNum;
     }
-    private void setPetMaterial()
+    int relicBuyCount = 1;
+    public int RelicBuyCount
     {
-
+        get => relicBuyCount;
+        set
+        {
+            relicBuyCount = value;
+            OnRelicBuyCountChanged?.Invoke();
+        }
     }
 
     ////////////////////////////////////////////상점///////////////////////////////////////
+
     [Header("상품 스프라이트")]
     [SerializeField] Sprite[] list_prodSprite;
     /// <summary>
@@ -220,13 +131,14 @@ public class UIManager : MonoBehaviour
         return ShopOpenBtn;
     }
 
-
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ShopManager.Instance.OpenRubyShop();
+            GameStatus.inst.Ruby += 1000;
+            GameStatus.inst.PlusStar("100000000");
         }
     }
     private void Awake()
@@ -246,7 +158,7 @@ public class UIManager : MonoBehaviour
         //기본 UI 초기화
         canvas = GameObject.Find("---[UI Canvas]").GetComponent<Canvas>();
 
-        Transform trsBotBtn = canvas.transform.Find("BackGround/BottomBtn");
+        Transform trsBotBtn = canvas.transform.Find("ScreenArea/BackGround/BottomBtn");
         int botBtnCount = trsBotBtn.childCount;
         for (int iNum = 0; iNum < botBtnCount; iNum++)
         {
@@ -254,51 +166,45 @@ public class UIManager : MonoBehaviour
         }
         ShopOpenBtn = trsBotBtn.Find("Shop").GetComponent<Button>();
 
-        m_listMainUI.Add(canvas.transform.Find("BackGround/Quest").gameObject);
-        m_listMainUI.Add(canvas.transform.Find("BackGround/Weapon").gameObject);
-        m_listMainUI.Add(canvas.transform.Find("BackGround/Pet").gameObject);
-        m_listMainUI.Add(canvas.transform.Find("BackGround/Relic").gameObject);
-        BackGround = canvas.transform.Find("BackGround").GetComponent<Image>();
-        //BackGround.rectTransform.offsetMax = new UnityEngine.Vector2(BackGround.rectTransform.offsetMax.x, canvas.pixelRect.y);
-        CanvasScaler cs = canvas.GetComponent<CanvasScaler>();
-        float hightratio = Screen.height / cs.referenceResolution.y;
-        float ratio = hightratio * cs.matchWidthOrHeight;
-        Debug.Log(hightratio);
+        m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Quest").gameObject);
+        m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Weapon").gameObject);
+        m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Pet").gameObject);
+        m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Relic").gameObject);
+        m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
+        ScreenArea = canvas.transform.Find("ScreenArea").GetComponent<RectTransform>();
 
         //퀘스트 초기화
-        m_QuestParents = canvas.transform.Find("BackGround/Quest/Scroll View").GetComponent<ScrollRect>().content;
-        Transform trsQuestBuyCount = canvas.transform.Find("BackGround/Quest/AllLvUpBtn");
+        m_QuestParents = canvas.transform.Find("ScreenArea/BackGround/Quest/Scroll View").GetComponent<ScrollRect>().content;
+        Transform trsQuestBuyCount = canvas.transform.Find("ScreenArea/BackGround/Quest/AllLvUpBtn");
         int QuestBuyCount = trsQuestBuyCount.childCount;
         for (int iNum = QuestBuyCount - 1; iNum >= 0; iNum--)
         {
             m_list_QuestBuyCountBtn.Add(trsQuestBuyCount.GetChild(iNum).GetComponent<Image>());
         }
 
-        m_totalGold = canvas.transform.Find("BackGround/Quest/TotalGps").GetComponent<TextMeshProUGUI>();
+        m_totalGold = canvas.transform.Find("ScreenArea/BackGround/Quest/TotalGps").GetComponent<TextMeshProUGUI>();
+        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
+        InvokeRepeating("getGoldPerSceond", 0, 1);//초당 골드 획득
 
         //무기 초기화
-        m_WeaponParents = canvas.transform.Find("BackGround/Weapon/Scroll View").GetComponent<ScrollRect>().content;
+        m_WeaponParents = canvas.transform.Find("ScreenArea/BackGround/Weapon/Scroll View").GetComponent<ScrollRect>().content;
         m_WeaponParentRect = m_WeaponParents.GetComponent<RectTransform>();
-        m_totalAtk = canvas.transform.Find("BackGround/Weapon/TotalAtk").GetComponent<TextMeshProUGUI>();
-        WeaponBook = canvas.transform.Find("BackGround/Weapon/AllLvUpBtn/DogamBtn").GetComponent<Button>();
-
-
-        //펫 초기화
-        Transform trsPetContents = canvas.transform.Find("BackGround/Pet/Scroll View/Viewport/Content");
-        int petCount = list_Pet.Count;
-        m_aryPetDetailInforBtns = new Button[petCount];
-        for (int iNum = 0; iNum < petCount; iNum++)
-        {
-            Transform trs = Instantiate(obj_Pet, trsPetContents).transform;
-            m_aryPetDetailInforBtns[iNum] = trs.Find("imageBtn").GetComponent<Button>();
-            list_Pet[iNum].Trs = trs;
-            list_Pet[iNum].initStart();
-        }
-
-        m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
-        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
+        m_totalAtk = canvas.transform.Find("ScreenArea/BackGround/Weapon/TotalAtk").GetComponent<TextMeshProUGUI>();
+        WeaponBook = canvas.transform.Find("ScreenArea/BackGround/Weapon/AllLvUpBtn/DogamBtn").GetComponent<Button>();
         SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
-        InvokeRepeating("getGoldPerSceond", 0, 1);
+
+        //유물 초기화
+        GotoRelicShopBtn = canvas.transform.Find("ScreenArea/BackGround/Relic/GotoRelicShopBtn").GetComponent<Button>();
+        GotoRelicShopBtn.onClick.AddListener(() => 
+        {
+            ShopManager.Instance.OpenShop(1);
+        });
+        Transform RelicAllUpBtnParents =  canvas.transform.Find("ScreenArea/BackGround/Relic/AllLvUpBtn");
+        int RelicAllCount = RelicAllUpBtnParents.childCount;
+        for (int iNum = RelicAllCount - 1; iNum >= 0; iNum--)
+        {
+            m_list_RelicBuyCountBtn.Add(RelicAllUpBtnParents.GetChild(iNum).GetComponent<Image>());
+        }
 
         int weaponCount = m_WeaponParents.childCount;
         for (int iNum = 0; iNum < weaponCount; iNum++)
@@ -311,27 +217,52 @@ public class UIManager : MonoBehaviour
         {
             m_list_Quest.Add(m_QuestParents.GetChild(iNum));
         }
-
+        setScreen();
         initButton();
+    }
+
+    void setScreen()
+    {
+        int setWidth = 1080;
+        int setheight = 1920;
+        float setRatio = (float)setWidth / setheight;
+
+        int deviceWitdh = Screen.width;
+        int deviceHeight = Screen.height;
+        float deviceRatio = (float)Screen.width / Screen.height;
+
+        Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWitdh) * setWidth), true);
+        if (setRatio < deviceRatio)
+        {
+            float newWidth = setRatio / deviceRatio;
+            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f);
+        }
+        else
+        {
+            float newHeight = deviceRatio / setRatio;
+            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
+        }
+
+
+
+        //UnityEngine.Vector2 minAnchor = Screen.safeArea.min;
+        //UnityEngine.Vector2 maxAnchor = Screen.safeArea.max;
+
+        
+
+        //minAnchor.x /= setWidth;
+        //minAnchor.y /= setheight;
+
+        //maxAnchor.x /= setWidth;
+        //maxAnchor.y /= setheight;
+
+        //ScreenArea.anchorMin = minAnchor;
+        //ScreenArea.anchorMax = maxAnchor;
+
     }
 
     void initButton()
     {
-        m_aryPetDetailInforBtns[0].onClick.AddListener(() =>//1번 펫 상세보기
-        {
-            PetDetailViewr_UI.inst.TopArrayBtnActive(0);
-        });
-
-        m_aryPetDetailInforBtns[1].onClick.AddListener(() =>//2번 펫 상세보기
-        {
-            PetDetailViewr_UI.inst.TopArrayBtnActive(1);
-        });
-
-        m_aryPetDetailInforBtns[2].onClick.AddListener(() =>//3번 펫 상세보기
-        {
-            PetDetailViewr_UI.inst.TopArrayBtnActive(2);
-        });
-
         WeaponBook.onClick.AddListener(() => DogamManager.inst.Set_DogamListAcitve(0, true));
     }
 
@@ -377,7 +308,7 @@ public class UIManager : MonoBehaviour
     public void ClickOpenThisTab(GameObject _obj)
     {
         _obj.SetActive(true);
-        canvas.sortingOrder = 4;
+        canvas.sortingOrder = 17;
     }
 
     public void ClickCloseThisTab(GameObject _obj)
@@ -405,6 +336,33 @@ public class UIManager : MonoBehaviour
                 break;
         }
         m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
+    }
+
+    public void ClickRelicBuyCountBtn(int count)
+    {
+        m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = m_BtnSprite[0];
+        relicBuyCountBtnNum = count;
+        switch (count)
+        {
+            case 0:
+                RelicBuyCount = 1;
+                break;
+            case 1:
+                RelicBuyCount = 10;
+                break;
+            case 2:
+                RelicBuyCount = 100;
+                break;
+            case 3:
+                RelicBuyCount = 0;
+                break;
+        }
+        m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = m_BtnSprite[1];
+    }
+
+    public void SetGotoGachaBtn(bool value)
+    {
+        GotoRelicShopBtn.gameObject.SetActive(value);
     }
 
     public void MaxBuyWeapon()

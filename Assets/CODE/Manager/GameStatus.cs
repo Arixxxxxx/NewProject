@@ -129,7 +129,7 @@ public class GameStatus : MonoBehaviour
     /////////////////////[ 플에이어 재화 변수]//////////////////////////////
 
     // 1. 소지 골드
-    public UnityEvent OnGoldChanged;
+    [HideInInspector] public UnityEvent OnGoldChanged;
     string gold = "0";
     public string Gold
     {
@@ -146,7 +146,7 @@ public class GameStatus : MonoBehaviour
     }
 
     // 2. 소지 별
-    public UnityEvent OnStartChanged;
+    [HideInInspector] public UnityEvent OnStartChanged;
     string star = "0"; // 환생시 주는 화폐
     public string Star
     {
@@ -177,7 +177,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    public UnityEvent OnRubyChanged;
+    [HideInInspector] public UnityEvent OnRubyChanged;
     // 4. 소지 루비
     int ruby = 0;
     public int Ruby
@@ -434,7 +434,7 @@ public class GameStatus : MonoBehaviour
     public void SetAryQuestLv(int Num, int Value)
     {
         aryQuestLv[Num] = Value;
-        MissionData.Instance.SetSpecialMission(Num, Value, MissionType.Quest);
+        MissionData.Instance.SetSpecialMission(Num, Value, SpMissionTag.Quest);
     }
 
     int[] aryWeaponLv = new int[30];
@@ -447,7 +447,7 @@ public class GameStatus : MonoBehaviour
     public void SetAryWeaponLv(int Num, int Value)
     {
         aryWeaponLv[Num] = Value;
-        MissionData.Instance.SetSpecialMission(Num, Value, MissionType.Weapon);
+        MissionData.Instance.SetSpecialMission(Num, Value, SpMissionTag.Weapon);
     }
 
     [HideInInspector] public UnityEvent OnPercentageChanged;

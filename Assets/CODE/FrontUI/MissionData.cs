@@ -21,8 +21,8 @@ public class MissionData : MonoBehaviour
     TMP_Text worldTitleText;//메인화면 미션 타이틀 텍스트
     TMP_Text worldDetailText;//메인화면 미션 세부 텍스트
 
-    [SerializeField] GameObject obj_Mission;
-    [SerializeField] GameObject obj_SpecialMission;
+    [SerializeField] GameObject obj_Mission;//일일,주간 미션 바
+    [SerializeField] GameObject obj_SpecialMission;//스페셜 미션 바
     GameObject[] list_MissionWindow = new GameObject[3];// 일일,주간,특별미션창
     Image[] list_MissionTopBtnImage;// 상단 버튼 이미지
     [SerializeField] Sprite[] list_topBtnSelectSprite;// 상단 버튼 선택 스프라이트
@@ -34,14 +34,17 @@ public class MissionData : MonoBehaviour
     bool isCanResetWeekly = true;
 
     //////////////////일일 미션//////////////////
+    [Header("일일 미션 목록")]
+    [SerializeField] List<DailyMission> list_DailyMission = new List<DailyMission>();
     [Serializable]
     public class DailyMission
     {
         [SerializeField] string Name;
-        [SerializeField] int index;
         [SerializeField] int maxCount;
         [SerializeField] string rewardCount;
         [SerializeField] ProductTag rewardTag;
+        [SerializeField] DailyMissionTag MissionTag;
+        int index;
         Transform trs;
         public Transform Trs { get => trs; set { trs = value; } }
         Image imageIcon;
@@ -86,7 +89,7 @@ public class MissionData : MonoBehaviour
             BarText = trs.Find("Space/Playbar/BarText").GetComponent<TMP_Text>();
             ClearText = trs.Find("ClearText").gameObject;
             Mask = trs.Find("Mask").gameObject;
-
+            index = trs.GetSiblingIndex();
 
             NameText.text = Name;
             switch (rewardTag)
@@ -101,6 +104,31 @@ public class MissionData : MonoBehaviour
                     rewardText.text = $"별 +{rewardCount}개";
                     break;
             }
+
+            switch (MissionTag)
+            {
+                case DailyMissionTag.VisitShop:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        ShopManager.Instance.OpenShop(0);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+                case DailyMissionTag.UseRuby:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        ShopManager.Instance.OpenShop(0);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+                case DailyMissionTag.KillMonster:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+            }
+
             BarText.text = $"{count} / {maxCount}";
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
@@ -156,8 +184,6 @@ public class MissionData : MonoBehaviour
             moveBtn.gameObject.SetActive(true);
         }
     }
-    [Header("일일 미션 목록")]
-    [SerializeField] List<DailyMission> list_DailyMission = new List<DailyMission>();
     public void SetDailyMission(string Name, int count)
     {
         int listNum = -1;
@@ -175,13 +201,16 @@ public class MissionData : MonoBehaviour
     }
 
     //////////////////주간 미션//////////////////
+    [Header("주간 미션 목록")]
+    [SerializeField] List<WeeklyMission> list_WeeklyMission = new List<WeeklyMission>();
     [Serializable]
     public class WeeklyMission
     {
         [SerializeField] string Name;
-        [SerializeField] int index;
+        int index;
         [SerializeField] int maxCount;
         [SerializeField] string rewardCount;
+        [SerializeField] WeeklyMissionTag missionTag;
         [SerializeField] ProductTag rewardTag;
         Transform trs;
         public Transform Trs { get => trs; set { trs = value; } }
@@ -228,7 +257,7 @@ public class MissionData : MonoBehaviour
             ClearText = trs.Find("ClearText").gameObject;
             Mask = trs.Find("Mask").gameObject;
 
-
+            index = trs.GetSiblingIndex();
             NameText.text = Name;
             switch (rewardTag)
             {
@@ -240,6 +269,36 @@ public class MissionData : MonoBehaviour
                     break;
                 case ProductTag.Star:
                     rewardText.text = $"별 +{rewardCount}개";
+                    break;
+            }
+
+            switch (missionTag)
+            {
+                case WeeklyMissionTag.DailyMissionAllClear:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        Instance.ClickMissionType(0);
+                    });
+                    break;
+                case WeeklyMissionTag.Reincarnation:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+                case WeeklyMissionTag.QuestLvUp:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        UIManager.Instance.ClickBotBtn(0);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+                case WeeklyMissionTag.WeaponUpgrade:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        UIManager.Instance.ClickBotBtn(1);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
                     break;
             }
             BarText.text = $"{count} / {maxCount}";
@@ -289,8 +348,6 @@ public class MissionData : MonoBehaviour
             moveBtn.gameObject.SetActive(true);
         }
     }
-    [Header("주간 미션 목록")]
-    [SerializeField] List<WeeklyMission> list_WeeklyMission = new List<WeeklyMission>();
     public void SetWeeklyMission(string Name, int count)
     {
         int listNum = -1;
@@ -315,7 +372,7 @@ public class MissionData : MonoBehaviour
     {
         [SerializeField] public string Name;
         [SerializeField] int maxCount;
-        [SerializeField] public MissionType missionType;
+        [SerializeField] public SpMissionTag missionType;
         [SerializeField] int typeindex;
         [SerializeField] string rewardCount;
         [SerializeField] ProductTag rewardTag;
@@ -385,6 +442,31 @@ public class MissionData : MonoBehaviour
                     break;
             }
 
+            switch (missionType)
+            {
+                case SpMissionTag.Quest:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        UIManager.Instance.ClickBotBtn(0);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+                case SpMissionTag.Weapon:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        UIManager.Instance.ClickBotBtn(1);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+                case SpMissionTag.Relic:
+                    moveBtn.onClick.AddListener(() =>
+                    {
+                        UIManager.Instance.ClickBotBtn(2);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                    });
+                    break;
+            }
+
             clearBtn.onClick.AddListener(() =>
             {
                 clearBtn.gameObject.SetActive(false);
@@ -392,7 +474,7 @@ public class MissionData : MonoBehaviour
                 needClearText.text = "클리어!";
                 mask.SetActive(true);
                 trs.SetParent(Instance.GetSpecialParents());
-                trs.GetComponent<RectTransform>().sizeDelta = new Vector2(298, 60);
+                trs.GetComponent<RectTransform>().sizeDelta = new Vector2(278, 60);
                 trs.SetAsLastSibling();
 
                 Instance.nowSpecialIndex = Instance.GetSpecialMyIndex(this) + 1;
@@ -467,23 +549,23 @@ public class MissionData : MonoBehaviour
     /// <param name="Num"></param>
     /// <param name="count"></param>
     /// <param name="_type"></param>
-    public void SetSpecialMission(int Num, int count, MissionType _type)
+    public void SetSpecialMission(int Num, int count, SpMissionTag _type)
     {
         switch (_type)
         {
-            case MissionType.Quest:
+            case SpMissionTag.Quest:
                 if (list_SpecialQuest.Count - 1 >= Num)
                 {
                     list_SpecialQuest[Num].Count = count;
                 }
                 break;
-            case MissionType.Weapon:
+            case SpMissionTag.Weapon:
                 if (list_SpecialWeapon.Count >= Num && Num > 0)
                 {
                     list_SpecialWeapon[Num - 1].Count = count;
                 }
                 break;
-            case MissionType.Relic:
+            case SpMissionTag.Relic:
                 if (list_SpecialRelic.Count - 1 >= Num)
                 {
                     list_SpecialRelic[Num].Count = count;
@@ -541,7 +623,7 @@ public class MissionData : MonoBehaviour
         worldTitleText = worldUiCanvas.Find("StageUI/Right/QeustList/BG/Step").GetComponent<TMP_Text>();
         worldDetailText = worldUiCanvas.Find("StageUI/Right/QeustList/BG/Text").GetComponent<TMP_Text>();
 
-        obj_MissionWindow = obj_UICanvas.transform.Find("Mission");
+        obj_MissionWindow = obj_UICanvas.transform.Find("ScreenArea/Mission");
         list_MissionWindow[0] = obj_MissionWindow.Find("Mission/Window/Daily(Scroll View)").gameObject;
         list_MissionWindow[1] = obj_MissionWindow.Find("Mission/Window/Weekly(Scroll View)").gameObject;
         list_MissionWindow[2] = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)").gameObject;
@@ -584,17 +666,17 @@ public class MissionData : MonoBehaviour
         {
             Transform trs = Instantiate(obj_SpecialMission, obj_SpecialContents).transform;
 
-            if (list_SpecialMIssion[iNum].missionType == MissionType.Quest)
+            if (list_SpecialMIssion[iNum].missionType == SpMissionTag.Quest)
             {
                 list_SpecialQuest.Add(list_SpecialMIssion[iNum]);
             }
 
-            if (list_SpecialMIssion[iNum].missionType == MissionType.Weapon)
+            if (list_SpecialMIssion[iNum].missionType == SpMissionTag.Weapon)
             {
                 list_SpecialWeapon.Add(list_SpecialMIssion[iNum]);
             }
 
-            if (list_SpecialMIssion[iNum].missionType == MissionType.Relic)
+            if (list_SpecialMIssion[iNum].missionType == SpMissionTag.Relic)
             {
                 list_SpecialRelic.Add(list_SpecialMIssion[iNum]);
             }
@@ -608,12 +690,16 @@ public class MissionData : MonoBehaviour
         MissionOpenBtn.onClick.AddListener(() =>
         {
             obj_MissionWindow.gameObject.SetActive(true);
-            UIManager.Instance.changeSortOder(4);
+            UIManager.Instance.changeSortOder(17);
         });
     }
 
-
-    public void ClickMissionType(int value)//상부 일일,주간,스페셜 미션 버튼 클릭
+    // 1. 상부 일일,주간,스페셜 미션 버튼 클릭
+    /// <summary>
+    /// 상부 일일,주간,스페셜 미션 버튼 클릭
+    /// </summary>
+    /// <param name="value"></param>
+    public void ClickMissionType(int value)
     {
         list_MissionWindow[missionTypeIndex].SetActive(false);
         list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnNonSelectSprite[missionTypeIndex];
@@ -626,7 +712,6 @@ public class MissionData : MonoBehaviour
     {
         checkDay();
         checkWeek();
-
     }
 
     void checkDay()
@@ -636,7 +721,7 @@ public class MissionData : MonoBehaviour
             isCanResetDaily = false;
             initDailyMission();
         }
-        else if(DateTime.Now.ToString("HH") != "00")
+        else if (DateTime.Now.ToString("HH") != "00")
         {
             isCanResetDaily = true;
         }

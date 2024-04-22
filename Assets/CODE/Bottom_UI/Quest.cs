@@ -8,7 +8,7 @@ using System.Numerics;
 public class Quest : MonoBehaviour
 {
     [Header("퀘스트단계")]
-    [SerializeField] int Number;//퀘스트 단계
+    int Number;//퀘스트 단계
     [Header("성장률")]
     [SerializeField] float growthRate;//성장률
     [Header("초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐")]
@@ -55,10 +55,19 @@ public class Quest : MonoBehaviour
 
     void Start()
     {
+        Number = transform.GetSiblingIndex();
         initValue();
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
         UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);
-        GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
+        GameStatus.inst.OnGoldChanged.AddListener(() =>
+        { 
+            if (UIManager.Instance.QuestBuyCountBtnNum == 3)//max일 때
+            {
+                setNextCost();
+                setText();
+            }
+            SetbtnActive();
+        });
         GameStatus.inst.OnPercentageChanged.AddListener(_OnItemPercentChanged);
     }
 

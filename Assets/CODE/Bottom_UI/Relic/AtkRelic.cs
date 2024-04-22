@@ -4,9 +4,5 @@ using UnityEngine;
 
 public class AtkRelic : NormalRelic
 {
-    protected override void Start()
-    {
-        base.Start();
-    }
 
 }

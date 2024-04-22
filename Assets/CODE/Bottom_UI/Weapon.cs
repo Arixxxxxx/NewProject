@@ -7,8 +7,8 @@ using TMPro;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField] int Number;//무기 단계
-    [SerializeField] int lv;//무기 업그레이드 레벨
+    int Number;//무기 단계
+    int lv;//무기 업그레이드 레벨
     int Lv
     {
         get => lv;
@@ -52,6 +52,7 @@ public class Weapon : MonoBehaviour
     private void Start()
     {
         weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
+        Number = transform.GetSiblingIndex();
         weaponImage.sprite = ActionManager.inst.Get_WeaponSprite(Number);
         initValue();
     }
@@ -102,13 +103,13 @@ public class Weapon : MonoBehaviour
             clickWeaponImage();
             setNextCost();
             setText();
-            if (Lv - Number * 5 >= 5)
+            if (Lv % 5 == 0)
             {
-                if(objBtn == null)
+                if (objBtn == null)
                 {
                     objBtn = transform.Find("Button").GetComponent<Button>();
                 }
-                objBtn.interactable = false;
+                objBtn.gameObject.SetActive(false);
                 UIManager.Instance.WeaponUpComplete(transform);
                 DogamManager.inst.GetWeaponCheck(Number + 1);
             }

@@ -33,12 +33,12 @@ public class NormalRelic : MonoBehaviour
         set
         {
             percentage = value;
-            GameStatus.inst.SetAryPercent((int)relicTag ,value);
+            GameStatus.inst.SetAryPercent((int)relicTag, value);
             PercentText.text = ((int)(Percnetage * 100f)).ToString() + "%";
         }
     }
 
-    protected virtual void Start()
+    void Start()
     {
         NameText = transform.Find("NameText").GetComponent<TextMeshProUGUI>();
         ExText = transform.Find("TextBox/ExplaneText").GetComponent<TextMeshProUGUI>();
@@ -46,19 +46,57 @@ public class NormalRelic : MonoBehaviour
         PriceText = transform.Find("Button/PriceText").GetComponent<TextMeshProUGUI>();
         LvText = transform.Find("Button/LvText").GetComponent<TextMeshProUGUI>();
         upBtn = transform.Find("Button").GetComponent<Button>();
-        NameText.text = $"{transform.GetSiblingIndex()+1}. {Name}";
+        NameText.text = $"{transform.GetSiblingIndex() + 1}. {Name}";
         ExText.text = Explane;
         LvText.text = $"Lv. {Lv}";
-        Percnetage = Mathf.Pow(1.1f, Lv);
+        setPercent();
 
         //PriceText.text = "가격 정해야됨";
-        upBtn.onClick.AddListener(ClickUp);
+        upBtn.onClick.AddListener(clickUp);
     }
 
-    void ClickUp()
+    void clickUp()
     {
+        switch (relicTag)
+        {
+            case NormalRelicTag.Atk:
+                Lv++;
+                break;
+            case NormalRelicTag.AtkSpeed:
+                Lv++;
+                if (Lv >= 10)
+                {
+                    upBtn.interactable = false;
+                    PriceText.text = "Max";
+                }
+                break;
+            case NormalRelicTag.Critical:
+                percentage = Lv;
+                if (Lv >= 25)
+                {
+                    upBtn.interactable = false;
+                    PriceText.text = "Max";
+                }
+                break;
+        }
         Lv++;
         LvText.text = $"Lv {Lv}";
-        Percnetage = Mathf.Pow(1.1f, Lv);
+        setPercent();
+    }
+
+    void setPercent()
+    {
+        switch (relicTag)
+        {
+            case NormalRelicTag.Atk:
+                percentage = 100 + Lv;
+                break;
+            case NormalRelicTag.AtkSpeed:
+                percentage = 100 + 15 * Lv;
+                break;
+            case NormalRelicTag.Critical:
+                percentage = Lv;
+                break;
+        }
     }
 }

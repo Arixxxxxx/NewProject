@@ -2,14 +2,25 @@ using UnityEngine;
 
 public enum RankType
 {
-    Normal,
     Rare,
     Epic,
     Legent,
 }
 public enum ItemTag
 {
-    Test
+    Atk,
+    AtkSpeed,
+    Critical,
+    QuestGold,
+    KillGold,
+    OfflineGold,
+    QuestWeaponPrice,
+    CriticalDmg,
+    BombDmg,
+    NecromancerDmg,
+    PandaBuff,
+    FeverTime,
+    GetStar
 }
 
 public enum NormalRelicTag
@@ -28,7 +39,7 @@ public enum ProductTag
     Ruby
 }
 
-public enum MissionType
+public enum SpMissionTag
 { 
     Quest,
     Weapon,
@@ -42,7 +53,18 @@ public enum PetType
     GoldPet,
 }
 
-public interface ITypeGetable
-{
-    Vector2 GetMyType();
+public enum DailyMissionTag
+{ 
+    VisitShop,
+    UseRuby,
+    KillMonster,
+    DialymissionClear
+}
+
+public enum WeeklyMissionTag
+{ 
+    DailyMissionAllClear,
+    Reincarnation,
+    QuestLvUp,
+    WeaponUpgrade
 }

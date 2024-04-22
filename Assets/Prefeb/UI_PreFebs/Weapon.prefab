@@ -95,15 +95,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fefcfa3f88f6ce243aef908574301305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Number: 0
-  lv: 0
   costGrowthRate: 1.1
   atkpowNumRate: 0.1
   priceText: {fileID: 1147194082101947668}
   upAtkText: {fileID: 433331736225987493}
   LvText: {fileID: 7673475076296923603}
   totalAtkText: {fileID: 1847941430635420389}
-  objBtn: {fileID: 2675935466647478263}
+  objBtn: {fileID: 3364550774679967550}
   mask: {fileID: 3983435716361660366}
 --- !u!1 &297248806945767726
 GameObject:
@@ -494,8 +492,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIStatus, Assembly-CSharp
+      - m_Target: {fileID: 8376633681631703050}
+        m_TargetAssemblyTypeName: Weapon, Assembly-CSharp
         m_MethodName: ClickBuy
         m_Mode: 1
         m_Arguments:
@@ -540,8 +538,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 57.1, y: 5.2}
-  m_SizeDelta: {x: 37.5952, y: 20}
+  m_AnchoredPosition: {x: 50.819508, y: 5.200001}
+  m_SizeDelta: {x: 50, y: 20}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8146872471006055241
 CanvasRenderer:
@@ -793,7 +791,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8927692335262392843
 RectTransform:
   m_ObjectHideFlags: 0
@@ -885,7 +883,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 14.7, y: 7.07}
+  m_AnchoredPosition: {x: 11, y: 7.07}
   m_SizeDelta: {x: 13.371, y: 13.3706}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &6406998256455066900
@@ -1125,7 +1123,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 132A
+  m_text: 132.3A
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 703c43d1546312e45bf38488dc0ea6b0, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 8f4207d68987e3947b9a973412ba581e, type: 2}
@@ -1361,7 +1359,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -92.5, y: 3.7}
+  m_AnchoredPosition: {x: -83.35, y: 3.7}
   m_SizeDelta: {x: 37.5952, y: 20}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &4510672297612836569
