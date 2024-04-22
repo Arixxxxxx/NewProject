@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour
     GameObject miniGameRef;
     public GameObject MiniGameRef { get { return miniGameRef; } }
 
-
+    private bool miniGameMode;
+    public bool MiniGameMode => miniGameMode;
 
     private void Awake()
     {
@@ -78,6 +79,8 @@ public class GameManager : MonoBehaviour
     {
         if (value)
         {
+            miniGameMode = true;
+
             miniGameRef.SetActive(true);
             miniGameCam.gameObject.SetActive(true);
             MinigameManager.inst.minigameReset();
@@ -90,6 +93,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            miniGameMode = false;
+
             worldCam.gameObject.SetActive(true);
             frontUiRef.SetActive(true);
             uiCanvasRef.SetActive(true);
