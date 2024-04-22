@@ -73,7 +73,6 @@ public class AdMarket : MonoBehaviour
         // 배열 초기화
         curItemCount = new int[goodsCount];
         coolTimeTimer = new float[goodsCount];
-        Debug.Log(goodsCount);
         Array.Copy(maxItemCount, curItemCount, goodsCount);
         Array.Fill(coolTimeTimer, coolTime);
     }

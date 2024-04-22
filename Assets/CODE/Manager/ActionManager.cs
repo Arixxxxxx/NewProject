@@ -226,6 +226,14 @@ public class ActionManager : MonoBehaviour
             GameStatus.inst.GetNewbieGiftDay[0] -= 1;
         }
 
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            GameManager.inst.ActiveMiniGameMode(true);
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            GameManager.inst.ActiveMiniGameMode(false);
+        }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             //BuffContoller.inst.ActiveBuff(4, 3);
