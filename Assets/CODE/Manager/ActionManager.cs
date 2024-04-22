@@ -791,6 +791,7 @@ public class ActionManager : MonoBehaviour
     // 카메라 쉐이크
     public void F_PlayerOnHitCamShake()
     {
+        if(GameManager.inst.MiniGameMode == true) { return; }
         StopCoroutine(ShakeCam());
         StartCoroutine(ShakeCam());
     }

@@ -41,6 +41,11 @@ public class UI_IncreaseValueFont : MonoBehaviour
     // √÷√  Init
     public void Set_PosAndColorInit(int index, string value)
     {
+        if(valueFont == null)
+        {
+            valueFont = GetComponent<TMP_Text>();
+        }
+
         valueFont.text = "+" + CalCulator.inst.StringFourDigitChanger(value);
         valueFont.color = fontColor[index];
     }
