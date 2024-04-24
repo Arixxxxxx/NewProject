@@ -14,6 +14,7 @@ public class ActionManager : MonoBehaviour
     PetContollerManager petManager;
 
     //카메라
+    GameObject camsRef;
     CinemachineVirtualCamera cam;
     CinemachineBasicMultiChannelPerlin camShake;
 
@@ -49,14 +50,15 @@ public class ActionManager : MonoBehaviour
     [Header("3. Insert Weapon => <Color=#47C832>( Sprite File )")]
     [Space]
     [SerializeField] Sprite[] weaponSprite;
-    [Header("4. Insert World BackGround => <Color=#47C832>( Sprite File )")]
-    [Space]
-    [SerializeField] Sprite[] backGroudSprite;
+    
     SpriteRenderer backGroundIMG;
     GameObject moveWindParticle;
     ParticleSystem playerDustPs;
 
     // 에너미
+    Sprite[] enemySmallSprite;
+    Sprite[] enemyLargeSprite;
+
     GameObject enemyObj;
     SpriteRenderer enemySr;
     Animator enemyAnim;
@@ -168,7 +170,8 @@ public class ActionManager : MonoBehaviour
         enemy_StartPoint = worldSpaceRef.transform.Find("SpawnPoint").GetComponent<Transform>();
         enemy_StopPoint = worldSpaceRef.transform.Find("StopPoint").GetComponent<Transform>();
 
-        cam = GameObject.Find("---[Cams]/Cam_0").GetComponent<CinemachineVirtualCamera>();
+        camsRef = GameObject.Find("---[Cams]").gameObject;
+        cam = camsRef.transform.Find("Cam_0").GetComponent<CinemachineVirtualCamera>();
         camShake = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
 
         Prefabs_Awake();
@@ -176,6 +179,9 @@ public class ActionManager : MonoBehaviour
 
     void Start()
     {
+        enemySmallSprite = SpriteResource.inst.MonsterSmall;
+        enemyLargeSprite = SpriteResource.inst.MonsterLargeSize;
+
         //최초 init
         Enemyinit();
         UI_Init();
@@ -323,13 +329,13 @@ public class ActionManager : MonoBehaviour
 
         checkPosition = enemyObj.transform.position.x - enemy_StopPoint.position.x;
 
-        if (checkPosition > 1.35f) // 거리값 체크 2이상 이동
+        if (checkPosition > 1.4f) 
         {
             enemyPosX += (Time.deltaTime * enemySpawnSpeed) * (1 + (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
-        else if (checkPosition < 1.35f) // 2미만 공격
+        else if (checkPosition < 1.4f) 
         {
             attackReady = true;
 
@@ -395,7 +401,7 @@ public class ActionManager : MonoBehaviour
             obj.SetActive(true);
 
             enemyCurHP = CalCulator.inst.BigIntigerMinus(enemyCurHP, DMG);
-            EnemyHPBarUI_Updater();
+            EnemyHPBar_FillAmount_Init();
             EnemyOnHitEffect(cri);
         }
         else if (checkDMG == "0")//에너미 사망 및 초기화
@@ -464,7 +470,7 @@ public class ActionManager : MonoBehaviour
         if (MinusValue != "0" && attackReady == true)
         {
             enemyCurHP = MinusValue;
-            EnemyHPBarUI_Updater();
+            EnemyHPBar_FillAmount_Init();
 
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
@@ -588,7 +594,7 @@ public class ActionManager : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         // 맵변경
-        TestMapChanger();
+        MapChanger();
         doEnemyMove = true;
 
         yield return new WaitForSeconds(0.5f);
@@ -649,12 +655,20 @@ public class ActionManager : MonoBehaviour
         //Hpbar 초기화
         hpBar_IMG.fillAmount = 1;
         hpBar_Text.text = string.Empty;
-        EnemyHPBarUI_Updater(); // 체력
+        EnemyHPBar_FillAmount_Init(); // 체력
 
         //스프라이트 값 할당
-        int spriteCount = enemySprite.Length;
-        curEnemyNum = Random.Range(0, spriteCount);
-        enemySr.sprite = enemySprite[curEnemyNum];
+        if(floorCount != 4)
+        {
+            curEnemyNum = Random.Range(0, enemySmallSprite.Length);
+            enemySr.sprite = enemySmallSprite[curEnemyNum];
+        }
+        else if(floorCount == 4)
+        {
+
+            curEnemyNum = Random.Range(0, enemyLargeSprite.Length);
+            enemySr.sprite = enemyLargeSprite[curEnemyNum];
+        }
    
     }
 
@@ -670,9 +684,12 @@ public class ActionManager : MonoBehaviour
         attackSpeed = attackTempSpeed - (attackSpeedLv * 0.15f);
     }
 
-    // 에너미 HP 바 업데이터
+    
+    /// <summary>
+    ///  Monster HPBar Update
+    /// </summary>
 
-    private void EnemyHPBarUI_Updater()
+    private void EnemyHPBar_FillAmount_Init()
     {
         hpBar_IMG.fillAmount = CalCulator.inst.StringAndStringDivideReturnFloat(enemyCurHP, enemyMaxHP, 3);
         hpBar_Text.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(enemyCurHP)}";
@@ -699,7 +716,8 @@ public class ActionManager : MonoBehaviour
     // 플레이어 움직임 속도변경
     public void SetPlayerMoveSpeed()
     {
-        float speed = 1 + GameStatus.inst.BuffAddSpeed;
+        float speed = 1 + GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue;
+        Debug.Log($"토탈 {speed} /버프{GameStatus.inst.BuffAddSpeed} / 뉴비 {GameStatus.inst.NewbieMoveSpeedBuffValue}");
         playerAnim.SetFloat("MoveSpeed", speed);
     }
 
@@ -775,18 +793,13 @@ public class ActionManager : MonoBehaviour
     }
 
     int mapint = 0;
-    private void TestMapChanger()
+    private void MapChanger()
     {
         mapint++;
-        mapint = mapint == 2 ? 0 : 1;
-        backGroundIMG.sprite = backGroudSprite[mapint];
+        mapint = (int)Mathf.Repeat(mapint, 3);
+        backGroundIMG.sprite = SpriteResource.inst.Map(mapint);
     }
 
-
-    private void Set_MapSpriteChanger(int indexNum)
-    {
-        backGroundIMG.sprite = backGroudSprite[indexNum];
-    }
 
     // 카메라 쉐이크
     public void F_PlayerOnHitCamShake()

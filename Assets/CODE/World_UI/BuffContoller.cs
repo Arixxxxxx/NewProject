@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class BuffContoller : MonoBehaviour
 {
@@ -30,8 +28,9 @@ public class BuffContoller : MonoBehaviour
     double[] buffTimer;
 
     ParticleSystem[] buffIconPs;
-    
+
     GameObject newBieObj;
+
     private void Awake()
     {
         if (inst == null)
@@ -68,7 +67,7 @@ public class BuffContoller : MonoBehaviour
     }
     private void Start()
     {
-        
+
         // 뉴비 버프 시간 넣어줌 (나중에 데이터매니저 신규유저일시넣어줌으로 옮겨야함)
         if (GameStatus.inst.IsNewBie && buffTimer[4] == 0)
         {
@@ -95,7 +94,9 @@ public class BuffContoller : MonoBehaviour
     public void ActiveBuff(int Num, float Time)
     {
         buffTimer[Num] += Time * 60;
-        buffIconBg[Num].gameObject.SetActive(true);
+        buffIconBg[Num].gameObject.SetActive(false);
+        BuffValueActiver(Num, true);
+
         switch (Num)
         {
             case 0:  //공
@@ -136,7 +137,8 @@ public class BuffContoller : MonoBehaviour
     {
         if (buffTimer[index] <= 0 && buffActive[index].activeSelf)
         {
-            buffIconBg[index].gameObject.SetActive(false);
+            buffIconBg[index].gameObject.SetActive(true);
+            BuffValueActiver(index, false);
 
             switch (index)
             {
@@ -149,13 +151,13 @@ public class BuffContoller : MonoBehaviour
 
                 case 3:  // 이벤트 광고 버프
                     buffBtns[index].gameObject.SetActive(false);
-                    
+
                     break;
             }
         }
         else if (buffTimer[index] > 0 && buffActive[index].activeSelf)
         {
-            if(buffIconBg[index].gameObject.activeSelf == true)
+            if (buffIconBg[index].gameObject.activeSelf == true)
             {
                 buffIconBg[index].gameObject.SetActive(false);
             }
@@ -188,17 +190,15 @@ public class BuffContoller : MonoBehaviour
     //뉴비 전용 타임체커
     private void NewBieBuffTimeCheck()
     {
-        if (buffTimer[4] <= 0 && newBieObj.activeSelf == true)
-        {
-            newBieObj.gameObject.SetActive(false);
-
-        }
-        else if (buffTimer[4] > 0 && newBieObj.activeSelf)
+        if (buffTimer[4] > 0)
         {
             buffTimer[4] -= Time.deltaTime;
 
-            if (buffIconBg[4].gameObject.activeSelf == true)
+            if (buffIconBg[4].gameObject.activeSelf == true && buffTimer[4] <= 0)
             {
+                Debug.Log("진입");
+                buffTimer[4] = 0;
+                BuffValueActiver(4, false);
                 buffIconBg[4].gameObject.SetActive(false);
             }
         }
@@ -222,5 +222,74 @@ public class BuffContoller : MonoBehaviour
     {
         return (int)buffTimer[type] / 60;
     }
+
+
+    /// <summary>
+    /// 버프활성화된거에따라서 값을 올려주는 함수
+    /// </summary>
+    /// <param name="buffIndex"> 0공격력 / 1 이속 / 2골드 / 3 강한공격력 / 4 뉴비버프</param>
+    /// <param name="Active"> true / false </param>
+    private void BuffValueActiver(int buffIndex, bool Active)
+    {
+        if (Active == true)
+        {
+            switch (buffIndex)
+            {
+                case 0: // 버프창 공격력증가
+                    GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 4);
+                    break;
+
+                case 1: // 이동속도 증가
+                    GameStatus.inst.BuffAddSpeed = 0.8f;
+                    break;
+
+                case 2: // 골드 획득량증가
+                    GameStatus.inst.BuffAddGold = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 2);
+                    break;
+
+                case 3: // 강한 공격력
+                    GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 8);
+                    break;
+
+                case 4: //뉴비버프
+                    GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 4);
+                    GameStatus.inst.NewbieAttackSpeed = 0.2f;
+                    GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 4);
+                    GameStatus.inst.NewbieMoveSpeedBuffValue = 0.3f;
+                    break;
+            }
+        }
+        else
+        {
+            switch (buffIndex)
+            {
+                case 0:
+                    GameStatus.inst.BuffAddATK = "0";
+                    break;
+
+                case 1:
+                    GameStatus.inst.BuffAddSpeed = 0f;
+                    break;
+
+                case 2:
+                    GameStatus.inst.BuffAddGold = "0";
+                    break;
+
+                case 3: // 강한 공격력
+                    GameStatus.inst.BuffAddAdATK = "0";
+                    break;
+
+                case 4: //뉴비버프
+                    GameStatus.inst.NewbieATKBuffValue = "0";
+                    GameStatus.inst.NewbieAttackSpeed = 0f;
+                    GameStatus.inst.NewbieGoldBuffValue = "0";
+                    GameStatus.inst.NewbieMoveSpeedBuffValue = 0f;
+                    break;
+            }
+        }
+
+
+    }
+
 
 }

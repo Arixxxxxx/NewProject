@@ -79,7 +79,7 @@ public class GameStatus : MonoBehaviour
     // 5-2. 뉴비 (이속)
     float newbieMoveSpeedBuffValue = 0;
 
-    public float NewbieMoveSpeedBuffValue { get { return newbieMoveSpeedBuffValue; } set { newbieMoveSpeedBuffValue = value; } }
+    public float NewbieMoveSpeedBuffValue { get { return newbieMoveSpeedBuffValue; } set { newbieMoveSpeedBuffValue = value; ActionManager.inst.SetPlayerMoveSpeed(); } }
 
     // 5-3. 뉴비 (골드량)
     string newbieGoldBuffValue = "0";
@@ -374,6 +374,8 @@ public class GameStatus : MonoBehaviour
         set
         {
             buffAddSpeed = value;
+            Debug.Log($"입력됨 {buffAddSpeed} / {value}");
+
             ActionManager.inst.SetPlayerMoveSpeed();
         }
     }
