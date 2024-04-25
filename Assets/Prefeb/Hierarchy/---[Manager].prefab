@@ -317,7 +317,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 825ac5986bec1ed4b86aa6f58dcda14d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  miniGame: []
+  miniGameRef: {fileID: 0}
+  miniGamesRef: {fileID: 0}
   selectGame: 0
 --- !u!114 &9043064537473548532
 MonoBehaviour:
@@ -343,10 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d9e4182687b82e4d8ee243bd1b6b685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectMenu:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  prefabs: {fileID: 2971721630004496921, guid: 54f67e8e2e768024faad4ae148a864cc, type: 3}
   mainScrrenSelectIndex: 2
 --- !u!1 &2736036513137762766
 GameObject:
@@ -558,9 +556,6 @@ MonoBehaviour:
   - {fileID: 2031298636, guid: a16dbe52a146326449633afd4f9b9006, type: 3}
   - {fileID: -1545356654, guid: a16dbe52a146326449633afd4f9b9006, type: 3}
   - {fileID: 1730077009, guid: a16dbe52a146326449633afd4f9b9006, type: 3}
-  backGroudSprite:
-  - {fileID: 21300000, guid: 82103446c89d6f545a0c10bd09fc2fd7, type: 3}
-  - {fileID: 21300000, guid: 82103446c89d6f545a0c10bd09fc2fd7, type: 3}
   enemyCurHP: 0
   enemyMaxHP: 0
   attackReady: 0
@@ -802,6 +797,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dec1fb15a62427e4c9d3d95f57b5ff98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  map:
+  - {fileID: 21300000, guid: 50b080c0f7473f945b140d29f6baa4cd, type: 3}
+  - {fileID: 21300000, guid: d4fc8d6698b263f439c09faf41f401b3, type: 3}
+  - {fileID: 21300000, guid: efc947be1ea3eb64fa6840a979e13463, type: 3}
+  monster:
+  - {fileID: 21300000, guid: e99a73ce155aef54f98e219fd5942016, type: 3}
+  - {fileID: 21300000, guid: d2a70662fafab414f9f52d443d017f6b, type: 3}
+  - {fileID: 21300000, guid: cea8d788a24a9564e8b89be82a4521a6, type: 3}
+  - {fileID: 21300000, guid: 58908fffca4f252459f54c43f9ae6475, type: 3}
+  - {fileID: 21300000, guid: 2c7d955e26897164890bc5bdd47efc89, type: 3}
+  monsterLargeSize:
+  - {fileID: 21300000, guid: c81de227b1515c541805407fe5e90b58, type: 3}
+  - {fileID: 21300000, guid: ce0c136321fea3049bc65c9c705e5f52, type: 3}
+  - {fileID: 21300000, guid: 77a292f902401fd48bb874fb3d9817d5, type: 3}
+  - {fileID: 21300000, guid: 1fa93f304b21dd246aae01196e35f841, type: 3}
+  - {fileID: 21300000, guid: e24121114854e204f829dcd51515366e, type: 3}
   buffIMG:
   - {fileID: 21300000, guid: 517ebcd2f62ed144885f3e79169f63ab, type: 3}
   - {fileID: 21300000, guid: d96c33b628c19404c81997071865b4db, type: 3}

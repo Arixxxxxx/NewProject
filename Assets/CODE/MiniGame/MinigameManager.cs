@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,14 +8,25 @@ public class MinigameManager : MonoBehaviour
 {
     public static MinigameManager inst;
 
+
+    // 현재 실행중인 게임번호
+    int curPlayGameNum = -1;
+    public int CurPlayGameNum { get { return curPlayGameNum; } set { curPlayGameNum = value; } }
+
     //Ref
     GameObject mainScrrenRef;
+    public GameObject MainScrrenRef
+    {
+        get { return mainScrrenRef; }
+    }
+
+    [SerializeField]
     GameObject miniGameRef, miniGamesRef;
     GameObject titleLogo;
 
     //MiniGameref
     int miniGameCount;
-    [SerializeField]
+
     GameObject[] miniGame;
 
     //종료할껀지 묻는창
@@ -33,6 +44,27 @@ public class MinigameManager : MonoBehaviour
     public GameObject SelectGameRef { get { return selectGameRef; } }
     Image cutton;
     Action startGameFuntion;
+
+
+    // 게임시작 애니메이션관련
+    Action gameCountAnimationEvent;
+    Animator startCountAnim;
+
+    //타임업 애니메이션
+    Animator timeUpAnim;
+
+    //Result 결과창 애니메이션 팝업
+    bool popupresult;
+    public bool PopupResult { get { return popupresult; } set { popupresult = value; } }
+
+    Animator starAnim; // 별 애니메이션
+    TMP_Text countText; // 미니게임화폐 갯수 출력
+    Image fillbar;
+    TMP_Text fillText;
+    GameObject resultRef;
+    //결과창 선택 화살표 액티브
+    GameObject[] resultMenuSelect = new GameObject[2];
+
     private void Awake()
     {
         if (inst == null)
@@ -46,9 +78,10 @@ public class MinigameManager : MonoBehaviour
 
         miniGameRef = GameManager.inst.MiniGameRef;
         mainScrrenRef = miniGameRef.transform.Find("MainScreen").gameObject;
-        miniGamesRef = miniGameRef.transform.Find("BG/MiniGames").gameObject;
+        miniGamesRef = miniGameRef.transform.Find("MiniGames").gameObject;
         miniGameCount = miniGamesRef.transform.childCount;
         miniGame = new GameObject[miniGameCount];
+
         for (int index = 0; index < miniGameCount; index++)
         {
             miniGame[index] = miniGamesRef.transform.GetChild(index).gameObject;
@@ -63,6 +96,18 @@ public class MinigameManager : MonoBehaviour
         noBtn = endGameQuestionBox.transform.Find("Window/Cutton/Middle/No").GetComponent<Button>();
         YesBtn = endGameQuestionBox.transform.Find("Window/Cutton/Middle/Yes").GetComponent<Button>();
 
+        resultRef = miniGamesRef.transform.Find("StartCanvas/Result").gameObject;
+        startCountAnim = miniGamesRef.transform.Find("StartCanvas/GameStart_Animation").GetComponent<Animator>();
+        timeUpAnim = miniGamesRef.transform.Find("StartCanvas/Time_Up").GetComponent<Animator>();
+        //resultAnim = miniGamesRef.transform.Find("StartCanvas/Result/Result").GetComponent<Animator>();
+        starAnim = miniGamesRef.transform.Find("StartCanvas/Result/Star").GetComponent<Animator>();
+        fillbar = miniGamesRef.transform.Find("StartCanvas/Result/GageBar/FillBar").GetComponent<Image>();
+        fillText = miniGamesRef.transform.Find("StartCanvas/Result/GageBar/GetCount").GetComponent<TMP_Text>();
+
+        resultMenuSelect[0] = miniGamesRef.transform.Find("StartCanvas/Result/MenuBtn/Active").gameObject;
+        resultMenuSelect[1] = miniGamesRef.transform.Find("StartCanvas/Result/ReStartBtn/Active").gameObject;
+
+        countText = miniGamesRef.transform.Find("StartCanvas/Result/RewardText/CountText").GetComponent<TMP_Text>();
         BtnInit();
     }
     void Start()
@@ -73,7 +118,7 @@ public class MinigameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        ResultMenuContoller();
     }
 
     // 버튼 초기화
@@ -95,7 +140,11 @@ public class MinigameManager : MonoBehaviour
         titleLogo.SetActive(true);
         selectGameRef.SetActive(false);
         endGameQuestionBox.SetActive(false);
+        curPlayGameNum = -1;
+        resultRef.SetActive(false);
+        // 게임들 초기화
         MinigameController.inst.ResetViewBoxPos();
+        MiniGame_0.inst.GameAllReset();
     }
     /// <summary>
     /// 타이틀화면 종료 -> 게임셀렉트로이동 
@@ -146,14 +195,14 @@ public class MinigameManager : MonoBehaviour
         if (selectGame == true) { return; }
 
         selectGame = true;
-        cutton.color = new Color(0,0,0,0);
+        cutton.color = new Color(0, 0, 0, 0);
 
         startGameFuntion = null;
         startGameFuntion += funtion;
 
         StartCoroutine(CuttonFadeInOut());
     }
-    Color inOutColor = new Color(0, 0, 0, 0.0025f);
+    Color inOutColor = new Color(0, 0, 0, 0.005f);
     IEnumerator CuttonFadeInOut()
     {
         while (cutton.color.a < 1)
@@ -175,7 +224,7 @@ public class MinigameManager : MonoBehaviour
             cutton.color -= inOutColor;
             yield return null;
         }
-        
+
         selectGame = false;
     }
 
@@ -201,6 +250,208 @@ public class MinigameManager : MonoBehaviour
             }
         }
     }
+
+
+    /// <summary>
+    /// 게임번호 받아서 
+    /// </summary>
+    /// <param name="gameNum"></param>
+    public void MiniGameStart(int gameNum)
+    {
+        switch (gameNum)
+        {
+            case 0:
+                MiniGame_0.inst.GameStart = true;
+                break;
+
+            case 1:
+                //miniGame_0.GameStart = true; 1번 게임으로 바꿔야함
+                break;
+        }
+    }
+
+
+    /// <summary>
+    ///<br> 미니게임 시작후 3,2,1 카운트 호출하는 함수 </br>
+    ///<br> 매개변수로 미니게임 번호를 넣으면된다 </br>
+    /// </summary>
+    /// <param name="gameNum"></param>
+    public void ActiveGameStartCountAnimationWithAction(int gameNum)
+    {
+        CurPlayGameNum = gameNum; // 시작하면서 게임번호 저장함
+        gameCountAnimationEvent = null;
+        gameCountAnimationEvent += () => MiniGameStart(gameNum);
+        startCountAnim.gameObject.SetActive(true);
+        startCountAnim.SetTrigger("Start");
+    }
+
+    /// <summary>
+    /// 애니메이션 클립에서 호출함
+    /// </summary>
+    public void InvokeStartCountAction()
+    {
+        gameCountAnimationEvent?.Invoke();
+    }
+
+    //게임종료
+    public void TimeUPAnimationInvoke()
+    {
+        timeUpAnim.gameObject.SetActive(true);
+    }
+
+    public void Set_ReSultValueAndActive()
+    {
+        PopupResult = true;
+
+        fillbar.fillAmount = 0;
+        fillText.text = "/";
+
+        resultRef.SetActive(true);
+        //resultAnim.gameObject.SetActive(true);
+
+        float[] getCountAndMaxCunt = new float[2];
+
+        // 스코어 및 최대점수량 가져오기
+        switch (CurPlayGameNum)
+        {
+            case 0:
+                getCountAndMaxCunt = MiniGame_0.inst.Get_GameScore();
+                break;
+
+            case 1:
+
+                break;
+        }
+
+        // 별 갯수 계산
+        int star = getCountAndMaxCunt[0] / getCountAndMaxCunt[1] < 0.3f ? 1 : getCountAndMaxCunt[0] / getCountAndMaxCunt[1] < 0.6f ? 2 : 3;
+        countText.text = star.ToString();
+
+        // 바 계산
+        StartCoroutine(fillAndTextAction(getCountAndMaxCunt[0], getCountAndMaxCunt[1], star));
+    }
+
+    WaitForSeconds fillWaitTime = new WaitForSeconds(0.08f);
+    IEnumerator fillAndTextAction(float cur, float max, int star)
+    {
+        yield return null;
+
+        string animString = star.ToString();
+        starAnim.SetTrigger(animString);
+        float actionValue = 0;
+
+        float duration = 0.01f; // 보간에 걸리는 시간, 필요에 따라 조절
+        float interpolationProgress = 0f; // 보간 진행률
+
+        while (actionValue < cur)
+        {
+            float targetFillAmount = actionValue / max;
+
+            // 초기 보간 진행률을 리셋
+            interpolationProgress = 0f;
+
+            // 현재 fillAmount부터 목표 fillAmount까지 보간 실행
+            while (interpolationProgress < 1.0f)
+            {
+                interpolationProgress += Time.deltaTime / duration;
+                fillbar.fillAmount = Mathf.Lerp(fillbar.fillAmount, targetFillAmount, interpolationProgress);
+                yield return null; // 다음 프레임까지 기다림
+            }
+
+            fillText.text = $"{actionValue} / {max}";
+            actionValue++;
+            yield return fillWaitTime;
+        }
+
+    }
+
+    int resultMenuSelectIndex = 0;
+    public int ResultMenuSelectIndex { get { return resultMenuSelectIndex; } set {  resultMenuSelectIndex = value; resultMenuSelectActiveInit(); } }    
+
+    // Result 메뉴 팝업시 하단 화살표 이동 및 B버튼 이용 실행
+    public void ResultMenuContoller()
+    {
+        if (PopupResult == false) { return; }
+
+        if (MinigameController.inst.Right == true && popupresult == true)
+        {
+            MinigameController.inst.Right = false;
+
+            if (ResultMenuSelectIndex < 1)
+            {
+                ResultMenuSelectIndex++;
+            }
+        }
+        else if (MinigameController.inst.Left == true && popupresult == true)
+        {
+            MinigameController.inst.Left = false;
+
+            if (ResultMenuSelectIndex > 0)
+            {
+                ResultMenuSelectIndex--;
+            }
+        }
+        
+        //메인메뉴로 (B버튼 클릭)
+        if (MinigameController.inst.Bbtn == true && popupresult == true && ResultMenuSelectIndex == 0)
+        {
+            MinigameController.inst.Bbtn = false;
+            popupresult = false;
+           
+
+            //팝업창끄기
+            switch (curPlayGameNum)
+            {
+                case 0:
+                    CuttonFadeInoutAndFuntion(() =>
+                    {
+                        MiniGame_0.inst.ReturnMainMenu();
+                        resultRef.SetActive(false);
+                        ResultMenuSelectIndex = 0;
+                    });
+                 
+                    break;
+            }
+        }
+
+        //리스타트
+        if (MinigameController.inst.Bbtn == true && popupresult == true && resultMenuSelectIndex == 1)
+        {
+            MinigameController.inst.Bbtn = false;
+            popupresult = false;
+           
+
+            switch (curPlayGameNum)
+            {
+                case 0:
+                    CuttonFadeInoutAndFuntion(() =>
+                    {
+                        MiniGame_0.inst.ReStartGame();
+                        resultRef.SetActive(false);
+                        ResultMenuSelectIndex = 0;
+                    });
+                    break;
+            }
+        }
+
+    }
+
+    private void resultMenuSelectActiveInit()
+    {
+        for (int i = 0; i < resultMenuSelect.Length; i++)
+        {
+            if (i == resultMenuSelectIndex)
+            {
+                resultMenuSelect[i].SetActive(true);
+            }
+            else
+            {
+                resultMenuSelect[i].SetActive(false);
+            }
+        }
+    }
+
+
 
 
 }

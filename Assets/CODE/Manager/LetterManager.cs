@@ -120,7 +120,7 @@ public class LetterManager : MonoBehaviour
         obj.GetComponent<LetterPrefab>().Set_Letter(ItemType, From, text, ItemCount);
         obj.transform.SetParent(letterBox.transform);
         obj.SetActive(true);
-        WorldUI_Manager.inst.OnEnableRedSimball(0, true); // 심볼 켜줌
+        
 
         LetterBoxOnlyInit(); // 최신화한번더
     }
@@ -171,7 +171,6 @@ public class LetterManager : MonoBehaviour
         if (count == 0)
         {
             // Text Init 풀링 시스템 리턴
-            WorldUI_Manager.inst.OnEnableRedSimball(0, false);
             OpenPostOnOfficeAndInit(true); //
         }
 
@@ -231,8 +230,7 @@ public class LetterManager : MonoBehaviour
         //확인창 열어주고
         EveryGetAlrimRef.SetActive(true);
         LetterBoxOnlyInit(); // 빈박스 표기
-        WorldUI_Manager.inst.OnEnableRedSimball(0, false); // 심볼 꺼줌
-        //
+    
     }
 
 
@@ -268,7 +266,7 @@ public class LetterManager : MonoBehaviour
             {
                 letterViewr.gameObject.SetActive(false);
                 notthingLetter.gameObject.SetActive(true);
-                WorldUI_Manager.inst.OnEnableRedSimball(0, false); // 심볼 꺼줌
+                
             }
         }
 

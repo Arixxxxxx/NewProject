@@ -58,10 +58,6 @@ public class DailyPlayCheckUIManager : MonoBehaviour
 
         BtnInIt();
     }
-    void Start()
-    {
-        IconRedSimballInit();
-    }
 
     private void Update()
     {
@@ -109,32 +105,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     }
 
 
-    // 게임실행시 아이콘에 빨간심볼 만들어주는 함수
-    public void IconRedSimballInit()
-    {
-        int[] LastGetGiftDay = GameStatus.inst.GetGiftDay;
 
-        if (LastGetGiftDay.Sum() == 0 && GameStatus.inst.GotDilayPlayGiftCount == 0)
-        {
-            WorldUI_Manager.inst.OnEnableRedSimball(1,true);
-        }
-        else if (LastGetGiftDay.Sum() != 0 && GameStatus.inst.GotDilayPlayGiftCount > 0)
-        {
-            //받은적이잇음
-            if (LastGetGiftDay[0] < DateTime.Now.Year) //현재 시간 체크
-            {
-                WorldUI_Manager.inst.OnEnableRedSimball(1, true);
-            }
-            else if (LastGetGiftDay[1] < DateTime.Now.Month)
-            {
-                WorldUI_Manager.inst.OnEnableRedSimball(1, true);
-            }
-            else if (LastGetGiftDay[2] < DateTime.Now.Day)
-            {
-                WorldUI_Manager.inst.OnEnableRedSimball(1, true);
-            }
-        }
-    }
 
     // 출석체크 초기화 대상날짜인지 확인
     public void LayOutInit()
@@ -199,7 +170,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
             GetIconChanger(GameStatus.inst.GotDilayPlayGiftCount); // 아이콘 받음처리
             GameStatus.inst.GetGiftDay = NowDate; // 일자 업데이트
             GameStatus.inst.GotDilayPlayGiftCount++; // 받은 카운트 올려줌
-            WorldUI_Manager.inst.OnEnableRedSimball(1, false); // 빨간심볼 꺼주기
+   
             GetBtnAcitve(false); // 버튼 비활성화
         });
 

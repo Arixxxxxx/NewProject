@@ -90,13 +90,13 @@ public class WorldEventRewardContent : MonoBehaviour
                 string curgold = ActionManager.inst.Get_EnemyDeadGold();
 
                 //¹°¾îº¸´ÂÃ¢ ¿ÀÇÂ
-                ADViewManager.inst.ActiveQuestionWindow(true, 1, 1, $"°ñµå +{curgold}", () => {
+                ADViewManager.inst.ActiveQuestionWindow(true, 1, 1, $"°ñµå +{CalCulator.inst.StringFourDigitAddFloatChanger(curgold)}", () => {
                     //±¤°íº¸°í
                     ADViewManager.inst.SampleAD_Active_Funtion(() =>
                     {
                         GameStatus.inst.PlusGold(curgold);
                         curgold = CalCulator.inst.StringFourDigitAddFloatChanger(curgold);
-                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(1), $"°ñµå +{curgold}");
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(1), $"°ñµå +{CalCulator.inst.StringFourDigitAddFloatChanger(curgold)}");
                     });
                 });
                 break;

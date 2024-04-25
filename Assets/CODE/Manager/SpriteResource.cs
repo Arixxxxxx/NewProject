@@ -6,6 +6,17 @@ public class SpriteResource : MonoBehaviour
 {
     public static SpriteResource inst;
 
+    [Header("# World Space Sprite")]
+    [Space]
+    [SerializeField] private Sprite[] map;
+    public Sprite Map(int value) => map[value];
+    [Space]
+    [SerializeField] private Sprite[] monster;
+    public Sprite[] MonsterSmall { get {  return monster; } }
+    [Space]
+    [SerializeField] private Sprite[] monsterLargeSize;
+    public Sprite[] MonsterLargeSize { get { return monsterLargeSize; } }
+    [Space]
     [Header("# 버프 아이콘")]
     [SerializeField] private Sprite[] buffIMG;
     [Space]

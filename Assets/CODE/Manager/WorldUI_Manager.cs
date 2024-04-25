@@ -38,8 +38,11 @@ public class WorldUI_Manager : MonoBehaviour
     GameObject rewardRef;
     Reward_Parts[] rewards;
     int rewardChildCount;
+    [SerializeField]
+    GameObject stageUI;
 
     //우편 수신함
+    
     Button getLetterBtn;
 
     // 출석체크
@@ -61,6 +64,11 @@ public class WorldUI_Manager : MonoBehaviour
 
     //레드심볼 관리
     List<GameObject> redSimBall_Icons = new List<GameObject>();
+
+    // 삼각형 버튼
+    Button openMenuIcon;
+    Animator menuAnim;
+    Transform checkArrowScaleX;
 
     private void Awake()
     {
@@ -111,36 +119,30 @@ public class WorldUI_Manager : MonoBehaviour
 
 
 
-        questListBtn = worldUI.transform.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
-        mainMenuBtn = worldUI.transform.Find("StageUI/Right/0_Line/MainMenu").GetComponent<Button>();
+        questListBtn = worldUI.transform.Find("StageUI/QeustList/Button").GetComponent<Button>();
+        mainMenuBtn = worldUI.transform.Find("StageUI/MainMenu").GetComponent<Button>();
         mainMenuBtn.onClick.AddListener(() => MainMenuManager.inst.Set_MainMenuActive(true));
 
         hwanSengBtn = worldUI.transform.Find("StageUI/HwanSeng").GetComponent<Button>();
 
-        // 게임화면 우측상단 버튼들
-        getLetterBtn = worldUI.transform.Find("StageUI/Right/0_Line/Letter").GetComponent<Button>(); // 우편함
-        dailyPlayCheckBtn = worldUI.transform.Find("StageUI/Right/0_Line/DailyCheck").GetComponent<Button>(); //출석체크
-        newBieBtn = worldUI.transform.Find("StageUI/Right/1_Line/NewBie").GetComponent<Button>(); //출석체크
-        mosterDogamBtn = worldUI.transform.Find("StageUI/Right/1_Line/MosterDogam").GetComponent<Button>(); //몬스터도감
-        adDeleteBtn = worldUI.transform.Find("StageUI/Right/1_Line/AdDelete").GetComponent<Button>(); // 광고제거
+        // 메뉴버튼들
+        
+        getLetterBtn = worldUI.transform.Find("StageUI/Letter").GetComponent<Button>(); // 우편함
+        dailyPlayCheckBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/DailyCheck").GetComponent<Button>(); //출석체크
+        newBieBtn = worldUI.transform.Find("StageUI/NewBie").GetComponent<Button>(); //뉴비
+        mosterDogamBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MosterDogam").GetComponent<Button>(); //몬스터도감
+        adDeleteBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/AdDelete").GetComponent<Button>(); // 광고제거
+        openMenuIcon = worldUI.transform.Find("StageUI/MenuBox/MeneOpen/RealBtn").GetComponent<Button>(); // 메뉴 삼각형버튼
+        checkArrowScaleX = openMenuIcon.transform.parent.GetComponent<Transform>(); 
+
+        menuAnim = worldUI.transform.Find("StageUI/MenuBox").GetComponent<Animator>(); // 메뉴바 연출 애니메ㅐ이션
 
         Prefabs_Awake();
-        redSimballI_Icons_List_Init();
+        
     }
 
 
-    // 아이콘 위에 빨간색구슬 초기화
-    private void redSimballI_Icons_List_Init()
-    {
-        GameObject simballRef = worldUI.transform.Find("StageUI/Right/Simballs").gameObject;
-        int count = simballRef.transform.childCount;
 
-        for (int index = 0; index < count; index++)
-        {
-            redSimBall_Icons.Add(simballRef.transform.GetChild(index).gameObject);
-        }
-
-    }
     void Start()
     {
         //테스트용 나중에 지워야함
@@ -217,28 +219,19 @@ public class WorldUI_Manager : MonoBehaviour
     private void BtnInIt()
     {
 
-        testBtn[0].onClick.AddListener(() =>
-        {
-            GameStatus.inst.AtkSpeedLv++;
-            if (GameStatus.inst.AtkSpeedLv < 10)
-            {
-                weapbtnText[0].text = $"공격 속도 x {GameStatus.inst.AtkSpeedLv}";
-            }
-            else if (GameStatus.inst.AtkSpeedLv >= 10)
-            {
-                weapbtnText[0].text = $"만렙";
-            }
-        });
-
-        //testBtn[2].onClick.AddListener(() =>
+        //testBtn[0].onClick.AddListener(() =>
         //{
-            
+        //    GameStatus.inst.AtkSpeedLv++;
+        //    if (GameStatus.inst.AtkSpeedLv < 10)
+        //    {
+        //        weapbtnText[0].text = $"공격 속도 x {GameStatus.inst.AtkSpeedLv}";
+        //    }
+        //    else if (GameStatus.inst.AtkSpeedLv >= 10)
+        //    {
+        //        weapbtnText[0].text = $"만렙";
+        //    }
         //});
 
-        //testBtn[3].onClick.AddListener(() =>
-        //{
-
-        //});
 
         // 월드 버튼 초기화
 
@@ -249,6 +242,17 @@ public class WorldUI_Manager : MonoBehaviour
         mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
         adDeleteBtn.onClick.AddListener(() => AdDelete.inst.ActiveAdDeleteWindow());
 
+        openMenuIcon.onClick.AddListener(() => 
+        {
+          if(checkArrowScaleX.localScale.x == 1)
+            {
+                menuAnim.SetTrigger("Open");
+            }
+          else if(checkArrowScaleX.localScale.x == -1)
+            {
+                menuAnim.SetTrigger("Close");
+            }
+        });
     }
 
     private void Prefabs_Awake()
@@ -300,15 +304,7 @@ public class WorldUI_Manager : MonoBehaviour
     }
       
 
-    /// <summary>
-    /// 빨간색 심볼 켜주고 꺼주고
-    /// </summary>
-    /// <param name="index"> 0= 우편수신함</param>
-    /// <param name="value"> 키고 / 끄기 </param>
-    public void OnEnableRedSimball(int index, bool value)
-    {
-        redSimBall_Icons[index].SetActive(value);
-    }
+
 
 
     /// <summary>

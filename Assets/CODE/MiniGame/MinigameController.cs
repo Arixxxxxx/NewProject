@@ -9,7 +9,7 @@ public class MinigameController : MonoBehaviour
     public static MinigameController inst;
 
     GameObject miniGameRef, controllerRef, gameBoy, colorThreeBtn;
-    GameObject titleScrren, selectGameScrren;
+    GameObject titleScrren, selectGameScrren, mainScrrenRef;
     //게임보이 버튼
     bool up, down, left, right, aBtn, bBtn, selectBtn, startBtn;
 
@@ -37,6 +37,7 @@ public class MinigameController : MonoBehaviour
     RectTransform viewBox;
     int gameCount;
     TMP_Text gameNameText;
+    
 
     private void Awake()
     {
@@ -54,6 +55,7 @@ public class MinigameController : MonoBehaviour
         controllerRef = miniGameRef.transform.Find("GameController").gameObject;
         gameBoy = controllerRef.transform.Find("GameBoyPad").gameObject;
 
+        mainScrrenRef = MinigameManager.inst.MainScrrenRef;
         titleScrren = MinigameManager.inst.TitleLogoRef;
         selectGameScrren = MinigameManager.inst.SelectGameRef;
 
@@ -79,9 +81,9 @@ public class MinigameController : MonoBehaviour
     //타이틀화면 -> 게임선택화면
     private void TitleScrrenKeyInput_Cheack()
     {
-        if (titleScrren.gameObject.activeSelf == false) { return; }
+        if (mainScrrenRef.gameObject.activeSelf == false) { return; }
 
-        if (titleScrren.gameObject.activeSelf && bBtn == true)
+        if (mainScrrenRef.gameObject.activeSelf && bBtn == true)
         {
             titleScrren.GetComponent<Animator>().SetTrigger("Hide");
         }
@@ -152,44 +154,48 @@ public class MinigameController : MonoBehaviour
         waitAction = false;
     }
 
-    /// <summary>
-    /// 빠져나갈때 필요한것들 리셋
-    /// </summary>
-    public void ResetViewBoxPos()
-    {
-        gameIndex = 0;
-        viewBox.anchoredPosition = Vector2.zero;
-    }
 
     private void GameNameTextInit()
     {
         switch(gameIndex)
         {
             case 0:
-                gameNameText.text = "죽순 담아요";
+                gameNameText.text = "<color=yellow>죽순 죽순!</color>";
                 break;
 
             case 1:
-                gameNameText.text = "낚시 레츠고";
+                gameNameText.text = "<color=yellow>비시 바시!";
                 break;
 
             case 2:
-                gameNameText.text = "연타 게임";
+                gameNameText.text = "<color=red>Coming Soon";
                 break;
 
             case 3:
-                gameNameText.text = "점프 점프 원판";
+                gameNameText.text = "<color=red>Coming Soon";
                 break;
         }
     }
 
     bool gameStart; // 나중에 게임을 돌아올떄
+    public bool Gamestart  {   get { return gameStart; } set { gameStart = value; }}
     private void GameStart()
     {
         MinigameManager.inst.CuttonFadeInoutAndFuntion(() => 
         {
             MinigameManager.inst.ActiveMinigame(gameIndex,true);
-            ResetViewBoxPos();
         });
+    }
+
+
+    /// <summary>
+    /// 빠져나갈때 필요한것들 리셋
+    /// </summary>
+    public void ResetViewBoxPos()
+    {
+        gameStart =false;
+        gameIndex = 0;
+        waitAction = false;
+        viewBox.anchoredPosition = Vector2.zero;
     }
 }
