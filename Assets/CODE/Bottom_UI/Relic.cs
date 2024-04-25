@@ -22,6 +22,39 @@ public class Relic : MonoBehaviour
         set
         {
             lv = value;
+            switch (itemNum)
+            {
+                case ItemTag.Atk:
+                case ItemTag.QuestGold:
+                case ItemTag.KillGold:
+                case ItemTag.OfflineGold:
+                case ItemTag.CriticalDmg:
+                case ItemTag.BombDmg:
+                case ItemTag.NecromancerDmg:
+                case ItemTag.PandaBuff:
+                case ItemTag.FeverTime:
+                case ItemTag.GetStar:
+
+                    break;
+                case ItemTag.AtkSpeed:
+                    if (lv >= 15)
+                    {
+                        upBtn.gameObject.SetActive(false);
+                    }
+                    break;
+                case ItemTag.Critical:
+                    if (lv >= 30)
+                    {
+                        upBtn.gameObject.SetActive(false);
+                    }
+                    break;
+                case ItemTag.QuestWeaponPrice:
+                    if (lv >= 50)
+                    {
+                        upBtn.gameObject.SetActive(false);
+                    }
+                    break;
+            }
             setNextCost();
             setText();
         }
@@ -68,7 +101,36 @@ public class Relic : MonoBehaviour
             buyCount--;
             nextCost = /*baseCost * */(CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)));
         }
-        percentage = 100 * Mathf.Pow(1.05f, Lv);
+        setPercentage();
+    }
+
+    void setPercentage()
+    {
+        switch (itemNum)
+        {
+            case ItemTag.Atk:
+            case ItemTag.QuestGold:
+            case ItemTag.KillGold:
+            case ItemTag.OfflineGold:
+            case ItemTag.CriticalDmg:
+            case ItemTag.BombDmg:
+            case ItemTag.NecromancerDmg:
+            case ItemTag.PandaBuff:
+            case ItemTag.FeverTime:
+            case ItemTag.GetStar:
+                percentage = 100 * Mathf.Pow(1.05f, Lv);
+                break;
+            case ItemTag.AtkSpeed:
+                percentage = 100 + Lv;
+                break;
+            case ItemTag.Critical:
+                percentage = 100 + Lv;
+                break;
+            case ItemTag.QuestWeaponPrice:
+                percentage = 100 + Lv;
+                break;
+        }
+        GameStatus.inst.SetAryPercent((int)itemNum, percentage-100);
     }
 
     void setNextCost(int count)

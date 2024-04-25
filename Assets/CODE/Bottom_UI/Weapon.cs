@@ -37,10 +37,12 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    [SerializeField] string Name;
     [SerializeField] TextMeshProUGUI priceText;
     [SerializeField] TextMeshProUGUI upAtkText;
     [SerializeField] TextMeshProUGUI LvText;
     [SerializeField] TextMeshProUGUI totalAtkText;
+    [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] Button objBtn;
     [SerializeField] GameObject mask;
 
@@ -54,16 +56,15 @@ public class Weapon : MonoBehaviour
         weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
         Number = transform.GetSiblingIndex();
         weaponImage.sprite = ActionManager.inst.Get_WeaponSprite(Number);
+        nameText.text = $"{transform.GetSiblingIndex() + 1}. " + Name;
+        GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
         initValue();
     }
 
     void initValue() //초기값 설정
     {
-        float powNum = 0;
-        for (int iNum = 0; iNum <= Number; iNum++)// 단계별 지수 설정
-        {
-            powNum += atkpowNumRate * iNum;
-        }
+        float powNum = atkpowNumRate * (Number * (Number + 1)) / 2;
+
         resultPowNum = CalCulator.inst.CalculatePow(10, powNum);
 
         if (Number != 0)
@@ -122,12 +123,14 @@ public class Weapon : MonoBehaviour
 
     private void setNextCost()
     {
-        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f) * resultPowNum;
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+        nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f * (1 - (pricediscount / 100))) *resultPowNum;
     }
 
     public BigInteger GetNextCost()
     {
-        return nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f) * resultPowNum;
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+        return nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
     }
 
     public void clickWeaponImage()

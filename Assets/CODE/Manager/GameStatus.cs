@@ -451,7 +451,7 @@ public class GameStatus : MonoBehaviour
     }
 
     [HideInInspector] public UnityEvent OnPercentageChanged;
-    float[] aryPercentage = new float[5];
+    float[] aryPercentage = new float[13];
     public float GetAryPercent(int index)
     {
         return aryPercentage[index];
@@ -462,7 +462,7 @@ public class GameStatus : MonoBehaviour
         OnPercentageChanged?.Invoke();
     }
 
-    int[] aryNormalRelicLv = new int[5];
+    int[] aryNormalRelicLv = new int[13];
 
     public int[] AryNormalRelicLv
     {

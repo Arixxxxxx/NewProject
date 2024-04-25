@@ -9,7 +9,7 @@ public class Quest : MonoBehaviour
 {
     [Header("퀘스트단계")]
     int Number;//퀘스트 단계
-    [Header("성장률")]
+    [Header("비용 성장률")]
     [SerializeField] float growthRate;//성장률
     [Header("초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐")]
     [SerializeField] float initalProdRate;//초기 생산량과 초기비용의 비율
@@ -24,7 +24,7 @@ public class Quest : MonoBehaviour
         set
         {
             lv = value;
-            GameStatus.inst.SetAryQuestLv(Number,value);
+            GameStatus.inst.SetAryQuestLv(Number, value);
         }
     }
     int LvCur = 1; //레벨보정
@@ -60,7 +60,7 @@ public class Quest : MonoBehaviour
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
         UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);
         GameStatus.inst.OnGoldChanged.AddListener(() =>
-        { 
+        {
             if (UIManager.Instance.QuestBuyCountBtnNum == 3)//max일 때
             {
                 setNextCost();
@@ -69,15 +69,12 @@ public class Quest : MonoBehaviour
             SetbtnActive();
         });
         GameStatus.inst.OnPercentageChanged.AddListener(_OnItemPercentChanged);
+        GameStatus.inst.OnPercentageChanged.AddListener(setItemCur);
     }
 
     void initValue()//초기값 설정
     {
-        powNum = 0;
-        for (int iNum = 0; iNum <= Number; iNum++)// 단계별 지수 설정
-        {
-            powNum += powNumRate * iNum;
-        }
+        powNum = powNumRate * (Number * (Number + 1)) / 2;// 단계별 지수 설정
         BigInteger resultPowNum = CalCulator.inst.CalculatePow(10, powNum);
 
         initialProd = BigInteger.Multiply((BigInteger)baseProd, resultPowNum);
@@ -92,7 +89,7 @@ public class Quest : MonoBehaviour
     {
         upGoldText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger($"{initialProd * (Lv + buyCount) - initialProd * (Lv)}");
         priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
-        
+
         LvText.text = "Lv : " + CalCulator.inst.StringFourDigitChanger(Lv.ToString());
         totalGoldText.text = "Gps : " + CalCulator.inst.StringFourDigitChanger($"{totalProd}");
     }
@@ -118,12 +115,19 @@ public class Quest : MonoBehaviour
         }
     }
 
+    void setItemCur()
+    {
+        itemCur = GameStatus.inst.GetAryPercent((int)ItemTag.QuestGold);
+        itemCur = itemCur / 100 + 1;
+    }
+
     private void setNextCost()
     {
         int btnnum = UIManager.Instance.QuestBuyCountBtnNum;
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
         if (btnnum != 3)//max가 아닐때
         {
-            nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
+            nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
         }
         else//max일 때
         {
@@ -136,13 +140,14 @@ public class Quest : MonoBehaviour
                 setNextCost(buyCount);
             }
             buyCount--;
-            nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
+            nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
         }
     }
 
     private void setNextCost(int count)
     {
-        nextCost = baseCost * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
     }
 
     private void _OnCountChanged()

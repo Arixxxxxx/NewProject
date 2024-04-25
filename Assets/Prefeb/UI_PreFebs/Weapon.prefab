@@ -95,12 +95,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fefcfa3f88f6ce243aef908574301305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  costGrowthRate: 1.1
+  costGrowthRate: 1.35
   atkpowNumRate: 0.1
+  Name: 
   priceText: {fileID: 1147194082101947668}
   upAtkText: {fileID: 433331736225987493}
   LvText: {fileID: 7673475076296923603}
   totalAtkText: {fileID: 1847941430635420389}
+  nameText: {fileID: 2241911270024630169}
   objBtn: {fileID: 3364550774679967550}
   mask: {fileID: 3983435716361660366}
 --- !u!1 &297248806945767726
@@ -883,8 +885,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 11, y: 7.07}
-  m_SizeDelta: {x: 13.371, y: 13.3706}
+  m_AnchoredPosition: {x: 8.7, y: 7.07}
+  m_SizeDelta: {x: 16.64, y: 13}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &6406998256455066900
 CanvasRenderer:
@@ -914,7 +916,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1b4d29a871b11e547b5005e5cfd5ad51, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3d4561e7dba3d75429ec4decc6176723, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
