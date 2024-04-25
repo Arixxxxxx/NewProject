@@ -116,12 +116,7 @@ public class Newbie_Content : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        IconRedSimballInit();
-      
-        
-    }
+
 
 
 
@@ -215,7 +210,7 @@ public class Newbie_Content : MonoBehaviour
             GetIconChanger(GameStatus.inst.GotNewbieGiftCount); // 아이콘 받음처리
             GameStatus.inst.GetNewbieGiftDay = NowDate; // 일자 업데이트
             GameStatus.inst.GotNewbieGiftCount++; // 받은 카운트 올려줌
-            WorldUI_Manager.inst.OnEnableRedSimball(2, false); // 빨간심볼 꺼주기
+          
 
             if (GameStatus.inst.GotNewbieGiftCount < layoutRef.transform.childCount)
             {
@@ -271,31 +266,7 @@ public class Newbie_Content : MonoBehaviour
     }
 
 
-    public void IconRedSimballInit() // 빨간심볼 활성화
-    {
-        int[] LastGetGiftDay = GameStatus.inst.GetGiftDay;
-
-        if (LastGetGiftDay.Sum() == 0 && GameStatus.inst.GotNewbieGiftCount == 0)
-        {
-            WorldUI_Manager.inst.OnEnableRedSimball(2, true);
-        }
-        else if (LastGetGiftDay.Sum() != 0 && GameStatus.inst.GotNewbieGiftCount > 0)
-        {
-            //받은적이잇음
-            if (LastGetGiftDay[0] < DateTime.Now.Year) //현재 시간 체크
-            {
-                WorldUI_Manager.inst.OnEnableRedSimball(2, true);
-            }
-            else if (LastGetGiftDay[1] < DateTime.Now.Month)
-            {
-                WorldUI_Manager.inst.OnEnableRedSimball(2, true);
-            }
-            else if (LastGetGiftDay[2] < DateTime.Now.Day)
-            {
-                WorldUI_Manager.inst.OnEnableRedSimball(2, true);
-            }
-        }
-    }
+  
 
 
     private void GetIconChanger(int value)
