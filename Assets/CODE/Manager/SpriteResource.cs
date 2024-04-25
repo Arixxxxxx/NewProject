@@ -17,6 +17,10 @@ public class SpriteResource : MonoBehaviour
     [SerializeField] private Sprite[] monsterLargeSize;
     public Sprite[] MonsterLargeSize { get { return monsterLargeSize; } }
     [Space]
+    [Header("# PlayerCharactor Weapon Sprite")]
+    [Space]
+    [SerializeField] private Sprite[] weapons;
+    public Sprite[] Weapons { get { return weapons; } }
     [Header("# 버프 아이콘")]
     [SerializeField] private Sprite[] buffIMG;
     [Space]
