@@ -194,7 +194,7 @@ public class BuffManager : MonoBehaviour
         {
             noHaveRubyMainWindow.SetActive(false);
             mainWindow.SetActive(false);
-            //상점창으로 이동~~
+            ShopManager.Instance.OpenShop(4);
         });
 
     }
