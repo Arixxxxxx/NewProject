@@ -619,9 +619,9 @@ public class MissionData : MonoBehaviour
     {
         obj_UICanvas = GameObject.Find("---[UI Canvas]");
         Transform worldUiCanvas = GameObject.Find("---[World UI Canvas]").transform;
-        MissionOpenBtn = worldUiCanvas.Find("StageUI/Right/QeustList/Button").GetComponent<Button>();
-        worldTitleText = worldUiCanvas.Find("StageUI/Right/QeustList/BG/Step").GetComponent<TMP_Text>();
-        worldDetailText = worldUiCanvas.Find("StageUI/Right/QeustList/BG/Text").GetComponent<TMP_Text>();
+        MissionOpenBtn = worldUiCanvas.Find("StageUI/QeustList/Button").GetComponent<Button>();
+        worldTitleText = worldUiCanvas.Find("StageUI/QeustList/BG/Step").GetComponent<TMP_Text>();
+        worldDetailText = worldUiCanvas.Find("StageUI/QeustList/BG/Text").GetComponent<TMP_Text>();
 
         obj_MissionWindow = obj_UICanvas.transform.Find("ScreenArea/Mission");
         list_MissionWindow[0] = obj_MissionWindow.Find("Mission/Window/Daily(Scroll View)").gameObject;
