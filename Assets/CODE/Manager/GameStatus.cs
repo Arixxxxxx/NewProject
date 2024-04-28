@@ -521,6 +521,12 @@ public class GameStatus : MonoBehaviour
         Gold = result;
     }
 
+    public void MinusStar(string getValue)
+    {
+        string result = CalCulator.inst.BigIntigerMinus(star, getValue);
+        star = result;
+    }
+
     public void MinusGold(string getValue)
     {
         string result = CalCulator.inst.BigIntigerMinus(gold, getValue);

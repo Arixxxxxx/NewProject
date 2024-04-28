@@ -55,7 +55,7 @@ public class Weapon : MonoBehaviour
     {
         weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
         Number = transform.GetSiblingIndex();
-        weaponImage.sprite = ActionManager.inst.Get_WeaponSprite(Number);
+        weaponImage.sprite = SpriteResource.inst.Weapons[Number];
         nameText.text = $"{transform.GetSiblingIndex() + 1}. " + Name;
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
         initValue();

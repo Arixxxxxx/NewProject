@@ -10,6 +10,7 @@ public class Relic : MonoBehaviour
     [SerializeField] RankType rankNum;
     [SerializeField] ItemTag itemNum;
     [SerializeField] float costGrowthRate;
+    [SerializeField] int limitLv;
 
     BigInteger nextCost;
     float percentage;
@@ -22,38 +23,43 @@ public class Relic : MonoBehaviour
         set
         {
             lv = value;
-            switch (itemNum)
-            {
-                case ItemTag.Atk:
-                case ItemTag.QuestGold:
-                case ItemTag.KillGold:
-                case ItemTag.OfflineGold:
-                case ItemTag.CriticalDmg:
-                case ItemTag.BombDmg:
-                case ItemTag.NecromancerDmg:
-                case ItemTag.PandaBuff:
-                case ItemTag.FeverTime:
-                case ItemTag.GetStar:
+            //switch (itemNum)
+            //{
+            //    case ItemTag.Atk:
+            //    case ItemTag.QuestGold:
+            //    case ItemTag.KillGold:
+            //    case ItemTag.OfflineGold:
+            //    case ItemTag.CriticalDmg:
+            //    case ItemTag.BombDmg:
+            //    case ItemTag.NecromancerDmg:
+            //    case ItemTag.PandaBuff:
+            //    case ItemTag.FeverTime:
+            //    case ItemTag.GetStar:
 
-                    break;
-                case ItemTag.AtkSpeed:
-                    if (lv >= 15)
-                    {
-                        upBtn.gameObject.SetActive(false);
-                    }
-                    break;
-                case ItemTag.Critical:
-                    if (lv >= 30)
-                    {
-                        upBtn.gameObject.SetActive(false);
-                    }
-                    break;
-                case ItemTag.QuestWeaponPrice:
-                    if (lv >= 50)
-                    {
-                        upBtn.gameObject.SetActive(false);
-                    }
-                    break;
+            //        break;
+            //    case ItemTag.AtkSpeed:
+            //        if (lv >= 15)
+            //        {
+            //            upBtn.gameObject.SetActive(false);
+            //        }
+            //        break;
+            //    case ItemTag.Critical:
+            //        if (lv >= 30)
+            //        {
+            //            upBtn.gameObject.SetActive(false);
+            //        }
+            //        break;
+            //    case ItemTag.QuestWeaponPrice:
+            //        if (lv >= 50)
+            //        {
+            //            upBtn.gameObject.SetActive(false);
+            //        }
+            //        break;
+            //}
+
+            if (limitLv != 0 && lv >= limitLv)
+            {
+                upBtn.gameObject.SetActive(false);
             }
             setNextCost();
             setText();
@@ -93,7 +99,7 @@ public class Relic : MonoBehaviour
             buyCount = 1;
             BigInteger haveStar = BigInteger.Parse(GameStatus.inst.Star);
             setNextCost(buyCount);
-            while (haveStar >= nextCost)
+            while (haveStar >= nextCost && Lv + buyCount <= limitLv)
             {
                 buyCount++;
                 setNextCost(buyCount);
@@ -150,6 +156,7 @@ public class Relic : MonoBehaviour
         BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
         if (haveStar >= nextCost)
         {
+            GameStatus.inst.MinusStar(nextCost.ToString());
             Lv += buyCount;
         }
     }

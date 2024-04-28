@@ -169,7 +169,7 @@ public class Gacha : MonoBehaviour
     {
         list_haveRelic.Sort(compareRelic);
         int count = list_haveRelic.Count;
-        for (int iNum = 0; iNum < count; iNum++)
+        for (int iNum = 0; iNum < count; iNum++) 
         {
             int indexNum = (int)list_haveRelic[iNum].GetComponent<Relic>().GetMyType().y;
             list_haveRelic[iNum].transform.SetSiblingIndex(indexNum);
