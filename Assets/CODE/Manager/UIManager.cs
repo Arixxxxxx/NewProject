@@ -13,7 +13,15 @@ public class UIManager : MonoBehaviour
 
     [Header("버튼 선택, 비선택 스프라이트")]
     [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();//버튼 선택, 비선택 스프라이트
-
+    /// <summary>
+    /// 0 = 비선택 이미지, 1 = 선택 이미지
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public Sprite GetBtnSprite(int index)
+    {
+        return m_BtnSprite[index];
+    }
     Canvas canvas;
     List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
     List<Image> m_list_BottomBtn = new List<Image>();//메인UI 하단 버튼

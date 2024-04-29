@@ -10,6 +10,21 @@ public class Roulette : MonoBehaviour
 {
     [SerializeField] float setspd;
     [SerializeField] float despd;
+    [SerializeField] int rouletteTicket;
+    int RouletteTicket
+    {
+        get => rouletteTicket;
+        set
+        {
+            rouletteTicket = value;
+            ticketText.text = rouletteTicket.ToString();
+            if (rouletteTicket <= 0)
+            {
+                StartBtn.interactable = false;
+            }
+        }
+    }
+    [SerializeField] int RouletteStack;
     [SerializeField] List<RewardList> list_reward = new List<RewardList>();
     [Serializable]
     public class RewardList
@@ -29,10 +44,13 @@ public class Roulette : MonoBehaviour
     }
 
     Image[] list_showImage;
+    Image[] list_countBtnImage = new Image[3];
+    int countBtnNum = 0;
     TMP_Text[] list_GetText;
     TMP_Text[] list_CountText;
     Transform BingoParents;
     Transform ShowRewardParents;
+    GameObject showBingo;
     Image roulette;
     Image player;
     Button openBtn;
@@ -41,12 +59,14 @@ public class Roulette : MonoBehaviour
     Button StopBtn;
     RectTransform rouletteRect;
     Animator animator;
-    TMP_Text goldText2;
-    TMP_Text goldText5;
-    TMP_Text goldText10;
+    TMP_Text[] goldText2 = new TMP_Text[3];
+    TMP_Text[] goldText5 = new TMP_Text[3];
+    TMP_Text[] goldText10 = new TMP_Text[3];
+    TMP_Text ticketText;
 
     BigInteger nowTotalGold;
     float speed;
+    int useCount = 1;
     bool isSpin;
 
     bool[] bingoBoard = new bool[8];
@@ -62,9 +82,23 @@ public class Roulette : MonoBehaviour
         StartBtn = transform.Find("BackGround/StartBtn").GetComponent<Button>();
         StopBtn = transform.Find("BackGround/StopBtn").GetComponent<Button>();
         closeBtn = transform.Find("BackGround/CloseBtn").GetComponent<Button>();
-        goldText2 = transform.Find("BackGround/Roulette/Gold2/Text (TMP)").GetComponent<TMP_Text>();
-        goldText5 = transform.Find("BackGround/Roulette/Gold5/Text (TMP)").GetComponent<TMP_Text>();
-        goldText10 = transform.Find("BackGround/Roulette/Gold10/Text (TMP)").GetComponent<TMP_Text>();
+        goldText2[0] = transform.Find("BackGround/Roulette/Gold2/Text (TMP)").GetComponent<TMP_Text>();
+        goldText2[1] = transform.Find("BackGround/bingo/Coin2/Text (TMP)").GetComponent<TMP_Text>();
+        goldText2[2] = transform.Find("BackGround/ShowBingo/Bingo/Coin2/Text (TMP)").GetComponent<TMP_Text>();
+
+        goldText5[0] = transform.Find("BackGround/Roulette/Gold5/Text (TMP)").GetComponent<TMP_Text>();
+        goldText5[1] = transform.Find("BackGround/bingo/Coin5/Text (TMP)").GetComponent<TMP_Text>();
+        goldText5[2] = transform.Find("BackGround/ShowBingo/Bingo/Coin5/Text (TMP)").GetComponent<TMP_Text>();
+
+        goldText10[0] = transform.Find("BackGround/Roulette/Gold10/Text (TMP)").GetComponent<TMP_Text>();
+        goldText10[1] = transform.Find("BackGround/bingo/Coin10/Text (TMP)").GetComponent<TMP_Text>();
+        goldText10[2] = transform.Find("BackGround/ShowBingo/Bingo/Coin10/Text (TMP)").GetComponent<TMP_Text>();
+
+        ticketText = transform.Find("BackGround/RouletteTicket/count").GetComponent<TMP_Text>();
+        showBingo = transform.Find("BackGround/ShowBingo").gameObject;
+        list_countBtnImage[0] = transform.Find("BackGround/CountBtn/Button").GetComponent<Image>();
+        list_countBtnImage[1] = transform.Find("BackGround/CountBtn/Button (1)").GetComponent<Image>();
+        list_countBtnImage[2] = transform.Find("BackGround/CountBtn/Button (2)").GetComponent<Image>();
 
         //빙고판 초기화
         BingoParents = transform.Find("BackGround/bingo");
@@ -89,6 +123,7 @@ public class Roulette : MonoBehaviour
 
         }
         clickOpen();
+        RouletteTicket = RouletteTicket;
         rouletteRect = roulette.GetComponent<RectTransform>();
         animator = player.GetComponent<Animator>();
         openBtn.onClick.AddListener(clickOpen);
@@ -122,9 +157,21 @@ public class Roulette : MonoBehaviour
     void clickOpen()
     {
         nowTotalGold = GameStatus.inst.TotalProdGold;
-        goldText2.text = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 2).ToString());
-        goldText5.text = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 5).ToString());
-        goldText10.text = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 10).ToString());
+        string gold2 = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 2).ToString());
+        string gold5 = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 5).ToString());
+        string gold10 = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 10).ToString());
+
+        goldText2[0].text = gold2;
+        goldText2[1].text = gold2;
+        goldText2[2].text = gold2;
+
+        goldText5[0].text = gold5;
+        goldText5[1].text = gold5;
+        goldText5[2].text = gold5;
+
+        goldText10[0].text = gold10;
+        goldText10[1].text = gold10;
+        goldText10[2].text = gold10;
     }
 
     void clickStart()
@@ -139,7 +186,7 @@ public class Roulette : MonoBehaviour
 
     void clickStop()
     {
-        StartCoroutine(stopRoulett(10));
+        StartCoroutine(stopRoulett(useCount));
         StopBtn.interactable = false;
     }
 
@@ -150,92 +197,110 @@ public class Roulette : MonoBehaviour
         for (int iNum = 0; iNum < ShowCount; iNum++)
         {
             ShowRewardParents.GetChild(iNum).gameObject.SetActive(false);
-
         }
 
-        //갯수만큼 룰렛 돌린 후 저장
-        List<UnityEngine.Vector2> ListRewardNum = new List<UnityEngine.Vector2>();        
-        for (int iNum = 0; iNum < count; iNum++)
+
+        List<UnityEngine.Vector2> ListRewardNum = new List<UnityEngine.Vector2>();
+        //천장 도달시
+        if (RouletteStack >= 24)
         {
-            int rewardNumCount = ListRewardNum.Count;
-            int value = UnityEngine.Random.Range(0, 8);
-            int index = -1;
-            //이미 획득했는지 확인
-            for (int jNum = 0; jNum < rewardNumCount; jNum++)
+            //획득못한 보상 모두 획득
+            int bingoCount = bingoBoard.Length;
+            for (int iNum = 0; iNum < bingoCount; iNum++)
             {
-                if (ListRewardNum[jNum].x == value)
+                if (bingoBoard[iNum] == false)
                 {
-                    index = jNum;
+                    ListRewardNum.Add(new UnityEngine.Vector2(iNum, 0));
+
+                    GetReward(iNum);
+                }
+            }
+            //코인 감소
+            RouletteTicket--;
+        }
+        else
+        {
+            //갯수만큼 룰렛 돌린 후 저장
+            for (int iNum = 0; iNum < count; iNum++)
+            {
+                //코인 감소
+                RouletteTicket--;
+                if (RouletteTicket < 0)
+                {
+                    RouletteTicket = 0;
+                    break;
+                }
+
+                RouletteStack++;
+                if (RouletteStack >= 24)
+                {
+                    RouletteStack = 24;
+                    break;
+                }
+                int rewardNumCount = ListRewardNum.Count;
+                int value = UnityEngine.Random.Range(0, 8);
+                int index = -1;
+                //이미 획득했는지 확인
+                for (int jNum = 0; jNum < rewardNumCount; jNum++)
+                {
+                    if (ListRewardNum[jNum].x == value)
+                    {
+                        index = jNum;
+                        break;
+                    }
+                }
+                //획득하지 않았다면 새로 추가
+                if (index == -1)
+                {
+                    ListRewardNum.Add(new UnityEngine.Vector2(value, 0));
+                    bingoBoard[value] = true;
+                }
+                //획득했다면 y값을 1올려줌
+                else
+                {
+                    ListRewardNum[index] = new UnityEngine.Vector2(ListRewardNum[index].x, ListRewardNum[index].y + 1);
+                }
+                //보상 지급
+                GetReward(value);
+
+                //빙고 체크
+                bool isBingo = false;
+                int bingoCount = bingoBoard.Length;
+                for (int jNum = 0; jNum < bingoCount; jNum++)
+                {
+                    if (bingoBoard[jNum] == false)
+                    {
+                        isBingo = false;
+                        break;
+                    }
+                    isBingo = true;
+                }
+                if (isBingo)
+                {
                     break;
                 }
             }
-            //획득하지 않았다면 새로 추가
-            if (index == -1)
-            {
-                ListRewardNum.Add(new UnityEngine.Vector2(value, 0));
-            }
-            //획득했다면 y값을 1올려줌
-            else
-            {
-                ListRewardNum[index] = new UnityEngine.Vector2(ListRewardNum[index].x, ListRewardNum[index].y + 1);
-            }
-
-            switch (value)
-            {
-                case 0:
-                    GameStatus.inst.Ruby += 100;
-                    break;
-                case 1:
-                    GameStatus.inst.PlusStar("100");
-                    break;
-                case 2:
-                    GameStatus.inst.PlusGold($"{nowTotalGold * 2}");
-                    break;
-                case 3:
-                    GameStatus.inst.Ruby += 200;
-                    break;
-                case 4:
-                    GameStatus.inst.PlusStar("1000");
-                    break;
-                case 5:
-                    GameStatus.inst.PlusGold($"{nowTotalGold * 5}");
-                    break;
-                case 6:
-                    GameStatus.inst.PlusStar("10000");
-                    break;
-                case 7:
-                    GameStatus.inst.PlusGold($"{nowTotalGold * 10}");
-                    break;
-            }            
         }
 
         //목표 회전값 계산
-        float targetRot = -22.5f + 45 * ListRewardNum[0].x;
-        if (targetRot < 0)
-        {
-            targetRot = 360 + targetRot;
-        }
-
-        //목표 회전값 도달 대기
-        while (Mathf.Abs(rouletteRect.eulerAngles.z - targetRot) >= 2)
-        {
-            yield return null;
-        }
+        float targetRot = 360 - 22.5f - 45 * ListRewardNum[0].x;
+        rouletteRect.eulerAngles = new UnityEngine.Vector3(0, 0, targetRot);
 
         //점차 속도 감소
         while (speed > 0)
         {
+
             speed -= despd * Time.deltaTime;
             yield return null;
         }
 
         //룰렛 멈춘 후 해야될 일들
 
-        int rewardCount = ListRewardNum.Count;
         //빙고판 획득처리
+        int rewardCount = ListRewardNum.Count;
         for (int iNum = 0; iNum < rewardCount; iNum++)
         {
-            bingoBoard[(int)ListRewardNum[iNum].x] = true;
+            //bingoBoard[(int)ListRewardNum[iNum].x] = true;
             bingoMask[(int)ListRewardNum[iNum].x].SetActive(true);
         }
 
@@ -280,56 +345,146 @@ public class Roulette : MonoBehaviour
 
             ShowRewardParents.GetChild(iNum).gameObject.SetActive(true);
         }
-
+        while (ShowRewardParents.gameObject.activeSelf)
+        {
+            yield return null;
+        }
+        yield return StartCoroutine(checkBingo());
         closeBtn.interactable = true;
         StopBtn.interactable = true;
         StopBtn.gameObject.SetActive(false);
         StartBtn.gameObject.SetActive(true);
     }
 
-    void checkBingo()
+    void GetReward(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                GameStatus.inst.Ruby += 100;
+                break;
+            case 1:
+                GameStatus.inst.PlusStar("100");
+                break;
+            case 2:
+                GameStatus.inst.PlusGold($"{nowTotalGold * 2}");
+                break;
+            case 3:
+                GameStatus.inst.Ruby += 200;
+                break;
+            case 4:
+                GameStatus.inst.PlusStar("1000");
+                break;
+            case 5:
+                GameStatus.inst.PlusGold($"{nowTotalGold * 5}");
+                break;
+            case 6:
+                GameStatus.inst.PlusStar("10000");
+                break;
+            case 7:
+                GameStatus.inst.PlusGold($"{nowTotalGold * 10}");
+                break;
+        }
+    }
+
+    bool[] horizontalBingo = new bool[3];
+    bool[] verticalBingo = new bool[3];
+    bool[] crossBingo = new bool[2];
+
+    IEnumerator checkBingo()
     {
         //가로빙고
-        if (bingoBoard[0] && bingoBoard[1] && bingoBoard[2])
+        if (horizontalBingo[0] && bingoBoard[0] && bingoBoard[1] && bingoBoard[2])
         {
-
+            horizontalBingo[0] = true;
         }
 
-        if (bingoBoard[3] && bingoBoard[4])
+        if (horizontalBingo[1] && bingoBoard[3] && bingoBoard[4])
         {
-
+            horizontalBingo[1] = true;
         }
 
-        if (bingoBoard[5] && bingoBoard[6] && bingoBoard[7])
+        if (horizontalBingo[2] && bingoBoard[5] && bingoBoard[6] && bingoBoard[7])
         {
-
+            horizontalBingo[2] = true;
         }
 
         //세로빙고
-        if (bingoBoard[0] && bingoBoard[3] && bingoBoard[5])
+        if (verticalBingo[0] && bingoBoard[0] && bingoBoard[3] && bingoBoard[5])
         {
-
+            verticalBingo[0] = true;
         }
 
-        if (bingoBoard[1] && bingoBoard[6])
+        if (verticalBingo[1] && bingoBoard[1] && bingoBoard[6])
         {
+            verticalBingo[1] = true;
+        }
 
+        if (verticalBingo[2] && bingoBoard[2] && bingoBoard[4] && bingoBoard[7])
+        {
+            verticalBingo[2] = true;
         }
 
         //대각빙고
-        if (bingoBoard[2] && bingoBoard[4] && bingoBoard[7])
+        if (crossBingo[0] && bingoBoard[0] && bingoBoard[7])
         {
-
+            crossBingo[0] = true;
         }
 
-        if (bingoBoard[0] && bingoBoard[7])
+        if (crossBingo[1] && bingoBoard[2] && bingoBoard[5])
         {
-
+            crossBingo[1] = true;
         }
 
-        if (bingoBoard[2] && bingoBoard[5])
+        //빙고 다 채운지 확인
+        int count = bingoBoard.Length;
+        for (int iNum = 0; iNum < count; iNum++)
         {
+            if (bingoBoard[iNum] == false)
+            {
+                yield break;
+            }
+        }
+        //빙고 달성창 꺼질 때까지 대기(꺼지는 함수는 애니메이터에 연결돼있음)
+        showBingo.SetActive(true);
+        while (showBingo.activeSelf == true)
+        {
+            yield return null;
+        }
+        //다 채워져 있으면 빙고판 리셋
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            bingoBoard[iNum] = false;
+            bingoMask[iNum].SetActive(false);
+        }
+        RouletteStack = 0;
+        horizontalBingo[0] = false;
+        horizontalBingo[1] = false;
+        horizontalBingo[2] = false;
+        verticalBingo[0] = false;
+        verticalBingo[1] = false;
+        verticalBingo[2] = false;
+        crossBingo[0] = false;
+        crossBingo[1] = false;
+    }
 
+    public void ClickUseCount(int index)
+    {
+        list_countBtnImage[countBtnNum].sprite = UIManager.Instance.GetBtnSprite(0);
+        countBtnNum = index;
+        list_countBtnImage[countBtnNum].sprite = UIManager.Instance.GetBtnSprite(1);
+
+        switch (index)
+        {
+            case 0:
+                useCount = 1;
+                break;
+            case 1:
+                useCount = 10;
+                break;
+            case 2:
+                useCount = 25;
+                break;
         }
     }
 }
