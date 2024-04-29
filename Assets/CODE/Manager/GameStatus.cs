@@ -195,7 +195,7 @@ public class GameStatus : MonoBehaviour
                 MissionData.Instance.SetDailyMission("루비 사용", UseRuby);
             }
             ruby = value;
-            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString());
+            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString("N0"));
             OnRubyChanged?.Invoke();
         }
     }
@@ -530,7 +530,7 @@ public class GameStatus : MonoBehaviour
     public void MinusStar(string getValue)
     {
         string result = CalCulator.inst.BigIntigerMinus(star, getValue);
-        star = result;
+        Star = result;
     }
 
     public void MinusGold(string getValue)

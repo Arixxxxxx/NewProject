@@ -163,7 +163,7 @@ public class WorldUI_Manager : MonoBehaviour
         curMaterial[0].text = GameStatus.inst.Gold;
         curMaterial[1].text = GameStatus.inst.Star;
         curMaterial[2].text = GameStatus.inst.Key;
-        curMaterial[3].text = GameStatus.inst.Ruby.ToString();
+        curMaterial[3].text = GameStatus.inst.Ruby.ToString("N0");
     }
 
 
