@@ -28,6 +28,7 @@ public class PetContollerManager : MonoBehaviour
 
     // Æê ±×¸²ÀÚµé
     GameObject[] petShadow = new GameObject[3];
+    GameObject[] petWind = new GameObject[3];
 
     private void Awake()
     {
@@ -73,6 +74,9 @@ public class PetContollerManager : MonoBehaviour
         petShadow[1] = playerObj.transform.Find("ShadowGroup/Pet1_Shadow").gameObject;
         petShadow[2] = playerObj.transform.Find("ShadowGroup/Pet2_Shadow").gameObject;
 
+        petWind[0] = playerObj.transform.Find("Player/MoveWind/Pet0_Wind").gameObject;
+        petWind[1] = playerObj.transform.Find("Player/MoveWind/Pet1_Wind").gameObject;
+        petWind[2] = playerObj.transform.Find("Player/MoveWind/Pet2_Wind").gameObject;
         animCount = petAnim.Length;
     }
 
@@ -82,6 +86,8 @@ public class PetContollerManager : MonoBehaviour
     {
         for (int index = 0; index < animCount; index++)
         {
+            if (petAnim[index].gameObject.activeSelf == false) { return; }
+
             petAnim[index].SetBool("Move", action);
         }
 
@@ -222,8 +228,10 @@ public class PetContollerManager : MonoBehaviour
     {
         if(petAnim[petNum].gameObject.activeSelf == false)
         {
+            petWind[petNum].SetActive(true);
             petAnim[petNum].gameObject.SetActive(true);
             petShadow[petNum].SetActive(true);
         }
     }
+
 }
