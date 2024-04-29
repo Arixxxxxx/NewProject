@@ -94,7 +94,7 @@ public class Roulette : MonoBehaviour
         goldText10[1] = transform.Find("BackGround/bingo/Coin10/Text (TMP)").GetComponent<TMP_Text>();
         goldText10[2] = transform.Find("BackGround/ShowBingo/Bingo/Coin10/Text (TMP)").GetComponent<TMP_Text>();
 
-        ticketText = transform.Find("BackGround/RouletteTicket/count").GetComponent<TMP_Text>();
+        ticketText = transform.Find("BackGround/count").GetComponent<TMP_Text>();
         showBingo = transform.Find("BackGround/ShowBingo").gameObject;
         list_countBtnImage[0] = transform.Find("BackGround/CountBtn/Button").GetComponent<Image>();
         list_countBtnImage[1] = transform.Find("BackGround/CountBtn/Button (1)").GetComponent<Image>();

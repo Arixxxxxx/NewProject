@@ -66,9 +66,14 @@ public class Pet : MonoBehaviour
         BuyBtn.onClick.AddListener(() => 
         {
             Lv++;
-            GameStatus.inst.Ruby -= baseCost;
-            upBtn.gameObject.SetActive(true);
-            BuyBtn.gameObject.SetActive(false);
+            RubyPayment.inst.RubyPaymentUiActive(baseCost, () => 
+            {
+                PetContollerManager.inst.PetActive((int)type);
+                upBtn.gameObject.SetActive(true);
+                BuyBtn.gameObject.SetActive(false);
+            });
+            //GameStatus.inst.Ruby -= baseCost;
+            
         });
         DetailBtn.onClick.AddListener(() => PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()));
     }
