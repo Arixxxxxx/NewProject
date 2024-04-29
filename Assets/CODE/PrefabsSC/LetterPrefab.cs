@@ -68,7 +68,7 @@ public class LetterPrefab : MonoBehaviour
 
         title.text = From;
         mainText.text = text;
-        returnItemText.text = $"{itemTypetext}  +{ItemCount}";
+        returnItemText.text = $"{itemTypetext}  +{ItemCount.ToString("N0")}";
 
         getBtn.onClick.RemoveAllListeners();
         getBtn.onClick.AddListener( ()=> 
