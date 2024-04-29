@@ -79,6 +79,7 @@ public class Relic : MonoBehaviour
         upBtn = transform.Find("Button").GetComponent<Button>();
         relicImgae = transform.Find("IMG_Layout/IMG").GetComponent<Image>();
         UIManager.Instance.OnRelicBuyCountChanged.AddListener(() => _OnCountChanged());
+        GameStatus.inst.OnStartChanged.AddListener(checkStar);
         setNextCost();
         setText();
 
@@ -136,7 +137,7 @@ public class Relic : MonoBehaviour
                 percentage = 100 + Lv;
                 break;
         }
-        GameStatus.inst.SetAryPercent((int)itemNum, percentage-100);
+        GameStatus.inst.SetAryPercent((int)itemNum, percentage - 100);
     }
 
     void setNextCost(int count)
@@ -158,6 +159,23 @@ public class Relic : MonoBehaviour
         {
             GameStatus.inst.MinusStar(nextCost.ToString());
             Lv += buyCount;
+        }
+    }
+
+    void checkStar()
+    {
+
+        if (upBtn.interactable == false)
+        {
+            BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
+            if (haveStar >= nextCost)
+            {
+                upBtn.interactable = true;
+            }
+        }
+        else if (upBtn.interactable == true)
+        {
+            upBtn.interactable = false;
         }
     }
 

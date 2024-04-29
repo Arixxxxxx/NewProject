@@ -50,6 +50,11 @@ public class Pet : MonoBehaviour
 
     void Start()
     {
+        
+    }
+
+    public void initPet()
+    {
         upBtn = transform.Find("Button").GetComponent<Button>();
         DetailBtn = transform.Find("imageBtn").GetComponent<Button>();
         BuyBtn = transform.Find("BuyBtn").GetComponent<Button>();
@@ -63,17 +68,17 @@ public class Pet : MonoBehaviour
         setNextCost();
         GameStatus.inst.OnRubyChanged.AddListener(checkHaveRuby);
         upBtn.onClick.AddListener(ClickUp);
-        BuyBtn.onClick.AddListener(() => 
+        BuyBtn.onClick.AddListener(() =>
         {
             Lv++;
-            RubyPayment.inst.RubyPaymentUiActive(baseCost, () => 
+            RubyPayment.inst.RubyPaymentUiActive(baseCost, () =>
             {
                 PetContollerManager.inst.PetActive((int)type);
                 upBtn.gameObject.SetActive(true);
                 BuyBtn.gameObject.SetActive(false);
             });
             //GameStatus.inst.Ruby -= baseCost;
-            
+
         });
         DetailBtn.onClick.AddListener(() => PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()));
     }

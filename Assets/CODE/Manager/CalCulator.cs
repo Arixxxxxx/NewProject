@@ -331,7 +331,11 @@ public class CalCulator : MonoBehaviour
 
         }
 
-        if (pointindex == -1)
+        if (_text.Length == 1)
+        {
+            return _text;
+        }
+        else if (pointindex == -1)
         {
 
             char firalp = _text[_text.Length - 1];

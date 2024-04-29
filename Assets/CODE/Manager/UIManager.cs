@@ -93,7 +93,8 @@ public class UIManager : MonoBehaviour
     }
 
     ////////////////////////////////////////////Æê///////////////////////////////////////
-    
+
+    Transform petParents;
     TMP_Text soulText;
     TMP_Text bornText;
     TMP_Text bookText;
@@ -223,6 +224,12 @@ public class UIManager : MonoBehaviour
         soulText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Soul/Text (TMP)").GetComponent<TMP_Text>();
         bornText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Born/Text (TMP)").GetComponent<TMP_Text>();
         bookText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Book/Text (TMP)").GetComponent<TMP_Text>();
+        petParents = canvas.transform.Find("ScreenArea/BackGround/Pet/Scroll View/Viewport/Content");
+        int petCount = petParents.childCount;
+        for (int iNum = 0; iNum < petCount; iNum++)
+        {
+            petParents.GetChild(iNum).GetComponent<Pet>().initPet();
+        }
 
         int weaponCount = m_WeaponParents.childCount;
         for (int iNum = 0; iNum < weaponCount; iNum++)
