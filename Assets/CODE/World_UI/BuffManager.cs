@@ -213,6 +213,12 @@ public class BuffManager : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// 버프 활성화
+    /// </summary>
+    /// <param name="type">0공/1이속/2골드/3강한공격력</param>
+    /// <param name="Time">분 단위</param>
+    /// <param name="text">획득창</param>
     public void ActiveBuff(int type, int Time, string text)
     {
         BuffContoller.inst.ActiveBuff(type, Time); //버프활성화

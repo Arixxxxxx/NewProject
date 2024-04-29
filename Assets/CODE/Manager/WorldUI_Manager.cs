@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -53,6 +52,9 @@ public class WorldUI_Manager : MonoBehaviour
     // 메인메뉴 버튼
     Button mainMenuBtn;
 
+    // 미니게임 버튼 
+    Button minigameAlrimBtn;
+
     // 몬스터도감 버튼
     Button mosterDogamBtn;
 
@@ -69,6 +71,11 @@ public class WorldUI_Manager : MonoBehaviour
     Button openMenuIcon;
     Animator menuAnim;
     Transform checkArrowScaleX;
+
+    // 프론트UI 블랙페이드 커튼
+    Action cuttonAction;
+    Image frontUiCutton;
+
 
     private void Awake()
     {
@@ -131,11 +138,15 @@ public class WorldUI_Manager : MonoBehaviour
         dailyPlayCheckBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/DailyCheck").GetComponent<Button>(); //출석체크
         newBieBtn = worldUI.transform.Find("StageUI/NewBie").GetComponent<Button>(); //뉴비
         mosterDogamBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MosterDogam").GetComponent<Button>(); //몬스터도감
+        minigameAlrimBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MiniGame").GetComponent<Button>(); //미니게임
         adDeleteBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/AdDelete").GetComponent<Button>(); // 광고제거
         openMenuIcon = worldUI.transform.Find("StageUI/MenuBox/MeneOpen/RealBtn").GetComponent<Button>(); // 메뉴 삼각형버튼
         checkArrowScaleX = openMenuIcon.transform.parent.GetComponent<Transform>(); 
 
         menuAnim = worldUI.transform.Find("StageUI/MenuBox").GetComponent<Animator>(); // 메뉴바 연출 애니메ㅐ이션
+
+        // FrontUI
+        frontUiCutton = frontUICanvas.transform.Find("Cutton").GetComponent<Image>();
 
         Prefabs_Awake();
         
@@ -241,6 +252,10 @@ public class WorldUI_Manager : MonoBehaviour
         newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
         mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
         adDeleteBtn.onClick.AddListener(() => AdDelete.inst.ActiveAdDeleteWindow());
+        minigameAlrimBtn.onClick.AddListener(() => 
+        {
+            MinigameManager.inst.Active_minigameEntrance(true);
+        });
 
         openMenuIcon.onClick.AddListener(() => 
         {
@@ -302,9 +317,50 @@ public class WorldUI_Manager : MonoBehaviour
         getGoldAndStar_TextQue.Enqueue(obj);
 
     }
-      
 
+    Coroutine cuttonCor;
+    Color colorFadeValue = new Color(0, 0, 0, 0.2f);
+    float fadeSpeed = 20;
+    /// <summary>
+    /// 프론트UI 페이드인 함수실행
+    /// </summary>
+    /// <param name="funtion"></param>
+    public void FrontUICuttonAction(Action funtion)
+    {
+        if(cuttonCor != null)
+        {
+            StopCoroutine(cuttonCor);
+        }
 
+        cuttonCor = StartCoroutine(PlayCutton(funtion));
+    }
+    IEnumerator PlayCutton(Action funtion)
+    {
+        if(frontUiCutton.gameObject.activeSelf == false)
+        {
+            frontUiCutton.gameObject.SetActive(true);
+        }
+
+        while(frontUiCutton.color.a < 1)
+        {
+            frontUiCutton.color += colorFadeValue * Time.deltaTime * fadeSpeed;
+            yield return null;  
+        }
+        cuttonAction = null;
+        cuttonAction += funtion;
+        cuttonAction?.Invoke();
+        
+        while (frontUiCutton.color.a > 0)
+        {
+            frontUiCutton.color -= colorFadeValue * Time.deltaTime * fadeSpeed;
+            yield return null;
+        }
+
+        if (frontUiCutton.gameObject.activeSelf == true)
+        {
+            frontUiCutton.gameObject.SetActive(false);
+        }
+    }
 
 
     /// <summary>

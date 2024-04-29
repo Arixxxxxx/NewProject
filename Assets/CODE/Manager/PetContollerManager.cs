@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PetContollerManager : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class PetContollerManager : MonoBehaviour
 
     // Æê2¹ø °ø°Ý ÀÌÆåÆ®
     Animator pet2AtkEffectAnim;
+
+    // Æê ±×¸²ÀÚµé
+    GameObject[] petShadow = new GameObject[3];
 
     private void Awake()
     {
@@ -63,6 +67,11 @@ public class PetContollerManager : MonoBehaviour
 
         //pet2Ps[0] = petAnim[2].transform.Find("Charge").GetComponent<ParticleSystem>();
         //pet2Ps[1] = petAnim[2].transform.Find("Gold").GetComponent<ParticleSystem>(); //°ñµåÆã
+
+        //Æê ±×¸²ÀÚ
+        petShadow[0] = playerObj.transform.Find("ShadowGroup/Pet0_Shadow").gameObject;
+        petShadow[1] = playerObj.transform.Find("ShadowGroup/Pet1_Shadow").gameObject;
+        petShadow[2] = playerObj.transform.Find("ShadowGroup/Pet2_Shadow").gameObject;
 
         animCount = petAnim.Length;
     }
@@ -214,6 +223,7 @@ public class PetContollerManager : MonoBehaviour
         if(petAnim[petNum].gameObject.activeSelf == false)
         {
             petAnim[petNum].gameObject.SetActive(true);
+            petShadow[petNum].SetActive(true);
         }
     }
 }
