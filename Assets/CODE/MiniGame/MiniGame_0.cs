@@ -30,7 +30,6 @@ public class MiniGame_0 : MonoBehaviour
     float gameTime = 30f;
     float gameTimeCounter = 30;
     TMP_Text timerText;
-    int gameScore = 0;
     TMP_Text scoreText;
     Vector2 originCharVec;
 

@@ -42,7 +42,10 @@ public class Newbie_Content : MonoBehaviour
     GameObject buffInfoWindow;
     TMP_Text buffLeftTimeText;
     Button buffinfoBottomBtn;
-    
+    private void Start()
+    {
+        
+    }
 
     private void Awake()
     {

@@ -472,6 +472,8 @@ public class GameStatus : MonoBehaviour
         set { aryNormalRelicLv = value; }
     }
 
+    private int minigameTicket;
+    public int MinigameTicket { get { return  minigameTicket; } set {  minigameTicket = value; } }
     /////////////////////////////////////////////////////////////////////////////////
 
 
@@ -514,6 +516,10 @@ public class GameStatus : MonoBehaviour
         Star = result;
     }
 
+    /// <summary>
+    /// UI창에 현재 골드생산된 량 이펙트 추가해서 올라가는 함수
+    /// </summary>
+    /// <param name="getValue"></param>
     public void PlusGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);

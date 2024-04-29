@@ -234,11 +234,11 @@ public class ActionManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            GameManager.inst.ActiveMiniGameMode(true);
+           
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            GameManager.inst.ActiveMiniGameMode(false);
+     
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
@@ -717,7 +717,7 @@ public class ActionManager : MonoBehaviour
     public void SetPlayerMoveSpeed()
     {
         float speed = 1 + GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue;
-        Debug.Log($"토탈 {speed} /버프{GameStatus.inst.BuffAddSpeed} / 뉴비 {GameStatus.inst.NewbieMoveSpeedBuffValue}");
+        //Debug.Log($"토탈 {speed} /버프{GameStatus.inst.BuffAddSpeed} / 뉴비 {GameStatus.inst.NewbieMoveSpeedBuffValue}");
         playerAnim.SetFloat("MoveSpeed", speed);
     }
 

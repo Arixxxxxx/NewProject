@@ -41,6 +41,12 @@ public class SpriteResource : MonoBehaviour
     /// <param name="value"> 0루비 / 1골드 </param>
     /// <returns></returns>
     public Sprite CoinIMG(int value) => coinMG[value];
+
+    /// <summary>
+    /// 동료 강화재료
+    /// </summary>
+    /// <param name="value"> 0 영혼 / 1 뼈 / 2책 / 3안쓰는 이미지</param>
+    /// <returns></returns>
     public Sprite CrewMaterialIMG(int value) => crewMaterialIMG[value];
     private void Awake()
     {

@@ -31,7 +31,7 @@ public class FlyEventPrefabs : MonoBehaviour
 
     private void Awake()
     {
-        lightEffect = transform.Find("wing/bone_1/bone_2/Light").GetComponent<Transform>();
+        lightEffect = transform.Find("Body/Light").GetComponent<Transform>();
         rb = GetComponent<Rigidbody2D>();
     }
     void Start()
@@ -51,8 +51,8 @@ public class FlyEventPrefabs : MonoBehaviour
             scaleValue = Mathf.PingPong(Time.time * speeds, height);
             lightEffect.transform.Rotate(rotateVec);
 
-            scaleVec.x = scaleValue + 1;
-            scaleVec.y = scaleValue + 1;
+            scaleVec.x = scaleValue + 2.5f;
+            scaleVec.y = scaleValue + 2.5f;
             lightEffect.localScale = scaleVec;
 
             // 박스 본체 움직임

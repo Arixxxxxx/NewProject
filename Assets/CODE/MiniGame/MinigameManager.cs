@@ -8,6 +8,7 @@ public class MinigameManager : MonoBehaviour
 {
     public static MinigameManager inst;
 
+    GameObject frontUiRef;
 
     // 현재 실행중인 게임번호
     int curPlayGameNum = -1;
@@ -20,14 +21,19 @@ public class MinigameManager : MonoBehaviour
         get { return mainScrrenRef; }
     }
 
-    [SerializeField]
     GameObject miniGameRef, miniGamesRef;
     GameObject titleLogo;
 
     //MiniGameref
     int miniGameCount;
-
     GameObject[] miniGame;
+
+    //미니게임 입장창 Ref
+    GameObject enterWindowRef;
+    Button goRulletBtn, startMinigameBtn, enterWindowXBtn;
+
+    //RulletShop
+    GameObject rulletShop;
 
     //종료할껀지 묻는창
     GameObject endGameQuestionBox;
@@ -77,6 +83,14 @@ public class MinigameManager : MonoBehaviour
         }
 
         miniGameRef = GameManager.inst.MiniGameRef;
+        frontUiRef = GameManager.inst.FrontUiRef;
+
+        //미니게임 입장창
+        enterWindowRef = frontUiRef.transform.Find("MiniGameEntrance").gameObject;
+        goRulletBtn = enterWindowRef.transform.Find("Window/Btns/Rullet").GetComponent<Button>();
+        startMinigameBtn = enterWindowRef.transform.Find("Window/Btns/GameStart").GetComponent<Button>();
+        enterWindowXBtn = enterWindowRef.transform.Find("Window/Title/X_Btn").GetComponent<Button>();
+
         mainScrrenRef = miniGameRef.transform.Find("MainScreen").gameObject;
         miniGamesRef = miniGameRef.transform.Find("MiniGames").gameObject;
         miniGameCount = miniGamesRef.transform.childCount;
@@ -131,6 +145,31 @@ public class MinigameManager : MonoBehaviour
             GameManager.inst.ActiveMiniGameMode(false);
             minigameReset();
         });
+
+        goRulletBtn.onClick.AddListener(() =>
+        {
+            Active_minigameEntrance(false);
+            EventShop_RulletManager.inst.Active_RulletEventShop(true);
+        });
+
+        startMinigameBtn.onClick.AddListener(() => 
+        {
+            Active_minigameEntrance(false);
+            GameManager.inst.ActiveMiniGameMode(true);
+        });
+        enterWindowXBtn.onClick.AddListener(() =>
+        {
+            Active_minigameEntrance(false);
+        });
+    }
+
+    /// <summary>
+    /// 미니게임 입장전 설명 및 어디로 갈지 선택하는 창
+    /// </summary>
+    /// <param name="value"></param>
+    public void Active_minigameEntrance(bool value)
+    {
+        enterWindowRef.SetActive(value);
     }
 
     //껏다 켯을때 최초상태로 해주는 함수
@@ -299,6 +338,9 @@ public class MinigameManager : MonoBehaviour
         timeUpAnim.gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// 미니게임 종료후 결과창 호출
+    /// </summary>
     public void Set_ReSultValueAndActive()
     {
         PopupResult = true;
@@ -307,7 +349,6 @@ public class MinigameManager : MonoBehaviour
         fillText.text = "/";
 
         resultRef.SetActive(true);
-        //resultAnim.gameObject.SetActive(true);
 
         float[] getCountAndMaxCunt = new float[2];
 
@@ -326,6 +367,9 @@ public class MinigameManager : MonoBehaviour
         // 별 갯수 계산
         int star = getCountAndMaxCunt[0] / getCountAndMaxCunt[1] < 0.3f ? 1 : getCountAndMaxCunt[0] / getCountAndMaxCunt[1] < 0.6f ? 2 : 3;
         countText.text = star.ToString();
+
+        // 미니게임토큰 지급 
+        GameStatus.inst.MinigameTicket += star;
 
         // 바 계산
         StartCoroutine(fillAndTextAction(getCountAndMaxCunt[0], getCountAndMaxCunt[1], star));
@@ -366,7 +410,7 @@ public class MinigameManager : MonoBehaviour
     }
 
     int resultMenuSelectIndex = 0;
-    public int ResultMenuSelectIndex { get { return resultMenuSelectIndex; } set {  resultMenuSelectIndex = value; resultMenuSelectActiveInit(); } }    
+    public int ResultMenuSelectIndex { get { return resultMenuSelectIndex; } set { resultMenuSelectIndex = value; resultMenuSelectActiveInit(); } }
 
     // Result 메뉴 팝업시 하단 화살표 이동 및 B버튼 이용 실행
     public void ResultMenuContoller()
@@ -391,13 +435,13 @@ public class MinigameManager : MonoBehaviour
                 ResultMenuSelectIndex--;
             }
         }
-        
+
         //메인메뉴로 (B버튼 클릭)
         if (MinigameController.inst.Bbtn == true && popupresult == true && ResultMenuSelectIndex == 0)
         {
             MinigameController.inst.Bbtn = false;
             popupresult = false;
-           
+
 
             //팝업창끄기
             switch (curPlayGameNum)
@@ -409,7 +453,7 @@ public class MinigameManager : MonoBehaviour
                         resultRef.SetActive(false);
                         ResultMenuSelectIndex = 0;
                     });
-                 
+
                     break;
             }
         }
@@ -419,7 +463,7 @@ public class MinigameManager : MonoBehaviour
         {
             MinigameController.inst.Bbtn = false;
             popupresult = false;
-           
+
 
             switch (curPlayGameNum)
             {

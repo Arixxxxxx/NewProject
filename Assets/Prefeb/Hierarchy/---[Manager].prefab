@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 6767617472122134259}
   - component: {fileID: 3980596178529644447}
   - component: {fileID: 1002357639231264430}
+  - component: {fileID: 4873485944268843623}
   m_Layer: 0
   m_Name: FrontUI
   m_TagString: Untagged
@@ -271,6 +272,18 @@ MonoBehaviour:
   curItemCount: 
   coolTimeTimer: []
   coolTime: 300
+--- !u!114 &4873485944268843623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2214145803004256810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a0479c31c21a29468eed9565636ebbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2562581402446063995
 GameObject:
   m_ObjectHideFlags: 0
