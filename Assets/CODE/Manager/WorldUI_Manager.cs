@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -63,6 +64,18 @@ public class WorldUI_Manager : MonoBehaviour
 
     // 광고제거 버튼
     Button adDeleteBtn;
+
+    // 동료 살펴보기 버튼
+    Button crewViewrBtn;
+
+    // 무기도감버튼
+    Button weaponShopBtn;
+
+    // 이벤트샵 버튼
+    Button eventShopBtn;
+
+    // 빙고게임 버튼
+    Button bingoBtn;
 
     //레드심볼 관리
     List<GameObject> redSimBall_Icons = new List<GameObject>();
@@ -141,7 +154,12 @@ public class WorldUI_Manager : MonoBehaviour
         minigameAlrimBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MiniGame").GetComponent<Button>(); //미니게임
         adDeleteBtn = worldUI.transform.Find("StageUI/AdDelete").GetComponent<Button>(); // 광고제거
         openMenuIcon = worldUI.transform.Find("StageUI/MenuBox/MeneOpen/RealBtn").GetComponent<Button>(); // 메뉴 삼각형버튼
-        checkArrowScaleX = openMenuIcon.transform.parent.GetComponent<Transform>(); 
+        checkArrowScaleX = openMenuIcon.transform.parent.GetComponent<Transform>();
+
+        crewViewrBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/CrewViewr").GetComponent<Button>();      // 동료 살펴보기 버튼
+        weaponShopBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/WeaponDogam").GetComponent<Button>();        // 무기도감버튼
+        eventShopBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/EventShop").GetComponent<Button>();        // 이벤트샵 버튼
+        bingoBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/Bingo").GetComponent<Button>(); // 빙고게임 버튼
 
         menuAnim = worldUI.transform.Find("StageUI/MenuBox").GetComponent<Animator>(); // 메뉴바 연출 애니메ㅐ이션
 
@@ -252,6 +270,28 @@ public class WorldUI_Manager : MonoBehaviour
         newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
         mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
         adDeleteBtn.onClick.AddListener(() => AdDelete.inst.ActiveAdDeleteWindow());
+
+        crewViewrBtn.onClick.AddListener(() => 
+        {
+            PetDetailViewr_UI.inst.TopArrayBtnActive(0);
+        });
+
+        weaponShopBtn.onClick.AddListener(() => 
+        {
+            DogamManager.inst.Set_DogamListAcitve(0, true);
+        });
+
+        eventShopBtn.onClick.AddListener(() => 
+        {
+          EventShop_RulletManager.inst.Active_RulletEventShop(true);
+        });
+        
+        // 겸희 빙고 나중에 연결
+        bingoBtn.onClick.AddListener(() => 
+        {
+          
+        });
+
         minigameAlrimBtn.onClick.AddListener(() => 
         {
             MinigameManager.inst.Active_minigameEntrance(true);
