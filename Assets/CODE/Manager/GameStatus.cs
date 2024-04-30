@@ -434,6 +434,17 @@ public class GameStatus : MonoBehaviour
         return aryWeaponLv[Num];
     }
 
+    int equipWeaponNum;//장착중인 무기 이미지 번호
+    public int EquipWeaponNum
+    {
+        get => equipWeaponNum;
+        set
+        {
+            equipWeaponNum = value;
+            ActionManager.inst.Set_WeaponSprite_Changer(value);
+        }
+    }
+
     public void SetAryWeaponLv(int Num, int Value)
     {
         aryWeaponLv[Num] = Value;
@@ -461,9 +472,31 @@ public class GameStatus : MonoBehaviour
     }
 
     private int minigameTicket;
-    public int MinigameTicket { get { return  minigameTicket; } set {  minigameTicket = value; } }
-    /////////////////////////////////////////////////////////////////////////////////
+    public int MinigameTicket { get { return minigameTicket; } set { minigameTicket = value; } }
+    /////////////////////////////////////미션/////////////////////////////////////////
 
+    bool[] dailyMissionisClear;
+    public bool[] DailyMIssionisClear { get => dailyMissionisClear; set { dailyMissionisClear = value; } }
+
+    bool[] weeklyMissionisClear;
+    public bool[] WeeklyMissionisClear { get => weeklyMissionisClear; set { weeklyMissionisClear = value; } }
+
+    bool[] specialMissionisClear;
+    public bool[] SpecialMissionisClear { get => specialMissionisClear; set { specialMissionisClear = value; } }
+
+    bool isCanResetDailyMIssion;
+    public bool IsCanResetDailyMIssion { get => isCanResetDailyMIssion; set { isCanResetDailyMIssion = value; } }
+
+    bool isCanResetWeeklyMIssion;
+    public bool IsCanResetWeeklyMIssion { get => isCanResetWeeklyMIssion; set { isCanResetWeeklyMIssion = value; } }
+
+    bool[] clearBingo;
+    public bool[] ClearBingo { get => clearBingo; set { clearBingo = value; } }
+
+    int bingoTicket;
+    public int BingoTicket { get => bingoTicket; set { bingoTicket = value; } }
+
+    /////////////////////////////////////////////////////////////////////////////////
 
     private void Awake()
     {
@@ -550,5 +583,55 @@ public class GameStatus : MonoBehaviour
     {
         DataManager.SaveData saveData = DataManager.inst.Get_Savedata();
         nickName = saveData.Name;
+        aryQuestLv = saveData.QuestLv;
+
+        // 1. 재화
+        Gold = saveData.Gold;
+        Star = saveData.Star;
+        Ruby = saveData.Ruby;
+
+        // 2.펫재료
+
+        // 3.미니게임
+        MinigameTicket = saveData.miniTicket;
+
+        // 4.버프남은시간
+
+        // 5. 뉴비 혜택
+        //뉴비 버프타임 추가해야됨
+        GetNewbieGiftDay = saveData.GetNewbieGiftDay;
+        GotNewbieGiftCount = saveData.GetGiftCount;
+
+        // 6. 출석체크
+        GetGiftDay = saveData.GetGiftDay;
+        GotDilayPlayGiftCount = saveData.GetGiftCount;
+
+        // 7. 캐릭터 관련
+        AtkSpeedLv = saveData.AtkSpeedLv;
+        HWansengCount = saveData.HwanSeangCount;
+
+        // 8. 게임현황 (스테이지)
+        AccumlateFloor = saveData.TotalFloor;
+        StageLv = saveData.Stage;
+        FloorLv = saveData.NowFloor;
+
+        // 9. 동료 레벨
+        Pet0_Lv = saveData.Crew0Lv;
+        Pet1_Lv = saveData.Crew1Lv;
+        Pet2_Lv = saveData.Crew2Lv;
+
+        // 10. 메인 하단 UI 현황
+        aryWeaponLv = saveData.WeaponLv;
+        AryNormalRelicLv = saveData.RelicLv;
+        EquipWeaponNum = saveData.NowEquipWeaponNum;
+
+        // 11. 미션 현황
+        DailyMIssionisClear = saveData.DailyMIssionClear;
+        WeeklyMissionisClear = saveData.WeeklyMissionClear;
+        SpecialMissionisClear = saveData.SpMissionClear;
+        IsCanResetDailyMIssion = saveData.canResetDailyMission;
+        IsCanResetWeeklyMIssion = saveData.canResetWeeklyMission;
+
+        // 12. 빙고 현황
     }
 }

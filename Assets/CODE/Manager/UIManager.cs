@@ -62,16 +62,7 @@ public class UIManager : MonoBehaviour
     Button WeaponBook;
 
     int haveWeaponLv;//보유중인 무기중 제일 최상위 무기 번호
-    int equipWeaponNum;//장착중인 무기 이미지 번호
-    public int EquipWeaponNum
-    {
-        get => equipWeaponNum;
-        set
-        {
-            equipWeaponNum = value;
-            ActionManager.inst.Set_WeaponSprite_Changer(value);
-        }
-    }
+
 
     public void WeaponUpComplete(Transform _trs)
     {

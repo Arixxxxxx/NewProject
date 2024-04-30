@@ -129,6 +129,7 @@ public class Relic : MonoBehaviour
                 break;
             case ItemTag.AtkSpeed:
                 percentage = 100 + Lv;
+                GameStatus.inst.AtkSpeedLv = Lv;
                 break;
             case ItemTag.Critical:
                 percentage = 100 + Lv;

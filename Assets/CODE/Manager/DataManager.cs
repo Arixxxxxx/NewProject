@@ -26,8 +26,8 @@ public class DataManager : MonoBehaviour
         public string Name;
         
         // 1. 재화
-        public string Gold;
-        public string Star;
+        public string Gold = "0";
+        public string Star = "0";
         public int Ruby;
 
         // 2. 동료 강화 재료
@@ -67,19 +67,22 @@ public class DataManager : MonoBehaviour
         public int Crew1Lv = 0;
         public int Crew2Lv = 0;
 
-        // 9. 퀘스트 현황
-        public int[] QuestLv;
-        public int[] WeaponLv;
+        // 9. 메인 하단 UI 현황
+        public int[] QuestLv = new int[30];
+        public int[] WeaponLv = new int[30];
         public int[] RelicLv;
+        public int NowEquipWeaponNum;
+
+        // 10. 미션 현황
         public bool[] DailyMIssionClear;
         public bool[] WeeklyMissionClear;
         public bool[] SpMissionClear;
-        public bool[] ClearBingo;
-
-        public int BingoTicket;
         public bool canResetDailyMission;
         public bool canResetWeeklyMission;
-        public int NowEquipWeaponNum;
+
+        //11. 빙고 현황
+        public bool[] ClearBingo;
+        public int BingoTicket;
     }
 
 
@@ -158,6 +161,7 @@ public class DataManager : MonoBehaviour
             string json = File.ReadAllText(path);
             savedata = JsonConvert.DeserializeObject<SaveData>(json);
             isHaveJsonFile = true;
+            Debug.Log(savedata.QuestLv[0]);
         }
     }
 

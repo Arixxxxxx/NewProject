@@ -56,6 +56,7 @@ public class Quest : MonoBehaviour
     void Start()
     {
         Number = transform.GetSiblingIndex();
+        Lv = GameStatus.inst.GetAryQuestLv(Number);
         initValue();
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
         UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);

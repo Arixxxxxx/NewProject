@@ -55,6 +55,7 @@ public class Weapon : MonoBehaviour
     {
         weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
         Number = transform.GetSiblingIndex();
+        Lv = GameStatus.inst.GetAryWeaponLv(Number);
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
         nameText.text = $"{transform.GetSiblingIndex() + 1}. " + Name;
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
@@ -151,7 +152,7 @@ public class Weapon : MonoBehaviour
     {
         if (Lv - Number * 5 != 0)
         {
-            UIManager.Instance.EquipWeaponNum = Number;
+            GameStatus.inst.EquipWeaponNum = Number;
         }
     }
 
