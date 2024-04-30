@@ -3,18 +3,6 @@ using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
 
-
-[System.Serializable]
-public class UpdateData
-{
-    public string Playeratk;
-    public int weaponLv = 0;
-
-}
-
-
-
-
 public class GameStatus : MonoBehaviour
 {
     public static GameStatus inst;

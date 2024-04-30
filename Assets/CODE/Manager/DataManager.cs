@@ -11,20 +11,54 @@ public class DataManager : MonoBehaviour
     public static DataManager inst;
 
     // 씬로딩 관련
-    Image lodingSceneFillBar;
+    
     int sceneNumber;
 
 
     public SaveData savedata = new SaveData();
+    //파일명 수정해야됨
     string path = Path.Combine(Application.dataPath, "TestData.json");
     RectTransform ScreenArea;
 
 
     public class SaveData
     {
-        public int test1;
-        public int[] testAry1;
-        public Vector2 testVector2;
+        public string Name;
+        public string Gold;
+        public string Star;
+        public int Ruby;
+        public int Soul;
+        public int book;
+        public int born;
+        public int miniTicket;
+        public float buffAtkTime;
+        public float buffGoldTime;
+        public float buffMoveSpeedTime;
+        public float buffBigAtkTime;
+        public double NewbieBuffTime;
+        public int[] GetGiftDay;
+        public int[] GetNewbieGiftDay;
+        public int GetGiftCount;
+        public int GetNewbieGiftCount;
+        public int AtkSpeedLv;
+        public int HwanSeangCount;
+        public int TotalFloor;
+        public int Stage;
+        public int NowFloor;
+        public int Crew0Lv;
+        public int Crew1Lv;
+        public int Crew2Lv;
+        public int[] QuestLv;
+        public int[] WeaponLv;
+        public int[] RelicLv;
+        public bool[] DailyMIssionClear;
+        public bool[] WeeklyMissionClear;
+        public bool[] SpMissionClear;
+        public bool[] ClearBingo;
+        public int BingoTicket;
+        public bool canResetDailyMission;
+        public bool canResetWeeklyMission;
+        public int NowEquipWeaponNum;
     }
 
 
@@ -38,58 +72,29 @@ public class DataManager : MonoBehaviour
         {
             Destroy(inst);
         }
-
+        CheckJsonFile();//최초실행시 json유무 확인
         DontDestroyOnLoad(inst);
         setScreen();
         //Screen.SetResolution(Screen.width, Screen.width / 9 * 16, true);
 
-        if(SceneManager.sceneCount == 1)
+        
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            lodingSceneFillBar = GameObject.Find("Canvas/LoadingBar/FillBar").GetComponent<Image>();
-            StartCoroutine(LoadScene());
+            LoadingManager.LoadScene(2);
         }
-    }
-
-    public void LoadScene(int TargetSceneNumber)
-    {
-        sceneNumber = TargetSceneNumber;
-        SceneManager.LoadScene(1);
-    }
-    IEnumerator LoadScene()
-    {
-
-       AsyncOperation op = SceneManager.LoadSceneAsync(sceneNumber);
-        op.allowSceneActivation = false;
-
-        float timer = 0f;
-        while (!op.isDone)
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            yield return null;
-            if (op.progress < 0.8f)
-            {
-                if(lodingSceneFillBar == null)
-                {
-                    lodingSceneFillBar = GameObject.Find("Canvas/LoadingBar/FillBar").GetComponent<Image>();
-                }
-
-                lodingSceneFillBar.fillAmount = op.progress;
-            }
-            else
-            {
-                timer += Time.unscaledDeltaTime;
-                lodingSceneFillBar.fillAmount = Mathf.Lerp(0.8f,1f, timer);
-                if (lodingSceneFillBar.fillAmount >= 1f)
-                {
-                    op.allowSceneActivation = true;
-                    yield break;
-                }
-            }
+            SavePath();
         }
     }
 
     void setScreen()
     {
-        ScreenArea = GameObject.Find("---[UI Canvas]").transform.Find("ScreenArea").GetComponent<RectTransform>();
+        //ScreenArea = GameObject.Find("---[UI Canvas]").transform.Find("ScreenArea").GetComponent<RectTransform>();
 
         int setWidth = 1080;
         int setheight = 1920;
@@ -115,27 +120,36 @@ public class DataManager : MonoBehaviour
 
 
     public void SavePath()
-    {
-        savedata.test1 = 1;
-        savedata.testAry1 = new int[3] { 1, 2, 3 };
-        savedata.testVector2 = new Vector2(4, 4);
-
+    { 
         string json = JsonUtility.ToJson(savedata);
 
         Debug.Log(path);
         File.WriteAllText(path, json);
     }
 
+    bool isHaveJsonFile = false;
 
-    public void LoadPath()
+    public void CheckJsonFile()
     {
+
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
-            SaveData savedata = JsonConvert.DeserializeObject<SaveData>(json);
-            Debug.Log(savedata.testVector2);
+            savedata = JsonConvert.DeserializeObject<SaveData>(json);
+            isHaveJsonFile = true;
+
+            Debug.Log("json 있음!");
         }
+        else
+        {
+            Debug.Log("json 없음!");
+        }
+        //json파일이 없을 시
     }
 
-
+    public void SetName(string _name)
+    {
+        savedata.Name = _name;
+        SavePath();
+    }
 }

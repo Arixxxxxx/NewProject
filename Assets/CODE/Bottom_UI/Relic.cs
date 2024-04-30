@@ -164,18 +164,15 @@ public class Relic : MonoBehaviour
 
     void checkStar()
     {
+        BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
 
-        if (upBtn.interactable == false)
-        {
-            BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
-            if (haveStar >= nextCost)
-            {
-                upBtn.interactable = true;
-            }
-        }
-        else if (upBtn.interactable == true)
+        if (haveStar < nextCost && upBtn.interactable)
         {
             upBtn.interactable = false;
+        }
+        else if (upBtn.interactable == false)
+        {
+            upBtn.interactable = true;
         }
     }
 
