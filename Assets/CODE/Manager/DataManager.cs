@@ -24,30 +24,50 @@ public class DataManager : MonoBehaviour
     public class SaveData
     {
         public string Name;
+        
+        // 1. 재화
         public string Gold;
         public string Star;
         public int Ruby;
+
+        // 2. 동료 강화 재료
         public int Soul;
         public int book;
         public int born;
+
+       // 3. 미니게임
         public int miniTicket;
+
+        // 3. 버프 남은 시간
         public float buffAtkTime;
         public float buffGoldTime;
         public float buffMoveSpeedTime;
         public float buffBigAtkTime;
+
+        // 4. 뉴비 혜택
         public double NewbieBuffTime;
-        public int[] GetGiftDay;
-        public int[] GetNewbieGiftDay;
-        public int GetGiftCount;
+        public int[] GetNewbieGiftDay = new int[3];
         public int GetNewbieGiftCount;
+
+        // 5. 출석체크
+        public int[] GetGiftDay = new int[3];
+        public int GetGiftCount;
+
+        // 6. 캐릭터 관련
         public int AtkSpeedLv;
         public int HwanSeangCount;
-        public int TotalFloor;
-        public int Stage;
-        public int NowFloor;
-        public int Crew0Lv;
-        public int Crew1Lv;
-        public int Crew2Lv;
+        
+        // 7. 게임현황 (스테이지)
+        public int TotalFloor = 1;
+        public int Stage = 1;
+        public int NowFloor = 1;
+
+        // 8. 동료 레벨
+        public int Crew0Lv = 0;
+        public int Crew1Lv = 0;
+        public int Crew2Lv = 0;
+
+        // 9. 퀘스트 현황
         public int[] QuestLv;
         public int[] WeaponLv;
         public int[] RelicLv;
@@ -55,6 +75,7 @@ public class DataManager : MonoBehaviour
         public bool[] WeeklyMissionClear;
         public bool[] SpMissionClear;
         public bool[] ClearBingo;
+
         public int BingoTicket;
         public bool canResetDailyMission;
         public bool canResetWeeklyMission;
@@ -128,28 +149,26 @@ public class DataManager : MonoBehaviour
     }
 
     bool isHaveJsonFile = false;
+    public bool IshaveJsonFile { get { return isHaveJsonFile; } }
 
     public void CheckJsonFile()
     {
-
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
             savedata = JsonConvert.DeserializeObject<SaveData>(json);
             isHaveJsonFile = true;
-
-            Debug.Log("json 있음!");
         }
-        else
-        {
-            Debug.Log("json 없음!");
-        }
-        //json파일이 없을 시
     }
 
     public void SetName(string _name)
     {
         savedata.Name = _name;
         SavePath();
+    }
+
+    public SaveData Get_Savedata()
+    {
+        return savedata;
     }
 }

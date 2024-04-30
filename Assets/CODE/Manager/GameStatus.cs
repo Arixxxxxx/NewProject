@@ -17,7 +17,7 @@ public class GameStatus : MonoBehaviour
     DateTime firstdate = DateTime.Now; // 일자계산 (아직 미사용)
 
 
-
+    public string nickName;
     /////////////////////[ 출석체크 현황 및  뉴비]//////////////////////////////
 
     // 1.  선물받은 년/월/일
@@ -477,6 +477,8 @@ public class GameStatus : MonoBehaviour
         }
         // 서버에서 데이터 받아와서 초기화해줌
 
+        LoadData(); // <= 데이터 싸온거 푸는 함수 #######################################
+
         // 뉴비 불리언변수 초기화
         IsNewBie = true;
     }
@@ -537,5 +539,16 @@ public class GameStatus : MonoBehaviour
         AccumlateFloor = 1;
         HWansengCount++;
         HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate(); // 환생아이콘 수치 리셋
+    }
+
+
+
+
+
+
+    private void LoadData()
+    {
+        DataManager.SaveData saveData = DataManager.inst.Get_Savedata();
+        nickName = saveData.Name;
     }
 }
