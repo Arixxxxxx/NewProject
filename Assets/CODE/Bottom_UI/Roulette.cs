@@ -156,6 +156,7 @@ public class Roulette : MonoBehaviour
 
     void clickOpen()
     {
+        gameObject.SetActive(true);
         nowTotalGold = GameStatus.inst.TotalProdGold;
         string gold2 = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 2).ToString());
         string gold5 = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 5).ToString());

@@ -50,7 +50,7 @@ public class Pet : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     public void initPet()
@@ -70,10 +70,11 @@ public class Pet : MonoBehaviour
         upBtn.onClick.AddListener(ClickUp);
         BuyBtn.onClick.AddListener(() =>
         {
-            Lv++;
             RubyPayment.inst.RubyPaymentUiActive(baseCost, () =>
             {
+                Lv++;
                 PetContollerManager.inst.PetActive((int)type);
+                PetContollerManager.inst.CrewUnlock_Action((int)type, true);
                 upBtn.gameObject.SetActive(true);
                 BuyBtn.gameObject.SetActive(false);
             });
@@ -97,7 +98,7 @@ public class Pet : MonoBehaviour
             {
                 BuyBtn.interactable = true;
             }
-            else if(BuyBtn.interactable == true)
+            else if (BuyBtn.interactable == true)
             {
                 BuyBtn.interactable = false;
             }

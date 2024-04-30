@@ -58,6 +58,7 @@ public class Weapon : MonoBehaviour
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
         nameText.text = $"{transform.GetSiblingIndex() + 1}. " + Name;
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
+        GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
         initValue();
     }
 
@@ -127,6 +128,19 @@ public class Weapon : MonoBehaviour
         nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f * (1 - (pricediscount / 100))) *resultPowNum;
     }
 
+    private void SetbtnActive()
+    {
+        BigInteger havegold = BigInteger.Parse(GameStatus.inst.Gold);
+        if (havegold < nextCost)
+        {
+            objBtn.interactable = false;
+        }
+        else
+        {
+            objBtn.interactable = true;
+        }
+    }
+
     public BigInteger GetNextCost()
     {
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
@@ -135,7 +149,7 @@ public class Weapon : MonoBehaviour
 
     public void clickWeaponImage()
     {
-        if (Lv % 5 != 0)
+        if (Lv - Number * 5 != 0)
         {
             UIManager.Instance.EquipWeaponNum = Number;
         }
