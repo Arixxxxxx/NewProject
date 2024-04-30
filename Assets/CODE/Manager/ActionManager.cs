@@ -47,9 +47,7 @@ public class ActionManager : MonoBehaviour
     float attackSpeed;
     string atkPower;
     SpriteRenderer palyerWeapenSr;
-    [Header("3. Insert Weapon => <Color=#47C832>( Sprite File )")]
-    [Space]
-    [SerializeField] Sprite[] weaponSprite;
+    Sprite[] weaponSprite;
     
     SpriteRenderer backGroundIMG;
     GameObject moveWindParticle;
@@ -181,7 +179,7 @@ public class ActionManager : MonoBehaviour
     {
         enemySmallSprite = SpriteResource.inst.MonsterSmall;
         enemyLargeSprite = SpriteResource.inst.MonsterLargeSize;
-
+        weaponSprite = SpriteResource.inst.Weapons;
         //최초 init
         Enemyinit();
         UI_Init();
@@ -234,11 +232,15 @@ public class ActionManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-           
+            PetContollerManager.inst.CrewUnlock_Action(0, true);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-     
+            PetContollerManager.inst.CrewUnlock_Action(1, true);
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            PetContollerManager.inst.CrewUnlock_Action(2, true);
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
@@ -838,7 +840,7 @@ public class ActionManager : MonoBehaviour
     // 무기 스프라이트 변경 함수
     public void Set_WeaponSprite_Changer(int index)
     {
-        palyerWeapenSr.sprite = weaponSprite[index];
+        palyerWeapenSr.sprite =  weaponSprite[index];
     }
 
 

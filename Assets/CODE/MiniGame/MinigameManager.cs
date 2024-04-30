@@ -47,6 +47,7 @@ public class MinigameManager : MonoBehaviour
     }
 
     GameObject selectGameRef;
+    
     public GameObject SelectGameRef { get { return selectGameRef; } }
     Image cutton;
     Action startGameFuntion;
@@ -63,6 +64,7 @@ public class MinigameManager : MonoBehaviour
     bool popupresult;
     public bool PopupResult { get { return popupresult; } set { popupresult = value; } }
 
+    GameObject[] stars = new GameObject[3];
     Animator starAnim; // 별 애니메이션
     TMP_Text countText; // 미니게임화폐 갯수 출력
     Image fillbar;
@@ -122,6 +124,9 @@ public class MinigameManager : MonoBehaviour
         resultMenuSelect[1] = miniGamesRef.transform.Find("StartCanvas/Result/ReStartBtn/Active").gameObject;
 
         countText = miniGamesRef.transform.Find("StartCanvas/Result/RewardText/CountText").GetComponent<TMP_Text>();
+        stars[0] = miniGamesRef.transform.Find("StartCanvas/Result/Star/0/star").gameObject;
+        stars[1] = miniGamesRef.transform.Find("StartCanvas/Result/Star/1/star").gameObject;
+        stars[2] = miniGamesRef.transform.Find("StartCanvas/Result/Star/2/star").gameObject;
         BtnInit();
     }
     void Start()
@@ -268,7 +273,7 @@ public class MinigameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 미니게임 활성화
+    /// 미니게임 활성화 혹은 종료 해서 나오기
     /// </summary>
     /// <param name="index"></param>
     public void ActiveMinigame(int index, bool value)
@@ -287,6 +292,8 @@ public class MinigameManager : MonoBehaviour
                     miniGame[indexs].SetActive(false);
                 }
             }
+            minigameReset();
+           
         }
     }
 
@@ -347,6 +354,10 @@ public class MinigameManager : MonoBehaviour
 
         fillbar.fillAmount = 0;
         fillText.text = "/";
+        for(int index=0; index < stars.Length; index++)
+        {
+            stars[index].SetActive(false);
+        }
 
         resultRef.SetActive(true);
 
@@ -365,7 +376,21 @@ public class MinigameManager : MonoBehaviour
         }
 
         // 별 갯수 계산
-        int star = getCountAndMaxCunt[0] / getCountAndMaxCunt[1] < 0.3f ? 1 : getCountAndMaxCunt[0] / getCountAndMaxCunt[1] < 0.6f ? 2 : 3;
+        float checkValue = getCountAndMaxCunt[0] / getCountAndMaxCunt[1];
+
+        int star = 0;
+        if (checkValue >= 0 && checkValue < 0.4f) 
+        {
+            star = 1;
+        }
+        else if(checkValue >= 0.4f && checkValue < 0.7f)
+        {
+            star = 2;
+        }
+        else if(checkValue >= 0.7f && checkValue <= 1)
+        {
+            star = 3;
+        }
         countText.text = star.ToString();
 
         // 미니게임토큰 지급 

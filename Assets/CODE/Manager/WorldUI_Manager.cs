@@ -135,11 +135,11 @@ public class WorldUI_Manager : MonoBehaviour
         // 메뉴버튼들
         
         getLetterBtn = worldUI.transform.Find("StageUI/Letter").GetComponent<Button>(); // 우편함
-        dailyPlayCheckBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/DailyCheck").GetComponent<Button>(); //출석체크
+        dailyPlayCheckBtn = worldUI.transform.Find("StageUI/DailyCheck").GetComponent<Button>(); //출석체크
         newBieBtn = worldUI.transform.Find("StageUI/NewBie").GetComponent<Button>(); //뉴비
         mosterDogamBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MosterDogam").GetComponent<Button>(); //몬스터도감
         minigameAlrimBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MiniGame").GetComponent<Button>(); //미니게임
-        adDeleteBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/AdDelete").GetComponent<Button>(); // 광고제거
+        adDeleteBtn = worldUI.transform.Find("StageUI/AdDelete").GetComponent<Button>(); // 광고제거
         openMenuIcon = worldUI.transform.Find("StageUI/MenuBox/MeneOpen/RealBtn").GetComponent<Button>(); // 메뉴 삼각형버튼
         checkArrowScaleX = openMenuIcon.transform.parent.GetComponent<Transform>(); 
 

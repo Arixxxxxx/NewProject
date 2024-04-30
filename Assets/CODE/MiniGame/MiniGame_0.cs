@@ -8,7 +8,7 @@ public class MiniGame_0 : MonoBehaviour
 {
     public static MiniGame_0 inst;
 
-    GameObject miniGameRef, game0Ref, mainScrrenRef;
+    GameObject miniGameRef, game0Ref, mainScrrenRef, gameInfoRef;
 
     GameObject[] selectMenu = new GameObject[3];
 
@@ -52,6 +52,7 @@ public class MiniGame_0 : MonoBehaviour
         miniGameRef = GameManager.inst.MiniGameRef;
         game0Ref = miniGameRef.transform.Find("MiniGames/Game_0").gameObject;
         mainScrrenRef = game0Ref.transform.Find("MainScrrenCanvas").gameObject;
+        gameInfoRef = game0Ref.transform.Find("Info").gameObject;
         selectMenu[2] = mainScrrenRef.transform.Find("BG/Start/Select").gameObject;
         selectMenu[1] = mainScrrenRef.transform.Find("BG/Info/Select").gameObject;
         selectMenu[0] = mainScrrenRef.transform.Find("BG/Back/Select").gameObject;
@@ -180,7 +181,7 @@ public class MiniGame_0 : MonoBehaviour
     {
         // 메인화면
 
-        if (mainScrrenRef.activeSelf)
+        if (mainScrrenRef.activeSelf || gameInfoRef.activeSelf)
         {
             gameMainScrrenController();
             SelectMenu();
@@ -220,7 +221,7 @@ public class MiniGame_0 : MonoBehaviour
 
     }
 
-
+   
 
     // 게임 메인화면 메뉴 선택시
     private void SelectMenu()
@@ -229,12 +230,49 @@ public class MiniGame_0 : MonoBehaviour
 
         if (MinigameController.inst.Bbtn && mainScrrenSelectIndex == 2 && MinigameController.inst.Gamestart == true)
         {
+            MinigameController.inst.Bbtn = false;
+
             MinigameManager.inst.CuttonFadeInoutAndFuntion(() =>
             {
                 StartCoroutine(gameStartCorutines());
             });
         }
 
+        if (MinigameController.inst.Bbtn && mainScrrenSelectIndex == 1 && MinigameController.inst.Gamestart == true )
+        {
+            MinigameController.inst.Bbtn = false;
+
+            MinigameManager.inst.CuttonFadeInoutAndFuntion(() =>
+            {
+                mainScrrenSelectIndex = 3;
+                mainScrrenRef.SetActive(false);
+                gameInfoRef.SetActive(true);
+            });
+        }
+
+        if (MinigameController.inst.Bbtn && mainScrrenSelectIndex == 3  && MinigameController.inst.Gamestart == true)
+        {
+            MinigameController.inst.Bbtn = false;
+
+            MinigameManager.inst.CuttonFadeInoutAndFuntion(() =>
+            {
+               
+                mainScrrenSelectIndex = 2;
+                SelectOptionInit(); 
+                mainScrrenRef.SetActive(true);
+                gameInfoRef.SetActive(false);
+            });
+        }
+
+        if (MinigameController.inst.Bbtn && mainScrrenSelectIndex == 0 && MinigameController.inst.Gamestart == true )
+        {
+            MinigameController.inst.Bbtn = false;
+
+            MinigameManager.inst.CuttonFadeInoutAndFuntion(() =>
+            {
+                MinigameManager.inst.ActiveMinigame(0, false);
+            });
+        }
 
     }
 
@@ -437,6 +475,7 @@ public class MiniGame_0 : MonoBehaviour
     {
         GameStart = false;
         mainScrrenRef.SetActive(true);
+        gameInfoRef.SetActive(false);
         world.SetActive(false);
 
         gameTimeCounter = gameTime;
