@@ -154,17 +154,6 @@ public class PetDetailViewr_UI : MonoBehaviour
             BottomGaksungActive(true);
         });
 
-
-        //midArrayBtns[2].onClick.AddListener(() =>
-        //{
-        //    curBotNum = 2;
-        //    middleBtnImageChanger(2);
-
-        //    BottomInformationActive(curCharNum, false);
-        //    BottomGaksungActive(false);
-        //    BottomUpGradeActive(true);
-
-        //});
     }
 
     /// <summary>
@@ -246,12 +235,6 @@ public class PetDetailViewr_UI : MonoBehaviour
                 break;
 
         }
-
-
-
-
-
-
     }
 
     private void middleBtnImageChanger(int indexNum)
@@ -325,28 +308,4 @@ public class PetDetailViewr_UI : MonoBehaviour
         }
     }
 
-    //private void BottomUpGradeActive(bool value)
-    //{
-    //    if (value)
-    //    {
-    //        for (int index = 0; index < petInfo.Length; index++)
-    //        {
-    //            if (curCharNum == index)
-    //            {
-    //                petUpgrade[index].gameObject.SetActive(true);
-    //            }
-    //            else
-    //            {
-    //                petUpgrade[index].gameObject.SetActive(false);
-    //            }
-    //        }
-    //    }
-    //    else
-    //    {
-    //        for (int index = 0; index < petInfo.Length; index++)
-    //        {
-    //            petUpgrade[index].gameObject.SetActive(false);
-    //        }
-    //    }
-    //}
 }

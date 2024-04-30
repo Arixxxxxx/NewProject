@@ -1,16 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
 
 public class DataManager : MonoBehaviour
 {
     public static DataManager inst;
 
+    // ¾À·Îµù °ü·Ã
+    Image lodingSceneFillBar;
+    int sceneNumber;
+
+
     public SaveData savedata = new SaveData();
     string path = Path.Combine(Application.dataPath, "TestData.json");
     RectTransform ScreenArea;
+
 
     public class SaveData
     {
@@ -34,6 +42,49 @@ public class DataManager : MonoBehaviour
         DontDestroyOnLoad(inst);
         setScreen();
         //Screen.SetResolution(Screen.width, Screen.width / 9 * 16, true);
+
+        if(SceneManager.sceneCount == 1)
+        {
+            lodingSceneFillBar = GameObject.Find("Canvas/LoadingBar/FillBar").GetComponent<Image>();
+            StartCoroutine(LoadScene());
+        }
+    }
+
+    public void LoadScene(int TargetSceneNumber)
+    {
+        sceneNumber = TargetSceneNumber;
+        SceneManager.LoadScene(1);
+    }
+    IEnumerator LoadScene()
+    {
+
+       AsyncOperation op = SceneManager.LoadSceneAsync(sceneNumber);
+        op.allowSceneActivation = false;
+
+        float timer = 0f;
+        while (!op.isDone)
+        {
+            yield return null;
+            if (op.progress < 0.8f)
+            {
+                if(lodingSceneFillBar == null)
+                {
+                    lodingSceneFillBar = GameObject.Find("Canvas/LoadingBar/FillBar").GetComponent<Image>();
+                }
+
+                lodingSceneFillBar.fillAmount = op.progress;
+            }
+            else
+            {
+                timer += Time.unscaledDeltaTime;
+                lodingSceneFillBar.fillAmount = Mathf.Lerp(0.8f,1f, timer);
+                if (lodingSceneFillBar.fillAmount >= 1f)
+                {
+                    op.allowSceneActivation = true;
+                    yield break;
+                }
+            }
+        }
     }
 
     void setScreen()
@@ -60,23 +111,8 @@ public class DataManager : MonoBehaviour
             Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
         }
 
-
-
-        //Vector2 minAnchor = Screen.safeArea.min;
-        //Vector2 maxAnchor = Screen.safeArea.max;
-
-
-
-        //minAnchor.x /= setWidth;
-        //minAnchor.y /= setheight;
-
-        //maxAnchor.x /= setWidth;
-        //maxAnchor.y /= setheight;
-
-        //ScreenArea.anchorMin = minAnchor;
-        //ScreenArea.anchorMax = maxAnchor;
-
     } 
+
 
     public void SavePath()
     {
@@ -90,6 +126,7 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(path, json);
     }
 
+
     public void LoadPath()
     {
         if (File.Exists(path))
@@ -99,4 +136,6 @@ public class DataManager : MonoBehaviour
             Debug.Log(savedata.testVector2);
         }
     }
+
+
 }
