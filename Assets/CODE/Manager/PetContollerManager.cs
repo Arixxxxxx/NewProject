@@ -1,14 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class PetContollerManager : MonoBehaviour
 {
     public static PetContollerManager inst;
 
     GameObject playerObj;
-    GameObject effectRef;
+    GameObject effectRef, frontUiRef;
 
     Animator[] petAnim = new Animator[3];
     int animCount = 0;
@@ -16,7 +18,7 @@ public class PetContollerManager : MonoBehaviour
     // 펫0번
     ParticleSystem[] pet0Ps = new ParticleSystem[2];
     ParticleSystem pet0Dust;
-    
+
 
     ParticleSystem[] pet1Ps = new ParticleSystem[4];
     ParticleSystem pet1Dust;
@@ -29,6 +31,16 @@ public class PetContollerManager : MonoBehaviour
     // 펫 그림자들
     GameObject[] petShadow = new GameObject[3];
     GameObject[] petWind = new GameObject[3];
+
+
+    // 펫 구매 연출
+    GameObject petUnlockRef;
+    GameObject particleRef;
+    Animator charSelectAnim;
+    Image whiteBg, charBg;
+    Button unlockWindowXbtn;
+    TMP_Text charNameText;
+    TMP_Text charInfoText;
 
     private void Awake()
     {
@@ -46,6 +58,7 @@ public class PetContollerManager : MonoBehaviour
     {
         playerObj = ActionManager.inst.ReturnPlayerObjInHierachy();
         effectRef = GameManager.inst.WorldSpaceRef.transform.Find("Effect").gameObject;
+        frontUiRef = GameManager.inst.FrontUiRef;
 
         //0번 공격
         petAnim[0] = playerObj.transform.Find("Pet_0").GetComponent<Animator>();
@@ -78,6 +91,81 @@ public class PetContollerManager : MonoBehaviour
         petWind[1] = playerObj.transform.Find("Player/MoveWind/Pet1_Wind").gameObject;
         petWind[2] = playerObj.transform.Find("Player/MoveWind/Pet2_Wind").gameObject;
         animCount = petAnim.Length;
+
+        // 동료 언락 연출
+        petUnlockRef = frontUiRef.transform.Find("PetUnlockAction").gameObject;
+        particleRef = petUnlockRef.transform.Find("StartParticle").gameObject;
+        charSelectAnim = petUnlockRef.transform.Find("Middle/Char").GetComponent<Animator>();
+        charBg = petUnlockRef.transform.Find("Middle/BG").GetComponent<Image>();
+        whiteBg = petUnlockRef.transform.Find("White").GetComponent<Image>();
+        unlockWindowXbtn = petUnlockRef.transform.Find("Button").GetComponent<Button>();
+        unlockWindowXbtn.onClick.AddListener(() => { CrewUnlock_Action(0, false); });
+        charNameText = petUnlockRef.transform.Find("Detail/CharName").GetComponent<TMP_Text>();
+        charInfoText = petUnlockRef.transform.Find("Detail/InfoText").GetComponent<TMP_Text>();
+    }
+
+    /// <summary>
+    /// 동료 구매시 첫 구매연출 
+    /// </summary>
+    /// <param name="crewNumber"> 0폭탄마 / 1요리사 / 2사령술사 </param>
+    public void CrewUnlock_Action(int crewNumber, bool bValue)
+    {
+        if (bValue)
+        {
+            whiteBg.color = Color.white;
+
+            // 배경색
+            switch (crewNumber) 
+            {
+                case 0:
+                    charBg.color = new Color(1, 0.46f, 0, 0.85f);
+                    charNameText.text = $"폭탄마 (공격형)";
+                    charInfoText.text = "적에게 강력한 폭탄을 던져 공격하는 동료\r\n메인캐릭터의 공격력 x 3배\r\n<color=yellow>(동료 강화시 1배씩 증가)";
+                    break;
+
+                case 1:
+                    charBg.color = new Color(0, 1, 0, 0.85f);
+                    charNameText.text = $"요리사 (버퍼)";
+                    charInfoText.text = "아군에게 맛있는 요리로 버프를 주는 동료\r\n25%확률 공격력증가 또는 치명타확률 증가\r\n<color=yellow>(동료 강화시 확률 증가)";
+                    break;
+
+                case 2:
+                    charBg.color = new Color(0.65f, 0, 1, 0.85f);
+                    charNameText.text = $"사령술사 (공격형)";
+                    charInfoText.text = "적의 생명력 기반으로 공격하는 동료\r\n매 공격시  생명력의 1% 만큼 공격\r\n<color=yellow>(동료 강화시 1%씩 증가)";
+                    break;
+            }
+            whiteBg.gameObject.SetActive(true);
+            petUnlockRef.SetActive(true);
+            StartCoroutine(PlayUnlock(crewNumber));
+        }
+        else
+        {
+            particleRef.SetActive(false);
+            petUnlockRef.SetActive(false);
+        }
+    }
+
+    Color fadeColor = new Color(0, 0, 0, 0.1f);
+    float fadeSpeedMultipley = 9f;
+    IEnumerator PlayUnlock(int value)
+    {
+        yield return null;
+
+        charSelectAnim.SetTrigger(value.ToString());
+
+        while (whiteBg.color.a > 0)
+        {
+            whiteBg.color -= fadeColor * Time.deltaTime * fadeSpeedMultipley;
+            
+            if (whiteBg.color.a < 0.6f && particleRef.activeSelf == false)
+            {
+                particleRef.SetActive(true);
+            }
+                yield return null;
+        }
+
+        whiteBg.gameObject.SetActive(false);
     }
 
 
@@ -105,14 +193,14 @@ public class PetContollerManager : MonoBehaviour
         if (Value == "Charge")
         {
             pet0Ps[0].Play();
-            
+
         }
         else if (Value == "Attack")
         {
             ActionManager.inst.A_CrewAttackToEnemy(0);
             pet0Ps[0].Stop();
             pet0Ps[1].Play();
-            
+
         }
     }
 
@@ -138,7 +226,7 @@ public class PetContollerManager : MonoBehaviour
     public void PetBuffAcitve()
     {
         //주사위굴리고
-        int dice = Random.Range(0, 100);
+        int dice = UnityEngine.Random.Range(0, 100);
 
         if (dice >= 0 && dice < 40) // 공격력 증가
         {
@@ -202,7 +290,7 @@ public class PetContollerManager : MonoBehaviour
     {
         if (Value == "Charge") // 충전시
         {
-            
+
         }
         else if (Value == "Attack") //공격
         {
@@ -226,7 +314,7 @@ public class PetContollerManager : MonoBehaviour
     /// <param name="petNum">0 = 공격펫 / 1 = 버프펫 / 2 =골드펫 </param>
     public void PetActive(int petNum)
     {
-        if(petAnim[petNum].gameObject.activeSelf == false)
+        if (petAnim[petNum].gameObject.activeSelf == false)
         {
             petWind[petNum].SetActive(true);
             petAnim[petNum].gameObject.SetActive(true);

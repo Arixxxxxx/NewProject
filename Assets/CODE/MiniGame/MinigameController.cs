@@ -26,7 +26,7 @@ public class MinigameController : MonoBehaviour
     public bool Left { get { return left; } set { if (left == !value) left = value; } }
     public bool Right { get { return right; } set { if (right == !value) right = value; } }
     public bool Abtn { get { return aBtn; } set { if (aBtn == !value) aBtn = value; } }
-    public bool Bbtn { get { return bBtn; } set { if (bBtn == !value) bBtn = value; } }
+    public bool Bbtn { get { return bBtn; } set { if (bBtn == !value) bBtn = value; Debug.Log("눌림"); } }
     public bool SelectBtn { get { return selectBtn; } set { if (selectBtn == !value) selectBtn = value; } }
     public bool StartBtn { get { return startBtn; } set { if (startBtn == !value) startBtn = value; } }
     bool red, green, blue;
@@ -177,6 +177,7 @@ public class MinigameController : MonoBehaviour
         }
     }
 
+    [SerializeField]
     bool gameStart; // 나중에 게임을 돌아올떄
     public bool Gamestart  {   get { return gameStart; } set { gameStart = value; }}
     private void GameStart()
