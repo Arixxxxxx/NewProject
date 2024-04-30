@@ -591,11 +591,13 @@ public class GameStatus : MonoBehaviour
         Ruby = saveData.Ruby;
 
         // 2.펫재료
+        //추가해야됨
 
         // 3.미니게임
         MinigameTicket = saveData.miniTicket;
 
         // 4.버프남은시간
+        //추가해야됨
 
         // 5. 뉴비 혜택
         //뉴비 버프타임 추가해야됨
@@ -633,5 +635,7 @@ public class GameStatus : MonoBehaviour
         IsCanResetWeeklyMIssion = saveData.canResetWeeklyMission;
 
         // 12. 빙고 현황
+        BingoTicket = saveData.BingoTicket;
+        ClearBingo = saveData.ClearBingo;
     }
 }
