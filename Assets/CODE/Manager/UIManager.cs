@@ -151,9 +151,10 @@ public class UIManager : MonoBehaviour
         }
 
         int[] petmat = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
-        soulText.text = string.Format("{0:#,###}" ,petmat[0]);
-        bornText.text = petmat[1].ToString();
-        bookText.text = petmat[2].ToString();
+        
+        soulText.text = string.Format("{0:#,0}", petmat[0]);
+        bornText.text = string.Format("{0:#,0}", petmat[1]);
+        bookText.text = string.Format("{0:#,0}", petmat[2]);
     }
     private void Awake()
     {
