@@ -9,12 +9,31 @@ public class GameStatus : MonoBehaviour
 
 
     ///////////////////////////////////////////////////
-    //최초 가입 일시
-    // 이부분 나중에 첫 가입부분으로 옮겨야함
-    // 최초에 필요한값 회원가입일자 
-    // 첫 선물받기 시작한 일자
+    // 신규 접속 기록
+    private DateTime signUpDate;
+    public DateTime signDownDate { get { return signUpDate; } set { signUpDate = value; } }
 
-    DateTime firstdate = DateTime.Now; // 일자계산 (아직 미사용)
+
+    // 마지막 접속기록
+    private DateTime lastLogindate;
+    public DateTime LastLoginDate
+    {
+        get { return lastLogindate; }
+        set
+        {
+            DateTime LoginDate = value;
+
+            // 첫 접속시 (신규가입시)
+            if (LoginDate.Year == 0001)
+            {
+                signUpDate = value;
+            }
+            else if (LoginDate.Year >= 2000)
+            {
+                lastLogindate = value;
+            }
+        }
+    }
 
 
     public string nickName;
@@ -24,9 +43,58 @@ public class GameStatus : MonoBehaviour
     int[] getGiftDay = new int[3];
     public int[] GetGiftDay { get { return getGiftDay; } set { getGiftDay = value; } }
 
-    // 2.  뉴비 혜택받은 년/월/일
-    int[] getNewbieGiftDay = new int[3];
-    public int[] GetNewbieGiftDay { get { return getNewbieGiftDay; } set { getNewbieGiftDay = value; } }
+
+    // 3.  뉴비 선물 받은 횟수
+    int gotNewbieGiftCount;
+    public int GotNewbieGiftCount
+    {
+        get { return gotNewbieGiftCount; }
+        set
+        {
+            gotNewbieGiftCount = value;
+
+
+            if (GotNewbieGiftCount == 7)
+            {
+                WorldUI_Manager.inst.NewbieBtnAcitveFalse(); // 선물 다 받으면 버튼 잠궈버리기 
+            }
+        }
+    }
+
+
+    // 오늘 받았는지 확인
+    bool todayGetReward;
+    public bool TodayGetReward { get { return todayGetReward; } set { todayGetReward = value; } }
+
+
+    // 뉴비 기간 체크
+    private DateTime newbieBuffLastDay;
+    public DateTime NewbieBuffLastDay
+    {
+        get
+        {
+            return newbieBuffLastDay;
+        }
+        set
+        {
+            DateTime ReLoginDate = value;
+            // 최초 가입이라면
+            if (ReLoginDate.Month == 0001)
+            {
+                // 뉴비 기간 7일 입력
+                newbieBuffLastDay = DateTime.Now.AddDays(7);
+
+                // 보상 활성화
+                Newbie_Content.inst.NewbieWindow_Init(TodayGetReward);
+
+                // 버프 초기화
+                TimeSpan buffTime = newbieBuffLastDay - DateTime.Now;
+                BuffContoller.inst.ActiveBuff(4, buffTime.TotalMinutes);
+            }
+
+
+        }
+    }
 
 
     // 3.  출석체크 선물 받은 횟수
@@ -37,20 +105,7 @@ public class GameStatus : MonoBehaviour
         set { gotDilayPlayGiftCount = value; }
     }
 
-    // 4.  뉴비 선물 받은 횟수
-    int gotNewbieGiftCount;
-    public int GotNewbieGiftCount
-    {
-        get { return gotNewbieGiftCount; }
-        set
-        {
-            gotNewbieGiftCount = value;
-            if (GotNewbieGiftCount == 7)
-            {
-                WorldUI_Manager.inst.NewbieBtnAcitveFalse(); // 선물 다 받으면 버튼 잠궈버리기 
-            }
-        }
-    }
+
 
     // 5. 뉴비 변수들
     bool isNewbie = false;
@@ -510,12 +565,23 @@ public class GameStatus : MonoBehaviour
         }
         // 서버에서 데이터 받아와서 초기화해줌
 
-        LoadData(); // <= 데이터 싸온거 푸는 함수 #######################################
+        if (GameManager.inst.TestMode == false)
+        {
+            LoadData(); // <= 데이터 싸온거 푸는 함수 #######################################
+        }
+
+        // 접속날짜 확인하여 뉴비컨텐츠 초기화
+        Newbie_ContentInit();
 
         // 뉴비 불리언변수 초기화
         IsNewBie = true;
     }
 
+    
+    private void Update()
+    {
+  
+    }
     void Start() { }
 
 
@@ -573,8 +639,38 @@ public class GameStatus : MonoBehaviour
         HWansengCount++;
         HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate(); // 환생아이콘 수치 리셋
     }
+    
 
+    /// <summary>
+    /// 뉴비컨텐츠 접속시 체크
+    /// </summary>
+    public void Newbie_ContentInit()
+    {
+        // 7일 이내인 경우
+        if (DateTime.Now < NewbieBuffLastDay)
+        {
+            // 매일 자정 기준으로 하루가 지났는지 확인
+            if (DateTime.Now.Date > LastLoginDate.Date)
+            {
+                TodayGetReward = false;
+            }
 
+            // 보상 활성화 부분
+            Newbie_Content.inst.NewbieWindow_Init(TodayGetReward);
+
+            // 버프 시간 재계산
+            TimeSpan buffTime = NewbieBuffLastDay - DateTime.Now;
+            BuffContoller.inst.ActiveBuff(4, buffTime.TotalMinutes);
+        }
+
+        // 7일이 지난 시점
+        else
+        {
+            // 뉴비 기간 종료
+            // 뉴비 관련 UI 비활성화 로직
+            WorldUI_Manager.inst.NewbieBtnAcitveFalse();
+        }
+    }
 
 
 
@@ -585,24 +681,32 @@ public class GameStatus : MonoBehaviour
         nickName = saveData.Name;
         aryQuestLv = saveData.QuestLv;
 
+        lastLogindate = saveData.lastSigninDate;
+
         // 1. 재화
         Gold = saveData.Gold;
         Star = saveData.Star;
         Ruby = saveData.Ruby;
 
         // 2.펫재료
-        //추가해야됨
+        CrewGatchaContent.inst.Set_CrewMeterialData(saveData.Soul, saveData.born, saveData.book);
 
         // 3.미니게임
         MinigameTicket = saveData.miniTicket;
 
         // 4.버프남은시간
-        //추가해야됨
+        BuffContoller.inst.ActiveBuff(0, saveData.buffAtkTime);
+        BuffContoller.inst.ActiveBuff(1, saveData.buffMoveSpeedTime);
+        BuffContoller.inst.ActiveBuff(2, saveData.buffGoldTime);
+        BuffContoller.inst.ActiveBuff(3, saveData.buffBigAtkTime);
+
 
         // 5. 뉴비 혜택
         //뉴비 버프타임 추가해야됨
-        GetNewbieGiftDay = saveData.GetNewbieGiftDay;
-        GotNewbieGiftCount = saveData.GetGiftCount;
+        TodayGetReward = saveData.todayGetRaward;
+        GotNewbieGiftCount = saveData.getNewbieRewardCount;
+        NewbieBuffLastDay = saveData.newbieBuffLastDay;
+
 
         // 6. 출석체크
         GetGiftDay = saveData.GetGiftDay;
@@ -637,5 +741,7 @@ public class GameStatus : MonoBehaviour
         // 12. 빙고 현황
         BingoTicket = saveData.BingoTicket;
         ClearBingo = saveData.ClearBingo;
+
+        DataManager.inst.loadEnd = true;
     }
 }

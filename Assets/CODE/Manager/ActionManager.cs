@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -172,6 +173,7 @@ public class ActionManager : MonoBehaviour
         cam = camsRef.transform.Find("Cam_0").GetComponent<CinemachineVirtualCamera>();
         camShake = cam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
 
+        weaponSprite = SpriteResource.inst.Weapons;
         Prefabs_Awake();
     }
 
@@ -179,7 +181,7 @@ public class ActionManager : MonoBehaviour
     {
         enemySmallSprite = SpriteResource.inst.MonsterSmall;
         enemyLargeSprite = SpriteResource.inst.MonsterLargeSize;
-        weaponSprite = SpriteResource.inst.Weapons;
+      
         //최초 init
         Enemyinit();
         UI_Init();
@@ -206,6 +208,9 @@ public class ActionManager : MonoBehaviour
 
     float feverCountTimer = 0.8f;
     float feverNextTimer;
+
+    int testday;
+
     void Update()
     {
         if (attackReady == true && IsFever == false) // 전투
@@ -223,12 +228,6 @@ public class ActionManager : MonoBehaviour
             }
         }
 
-        //테스트용
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            GameStatus.inst.GetGiftDay[0] -= 1;
-            GameStatus.inst.GetNewbieGiftDay[0] -= 1;
-        }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -381,7 +380,7 @@ public class ActionManager : MonoBehaviour
         swordEffect.Play();
 
         // 크리티컬 계산
-        float randomDice = Random.Range(0f, 100f);
+        float randomDice = UnityEngine.Random.Range(0f, 100f);
         bool cri = false;
 
         //크리티컬 판정시 캠흔들림
@@ -662,13 +661,13 @@ public class ActionManager : MonoBehaviour
         //스프라이트 값 할당
         if(floorCount != 4)
         {
-            curEnemyNum = Random.Range(0, enemySmallSprite.Length);
+            curEnemyNum = UnityEngine.Random.Range(0, enemySmallSprite.Length);
             enemySr.sprite = enemySmallSprite[curEnemyNum];
         }
         else if(floorCount == 4)
         {
 
-            curEnemyNum = Random.Range(0, enemyLargeSprite.Length);
+            curEnemyNum = UnityEngine.Random.Range(0, enemyLargeSprite.Length);
             enemySr.sprite = enemyLargeSprite[curEnemyNum];
         }
    

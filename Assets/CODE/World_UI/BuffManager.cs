@@ -221,6 +221,8 @@ public class BuffManager : MonoBehaviour
     /// <param name="text">»πµÊ√¢</param>
     public void ActiveBuff(int type, int Time, string text)
     {
+        if (Time == 0) { return; }
+
         BuffContoller.inst.ActiveBuff(type, Time); //πˆ«¡»∞º∫»≠
         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(type), text);
     }

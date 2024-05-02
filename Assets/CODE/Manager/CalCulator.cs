@@ -626,6 +626,13 @@ public class CalCulator : MonoBehaviour
     /// <returns> 알파벳부호처리 안한 string 정수형 타입 Data </returns>
     public string CurHwansengPoint(int AddFloor)
     {
+        if(GameStatus.inst == null)
+        {
+            return null;
+        }
+
+        if(GameManager.inst.TestMode == false && DataManager.inst.loadEnd == false) { return string.Empty; }
+
         int curStage = GameStatus.inst.StageLv + AddFloor;
 
         // BigInteger를 사용한 3차, 2차, 1차 계산

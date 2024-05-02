@@ -242,6 +242,19 @@ public class CrewGatchaContent : MonoBehaviour
         materialCountText[2].text = materialCount[2].ToString();
     }
 
+    /// <summary>
+    /// Load시 SaveData Setting 용 매개변수 3개
+    /// </summary>
+    /// <param name="soul"></param>
+    /// <param name="bone"></param>
+    /// <param name="book"></param>
+    public void Set_CrewMeterialData(int soul, int bone, int book)
+    {
+        materialCount[0] = soul;
+        materialCount[1] = bone;
+        materialCount[2] = book;
+        MaterialTextBarUpdate();
+    }
 
     /// <summary>
     /// 현재 동료강화재료 받아가는 함수

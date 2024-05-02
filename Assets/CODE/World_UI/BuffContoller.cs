@@ -25,7 +25,9 @@ public class BuffContoller : MonoBehaviour
     Image[] buffIconBg;
 
     [SerializeField]
+    [Tooltip("0 공격력, 1 이속, 2골드, 3강한공격력, 4뉴비")]
     double[] buffTimer;
+    public
 
     ParticleSystem[] buffIconPs;
 
@@ -71,7 +73,7 @@ public class BuffContoller : MonoBehaviour
         // 뉴비 버프 시간 넣어줌 (나중에 데이터매니저 신규유저일시넣어줌으로 옮겨야함)
         if (GameStatus.inst.IsNewBie && buffTimer[4] == 0)
         {
-            ActiveBuff(4, 10080);
+
         }
     }
 
@@ -87,12 +89,13 @@ public class BuffContoller : MonoBehaviour
     }
 
     /// <summary>
-    /// 버프 활성화 함수 => 매개변수 ( 버프인덱스번호 , 시간(초))
+    /// 버프 활성화 함수 => 매개변수 ( 버프 인덱스번호(공,이속,골드,강공,뉴비) , 시간(초))
     /// </summary>
     /// <param name="Num">인덱스번호</param>
     /// <param name="Time">시간(분)</param>
-    public void ActiveBuff(int Num, float Time)
+    public void ActiveBuff(int Num, double Time)
     {
+        buffTimer[Num] = 0;
         buffTimer[Num] += Time * 60;
         buffIconBg[Num].gameObject.SetActive(false);
         BuffValueActiver(Num, true);
@@ -196,7 +199,6 @@ public class BuffContoller : MonoBehaviour
 
             if (buffIconBg[4].gameObject.activeSelf == true && buffTimer[4] <= 0)
             {
-                Debug.Log("진입");
                 buffTimer[4] = 0;
                 BuffValueActiver(4, false);
                 buffIconBg[4].gameObject.SetActive(false);
@@ -212,6 +214,7 @@ public class BuffContoller : MonoBehaviour
             buffIconPs[index].Play();
         }
     }
+
 
     /// <summary>
     /// 버프시간의 남은 시간 [분 (min) ] 으로 리턴

@@ -152,7 +152,7 @@ public class HwanSengSystem : MonoBehaviour
 
         // WorldUI 환생아이콘 텍스트
         hwansengIconReturnValueText = worldUI.transform.Find("StageUI/HwanSeng/Box/CurStarText").GetComponent<TMP_Text>();
-        WorldUIHwansengIconReturnStarUpdate();
+       
 
         // failBuyRubyRef
         failBuyRubyRef = hwansengRef.transform.Find("FailBuyRuby").gameObject;
@@ -175,7 +175,10 @@ public class HwanSengSystem : MonoBehaviour
         BtnInIt();
     }
 
-
+    private void Start()
+    {
+        WorldUIHwansengIconReturnStarUpdate();
+    }
     private void Update()
     {
         if (hwansengRef.activeSelf) // 배경 마법진 회전

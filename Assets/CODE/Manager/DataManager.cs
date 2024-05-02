@@ -5,13 +5,15 @@ using UnityEngine.UI;
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
+using System;
 
 public class DataManager : MonoBehaviour
 {
     public static DataManager inst;
 
     // 씬로딩 관련
-    
+
+    public bool loadEnd;
     int sceneNumber;
 
 
@@ -23,6 +25,8 @@ public class DataManager : MonoBehaviour
 
     public class SaveData
     {
+        public DateTime lastSigninDate;
+
         public string Name;
         
         // 1. 재화
@@ -39,15 +43,15 @@ public class DataManager : MonoBehaviour
         public int miniTicket;
 
         // 3. 버프 남은 시간
-        public float buffAtkTime;
-        public float buffGoldTime;
-        public float buffMoveSpeedTime;
-        public float buffBigAtkTime;
+        public double buffAtkTime;
+        public double buffGoldTime;
+        public double buffMoveSpeedTime;
+        public double buffBigAtkTime;
 
         // 4. 뉴비 혜택
-        public double NewbieBuffTime;
-        public int[] GetNewbieGiftDay = new int[3];
-        public int GetNewbieGiftCount;
+        public int getNewbieRewardCount;
+        public bool todayGetRaward;
+        public DateTime newbieBuffLastDay;
 
         // 5. 출석체크
         public int[] GetGiftDay = new int[3];

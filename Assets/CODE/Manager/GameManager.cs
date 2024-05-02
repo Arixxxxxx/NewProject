@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager inst;
-
+    [SerializeField] public bool TestMode;
     //타 스크립트에서 안찾아도되게 찾아서 나눠줌
 
     // WorldUI 그룹
