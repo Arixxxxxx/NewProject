@@ -8,16 +8,20 @@ public class ClickEvent : MonoBehaviour, IPointerClickHandler
 
     void Start()
     {
-
+        Invoke("Touch", 1.5f);
     }
 
-    bool once;
+    bool startClickDelay;
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (once == false)
-        {
-            once = true;
-            LoginManager.inst.NextStep();
-        }
+        if(startClickDelay == false) { return; }
+        
+        LoginManager.inst.NextStep();
+        gameObject.SetActive(false);
+    }
+
+    private void Touch()
+    {
+        startClickDelay = true;
     }
 }

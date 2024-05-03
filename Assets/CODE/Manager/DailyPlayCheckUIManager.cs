@@ -10,8 +10,8 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     [Header("# Input Ad Wide Btn <Color=yellow>( Sprite File )</Color>")]
     [Space]
     [SerializeField] Sprite[] adBtnSprite;
-    
-    GameObject worldFrontRef, dailyCheckObjRef, dailyWindowRef, layoutRef;
+
+    GameObject worldFrontRef, dailyCheckObjRef, dailyWindowRef, ItemListRef;
     GameObject[] iconBG;
     int iconCount;
 
@@ -21,14 +21,21 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     GameObject[] GetBtn = new GameObject[2];
     TMP_Text mainTaxt;
 
-    //
+    // 아이콘 초기화부
+    int itemCount;
+    TMP_Text[] itemCountText;
+    TMP_Text[] itemNumberText;
+    GameObject[] SelectOutLine;
+    GameObject[] gotItemCheck;
+
+
     Button adViewAndGetRubyBtn;
 
-    
+
 
     void Awake()
     {
-        if(inst == null)
+        if (inst == null)
         {
             inst = this;
         }
@@ -41,151 +48,205 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         worldFrontRef = GameObject.Find("---[FrontUICanvas]").gameObject;
         dailyCheckObjRef = worldFrontRef.transform.Find("DailyCheck").gameObject;
         dailyWindowRef = dailyCheckObjRef.transform.Find("Window").gameObject;
-        layoutRef = dailyWindowRef.transform.Find("Lyaout").gameObject;
+        ItemListRef = dailyWindowRef.transform.Find("RubyList").gameObject;
 
-        //받기버튼 부
-        GetBtn[0] = dailyWindowRef.transform.Find("TextLayOut/NoGet").gameObject;
-        GetBtn[1] = dailyWindowRef.transform.Find("TextLayOut/Got").gameObject;
+        // Init 필요 오브젝트
+        itemCount = ItemListRef.transform.childCount;
+        itemCountText = new TMP_Text[itemCount];
+        SelectOutLine = new GameObject[itemCount];
+        gotItemCheck = new GameObject[itemCount];
+        itemNumberText = new TMP_Text[itemCount];
 
-        mainTaxt = GetBtn[0].GetComponent<TMP_Text>();
+        for (int index = 0; index < itemCount; index++)
+        {
+            itemCountText[index] = ItemListRef.transform.GetChild(index).Find("InBox/CountText").GetComponent<TMP_Text>();
+            itemNumberText[index] = ItemListRef.transform.GetChild(index).Find("InBox/NumberText").GetComponent<TMP_Text>();
+            SelectOutLine[index] = ItemListRef.transform.GetChild(index).Find("OutLine").gameObject;
+            gotItemCheck[index] = ItemListRef.transform.GetChild(index).Find("Get_Active").gameObject;
+        }
 
-        // 루비
+
+
+        // 버튼
+        xBtn = dailyWindowRef.transform.Find("Title/X_Btn").GetComponent<Button>();
         adViewAndGetRubyBtn = dailyWindowRef.transform.Find("ShowADBtn").GetComponent<Button>();
 
-        LayoutIconBGInit(); // 아이콘 백그라운드 일단 다 끄기
-
-        xBtn = dailyWindowRef.transform.Find("Title/X_Btn").GetComponent<Button>();
+        // 수락 버튼부분 스위치
+        GetBtn[0] = dailyWindowRef.transform.Find("TextLayOut/NoGet").gameObject;
+        GetBtn[1] = dailyWindowRef.transform.Find("TextLayOut/Got").gameObject;
+        mainTaxt = GetBtn[0].GetComponent<TMP_Text>();
 
         BtnInIt();
     }
-
-    private void Update()
+    private void Start()
     {
         
+    }
+    private void Update()
+    {
+
     }
     private void BtnInIt()
     {
         xBtn.onClick.AddListener(() => dailyCheckObjRef.SetActive(false));
-        
-        
+
+
         adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
         {
             ADViewManager.inst.SampleAD_Get_Currency(0, 100); //재화주기
-            adViewAndGetRubyBtn.GetComponent<Image>().sprite = adBtnSprite[1]; //스프라이트 교체
-            adViewAndGetRubyBtn.onClick.RemoveAllListeners(); // 버튼기능 -> 창종료로 바꿈
-            adViewAndGetRubyBtn.onClick.AddListener(() => MainWindow_Acitve(false));
+            WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
+            
         });
     }
 
-    private void LayoutIconBGInit()
-    {
-        iconCount = layoutRef.transform.childCount;
-        iconBG = new GameObject[iconCount];
-
-        for (int index=0; index <iconCount; index++)
-        {
-            iconBG[index] = layoutRef.transform.GetChild(index).Find("BG").gameObject;
-            iconBG[index].SetActive(true);
-        }
-    }
-      
-
+    
     /// <summary>
-    /// 켜주면서 초기화
+    /// 출석체크 호출
     /// </summary>
     /// <param name="value"></param>
     public void MainWindow_Acitve(bool value)
     {
-        if (value == true && GameStatus.inst.GotDilayPlayGiftCount < 20)
-        {
-            LayOutInit();
-        }
-
         dailyCheckObjRef.SetActive(value);
     }
 
-
-
-
-    // 출석체크 초기화 대상날짜인지 확인
-    public void LayOutInit()
+    /// <summary>
+    /// 출석체크 보상 활성화 및 초기화 함수
+    /// </summary>
+    /// <param name="Boolian"> true / false </param>
+    public void DialyContent_Init(bool Boolian)
     {
-        int[] LastGetGiftDay = GameStatus.inst.GetGiftDay;
+        AutoDialyCheckReset();
+        DailyCheck_Material_Init();
 
-        if (LastGetGiftDay.Sum() == 0 && GameStatus.inst.GotDilayPlayGiftCount == 0)
+        GetBtnAcitve(!Boolian);
+
+        adViewAndGetRubyBtn_Init(GameStatus.inst.DailyADRuby); // 하단부 광고버튼 (1일에 한번 열림) => 다른곳이사
+
+        if (Boolian == false)
         {
-            IconInit();   // 최초 임 그냥 열어줌
-        }
-        else if(LastGetGiftDay.Sum() != 0 && GameStatus.inst.GotDilayPlayGiftCount > 0)
-        {
-            //받은적이잇음
-            if (LastGetGiftDay[0] < DateTime.Now.Year) //현재 시간 체크
+            //루비 계산 (적어놓은 텍스트에서 빼옴)
+            int valueIndex = GameStatus.inst.GotDaily_Reward % 20;
+            int value = int.Parse(ItemListRef.transform.GetChild(valueIndex).Find("InBox/CountText").GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
+            mainTaxt.text = $"  < {GameStatus.inst.GotDaily_Reward + 1}번째 > 출석체크 보상받기\r\n - 보상은 <color=green>우편함</color>으로 발송됩니다.";
+
+            GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.RemoveAllListeners();
+            GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.AddListener(() =>
             {
-                IconInit();
-                GetBtnAcitve(true);
-            }
-            else if (LastGetGiftDay[1] < DateTime.Now.Month)
-            {
-                IconInit();
-                GetBtnAcitve(true);
-            }
-            else if (LastGetGiftDay[2] < DateTime.Now.Day)
-            {
-                IconInit();
-                GetBtnAcitve(true);
-            }
+                LetterManager.inst.MakeLetter(0, "게임GM", $"출석체크 {GameStatus.inst.GotDaily_Reward + 1}일차 보상", value); // 보상 우편 획득
+
+                GameStatus.inst.TotayGotDaily_Reward = true;
+                GameStatus.inst.GotDaily_Reward++; // 받은 카운트 올려줌
+
+                //버튼인잇
+                DailyCheck_Material_Init();
+                GetBtnAcitve(false); // 버튼 비활성화
+            });
         }
     }
-
-
-
-    private void IconInit()
-    {
-      
-        //버튼 초기화 부 (받은게 있음 꺼주고, 받을게 잇다면 켜줌)
-        for (int index = 0; index < GameStatus.inst.GotDilayPlayGiftCount; index++)
-        {
-            layoutRef.transform.GetChild(index).Find("Check").gameObject.SetActive(true);
-        }
-
-        layoutRef.transform.GetChild(GameStatus.inst.GotDilayPlayGiftCount).Find("BG").gameObject.SetActive(false);
-
-        //루비 계산 (적어놓은 텍스트에서 빼옴)
-        int value = int.Parse(layoutRef.transform.GetChild(GameStatus.inst.GotDilayPlayGiftCount).Find("CountText").GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
-        int checkDay = int.Parse(layoutRef.transform.GetChild(GameStatus.inst.GotDilayPlayGiftCount).Find("NumberText").GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
-
-        // N일차 보상받기 ~~ 텍스트 초기화
-        mainTaxt.text = $"  < {checkDay}일차 > 출석체크 보상받기\r\n - 보상은 <color=green>우편함</color>으로 발송됩니다.";
-
-        //수락일자 계산
-        int[] NowDate = new int[3];
-        NowDate[0] = DateTime.Now.Year;
-        NowDate[1] = DateTime.Now.Month;
-        NowDate[2]  = DateTime.Now.Day;
-
-        GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.RemoveAllListeners();
-        GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.AddListener(() =>
-        {
-            LetterManager.inst.MakeLetter(0, "게임GM", $"출석체크 {checkDay}일차 보상", value); // 보상 우편 획득
-            GetIconChanger(GameStatus.inst.GotDilayPlayGiftCount); // 아이콘 받음처리
-            GameStatus.inst.GetGiftDay = NowDate; // 일자 업데이트
-            GameStatus.inst.GotDilayPlayGiftCount++; // 받은 카운트 올려줌
-   
-            GetBtnAcitve(false); // 버튼 비활성화
-        });
-
-
-    }
-
 
     /// <summary>
-    /// 아이콘을 받은 후 받은 IMG처리해주는 함수
+    /// 출석체크 보상 현재 상태 Init
     /// </summary>
-    /// <param name="value"></param>
-    private void GetIconChanger(int value)
+    public void DailyCheck_Material_Init()
     {
-        layoutRef.transform.GetChild(value).Find("BG").gameObject.SetActive(true);
-        layoutRef.transform.GetChild(value).Find("Check").gameObject.SetActive(true);
+        int count = GameStatus.inst.GotDaily_Reward % 20;
+        if(count == 0)
+        {
+            AutoDialyCheckReset();
+
+            //받아진거까지 체크표시
+            for (int index = 0; index < itemCount; index++)
+            {
+                gotItemCheck[index].SetActive(false);
+            }
+
+            //현재 항목 표시
+            for (int index = 0; index < itemCount; index++)
+            {
+                if (index == 0)
+                {
+                    SelectOutLine[index].SetActive(true);
+                }
+                else
+                {
+                    SelectOutLine[index].SetActive(false);
+                }
+            }
+        }
+
+        //받아진거까지 체크표시
+        for (int index = 0; index < count; index++)
+        {
+            gotItemCheck[index].SetActive(false);
+
+            if (index < count)
+            {
+                gotItemCheck[index].SetActive(true);
+            }
+        }
+
+        //현재 항목 표시
+        for (int index = 0; index < itemCount; index++)
+        {
+            if (index == count)
+            {
+                SelectOutLine[index].SetActive(true);
+            }
+            else
+            {
+                SelectOutLine[index].SetActive(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 출석체크 하단 광고버튼 활성 / 비활성
+    /// </summary>
+    /// <param name="value"> Active ? </param>
+    private void adViewAndGetRubyBtn_Init(bool value)
+    {
+        if (value)
+        {
+            adViewAndGetRubyBtn.GetComponent<Image>().sprite = adBtnSprite[0]; //스프라이트 교체
+            adViewAndGetRubyBtn.onClick.RemoveAllListeners(); 
+            adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
+            {
+                ADViewManager.inst.SampleAD_Get_Currency(0, 100); //재화주기
+                WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
+                GameStatus.inst.DailyADRuby = false;
+
+            });
+        }
+        else
+        {
+            adViewAndGetRubyBtn.GetComponent<Image>().sprite = adBtnSprite[1]; //스프라이트 교체
+            adViewAndGetRubyBtn.onClick.RemoveAllListeners(); // 버튼기능 -> 창종료로 바꿈
+            adViewAndGetRubyBtn.onClick.AddListener(() => MainWindow_Acitve(false));
+        }
+    }
+
+    /// <summary>
+    /// 출석보상 아이콘박스 번호 및 아이템 종료 및 갯수 초기화
+    /// </summary>
+    public void AutoDialyCheckReset()
+    {
+        if(GameStatus.inst.GotDaily_Reward % 20 == 0)
+        {
+            GameStatus.inst.MakeDailyRewardCount = GameStatus.inst.GotDaily_Reward;
+
+        }
+
+        int startCount = GameStatus.inst.MakeDailyRewardCount + 1;
+
+        for(int index=0;  index< itemCount; index++) 
+        {
+            //박스의 번호 초기화
+            itemNumberText[index].text = startCount.ToString();
+
+            //박스의 루비 갯수 초기화
+            itemCountText[index].text = $"루비 +{startCount * 10}";
+            startCount++;
+        }
     }
 
     /// <summary>
@@ -194,7 +255,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     /// <param name="value"></param>
     public void GetBtnAcitve(bool value)
     {
-        if(value == true)
+        if (value == true)
         {
             GetBtn[0].gameObject.SetActive(true);
             GetBtn[1].gameObject.SetActive(false);

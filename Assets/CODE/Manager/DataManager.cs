@@ -13,22 +13,22 @@ public class DataManager : MonoBehaviour
 
     // 씬로딩 관련
 
-    public bool loadEnd;
-    int sceneNumber;
-
-
-    public SaveData savedata = new SaveData();
-    //파일명 수정해야됨
-    string path = Path.Combine(Application.dataPath, "TestData.json");
     RectTransform ScreenArea;
 
+    public SaveData savedata = new SaveData();
+    string path = Path.Combine(Application.dataPath, "Save.json");
 
+    bool isHaveJsonFile = false;
+    public bool IshaveJsonFile { get { return isHaveJsonFile; } }
+
+
+    [System.Serializable]
     public class SaveData
     {
         public DateTime lastSigninDate;
 
         public string Name;
-        
+
         // 1. 재화
         public string Gold = "0";
         public string Star = "0";
@@ -39,7 +39,7 @@ public class DataManager : MonoBehaviour
         public int book;
         public int born;
 
-       // 3. 미니게임
+        // 3. 미니게임
         public int miniTicket;
 
         // 3. 버프 남은 시간
@@ -54,13 +54,13 @@ public class DataManager : MonoBehaviour
         public DateTime newbieBuffLastDay;
 
         // 5. 출석체크
-        public int[] GetGiftDay = new int[3];
         public int GetGiftCount;
+        public bool todayGetDailyReward;
 
         // 6. 캐릭터 관련
         public int AtkSpeedLv;
         public int HwanSeangCount;
-        
+
         // 7. 게임현황 (스테이지)
         public int TotalFloor = 1;
         public int Stage = 1;
@@ -103,20 +103,16 @@ public class DataManager : MonoBehaviour
         CheckJsonFile();//최초실행시 json유무 확인
         DontDestroyOnLoad(inst);
         setScreen();
-        //Screen.SetResolution(Screen.width, Screen.width / 9 * 16, true);
 
-        
     }
 
-    private void Update()
+    public bool saveAble;
+    // 게임 종료시 자동저장
+    void OnApplicationQuit()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (saveAble)
         {
-            LoadingManager.LoadScene(2);
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            SavePath();
+            Save_EndGame();
         }
     }
 
@@ -144,20 +140,39 @@ public class DataManager : MonoBehaviour
             Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
         }
 
-    } 
+    }
 
 
-    public void SavePath()
-    { 
+    ///////////////////////////////// 세이브 로드 관련 ///////////////////////////////////////
+
+
+
+
+    /// <summary>
+    /// 최초 가입시 생성
+    /// </summary>
+    public void Save_NewCreateAccount(string inputText)
+    {
+        savedata.Name = inputText;
         string json = JsonUtility.ToJson(savedata);
-
-        Debug.Log(path);
+        File.WriteAllText(path, json);
+    }
+    
+    /// <summary>
+    /// 최초 가입시 생성
+    /// </summary>
+    public void Save_EndGame()
+    {
+        string save = GameStatus.inst.Get_SaveData();
+        string json = JsonUtility.ToJson(save);
         File.WriteAllText(path, json);
     }
 
-    bool isHaveJsonFile = false;
-    public bool IshaveJsonFile { get { return isHaveJsonFile; } }
 
+
+    /// <summary>
+    /// 최초 Json파일 있는지 없는 확인
+    /// </summary>
     public void CheckJsonFile()
     {
         if (File.Exists(path))
@@ -165,15 +180,14 @@ public class DataManager : MonoBehaviour
             string json = File.ReadAllText(path);
             savedata = JsonConvert.DeserializeObject<SaveData>(json);
             isHaveJsonFile = true;
-            Debug.Log(savedata.QuestLv[0]);
+        }
+        else
+        {
+            isHaveJsonFile = false;
         }
     }
 
-    public void SetName(string _name)
-    {
-        savedata.Name = _name;
-        SavePath();
-    }
+
 
     public SaveData Get_Savedata()
     {

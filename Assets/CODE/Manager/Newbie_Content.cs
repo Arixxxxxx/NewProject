@@ -139,7 +139,7 @@ public class Newbie_Content : MonoBehaviour
 
 
     /// <summary>
-    ///  
+    ///  뉴비 컨텐츠 박스 / 초기화
     /// </summary>
     /// <param name="value"></param>
     public void NewbieWindow_Init(bool TodayGetReward)
@@ -160,7 +160,7 @@ public class Newbie_Content : MonoBehaviour
             LetterManager.inst.MakeLetter(0, "게임GM", $"신규유저 {GameStatus.inst.GotNewbieGiftCount + 1}일차 보상", rubyCount); // 보상 우편 획득
                                                                                                                         //GetIconChanger(GameStatus.inst.GotNewbieGiftCount); // 아이콘 받음처리
             GameStatus.inst.GotNewbieGiftCount++; // 받은 카운트 올려줌
-            GameStatus.inst.TodayGetReward = true; // 받음
+            GameStatus.inst.TodayGetNewbie_Reward = true; // 받음
 
             IconBoxInit(); // 항목 재설정
             GetBtnAcitve(false); // 버튼 비활성화

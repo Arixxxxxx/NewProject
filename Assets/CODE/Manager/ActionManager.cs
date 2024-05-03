@@ -229,18 +229,11 @@ public class ActionManager : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            PetContollerManager.inst.CrewUnlock_Action(0, true);
+            
         }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            PetContollerManager.inst.CrewUnlock_Action(1, true);
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            PetContollerManager.inst.CrewUnlock_Action(2, true);
-        }
+      
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             //BuffContoller.inst.ActiveBuff(4, 3);

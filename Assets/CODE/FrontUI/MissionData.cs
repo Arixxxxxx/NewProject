@@ -229,8 +229,6 @@ public class MissionData : MonoBehaviour
             get => count;
             set
             {
-                if(DataManager.inst.loadEnd == false) { return; }
-
                 if (count <= maxCount)
                 {
                     count = value;

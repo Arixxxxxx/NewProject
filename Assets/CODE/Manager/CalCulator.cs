@@ -631,8 +631,6 @@ public class CalCulator : MonoBehaviour
             return null;
         }
 
-        if(GameManager.inst.TestMode == false && DataManager.inst.loadEnd == false) { return string.Empty; }
-
         int curStage = GameStatus.inst.StageLv + AddFloor;
 
         // BigInteger를 사용한 3차, 2차, 1차 계산

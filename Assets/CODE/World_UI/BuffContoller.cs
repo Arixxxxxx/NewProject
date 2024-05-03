@@ -27,7 +27,8 @@ public class BuffContoller : MonoBehaviour
     [SerializeField]
     [Tooltip("0 공격력, 1 이속, 2골드, 3강한공격력, 4뉴비")]
     double[] buffTimer;
-    public
+    public double[] BuffTimer {  get { return buffTimer; } }
+    
 
     ParticleSystem[] buffIconPs;
 
