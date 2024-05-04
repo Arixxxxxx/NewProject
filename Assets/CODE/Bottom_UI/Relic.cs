@@ -23,40 +23,7 @@ public class Relic : MonoBehaviour
         set
         {
             lv = value;
-            //switch (itemNum)
-            //{
-            //    case ItemTag.Atk:
-            //    case ItemTag.QuestGold:
-            //    case ItemTag.KillGold:
-            //    case ItemTag.OfflineGold:
-            //    case ItemTag.CriticalDmg:
-            //    case ItemTag.BombDmg:
-            //    case ItemTag.NecromancerDmg:
-            //    case ItemTag.PandaBuff:
-            //    case ItemTag.FeverTime:
-            //    case ItemTag.GetStar:
-
-            //        break;
-            //    case ItemTag.AtkSpeed:
-            //        if (lv >= 15)
-            //        {
-            //            upBtn.gameObject.SetActive(false);
-            //        }
-            //        break;
-            //    case ItemTag.Critical:
-            //        if (lv >= 30)
-            //        {
-            //            upBtn.gameObject.SetActive(false);
-            //        }
-            //        break;
-            //    case ItemTag.QuestWeaponPrice:
-            //        if (lv >= 50)
-            //        {
-            //            upBtn.gameObject.SetActive(false);
-            //        }
-            //        break;
-            //}
-
+            GameStatus.inst.AryNormalRelicLv[(int)itemNum] = value;
             if (limitLv != 0 && lv >= limitLv)
             {
                 upBtn.gameObject.SetActive(false);
@@ -83,7 +50,6 @@ public class Relic : MonoBehaviour
         setNextCost();
         setText();
 
-
         upBtn.onClick.AddListener(ClickUp);
     }
 
@@ -93,7 +59,7 @@ public class Relic : MonoBehaviour
         int btnnum = UIManager.Instance.RelicBuyCountBtnNum;
         if (btnnum != 3)//max가 아닐때
         {
-            nextCost = /*baseCost **/ (CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)));
+            nextCost =CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1));
         }
         else//max일 때
         {
@@ -106,7 +72,7 @@ public class Relic : MonoBehaviour
                 setNextCost(buyCount);
             }
             buyCount--;
-            nextCost = /*baseCost * */(CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)));
+            nextCost = CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1));
         }
         setPercentage();
     }
@@ -120,8 +86,6 @@ public class Relic : MonoBehaviour
             case ItemTag.KillGold:
             case ItemTag.OfflineGold:
             case ItemTag.CriticalDmg:
-            case ItemTag.BombDmg:
-            case ItemTag.NecromancerDmg:
             case ItemTag.PandaBuff:
             case ItemTag.FeverTime:
             case ItemTag.GetStar:
@@ -143,7 +107,7 @@ public class Relic : MonoBehaviour
 
     void setNextCost(int count)
     {
-        nextCost = /*baseCost **/ (CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, count) - 1) / (costGrowthRate - 1)));
+        nextCost = CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, count) - 1) / (costGrowthRate - 1));
     }
 
     void setText()

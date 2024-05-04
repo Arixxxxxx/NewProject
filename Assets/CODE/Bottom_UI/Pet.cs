@@ -33,9 +33,18 @@ public class Pet : MonoBehaviour
 
                     break;
             }
+
+            if (ishave == false && lv >= 1)
+            {
+                ishave = true;
+                PetContollerManager.inst.PetActive((int)type);
+                upBtn.gameObject.SetActive(true);
+                BuyBtn.gameObject.SetActive(false);
+            }
             setNextCost();
         }
     }
+    bool ishave = false;
     int nextSoul;
     int nextBorn;
     int nextBook;
@@ -64,6 +73,24 @@ public class Pet : MonoBehaviour
         BookText = transform.Find("Button/Book/PriceText").GetComponent<TMP_Text>();
         lvText = transform.Find("LvText").GetComponent<TMP_Text>();
 
+        switch (type)
+        {
+            case PetType.AtkPet:
+                Lv = GameStatus.inst.Pet0_Lv;
+
+                break;
+
+            case PetType.BuffPet:
+                Lv = GameStatus.inst.Pet1_Lv;
+
+                break;
+
+            case PetType.GoldPet:
+                Lv = GameStatus.inst.Pet2_Lv;
+
+                break;
+        }
+
         BuyPriceText.text = baseCost.ToString();
         setNextCost();
         GameStatus.inst.OnRubyChanged.AddListener(checkHaveRuby);
@@ -73,20 +100,11 @@ public class Pet : MonoBehaviour
             RubyPayment.inst.RubyPaymentUiActive(baseCost, () =>
             {
                 Lv++;
-                PetContollerManager.inst.PetActive((int)type);
+                ishave = true;
                 PetContollerManager.inst.CrewUnlock_Action((int)type, true);
-                upBtn.gameObject.SetActive(true);
-                BuyBtn.gameObject.SetActive(false);
             });
-            //GameStatus.inst.Ruby -= baseCost;
-
         });
         DetailBtn.onClick.AddListener(() => PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()));
-    }
-
-    public Button GetUpBtn()
-    {
-        return upBtn;
     }
 
     void checkHaveRuby()

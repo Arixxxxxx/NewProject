@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
 
 
     ////////////////////////////////////////////퀘스트///////////////////////////////////////
-    
+
     [HideInInspector] public UnityEvent OnBuyCountChanged;//퀘스트 구매갯수 바뀌는 이벤트
     List<Transform> m_list_Quest = new List<Transform>();//퀘스트 리스트
     Transform m_QuestParents;//퀘스트 컨텐츠 트래스폼
@@ -54,19 +54,20 @@ public class UIManager : MonoBehaviour
     }
 
     ////////////////////////////////////////////무기///////////////////////////////////////
-    
+
     List<Transform> m_list_Weapon = new List<Transform>();
     Transform m_WeaponParents;
     RectTransform m_WeaponParentRect;
     TextMeshProUGUI m_totalAtk;
     Button WeaponBook;
 
-    int haveWeaponLv;//보유중인 무기중 제일 최상위 무기 번호
+    int haveWeaponNum;//보유중인 무기중 제일 최상위 무기 번호
 
 
     public void WeaponUpComplete(Transform _trs)
     {
         int index = m_list_Weapon.FindIndex(x => x == _trs);
+
         if (m_list_Weapon.Count > index + 1)
         {
             m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
@@ -80,7 +81,7 @@ public class UIManager : MonoBehaviour
 
     public void SetTopWeaponNum(int _num)
     {
-        haveWeaponLv = _num;
+        haveWeaponNum = _num;
     }
 
     ////////////////////////////////////////////펫///////////////////////////////////////
@@ -93,6 +94,8 @@ public class UIManager : MonoBehaviour
     ////////////////////////////////////////////유물///////////////////////////////////////
 
     [HideInInspector] public UnityEvent OnRelicBuyCountChanged;
+    [SerializeField] GameObject[] list_ObjRelic;
+    Transform relicParents;
     Button GotoRelicShopBtn;
     List<Image> m_list_RelicBuyCountBtn = new List<Image>();
     int relicBuyCountBtnNum = 0;
@@ -142,7 +145,7 @@ public class UIManager : MonoBehaviour
         }
 
         int[] petmat = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
-        
+
         soulText.text = string.Format("{0:#,0}", petmat[0]);
         bornText.text = string.Format("{0:#,0}", petmat[1]);
         bookText.text = string.Format("{0:#,0}", petmat[2]);
@@ -157,10 +160,7 @@ public class UIManager : MonoBehaviour
         {
             Destroy(this);
         }
-    }
 
-    void Start()
-    {
         //기본 UI 초기화
         canvas = GameObject.Find("---[UI Canvas]").GetComponent<Canvas>();
 
@@ -187,25 +187,35 @@ public class UIManager : MonoBehaviour
         {
             m_list_QuestBuyCountBtn.Add(trsQuestBuyCount.GetChild(iNum).GetComponent<Image>());
         }
+        int questCount = m_QuestParents.childCount;
+        for (int iNum = 0; iNum < questCount; iNum++)
+        {
+            m_list_Quest.Add(m_QuestParents.GetChild(iNum));
+        }
 
         m_totalGold = canvas.transform.Find("ScreenArea/BackGround/Quest/TotalGps").GetComponent<TextMeshProUGUI>();
-        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
-        InvokeRepeating("getGoldPerSceond", 0, 1);//초당 골드 획득
+
 
         //무기 초기화
         m_WeaponParents = canvas.transform.Find("ScreenArea/BackGround/Weapon/Scroll View").GetComponent<ScrollRect>().content;
         m_WeaponParentRect = m_WeaponParents.GetComponent<RectTransform>();
         m_totalAtk = canvas.transform.Find("ScreenArea/BackGround/Weapon/TotalAtk").GetComponent<TextMeshProUGUI>();
         WeaponBook = canvas.transform.Find("ScreenArea/BackGround/Weapon/AllLvUpBtn/DogamBtn").GetComponent<Button>();
-        SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
+        int weaponCount = m_WeaponParents.childCount;
+        for (int iNum = 0; iNum < weaponCount; iNum++)
+        {
+            m_list_Weapon.Add(m_WeaponParents.GetChild(iNum));
+
+        }
 
         //유물 초기화
+        relicParents = canvas.transform.Find("ScreenArea/BackGround/Relic/NormalScroll View/Viewport/Content");
         GotoRelicShopBtn = canvas.transform.Find("ScreenArea/BackGround/Relic/GotoRelicShopBtn").GetComponent<Button>();
-        GotoRelicShopBtn.onClick.AddListener(() => 
+        GotoRelicShopBtn.onClick.AddListener(() =>
         {
             ShopManager.Instance.OpenShop(1);
         });
-        Transform RelicAllUpBtnParents =  canvas.transform.Find("ScreenArea/BackGround/Relic/AllLvUpBtn");
+        Transform RelicAllUpBtnParents = canvas.transform.Find("ScreenArea/BackGround/Relic/AllLvUpBtn");
         int RelicAllCount = RelicAllUpBtnParents.childCount;
         for (int iNum = RelicAllCount - 1; iNum >= 0; iNum--)
         {
@@ -217,23 +227,51 @@ public class UIManager : MonoBehaviour
         bornText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Born/Text (TMP)").GetComponent<TMP_Text>();
         bookText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Book/Text (TMP)").GetComponent<TMP_Text>();
         petParents = canvas.transform.Find("ScreenArea/BackGround/Pet/Scroll View/Viewport/Content");
+    }
+
+    void Start()
+    {
+        //퀘스트 초기화
+        int questCount = m_QuestParents.childCount;
+        for (int iNum = 0; iNum < questCount; iNum++)
+        {
+            m_QuestParents.GetChild(iNum).GetComponent<Quest>().initQuest();
+        }
+
+        //무기 초기화
+        int weaponCount = m_WeaponParents.childCount;
+        for (int iNum = 0; iNum < weaponCount; iNum++)
+        {
+            m_WeaponParents.GetChild(iNum).GetComponent<Weapon>().InitWeapon();
+        }
+        GameStatus.inst.EquipWeaponNum = DataManager.inst.savedata.NowEquipWeaponNum;
+        Debug.Log(haveWeaponNum);
+        //펫 초기화
         int petCount = petParents.childCount;
         for (int iNum = 0; iNum < petCount; iNum++)
         {
             petParents.GetChild(iNum).GetComponent<Pet>().initPet();
         }
 
-        int weaponCount = m_WeaponParents.childCount;
-        for (int iNum = 0; iNum < weaponCount; iNum++)
+        //유물 초기화
+
+        int[] relicLv = GameStatus.inst.AryNormalRelicLv;
+        int relicCount = relicLv.Length;
+        for (int iNum = 0; iNum < relicCount; iNum++)
         {
-            m_list_Weapon.Add(m_WeaponParents.GetChild(iNum));
+            if (relicLv[iNum] != 0)
+            {
+                GameObject obj =  Instantiate(list_ObjRelic[iNum], relicParents);
+                Relic sc = obj.GetComponent<Relic>();
+                sc.initRelic();
+                sc.Lv = relicLv[iNum];
+                SetGotoGachaBtn(false);
+            }
         }
 
-        int questCount = m_QuestParents.childCount;
-        for (int iNum = 0; iNum < questCount; iNum++)
-        {
-            m_list_Quest.Add(m_QuestParents.GetChild(iNum));
-        }
+        InvokeRepeating("getGoldPerSceond", 0, 1);//초당 골드 획득
+        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
+        SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         initButton();
     }
 
@@ -262,7 +300,7 @@ public class UIManager : MonoBehaviour
 
     void SetWeaponScroll()
     {
-        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * (haveWeaponLv / 5) - 64);
+        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * (haveWeaponNum / 5) - 64);
     }
 
     public void changeSortOder(int value)
@@ -282,7 +320,7 @@ public class UIManager : MonoBehaviour
 
     public void ClickOpenThisTab(GameObject _obj)
     {
-        _obj.SetActive(true);        
+        _obj.SetActive(true);
     }
 
     public void ClickCloseThisTab(GameObject _obj)
@@ -342,22 +380,18 @@ public class UIManager : MonoBehaviour
     public void MaxBuyWeapon()
     {
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
-        int lv = haveWeaponLv;
-        int Number = lv / 5;
-        if (m_list_Weapon.Count > Number)
+        
+        if (m_list_Weapon.Count > haveWeaponNum)
         {
-            BigInteger nextcost = m_list_Weapon[Number].GetComponent<Weapon>().GetNextCost();
+            BigInteger nextcost = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>().GetNextCost();
             while (haveGold >= nextcost)
             {
-                if (m_list_Weapon.Count > Number)
+                if (m_list_Weapon.Count > haveWeaponNum)
                 {
-                    Weapon ScWeapon = m_list_Weapon[Number].GetComponent<Weapon>();
+                    Weapon ScWeapon = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>();
                     ScWeapon.ClickBuy();
                     haveGold -= nextcost;
-
-                    lv = haveWeaponLv;
                     nextcost = ScWeapon.GetNextCost();
-                    Number = lv / 5;
                 }
                 else
                 {

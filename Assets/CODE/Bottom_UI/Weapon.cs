@@ -15,7 +15,18 @@ public class Weapon : MonoBehaviour
         set
         {
             lv = value;
-            GameStatus.inst.SetAryWeaponLv(Number, value - Number * 5);
+            GameStatus.inst.SetAryWeaponLv(Number, value);
+
+            if (lv >= 5)
+            {
+                if (objBtn == null)
+                {
+                    objBtn = transform.Find("Button").GetComponent<Button>();
+                }
+                objBtn.gameObject.SetActive(false);
+                UIManager.Instance.WeaponUpComplete(transform);
+                DogamManager.inst.GetWeaponCheck(Number + 1);
+            }
         }
     }
     [SerializeField] float costGrowthRate;//비용 성장률
@@ -53,32 +64,34 @@ public class Weapon : MonoBehaviour
 
     private void Start()
     {
+
+    }
+
+    public void InitWeapon()
+    {
         weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
-        Number = transform.GetSiblingIndex();
-        Lv = GameStatus.inst.GetAryWeaponLv(Number);
+        initValue();
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
-        nameText.text = $"{transform.GetSiblingIndex() + 1}. " + Name;
+        nameText.text = $"{Number + 1}. " + Name;
+        SetbtnActive();
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
-        initValue();
     }
 
     void initValue() //초기값 설정
     {
+        Number = transform.GetSiblingIndex();
         float powNum = atkpowNumRate * (Number * (Number + 1)) / 2;
-
         resultPowNum = CalCulator.inst.CalculatePow(10, powNum);
+        Lv = GameStatus.inst.GetAryWeaponLv(Number);
 
-        if (Number != 0)
+        if (Lv != 0)
         {
-            Lv = Number * 5;
-        }
-
-        if (Lv - (Number * 5) != 0)
-        {
-            Atk = BigInteger.Multiply(resultPowNum, Lv);
+            Atk = BigInteger.Multiply(resultPowNum, Lv + Number * 5);
+            UIManager.Instance.SetTopWeaponNum(Number);
             clickWeaponImage();
         }
+
         baseCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f);
         setNextCost();
         setText();
@@ -87,7 +100,7 @@ public class Weapon : MonoBehaviour
     private void setText()
     {
         priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
-        LvText.text = $"Lv. {Lv - Number * 5} / 5";
+        LvText.text = $"Lv. {Lv} / 5";
         upAtkText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString());
         totalAtkText.text = CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString());
     }
@@ -102,20 +115,18 @@ public class Weapon : MonoBehaviour
             MissionData.Instance.SetWeeklyMission("무기 강화", 1);
             Atk = BigInteger.Multiply(resultPowNum, Lv);
             GameStatus.inst.MinusGold(nextCost.ToString());
-            UIManager.Instance.SetTopWeaponNum(Lv);
+            if (Lv >= 5)
+            {
+                UIManager.Instance.SetTopWeaponNum(Number + 1);
+            }
+            else
+            {
+                UIManager.Instance.SetTopWeaponNum(Number);
+            }
             clickWeaponImage();
             setNextCost();
             setText();
-            if (Lv % 5 == 0)
-            {
-                if (objBtn == null)
-                {
-                    objBtn = transform.Find("Button").GetComponent<Button>();
-                }
-                objBtn.gameObject.SetActive(false);
-                UIManager.Instance.WeaponUpComplete(transform);
-                DogamManager.inst.GetWeaponCheck(Number + 1);
-            }
+            SetbtnActive();
         }
         else
         {
@@ -126,7 +137,7 @@ public class Weapon : MonoBehaviour
     private void setNextCost()
     {
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
-        nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f * (1 - (pricediscount / 100))) *resultPowNum;
+        nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
     }
 
     private void SetbtnActive()
@@ -136,7 +147,7 @@ public class Weapon : MonoBehaviour
         {
             objBtn.interactable = false;
         }
-        else
+        else if(mask.activeSelf == false)
         {
             objBtn.interactable = true;
         }
@@ -145,12 +156,12 @@ public class Weapon : MonoBehaviour
     public BigInteger GetNextCost()
     {
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
-        return nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
+        return nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
     }
 
     public void clickWeaponImage()
     {
-        if (Lv - Number * 5 != 0)
+        if (Lv != 0)
         {
             GameStatus.inst.EquipWeaponNum = Number;
         }

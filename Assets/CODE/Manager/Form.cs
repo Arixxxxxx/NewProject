@@ -16,8 +16,6 @@ public enum ItemTag
     OfflineGold,
     QuestWeaponPrice,
     CriticalDmg,
-    BombDmg,
-    NecromancerDmg,
     PandaBuff,
     FeverTime,
     GetStar

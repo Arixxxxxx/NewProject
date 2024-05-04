@@ -371,7 +371,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             hwansengCount = value;
-            MissionData.Instance.SetWeeklyMission("환생하기", 1);
+            //MissionData.Instance.SetWeeklyMission("환생하기",0);
         }
     }
     /////////////////////[ 스테이지 현황 ]//////////////////////////////
@@ -546,7 +546,7 @@ public class GameStatus : MonoBehaviour
     }
 
     [HideInInspector] public UnityEvent OnPercentageChanged;
-    float[] aryPercentage = new float[13];
+    float[] aryPercentage = new float[11];
     public float GetAryPercent(int index)
     {
         return aryPercentage[index];
@@ -557,7 +557,7 @@ public class GameStatus : MonoBehaviour
         OnPercentageChanged?.Invoke();
     }
 
-    int[] aryNormalRelicLv = new int[13];
+    int[] aryNormalRelicLv = new int[11];
 
     public int[] AryNormalRelicLv
     {
@@ -569,14 +569,23 @@ public class GameStatus : MonoBehaviour
     public int MinigameTicket { get { return minigameTicket; } set { minigameTicket = value; } }
     /////////////////////////////////////미션/////////////////////////////////////////
 
-    bool[] dailyMissionisClear;
-    public bool[] DailyMIssionisClear { get => dailyMissionisClear; set { dailyMissionisClear = value; } }
+    int[] dailyMissionisCount = new int[4];
+    public int[] DailyMIssionisCount { get => dailyMissionisCount; set { dailyMissionisCount = value; } }
 
-    bool[] weeklyMissionisClear;
-    public bool[] WeeklyMissionisClear { get => weeklyMissionisClear; set { weeklyMissionisClear = value; } }
+    int[] weeklyMissionisCount = new int[4];
+    public int[] WeeklyMissionisCount { get => weeklyMissionisCount; set { weeklyMissionisCount = value; } }
 
-    bool[] specialMissionisClear;
-    public bool[] SpecialMissionisClear { get => specialMissionisClear; set { specialMissionisClear = value; } }
+    int[] specialMissionisCount = new int[6];
+    public int[] SpecialMissionisCount { get => specialMissionisCount; set { specialMissionisCount = value; } }
+
+    bool[] dailyMIssionClear = new bool[4];
+    public bool[] DailyMIssionClear { get => dailyMIssionClear; set { dailyMIssionClear = value; } }
+
+    bool[] weeklyMIssionClear = new bool[4];
+    public bool[] WeeklyMIssionClear { get => weeklyMIssionClear; set { weeklyMIssionClear = value; } }
+
+    int specialMIssionClearNum;
+    public int SpecialMIssionClearNum { get => specialMIssionClearNum; set { specialMIssionClearNum = value; } }
 
     bool isCanResetDailyMIssion;
     public bool IsCanResetDailyMIssion { get => isCanResetDailyMIssion; set { isCanResetDailyMIssion = value; } }
@@ -584,11 +593,14 @@ public class GameStatus : MonoBehaviour
     bool isCanResetWeeklyMIssion;
     public bool IsCanResetWeeklyMIssion { get => isCanResetWeeklyMIssion; set { isCanResetWeeklyMIssion = value; } }
 
-    bool[] clearBingo;
-    public bool[] ClearBingo { get => clearBingo; set { clearBingo = value; } }
+    bool[] bingoBoard = new bool[8];
+    public bool[] BingoBoard { get => bingoBoard; set { bingoBoard = value; } }
 
-    int bingoTicket;
-    public int BingoTicket { get => bingoTicket; set { bingoTicket = value; } }
+    int rouletteTicket;
+    public int RouletteTicket { get => rouletteTicket; set { rouletteTicket = value; } }
+
+    int rouletteStack;
+    public int RouletteStack { get => rouletteStack; set { rouletteStack = value; } }
 
     /////////////////////////////////////////////////////////////////////////////////
 
@@ -723,7 +735,6 @@ public class GameStatus : MonoBehaviour
     {
         DataManager.SaveData saveData = DataManager.inst.Get_Savedata();
         NickName = saveData.Name;
-        aryQuestLv = saveData.QuestLv;
 
 
         // 1. 재화
@@ -770,20 +781,24 @@ public class GameStatus : MonoBehaviour
         Pet2_Lv = saveData.Crew2Lv;
 
         // 10. 메인 하단 UI 현황
+        aryQuestLv = saveData.QuestLv;
         aryWeaponLv = saveData.WeaponLv;
         AryNormalRelicLv = saveData.RelicLv;
         EquipWeaponNum = saveData.NowEquipWeaponNum;
 
         // 11. 미션 현황
-        DailyMIssionisClear = saveData.DailyMIssionClear;
-        WeeklyMissionisClear = saveData.WeeklyMissionClear;
-        SpecialMissionisClear = saveData.SpMissionClear;
+        DailyMIssionisCount = saveData.DailyMissionCount;
+        WeeklyMissionisCount = saveData.WeeklyMissionCount;
+        SpecialMissionisCount = saveData.SpecialMissionCount;
+        DailyMIssionClear = saveData.DailyMIssionClear;
+        WeeklyMIssionClear = saveData.WeeklyMissionClear;
+        SpecialMIssionClearNum = saveData.SpecialMissionClearNum;
         IsCanResetDailyMIssion = saveData.canResetDailyMission;
         IsCanResetWeeklyMIssion = saveData.canResetWeeklyMission;
 
         // 12. 빙고 현황
-        BingoTicket = saveData.BingoTicket;
-        ClearBingo = saveData.ClearBingo;
+        RouletteTicket = saveData.RouletteTicket;
+        BingoBoard = saveData.BingoBoard;
 
         // 0. 마지막 접속기록
         LastLoginDate = saveData.lastSigninDate;
@@ -822,7 +837,7 @@ public class GameStatus : MonoBehaviour
         saveData.buffMoveSpeedTime = BuffTime[1];
         saveData.buffGoldTime = BuffTime[2];
         saveData.buffBigAtkTime = BuffTime[3];
-   
+
         // 5. 뉴비 혜택
         //뉴비 버프타임 추가해야됨
         saveData.todayGetRaward = TodayGetNewbie_Reward;
@@ -854,20 +869,28 @@ public class GameStatus : MonoBehaviour
         saveData.NowEquipWeaponNum = EquipWeaponNum;
 
         // 11. 미션 현황
-        saveData.DailyMIssionClear = DailyMIssionisClear;
-        saveData.WeeklyMissionClear = WeeklyMissionisClear;
-        saveData.SpMissionClear = SpecialMissionisClear;
+        saveData.DailyMIssionClear = DailyMIssionClear;
+        saveData.WeeklyMissionClear = WeeklyMIssionClear;
+
+        saveData.DailyMissionCount = DailyMIssionisCount;
+        saveData.WeeklyMissionCount = weeklyMissionisCount;
+        saveData.SpecialMissionCount = specialMissionisCount;
+
+        saveData.SpecialMissionClearNum = SpecialMIssionClearNum;
+
         saveData.canResetDailyMission = IsCanResetDailyMIssion;
         saveData.canResetWeeklyMission = IsCanResetWeeklyMIssion;
 
         // 12. 빙고 현황
-         saveData.BingoTicket = BingoTicket;
-         saveData.ClearBingo = ClearBingo;
+        saveData.RouletteTicket = RouletteTicket;
+        saveData.BingoBoard = BingoBoard;
 
         // 0. 마지막 접속기록
         saveData.lastSigninDate = DateTime.Now;
 
         save = JsonUtility.ToJson(saveData);
+
+        Debug.Log(save);
 
         return save;
     }

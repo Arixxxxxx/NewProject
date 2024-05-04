@@ -55,6 +55,11 @@ public class Quest : MonoBehaviour
 
     void Start()
     {
+       
+    }
+
+    public void initQuest()
+    {
         Number = transform.GetSiblingIndex();
         Lv = GameStatus.inst.GetAryQuestLv(Number);
         initValue();

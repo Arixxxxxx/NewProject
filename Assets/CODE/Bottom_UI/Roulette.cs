@@ -8,9 +8,8 @@ using TMPro;
 
 public class Roulette : MonoBehaviour
 {
-    [SerializeField] float setspd;
-    [SerializeField] float despd;
-    [SerializeField] int rouletteTicket;
+
+    //////////////////////////////////저장해야되는 값////////////////////////////////////////////////
     int RouletteTicket
     {
         get => rouletteTicket;
@@ -24,7 +23,31 @@ public class Roulette : MonoBehaviour
             }
         }
     }
-    [SerializeField] int RouletteStack;
+    int rouletteStack;
+    int RouletteStack
+    {
+        get => rouletteStack;
+        set
+        {
+            rouletteStack = value;
+            GameStatus.inst.RouletteStack = rouletteStack;
+        }
+    }
+    bool[] boingoBoard = new bool[8];
+    bool[] BingoBoard
+    {
+        get => boingoBoard;
+        set
+        {
+            boingoBoard = value;
+            GameStatus.inst.BingoBoard = boingoBoard;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    [SerializeField] float setspd;
+    [SerializeField] float despd;
+    [SerializeField] int rouletteTicket;
     [SerializeField] List<RewardList> list_reward = new List<RewardList>();
     [Serializable]
     public class RewardList
@@ -69,7 +92,6 @@ public class Roulette : MonoBehaviour
     int useCount = 1;
     bool isSpin;
 
-    bool[] bingoBoard = new bool[8];
     List<GameObject> bingoMask = new List<GameObject>();
 
 
@@ -100,6 +122,10 @@ public class Roulette : MonoBehaviour
         list_countBtnImage[1] = transform.Find("BackGround/CountBtn/Button (1)").GetComponent<Image>();
         list_countBtnImage[2] = transform.Find("BackGround/CountBtn/Button (2)").GetComponent<Image>();
 
+        RouletteTicket = GameStatus.inst.RouletteTicket;
+        RouletteStack = GameStatus.inst.RouletteStack;
+        BingoBoard = GameStatus.inst.BingoBoard;
+
         //빙고판 초기화
         BingoParents = transform.Find("BackGround/bingo");
         int BingoCount = BingoParents.childCount;
@@ -108,6 +134,15 @@ public class Roulette : MonoBehaviour
             bingoMask.Add(BingoParents.GetChild(iNum).Find("Mask").gameObject);
         }
         bingoMask.RemoveAt(4);
+
+        int bingoCount = bingoMask.Count;
+        for (int iNum = 0; iNum < bingoCount; iNum++)
+        {
+            if (BingoBoard[iNum])
+            {
+                bingoMask[iNum].SetActive(true);
+            }
+        }
 
         //보상 확인창 초기화
         ShowRewardParents = transform.Find("BackGround/ShowReward");
@@ -206,10 +241,10 @@ public class Roulette : MonoBehaviour
         if (RouletteStack >= 24)
         {
             //획득못한 보상 모두 획득
-            int bingoCount = bingoBoard.Length;
+            int bingoCount = BingoBoard.Length;
             for (int iNum = 0; iNum < bingoCount; iNum++)
             {
-                if (bingoBoard[iNum] == false)
+                if (BingoBoard[iNum] == false)
                 {
                     ListRewardNum.Add(new UnityEngine.Vector2(iNum, 0));
 
@@ -254,7 +289,7 @@ public class Roulette : MonoBehaviour
                 if (index == -1)
                 {
                     ListRewardNum.Add(new UnityEngine.Vector2(value, 0));
-                    bingoBoard[value] = true;
+                    BingoBoard[value] = true;
                 }
                 //획득했다면 y값을 1올려줌
                 else
@@ -266,10 +301,10 @@ public class Roulette : MonoBehaviour
 
                 //빙고 체크
                 bool isBingo = false;
-                int bingoCount = bingoBoard.Length;
+                int bingoCount = BingoBoard.Length;
                 for (int jNum = 0; jNum < bingoCount; jNum++)
                 {
-                    if (bingoBoard[jNum] == false)
+                    if (BingoBoard[jNum] == false)
                     {
                         isBingo = false;
                         break;
@@ -395,53 +430,53 @@ public class Roulette : MonoBehaviour
     IEnumerator checkBingo()
     {
         //가로빙고
-        if (horizontalBingo[0] && bingoBoard[0] && bingoBoard[1] && bingoBoard[2])
+        if (horizontalBingo[0] && BingoBoard[0] && BingoBoard[1] && BingoBoard[2])
         {
             horizontalBingo[0] = true;
         }
 
-        if (horizontalBingo[1] && bingoBoard[3] && bingoBoard[4])
+        if (horizontalBingo[1] && BingoBoard[3] && BingoBoard[4])
         {
             horizontalBingo[1] = true;
         }
 
-        if (horizontalBingo[2] && bingoBoard[5] && bingoBoard[6] && bingoBoard[7])
+        if (horizontalBingo[2] && BingoBoard[5] && BingoBoard[6] && BingoBoard[7])
         {
             horizontalBingo[2] = true;
         }
 
         //세로빙고
-        if (verticalBingo[0] && bingoBoard[0] && bingoBoard[3] && bingoBoard[5])
+        if (verticalBingo[0] && BingoBoard[0] && BingoBoard[3] && BingoBoard[5])
         {
             verticalBingo[0] = true;
         }
 
-        if (verticalBingo[1] && bingoBoard[1] && bingoBoard[6])
+        if (verticalBingo[1] && BingoBoard[1] && BingoBoard[6])
         {
             verticalBingo[1] = true;
         }
 
-        if (verticalBingo[2] && bingoBoard[2] && bingoBoard[4] && bingoBoard[7])
+        if (verticalBingo[2] && BingoBoard[2] && BingoBoard[4] && BingoBoard[7])
         {
             verticalBingo[2] = true;
         }
 
         //대각빙고
-        if (crossBingo[0] && bingoBoard[0] && bingoBoard[7])
+        if (crossBingo[0] && BingoBoard[0] && BingoBoard[7])
         {
             crossBingo[0] = true;
         }
 
-        if (crossBingo[1] && bingoBoard[2] && bingoBoard[5])
+        if (crossBingo[1] && BingoBoard[2] && BingoBoard[5])
         {
             crossBingo[1] = true;
         }
 
         //빙고 다 채운지 확인
-        int count = bingoBoard.Length;
+        int count = BingoBoard.Length;
         for (int iNum = 0; iNum < count; iNum++)
         {
-            if (bingoBoard[iNum] == false)
+            if (BingoBoard[iNum] == false)
             {
                 yield break;
             }
@@ -455,7 +490,7 @@ public class Roulette : MonoBehaviour
         //다 채워져 있으면 빙고판 리셋
         for (int iNum = 0; iNum < count; iNum++)
         {
-            bingoBoard[iNum] = false;
+            BingoBoard[iNum] = false;
             bingoMask[iNum].SetActive(false);
         }
         RouletteStack = 0;
@@ -468,6 +503,7 @@ public class Roulette : MonoBehaviour
         crossBingo[0] = false;
         crossBingo[1] = false;
     }
+
 
     public void ClickUseCount(int index)
     {

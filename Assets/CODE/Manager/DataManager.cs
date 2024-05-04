@@ -74,19 +74,22 @@ public class DataManager : MonoBehaviour
         // 9. 메인 하단 UI 현황
         public int[] QuestLv = new int[30];
         public int[] WeaponLv = new int[30];
-        public int[] RelicLv;
+        public int[] RelicLv = new int[11];
         public int NowEquipWeaponNum;
 
         // 10. 미션 현황
-        public bool[] DailyMIssionClear;
-        public bool[] WeeklyMissionClear;
-        public bool[] SpMissionClear;
+        public bool[] DailyMIssionClear = new bool[4];
+        public bool[] WeeklyMissionClear = new bool[4];
+        public int SpecialMissionClearNum;
+        public int[] DailyMissionCount = new int[4];
+        public int[] WeeklyMissionCount = new int[4];
+        public int[] SpecialMissionCount = new int[6];
         public bool canResetDailyMission;
         public bool canResetWeeklyMission;
 
         //11. 빙고 현황
-        public bool[] ClearBingo;
-        public int BingoTicket;
+        public bool[] BingoBoard = new bool[8];
+        public int RouletteTicket;
     }
 
 
@@ -103,16 +106,18 @@ public class DataManager : MonoBehaviour
         CheckJsonFile();//최초실행시 json유무 확인
         DontDestroyOnLoad(inst);
         setScreen();
-
+        Debug.Log(savedata.RelicLv.Length);
     }
 
-    public bool saveAble;
+    [SerializeField] public bool saveAble;
     // 게임 종료시 자동저장
     void OnApplicationQuit()
     {
         if (saveAble)
         {
             Save_EndGame();
+            Debug.Log(path);
+            Debug.Log("save됨!");
         }
     }
 
@@ -139,7 +144,6 @@ public class DataManager : MonoBehaviour
             float newHeight = deviceRatio / setRatio;
             Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
         }
-
     }
 
 
@@ -164,8 +168,8 @@ public class DataManager : MonoBehaviour
     public void Save_EndGame()
     {
         string save = GameStatus.inst.Get_SaveData();
-        string json = JsonUtility.ToJson(save);
-        File.WriteAllText(path, json);
+        
+        File.WriteAllText(path, save);
     }
 
 

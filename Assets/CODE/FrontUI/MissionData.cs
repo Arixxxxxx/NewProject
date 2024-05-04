@@ -45,6 +45,7 @@ public class MissionData : MonoBehaviour
         [SerializeField] ProductTag rewardTag;
         [SerializeField] DailyMissionTag MissionTag;
         int index;
+        bool isClear;
         Transform trs;
         public Transform Trs { get => trs; set { trs = value; } }
         Image imageIcon;
@@ -62,15 +63,23 @@ public class MissionData : MonoBehaviour
             get => count;
             set
             {
-                if (count <= maxCount)
+                if (count < maxCount)
                 {
                     count = value;
+                    GameStatus.inst.DailyMIssionisCount[index] = count;
 
-                    if (count >= maxCount)
+                    if (isClear == false && count >= maxCount)
                     {
                         count = maxCount;
+                        GameStatus.inst.DailyMIssionClear[index] = true;
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
+                    }
+                    else if (isClear)
+                    {
+                        clearBtn.gameObject.SetActive(false);                        
+                        Mask.SetActive(true);
+                        ClearText.SetActive(true);
                     }
 
                     BarText.text = $"{count} / {maxCount}";
@@ -90,6 +99,9 @@ public class MissionData : MonoBehaviour
             ClearText = trs.Find("ClearText").gameObject;
             Mask = trs.Find("Mask").gameObject;
             index = trs.GetSiblingIndex();
+
+            isClear = GameStatus.inst.DailyMIssionClear[index];
+            Count = GameStatus.inst.DailyMIssionisCount[index];
 
             NameText.text = Name;
             switch (rewardTag)
@@ -138,6 +150,7 @@ public class MissionData : MonoBehaviour
 
         public void ClickClearBtn()
         {
+            isClear = true;
             switch (rewardTag)
             {
                 case ProductTag.Gold:
@@ -183,7 +196,17 @@ public class MissionData : MonoBehaviour
             ClearText.SetActive(false);
             moveBtn.gameObject.SetActive(true);
         }
+        public void SetClearState()
+        {
+            if (isClear)
+            {
+                trs.SetAsLastSibling();
+            }
+        }
     }
+
+
+
     public void SetDailyMission(string Name, int count)
     {
         int listNum = -1;
@@ -223,21 +246,31 @@ public class MissionData : MonoBehaviour
         TMP_Text BarText;
         GameObject ClearText;
         GameObject Mask;
+        bool isClear;
         int count;
         public int Count
         {
             get => count;
             set
             {
-                if (count <= maxCount)
+                if (count < maxCount)
                 {
                     count = value;
+                    GameStatus.inst.WeeklyMissionisCount[index] = count;
 
-                    if (count >= maxCount)
+                    if (isClear == false && count >= maxCount)
                     {
+                        
                         count = maxCount;
+                        GameStatus.inst.WeeklyMIssionClear[index] = true;
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
+                    }
+                    else if (isClear)
+                    {
+                        clearBtn.gameObject.SetActive(false);
+                        Mask.SetActive(true);
+                        ClearText.SetActive(true);
                     }
 
                     BarText.text = $"{count} / {maxCount}";
@@ -256,8 +289,11 @@ public class MissionData : MonoBehaviour
             BarText = trs.Find("Space/Playbar/BarText").GetComponent<TMP_Text>();
             ClearText = trs.Find("ClearText").gameObject;
             Mask = trs.Find("Mask").gameObject;
-
             index = trs.GetSiblingIndex();
+
+            isClear = GameStatus.inst.WeeklyMIssionClear[index];
+            Count = GameStatus.inst.WeeklyMissionisCount[index];
+
             NameText.text = Name;
             switch (rewardTag)
             {
@@ -310,6 +346,7 @@ public class MissionData : MonoBehaviour
 
         public void ClickClearBtn()
         {
+            isClear = true;
             switch (rewardTag)
             {
                 case ProductTag.Gold:
@@ -346,6 +383,13 @@ public class MissionData : MonoBehaviour
             Mask.SetActive(false);
             ClearText.SetActive(false);
             moveBtn.gameObject.SetActive(true);
+        }
+        public void SetClearState()
+        {
+            if (isClear)
+            {
+                trs.SetAsLastSibling();
+            }
         }
     }
     public void SetWeeklyMission(string Name, int count)
@@ -390,6 +434,7 @@ public class MissionData : MonoBehaviour
         TMP_Text rewardText;
         TMP_Text needClearText;
 
+        int index;
         bool isActive = false;
 
         int count;
@@ -401,13 +446,13 @@ public class MissionData : MonoBehaviour
                 if (count < maxCount)
                 {
                     count = value;
-                    if (count >= maxCount)
+                    GameStatus.inst.SpecialMissionisCount[index] = count;
+                    if (isActive && count >= maxCount)
                     {
-                        if (isActive)
-                        {
-                            moveBtn.gameObject.SetActive(false);
-                            clearBtn.gameObject.SetActive(true);
-                        }
+                        count = maxCount;
+                        GameStatus.inst.SpecialMissionisCount[index] = count;
+                        moveBtn.gameObject.SetActive(false);
+                        clearBtn.gameObject.SetActive(true);
                     }
                 }
             }
@@ -425,9 +470,11 @@ public class MissionData : MonoBehaviour
             needClearText = _trs.Find("NeedClearText").GetComponent<TMP_Text>();
             mask = _trs.Find("Mask").gameObject;
 
-            NameText.text = $"{Instance.GetSpecialMyIndex(this) + 1}단계 미션";
+            index = trs.GetSiblingIndex();
+            NameText.text = $"{index + 1}단계 미션";
             MissionText.text = Name;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
+            Count = GameStatus.inst.SpecialMissionisCount[index];
 
             switch (rewardTag)
             {
@@ -469,6 +516,7 @@ public class MissionData : MonoBehaviour
 
             clearBtn.onClick.AddListener(() =>
             {
+                isActive = false;
                 clearBtn.gameObject.SetActive(false);
                 needClearText.gameObject.SetActive(true);
                 needClearText.text = "클리어!";
@@ -477,7 +525,8 @@ public class MissionData : MonoBehaviour
                 trs.GetComponent<RectTransform>().sizeDelta = new Vector2(278, 60);
                 trs.SetAsLastSibling();
 
-                Instance.nowSpecialIndex = Instance.GetSpecialMyIndex(this) + 1;
+                Instance.nowSpecialIndex = index + 1;
+                GameStatus.inst.SpecialMIssionClearNum = Instance.nowSpecialIndex;
                 Instance.SetSpecialMissionRectPosition();
 
                 switch (rewardTag)
@@ -496,6 +545,15 @@ public class MissionData : MonoBehaviour
                         break;
                 }
             });
+        }
+        public void SetClearState()
+        {
+            moveBtn.gameObject.SetActive(false);
+            clearBtn.gameObject.SetActive(false);
+            needClearText.gameObject.SetActive(true);
+            needClearText.text = "클리어!";
+            mask.SetActive(true);
+            trs.SetAsLastSibling();
         }
 
         public void ActiveTrue()
@@ -573,23 +631,6 @@ public class MissionData : MonoBehaviour
                 break;
         }
     }
-    /// <summary>
-    /// 스페셜 미션 본인 인덱스번호 리턴
-    /// </summary>
-    /// <param name="_sp"></param>
-    /// <returns></returns>
-    public int GetSpecialMyIndex(SpecialMIssion _sp)
-    {
-        int count = list_SpecialMIssion.Count;
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (list_SpecialMIssion[iNum] == _sp)
-            {
-                return iNum;
-            }
-        }
-        return -1;
-    }
 
     // 스페셜 미션 부모 리턴
     public Transform GetSpecialParents()
@@ -651,6 +692,12 @@ public class MissionData : MonoBehaviour
             list_DailyMission[iNum].Trs = Instantiate(obj_Mission, obj_DailyContents).transform;
             list_DailyMission[iNum].InitStart();
         }
+        for (int iNum = 0; iNum < DailyCount; iNum++)
+        {
+            list_DailyMission[iNum].SetClearState();
+        }
+
+
 
         //주간 미션 초기화
         int WeeklyCount = list_WeeklyMission.Count;
@@ -658,6 +705,10 @@ public class MissionData : MonoBehaviour
         {
             list_WeeklyMission[iNum].Trs = Instantiate(obj_Mission, obj_WeeklyContents).transform;
             list_WeeklyMission[iNum].InitStart();
+        }
+        for (int iNum = 0; iNum < WeeklyCount; iNum++)
+        {
+            list_WeeklyMission[iNum].SetClearState();
         }
 
         //스페셜 미션 리스트 초기화
@@ -682,6 +733,12 @@ public class MissionData : MonoBehaviour
             }
 
             list_SpecialMIssion[iNum].initSpecialMission(trs);
+        }
+
+        nowSpecialIndex = GameStatus.inst.SpecialMIssionClearNum;
+        for (int iNum = 0; iNum < nowSpecialIndex; iNum++)
+        {
+            list_SpecialMIssion[iNum].SetClearState();
         }
         SetSpecialMissionRectPosition();//현재 진행중인 특별미션 맨위로 고정
 
