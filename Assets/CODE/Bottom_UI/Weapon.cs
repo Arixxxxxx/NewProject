@@ -102,7 +102,7 @@ public class Weapon : MonoBehaviour
         priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
         LvText.text = $"Lv. {Lv} / 5";
         upAtkText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString());
-        totalAtkText.text = CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString());
+        totalAtkText.text = $"Atk {CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString())}";
     }
 
     public void ClickBuy()

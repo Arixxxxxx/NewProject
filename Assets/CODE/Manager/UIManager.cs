@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     Canvas canvas;
     List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
     List<Image> m_list_BottomBtn = new List<Image>();//메인UI 하단 버튼
+    List<Animator> list_BotBtnAnim = new List<Animator>();//메인UI 하단 버튼 애니메이터
     int bottomBtnNum = 0;//선택한 하단 버튼 번호
     RectTransform ScreenArea;
 
@@ -175,8 +176,10 @@ public class UIManager : MonoBehaviour
         for (int iNum = 0; iNum < botBtnCount; iNum++)
         {
             m_list_BottomBtn.Add(trsBotBtn.GetChild(iNum).GetComponent<Image>());
+            list_BotBtnAnim.Add(trsBotBtn.GetChild(iNum).GetComponent<Animator>());
         }
         ShopOpenBtn = trsBotBtn.Find("Shop").GetComponent<Button>();
+        
 
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Quest").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Weapon").gameObject);
@@ -320,11 +323,13 @@ public class UIManager : MonoBehaviour
 
     public void ClickBotBtn(int _num)
     {
-        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[0];
         m_listMainUI[bottomBtnNum].SetActive(false);
+        list_BotBtnAnim[bottomBtnNum].SetTrigger("nonSelect");
+        list_BotBtnAnim[bottomBtnNum].SetBool("isSelect",false);
 
         bottomBtnNum = _num;
-        m_list_BottomBtn[bottomBtnNum].sprite = m_BtnSprite[1];
+        list_BotBtnAnim[bottomBtnNum].SetTrigger("select");
+        list_BotBtnAnim[bottomBtnNum].SetBool("isSelect", true);
         m_listMainUI[_num].SetActive(true);
     }
 
