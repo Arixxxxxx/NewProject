@@ -42,7 +42,7 @@ public class WorldUI_Manager : MonoBehaviour
     GameObject stageUI;
 
     //우편 수신함
-    
+
     Button getLetterBtn;
 
     // 출석체크
@@ -146,7 +146,7 @@ public class WorldUI_Manager : MonoBehaviour
         hwanSengBtn = worldUI.transform.Find("StageUI/HwanSeng").GetComponent<Button>();
 
         // 메뉴버튼들
-        
+
         getLetterBtn = worldUI.transform.Find("StageUI/Letter").GetComponent<Button>(); // 우편함
         dailyPlayCheckBtn = worldUI.transform.Find("StageUI/DailyCheck").GetComponent<Button>(); //출석체크
         newBieBtn = worldUI.transform.Find("StageUI/NewBie").GetComponent<Button>(); //뉴비
@@ -167,7 +167,7 @@ public class WorldUI_Manager : MonoBehaviour
         frontUiCutton = frontUICanvas.transform.Find("Cutton").GetComponent<Image>();
 
         Prefabs_Awake();
-        
+
     }
 
 
@@ -177,11 +177,11 @@ public class WorldUI_Manager : MonoBehaviour
         //테스트용 나중에 지워야함
         BtnInIt();
 
-        // 최초 소지재화들 초기화
-        curMaterial[0].text = GameStatus.inst.Gold;
-        curMaterial[1].text = GameStatus.inst.Star;
-        curMaterial[2].text = GameStatus.inst.Key;
-        curMaterial[3].text = GameStatus.inst.Ruby.ToString("N0");
+        //// 최초 소지재화들 초기화
+        //curMaterial[0].text = GameStatus.inst.Gold;
+        //curMaterial[1].text = GameStatus.inst.Star;
+        //curMaterial[2].text = GameStatus.inst.Key;
+        //curMaterial[3].text = GameStatus.inst.Ruby.ToString("N0");
     }
 
 
@@ -191,15 +191,27 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="curFloorLv"></param>
     public void Set_StageUiBar(int curFloorLv)
     {
-        stageSlot[curFloorLv].sprite = stageSprite[2];
+        int setupCount = curFloorLv - 1;
+        stageSlot[setupCount].sprite = stageSprite[2];
         stageText.text = $"스테이지 {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv}";
-        uiBossHead.gameObject.SetActive(curFloorLv == 4 ? true : false);
-        for (int index = 0; index < curFloorLv; index++)
+        uiBossHead.gameObject.SetActive(setupCount == 4 ? true : false);
+        for (int index = 0; index < setupCount; index++)
         {
             stageSlot[index].sprite = stageSprite[1];
         }
-
     }
+
+    public void Awake_StageUiBar(int curFloorLv)
+    {
+        stageSlot[curFloorLv-1].sprite = stageSprite[2];
+        stageText.text = $"스테이지 {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv}";
+        uiBossHead.gameObject.SetActive(curFloorLv == 4 ? true : false);
+        for (int index = 0; index < curFloorLv-1; index++)
+        {
+            stageSlot[index].sprite = stageSprite[1];
+        }
+    }
+
 
 
     /// <summary>
@@ -271,39 +283,39 @@ public class WorldUI_Manager : MonoBehaviour
         mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
         adDeleteBtn.onClick.AddListener(() => AdDelete.inst.ActiveAdDeleteWindow());
 
-        crewViewrBtn.onClick.AddListener(() => 
+        crewViewrBtn.onClick.AddListener(() =>
         {
             PetDetailViewr_UI.inst.TopArrayBtnActive(0);
         });
 
-        weaponShopBtn.onClick.AddListener(() => 
+        weaponShopBtn.onClick.AddListener(() =>
         {
             DogamManager.inst.Set_DogamListAcitve(0, true);
         });
 
-        eventShopBtn.onClick.AddListener(() => 
+        eventShopBtn.onClick.AddListener(() =>
         {
-          EventShop_RulletManager.inst.Active_RulletEventShop(true);
-        });
-        
-        // 겸희 빙고 나중에 연결
-        bingoBtn.onClick.AddListener(() => 
-        {
-          
+            EventShop_RulletManager.inst.Active_RulletEventShop(true);
         });
 
-        minigameAlrimBtn.onClick.AddListener(() => 
+        // 겸희 빙고 나중에 연결
+        bingoBtn.onClick.AddListener(() =>
+        {
+
+        });
+
+        minigameAlrimBtn.onClick.AddListener(() =>
         {
             MinigameManager.inst.Active_minigameEntrance(true);
         });
 
-        openMenuIcon.onClick.AddListener(() => 
+        openMenuIcon.onClick.AddListener(() =>
         {
-          if(checkArrowScaleX.localScale.x == 1)
+            if (checkArrowScaleX.localScale.x == 1)
             {
                 menuAnim.SetTrigger("Open");
             }
-          else if(checkArrowScaleX.localScale.x == -1)
+            else if (checkArrowScaleX.localScale.x == -1)
             {
                 menuAnim.SetTrigger("Close");
             }
@@ -367,7 +379,7 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="funtion"></param>
     public void FrontUICuttonAction(Action funtion)
     {
-        if(cuttonCor != null)
+        if (cuttonCor != null)
         {
             StopCoroutine(cuttonCor);
         }
@@ -376,20 +388,20 @@ public class WorldUI_Manager : MonoBehaviour
     }
     IEnumerator PlayCutton(Action funtion)
     {
-        if(frontUiCutton.gameObject.activeSelf == false)
+        if (frontUiCutton.gameObject.activeSelf == false)
         {
             frontUiCutton.gameObject.SetActive(true);
         }
 
-        while(frontUiCutton.color.a < 1)
+        while (frontUiCutton.color.a < 1)
         {
             frontUiCutton.color += colorFadeValue * Time.deltaTime * fadeSpeed;
-            yield return null;  
+            yield return null;
         }
         cuttonAction = null;
         cuttonAction += funtion;
         cuttonAction?.Invoke();
-        
+
         while (frontUiCutton.color.a > 0)
         {
             frontUiCutton.color -= colorFadeValue * Time.deltaTime * fadeSpeed;
@@ -419,7 +431,7 @@ public class WorldUI_Manager : MonoBehaviour
             curMaterial[index].text = EA;
         }
 
-        
+
     }
 
     int curIndex = 0;
@@ -428,7 +440,7 @@ public class WorldUI_Manager : MonoBehaviour
     /// </summary>
     /// <param name="sprite"></param>
     /// <param name="text"> 아이템 설명내용</param>
-   public void Set_RewardUI_Invoke(Sprite sprite, string text)
+    public void Set_RewardUI_Invoke(Sprite sprite, string text)
     {
         curIndex = (int)Mathf.Repeat(curIndex, rewardChildCount);
         rewards[curIndex].Set_Reward(sprite, text);
@@ -440,7 +452,7 @@ public class WorldUI_Manager : MonoBehaviour
     /// </summary>
     /// <param name="sprite"></param>
     /// <param name="text"> 아이템 설명내용</param>
-    public void Set_Reward_InclueAction(Sprite sprite, string text,Action funtion)
+    public void Set_Reward_InclueAction(Sprite sprite, string text, Action funtion)
     {
         curIndex = (int)Mathf.Repeat(curIndex, rewardChildCount);
         rewards[curIndex].Set_RewardIncludeAction(sprite, text, funtion);
