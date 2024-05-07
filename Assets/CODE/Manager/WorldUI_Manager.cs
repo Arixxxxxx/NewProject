@@ -200,17 +200,7 @@ public class WorldUI_Manager : MonoBehaviour
         }
     }
 
-    public void Awake_StageUiBar(int curFloorLv)
-    {
-        stageSlot[curFloorLv-1].sprite = stageSprite[2];
-        stageText.text = $"스테이지 {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv}";
-        uiBossHead.gameObject.SetActive(curFloorLv == 4 ? true : false);
-        for (int index = 0; index < curFloorLv-1; index++)
-        {
-            stageSlot[index].sprite = stageSprite[1];
-        }
-    }
-
+ 
 
 
     /// <summary>

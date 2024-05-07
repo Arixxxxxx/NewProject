@@ -226,6 +226,8 @@ public class ActionManager : MonoBehaviour
             if (feverNextTimer > feverCountTimer)
             {
                 feverNextTimer = 0;
+                attackReady = false;
+                doEnemyMove = true;
                 FeverFloorUp();
             }
         }
@@ -513,31 +515,31 @@ public class ActionManager : MonoBehaviour
         attackReady = false;
 
 
-        floorCount++;
-
         if (GameStatus.inst.FloorLv < 4)
         {
-            Enemyinit();
             GameStatus.inst.FloorLv++;
+            Enemyinit();
+            
+        }
+        else if (GameStatus.inst.FloorLv == 4)
+        {
+            GameStatus.inst.FloorLv++;
+            Enemyinit();
+            //보스피통 늘려주는 
             
         }
         else if (GameStatus.inst.FloorLv == 5)
         {
-            Enemyinit();
-            GameStatus.inst.FloorLv++;
-            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
-            //보스피통 늘려주는 ~
-        }
-        else if (GameStatus.inst.FloorLv == 6)
-        {
             doEnemyMove = false;
-            Enemyinit();
-            floorCount = 0;
             GameStatus.inst.FloorLv++;
+            Enemyinit();
             StartCoroutine(NextStageAction()); //  다음 층으로 이동하는거처럼
+            //FloorEnd_NextStage();
+            //Debug.Log("다음맵으로!");
         }
     }
 
+    
     /// <summary>
     /// 피버시 출력
     /// </summary>
@@ -548,25 +550,21 @@ public class ActionManager : MonoBehaviour
         string getGold = Get_EnemyDeadGold();
         GameStatus.inst.PlusGold(getGold); // 골드 얻기
 
-        if (floorCount < 4)
+        if (GameStatus.inst.FloorLv < 4)
         {
-            Enemyinit();
             GameStatus.inst.FloorLv++;
-            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
-
+            Enemyinit();
         }
-        else if (floorCount == 4)
+        else if (GameStatus.inst.FloorLv == 4)
         {
-            Enemyinit();
             GameStatus.inst.FloorLv++;
-            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
+            Enemyinit();
             //보스피통 늘려주는 ~
         }
-        else if (floorCount == 5)
+        else if (GameStatus.inst.FloorLv == 5)
         {
-            Enemyinit();
-            floorCount = 0;
             GameStatus.inst.FloorLv++;
+            Enemyinit();
             WorldUI_Manager.inst.Reset_StageUiBar();
         }
     }
@@ -646,12 +644,12 @@ public class ActionManager : MonoBehaviour
         EnemyHPBar_FillAmount_Init(); // 체력
 
         //스프라이트 값 할당
-        if(floorCount != 4)
+        if(GameStatus.inst.FloorLv != 5)
         {
             curEnemyNum = UnityEngine.Random.Range(0, enemySmallSprite.Length);
             enemySr.sprite = enemySmallSprite[curEnemyNum];
         }
-        else if(floorCount == 4)
+        else if(GameStatus.inst.FloorLv == 5)
         {
 
             curEnemyNum = UnityEngine.Random.Range(0, enemyLargeSprite.Length);

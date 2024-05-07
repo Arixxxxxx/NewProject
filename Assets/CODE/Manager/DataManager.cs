@@ -128,8 +128,7 @@ public class DataManager : MonoBehaviour
         if (saveAble)
         {
             Save_EndGame();
-            Debug.Log(path);
-            Debug.Log("saveµÊ!");
+            Debug.Log($"{path} °æ·Î·Î Save");
         }
     }
 

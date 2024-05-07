@@ -24,8 +24,6 @@ public class GameStatus : MonoBehaviour
             DateTime LoginDate = value;
 
             //접속시 1회
-            Debug.Log($"기존 : {lastLogindate}, 현재{LoginDate}");
-
             // 첫 접속시 (신규가입시)
             if (LoginDate.Year == 1)
             {
@@ -54,7 +52,7 @@ public class GameStatus : MonoBehaviour
 
 
     private string nickName;
-    public string NickName { get { return nickName; } set { nickName = value; Debug.Log(nickName); } }
+    public string NickName { get { return nickName; } set { nickName = value; } }
     /////////////////////[ 출석체크 현황 및  뉴비]//////////////////////////////
 
     // 1.  선물받은 년/월/일
@@ -417,18 +415,24 @@ public class GameStatus : MonoBehaviour
         set
         {
             floorLv = value;
-            WorldUI_Manager.inst.Set_StageUiBar(floorLv);
+
+            if (floorLv == 6)
+            {
+                floorLv = 1;
+                stageLv++;
+            }
+            else if(floorLv < 6)
+            {
+                WorldUI_Manager.inst.Set_StageUiBar(floorLv);
+            }
+            
 
             if (DataManager.inst.saveAble)
             {
                 AccumlateFloor++;
                 HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate();
-                if (floorLv == 6)
-                {
-                    floorLv = 1;
-                    stageLv++;
 
-                }
+              
             }
         }
     }
@@ -461,8 +465,6 @@ public class GameStatus : MonoBehaviour
         set
         {
             buffAddSpeed = value;
-            Debug.Log($"입력됨 {buffAddSpeed} / {value}");
-
             ActionManager.inst.SetPlayerMoveSpeed();
         }
     }
