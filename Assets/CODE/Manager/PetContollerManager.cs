@@ -222,7 +222,10 @@ public class PetContollerManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// 요리사 버프
+    /// </summary>
+    /// <param name="buffNum"></param>
     public void PetBuffAcitve()
     {
         //주사위굴리고
@@ -245,6 +248,10 @@ public class PetContollerManager : MonoBehaviour
 
 
 
+    /// <summary>
+    /// 요리사 버프
+    /// </summary>
+    /// <param name="buffNum"></param>
     private void ActiveBuff(int buffNum)
     {
         switch (buffNum)
@@ -281,6 +288,8 @@ public class PetContollerManager : MonoBehaviour
         pet1Ps[MagicIndex].Play();
     }
 
+
+    float upperPos = 1.2f;
     // 펫 2번
     /// <summary>
     /// Pet0번 파티클 이펙트
@@ -294,6 +303,9 @@ public class PetContollerManager : MonoBehaviour
         }
         else if (Value == "Attack") //공격
         {
+             Vector3 Pos = ActionManager.inst.Get_CurEnemyCenterPosition();
+            Pos.y += upperPos;
+            pet2AtkEffectAnim.transform.position = Pos;
             pet2AtkEffectAnim.SetTrigger("Hit");
         }
     }

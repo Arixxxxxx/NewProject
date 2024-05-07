@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class Newbie_Content : MonoBehaviour
 {
     public static Newbie_Content inst;
@@ -16,7 +17,7 @@ public class Newbie_Content : MonoBehaviour
     [SerializeField] Color gotItemColor;
 
     /// Ref
-    GameObject frontUI, newbieWindow, gameWindow, layoutRef;
+    GameObject frontUI, newbieWindow, gameWindow, layoutRef, worldUiRef;
     Button xBtn;
 
     int iconLayoutCount = 0;
@@ -44,6 +45,9 @@ public class Newbie_Content : MonoBehaviour
     GameObject buffInfoWindow;
     TMP_Text buffLeftTimeText;
     Button buffinfoBottomBtn;
+
+    //알림 심볼
+    GameObject simBall;
     private void Start()
     {
 
@@ -60,7 +64,9 @@ public class Newbie_Content : MonoBehaviour
             Destroy(this);
         }
 
-        frontUI = GameObject.Find("---[FrontUICanvas]").gameObject;
+        worldUiRef = GameManager.inst.WorldUiRef;
+        frontUI = GameManager.inst.FrontUiRef;
+
         newbieWindow = frontUI.transform.Find("Newbie").gameObject;
         gameWindow = newbieWindow.transform.Find("Window").gameObject;
         layoutRef = gameWindow.transform.Find("RubyList").gameObject;
@@ -103,6 +109,8 @@ public class Newbie_Content : MonoBehaviour
         buffLeftTimeText = buffInfoWindow.transform.Find("Window/TextLayOut/NoGet").GetComponent<TMP_Text>();
         buffinfoBottomBtn = buffLeftTimeText.transform.GetComponentInChildren<Button>();
         buffinfoBottomBtn.onClick.AddListener(() => buffInfoWindow.gameObject.SetActive(false));
+
+        simBall = worldUiRef.transform.Find("StageUI/NewBie/SimBall").gameObject;
     }
 
     /// <summary>
@@ -146,7 +154,7 @@ public class Newbie_Content : MonoBehaviour
     {
         // 버튼 활성화 및 비활성화 변경
         GetBtnAcitve(!TodayGetReward);
-
+        simBall.SetActive(!TodayGetReward);
         //보석 일차수 레이아웃 최신화
         IconBoxInit();
         
@@ -162,6 +170,7 @@ public class Newbie_Content : MonoBehaviour
             GameStatus.inst.GotNewbieGiftCount++; // 받은 카운트 올려줌
             GameStatus.inst.TodayGetNewbie_Reward = true; // 받음
 
+            simBall.SetActive(false);
             IconBoxInit(); // 항목 재설정
             GetBtnAcitve(false); // 버튼 비활성화
             ConfirmWindowAcitve(); // 수락창 활성화
@@ -238,6 +247,13 @@ public class Newbie_Content : MonoBehaviour
         layoutRef.transform.GetChild(value).Find("BG").gameObject.SetActive(true);
         layoutRef.transform.GetChild(value).Find("Check").gameObject.SetActive(true);
     }
+
+    /// <summary>
+    /// 알림 빨간볼 액티브
+    /// </summary>
+    /// <param name="value"></param>
+    public void Active_AlrimSimBall(bool value) => simBall.SetActive(value);
+
 
 
 }

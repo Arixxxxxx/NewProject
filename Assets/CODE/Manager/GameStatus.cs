@@ -2,7 +2,6 @@ using System;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
-using static DataManager;
 
 public class GameStatus : MonoBehaviour
 {

@@ -10,6 +10,8 @@ using System;
 public class DataManager : MonoBehaviour
 {
     public static DataManager inst;
+    Scene currentSceneIndex;
+    int sceneIndexNumber;
 
     // 씬로딩 관련
 
@@ -103,11 +105,21 @@ public class DataManager : MonoBehaviour
         {
             Destroy(inst);
         }
-        CheckJsonFile();//최초실행시 json유무 확인
-        DontDestroyOnLoad(inst);
+        currentSceneIndex = SceneManager.GetActiveScene();
+        sceneIndexNumber = currentSceneIndex.buildIndex;
+
+        if(sceneIndexNumber ==0)
+        {
+            CheckJsonFile();//최초실행시 json유무 확인
+            DontDestroyOnLoad(inst);
+            Debug.Log(savedata.RelicLv.Length);
+        }
+
         setScreen();
-        Debug.Log(savedata.RelicLv.Length);
     }
+
+
+
 
     [SerializeField] public bool saveAble;
     // 게임 종료시 자동저장
@@ -193,8 +205,12 @@ public class DataManager : MonoBehaviour
 
 
 
-    public SaveData Get_Savedata()
-    {
-        return savedata;
-    }
+    public SaveData Get_Savedata() => savedata;
+
+    /// <summary>
+    /// 현재 인덱스 넘버
+    /// </summary>
+    /// <returns></returns>
+
+    public int Get_CurSceneIndexNumber() => sceneIndexNumber;
 }

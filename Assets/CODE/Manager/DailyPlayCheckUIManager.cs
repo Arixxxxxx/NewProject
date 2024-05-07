@@ -11,7 +11,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     [Space]
     [SerializeField] Sprite[] adBtnSprite;
 
-    GameObject worldFrontRef, dailyCheckObjRef, dailyWindowRef, ItemListRef;
+    GameObject worldFrontRef, dailyCheckObjRef, dailyWindowRef, ItemListRef, worldUiref;
     GameObject[] iconBG;
     int iconCount;
 
@@ -31,7 +31,8 @@ public class DailyPlayCheckUIManager : MonoBehaviour
 
     Button adViewAndGetRubyBtn;
 
-
+    // 알림 심볼
+    GameObject simBall;
 
     void Awake()
     {
@@ -45,7 +46,9 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         }
 
         // 하이라키 Ref
-        worldFrontRef = GameObject.Find("---[FrontUICanvas]").gameObject;
+        worldUiref = GameManager.inst.WorldUiRef;
+        worldFrontRef = GameManager.inst.FrontUiRef;
+
         dailyCheckObjRef = worldFrontRef.transform.Find("DailyCheck").gameObject;
         dailyWindowRef = dailyCheckObjRef.transform.Find("Window").gameObject;
         ItemListRef = dailyWindowRef.transform.Find("RubyList").gameObject;
@@ -76,6 +79,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         GetBtn[1] = dailyWindowRef.transform.Find("TextLayOut/Got").gameObject;
         mainTaxt = GetBtn[0].GetComponent<TMP_Text>();
 
+        simBall = worldUiref.transform.Find("StageUI/DailyCheck/SimBall").gameObject;
         BtnInIt();
     }
     private void Start()
@@ -119,6 +123,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         DailyCheck_Material_Init();
 
         GetBtnAcitve(!Boolian);
+        simBall.SetActive(!Boolian);
 
         adViewAndGetRubyBtn_Init(GameStatus.inst.DailyADRuby); // 하단부 광고버튼 (1일에 한번 열림) => 다른곳이사
 
@@ -135,6 +140,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
                 LetterManager.inst.MakeLetter(0, "게임GM", $"출석체크 {GameStatus.inst.GotDaily_Reward + 1}일차 보상", value); // 보상 우편 획득
 
                 GameStatus.inst.TotayGotDaily_Reward = true;
+                simBall.SetActive(false);
                 GameStatus.inst.GotDaily_Reward++; // 받은 카운트 올려줌
 
                 //버튼인잇

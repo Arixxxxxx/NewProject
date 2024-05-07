@@ -75,6 +75,21 @@ public class LetterPrefab : MonoBehaviour
         {
             //알림창 초기화 및 켜주기
             LetterManager.inst.alrimWindowAcitveTrueAndInit(mainIMG.sprite, ItemType, ItemCount, gameObject);
+
+            switch (ItemType) // 최종 자원 넣어줌
+            {
+                case 0:
+                    GameStatus.inst.Ruby += ItemCount;
+                    break;
+
+                case 1:
+                    GameStatus.inst.GetGold(ItemCount.ToString());
+                    break;
+
+                case 2:
+                    GameStatus.inst.PlusStar(ItemCount.ToString());
+                    break;
+            }
         });
 
     }
