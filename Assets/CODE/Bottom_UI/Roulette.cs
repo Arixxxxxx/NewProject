@@ -8,21 +8,16 @@ using TMPro;
 
 public class Roulette : MonoBehaviour
 {
-
     //////////////////////////////////저장해야되는 값////////////////////////////////////////////////
-    int RouletteTicket
-    {
-        get => rouletteTicket;
-        set
-        {
-            rouletteTicket = value;
-            ticketText.text = rouletteTicket.ToString();
-            if (rouletteTicket <= 0)
-            {
-                StartBtn.interactable = false;
-            }
-        }
-    }
+    //int RouletteTicket
+    //{
+    //    get => rouletteTicket;
+    //    set
+    //    {
+    //        rouletteTicket = value;
+            
+    //    }
+    //}
     int rouletteStack;
     int RouletteStack
     {
@@ -47,7 +42,6 @@ public class Roulette : MonoBehaviour
 
     [SerializeField] float setspd;
     [SerializeField] float despd;
-    [SerializeField] int rouletteTicket;
     [SerializeField] List<RewardList> list_reward = new List<RewardList>();
     [Serializable]
     public class RewardList
@@ -122,7 +116,6 @@ public class Roulette : MonoBehaviour
         list_countBtnImage[1] = transform.Find("BackGround/CountBtn/Button (1)").GetComponent<Image>();
         list_countBtnImage[2] = transform.Find("BackGround/CountBtn/Button (2)").GetComponent<Image>();
 
-        RouletteTicket = GameStatus.inst.RouletteTicket;
         RouletteStack = GameStatus.inst.RouletteStack;
         BingoBoard = GameStatus.inst.BingoBoard;
 
@@ -158,7 +151,15 @@ public class Roulette : MonoBehaviour
 
         }
         clickOpen();
-        RouletteTicket = RouletteTicket;
+        GameStatus.inst.OnRouletteTicketChanged.AddListener(() => 
+        {
+            ticketText.text = GameStatus.inst.RouletteTicket.ToString();
+            if (GameStatus.inst.RouletteTicket <= 0)
+            {
+                StartBtn.interactable = false;
+            }
+        });
+        GameStatus.inst.RouletteTicket = GameStatus.inst.RouletteTicket;
         rouletteRect = roulette.GetComponent<RectTransform>();
         animator = player.GetComponent<Animator>();
         openBtn.onClick.AddListener(clickOpen);
@@ -252,7 +253,7 @@ public class Roulette : MonoBehaviour
                 }
             }
             //코인 감소
-            RouletteTicket--;
+            GameStatus.inst.RouletteTicket--;
         }
         else
         {
@@ -260,10 +261,10 @@ public class Roulette : MonoBehaviour
             for (int iNum = 0; iNum < count; iNum++)
             {
                 //코인 감소
-                RouletteTicket--;
-                if (RouletteTicket < 0)
+                GameStatus.inst.RouletteTicket--;
+                if (GameStatus.inst.RouletteTicket < 0)
                 {
-                    RouletteTicket = 0;
+                    GameStatus.inst.RouletteTicket = 0;
                     break;
                 }
 

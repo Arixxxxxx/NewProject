@@ -596,8 +596,17 @@ public class GameStatus : MonoBehaviour
     bool[] bingoBoard = new bool[8];
     public bool[] BingoBoard { get => bingoBoard; set { bingoBoard = value; } }
 
+    public UnityEvent OnRouletteTicketChanged;
     int rouletteTicket;
-    public int RouletteTicket { get => rouletteTicket; set { rouletteTicket = value; } }
+    public int RouletteTicket 
+    {
+        get => rouletteTicket;
+        set 
+        { 
+            rouletteTicket = value;
+            OnRouletteTicketChanged?.Invoke();
+        } 
+    }
 
     int rouletteStack;
     public int RouletteStack { get => rouletteStack; set { rouletteStack = value; } }

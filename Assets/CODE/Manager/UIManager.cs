@@ -134,7 +134,12 @@ public class UIManager : MonoBehaviour
         return ShopOpenBtn;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////∑Í∑ø///////////////////////////////////////////
+    GameObject ObjRoulette;
+    Button RouletteOpenBtn;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
 
     private void Update()
     {
@@ -163,6 +168,7 @@ public class UIManager : MonoBehaviour
 
         //±‚∫ª UI √ ±‚»≠
         canvas = GameObject.Find("---[UI Canvas]").GetComponent<Canvas>();
+        GameObject worldCanvas = GameObject.Find("---[World UI Canvas]");
 
         Transform trsBotBtn = canvas.transform.Find("ScreenArea/BackGround/BottomBtn");
         int botBtnCount = trsBotBtn.childCount;
@@ -227,6 +233,11 @@ public class UIManager : MonoBehaviour
         bornText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Born/Text (TMP)").GetComponent<TMP_Text>();
         bookText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Book/Text (TMP)").GetComponent<TMP_Text>();
         petParents = canvas.transform.Find("ScreenArea/BackGround/Pet/Scroll View/Viewport/Content");
+
+        //∑Í∑ø √ ±‚»≠
+        ObjRoulette = canvas.transform.Find("ScreenArea/Roulette/").gameObject;
+        RouletteOpenBtn = worldCanvas.transform.Find("StageUI/MenuBox/Btns/Bingo").GetComponent<Button>();
+        RouletteOpenBtn.onClick.AddListener(() => { ObjRoulette.SetActive(true); });
     }
 
     void Start()
@@ -244,8 +255,7 @@ public class UIManager : MonoBehaviour
         {
             m_WeaponParents.GetChild(iNum).GetComponent<Weapon>().InitWeapon();
         }
-        GameStatus.inst.EquipWeaponNum = DataManager.inst.savedata.NowEquipWeaponNum;
-        Debug.Log(haveWeaponNum);
+
         //∆Í √ ±‚»≠
         int petCount = petParents.childCount;
         for (int iNum = 0; iNum < petCount; iNum++)
@@ -261,7 +271,7 @@ public class UIManager : MonoBehaviour
         {
             if (relicLv[iNum] != 0)
             {
-                GameObject obj =  Instantiate(list_ObjRelic[iNum], relicParents);
+                GameObject obj = Instantiate(list_ObjRelic[iNum], relicParents);
                 Relic sc = obj.GetComponent<Relic>();
                 sc.initRelic();
                 sc.Lv = relicLv[iNum];
@@ -380,7 +390,7 @@ public class UIManager : MonoBehaviour
     public void MaxBuyWeapon()
     {
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
-        
+
         if (m_list_Weapon.Count > haveWeaponNum)
         {
             BigInteger nextcost = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>().GetNextCost();
