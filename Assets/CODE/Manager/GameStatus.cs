@@ -376,7 +376,7 @@ public class GameStatus : MonoBehaviour
     /////////////////////[ 스테이지 현황 ]//////////////////////////////
 
     // 1. 총 누적층수
-    int accumlateFloor = 1;
+    int accumlateFloor = 0;
     public int AccumlateFloor
     {
         get
@@ -417,12 +417,18 @@ public class GameStatus : MonoBehaviour
         set
         {
             floorLv = value;
-            AccumlateFloor++;
-            HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate();
-            if (floorLv == 6)
+            WorldUI_Manager.inst.Set_StageUiBar(floorLv);
+
+            if (DataManager.inst.saveAble)
             {
-                floorLv = 1;
-                stageLv++;
+                AccumlateFloor++;
+                HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate();
+                if (floorLv == 6)
+                {
+                    floorLv = 1;
+                    stageLv++;
+
+                }
             }
         }
     }
@@ -699,7 +705,7 @@ public class GameStatus : MonoBehaviour
     {
         stageLv = 1;
         floorLv = 1;
-        AccumlateFloor = 1;
+        AccumlateFloor = 0;
         HWansengCount++;
         HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate(); // 환생아이콘 수치 리셋
     }

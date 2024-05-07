@@ -256,18 +256,7 @@ public class ActionManager : MonoBehaviour
     // UI Bar 초기화
     private void UI_Init()
     {
-
-        statusManager = GameStatus.inst;
-        if (statusManager.FloorLv > 1)
-        {
-            WorldUI_Manager.inst.Set_StageUiBar(statusManager.FloorLv);
-        }
-        else if (statusManager.FloorLv == 1)
-        {
-            WorldUI_Manager.inst.Reset_StageUiBar();
-        }
-
-        
+       
     }
 
     // 움직이기전 초기화
@@ -526,20 +515,20 @@ public class ActionManager : MonoBehaviour
 
         floorCount++;
 
-        if (floorCount < 4)
+        if (GameStatus.inst.FloorLv < 4)
         {
             Enemyinit();
             GameStatus.inst.FloorLv++;
-            WorldUI_Manager.inst.Set_StageUiBar(floorCount);
+            
         }
-        else if (floorCount == 4)
+        else if (GameStatus.inst.FloorLv == 5)
         {
             Enemyinit();
             GameStatus.inst.FloorLv++;
             WorldUI_Manager.inst.Set_StageUiBar(floorCount);
             //보스피통 늘려주는 ~
         }
-        else if (floorCount == 5)
+        else if (GameStatus.inst.FloorLv == 6)
         {
             doEnemyMove = false;
             Enemyinit();
