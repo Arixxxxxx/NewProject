@@ -62,6 +62,7 @@ public class ActionManager : MonoBehaviour
     SpriteRenderer enemySr;
     Animator enemyAnim;
     Image hpBar_IMG;
+    Image hpBar_BackIMG;
     TMP_Text hpBar_Text;
     int curEnemyNum;
     [Header("5. ReadOnly ★ <Color=#CC3D3D>( Check Data )")]
@@ -164,6 +165,7 @@ public class ActionManager : MonoBehaviour
 
         dmgFontParent = worldSpaceRef.transform.Find("DmgFontCanvas/FontPosition").GetComponent<Transform>();
         hpBar_IMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Front").GetComponent<Image>();
+        hpBar_BackIMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Back").GetComponent<Image>();
         hpBar_Text = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Text").GetComponent<TMP_Text>();
 
         enemy_StartPoint = worldSpaceRef.transform.Find("SpawnPoint").GetComponent<Transform>();
@@ -228,6 +230,7 @@ public class ActionManager : MonoBehaviour
             }
         }
 
+        BackHPBarUpdater();
 
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -241,13 +244,14 @@ public class ActionManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            LetterManager.inst.MakeLetter(1, "게임GM", "테스트 (골드)편지입니다", 150);
+            LetterManager.inst.MakeLetter(1, "게임GM", "테스트 (골드)편지입니다", 15000);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            LetterManager.inst.MakeLetter(2, "박겸희", "테스트 편지 (별)입니다", 200);
+            LetterManager.inst.MakeLetter(2, "박겸희", "테스트 편지 (별)입니다", 2000);
         }
     }
+
 
     // UI Bar 초기화
     private void UI_Init()
@@ -390,7 +394,8 @@ public class ActionManager : MonoBehaviour
         {
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
-            obj.transform.position = dmgFontParent.position;
+            obj.transform.position = enemySr.bounds.center;
+            //obj.transform.position = dmgFontParent.position;
             obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(DMG), randomDice < GameStatus.inst.CriticalChance ? true : false, 2);
             obj.SetActive(true);
 
@@ -430,8 +435,7 @@ public class ActionManager : MonoBehaviour
     IEnumerator CrewAttackToEnemyDMG(int CrewType)
     {
         enemyAnim.SetTrigger("Hit");
-        PlayerInit();
-
+        //PlayerInit();
         // 뉴비버프 어택카운트 및 버프 
         GameStatus.inst.NewbieAttackCountUp(true);
         if (GameStatus.inst.IsNewBie)
@@ -465,18 +469,18 @@ public class ActionManager : MonoBehaviour
         {
             enemyCurHP = MinusValue;
             EnemyHPBar_FillAmount_Init();
-
+            
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
-            obj.transform.position = dmgFontParent.position;
+            obj.transform.position = enemySr.bounds.center;
 
-            if(CrewType == 0)
+            if (CrewType == 0)
             {
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 0); // 빨간색 대미지 폰트
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 0); 
             }
             else if(CrewType == 1)
             {
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 1); // 시얀색 대미지폰트
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 1);
             }
             obj.SetActive(true);
         }
@@ -485,6 +489,7 @@ public class ActionManager : MonoBehaviour
             
             DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
             StartCoroutine(GetGoldActionParticle());
+
             // 현재 받아야되는 돈 계산
             string getGold = Get_EnemyDeadGold();
             WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
@@ -679,17 +684,27 @@ public class ActionManager : MonoBehaviour
     }
 
     
-    /// <summary>
-    ///  Monster HPBar Update
-    /// </summary>
 
+    // 몬스터 체력바 업데이터
     private void EnemyHPBar_FillAmount_Init()
     {
         hpBar_IMG.fillAmount = CalCulator.inst.StringAndStringDivideReturnFloat(enemyCurHP, enemyMaxHP, 3);
         hpBar_Text.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(enemyCurHP)}";
     }
 
-
+    // 체력 후방바 
+    float backHpBarFillSpeed_MultiFlyer = 0.2f;
+    private void BackHPBarUpdater()
+    {
+        if (hpBar_BackIMG.fillAmount > hpBar_IMG.fillAmount)
+        {
+            hpBar_BackIMG.fillAmount -= Time.deltaTime * backHpBarFillSpeed_MultiFlyer;
+        }
+        else if (hpBar_BackIMG.fillAmount <= hpBar_IMG.fillAmount)
+        {
+            hpBar_BackIMG.fillAmount = hpBar_IMG.fillAmount;
+        }
+    }
 
     ////////////////////////////// [ 플레이어 속도증가 관련 ] /////////////////////////////////////////
 
@@ -863,5 +878,13 @@ public class ActionManager : MonoBehaviour
     /// <param name="index"></param>
     /// <returns></returns>
     public Sprite Get_WeaponSprite(int index) => weaponSprite[index];
+
+    /// <summary>
+    /// 현재 몬스터 스프라이트기준 센터 월드 포지션
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public Vector3 Get_CurEnemyCenterPosition() => enemySr.bounds.center;
+    
 
 }

@@ -644,6 +644,9 @@ public class CalCulator : MonoBehaviour
         return result;
     }
 
+
+    int ulongMaxCount = ulong.MaxValue.ToString().Count();
+    
     /// <summary>
     /// 사령술사 공격력계산 : 현재 몬스터체력의 3% + 레벨당1% 추가
     /// </summary>
@@ -651,14 +654,41 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string CrewNumber2AtkCalculator(string curEnemyHP)
     {
-        BigInteger hp = BigInteger.Parse(curEnemyHP);
-        hp = ((hp / 100) * 3) + ((hp / 100) * (GameStatus.inst.Pet2_Lv - 1));
-
-        if (hp == 0)
+        int wordCount = curEnemyHP.Count();
+       
+        BigInteger hp = new BigInteger();
+     
+        int multiPlyer = 3 + GameStatus.inst.Pet2_Lv - 1;
+        
+        if (wordCount < ulongMaxCount)
         {
-            return null;
-        }
+            ulong hpUlong = ulong.Parse(curEnemyHP);
+            double CalcurHP = (hpUlong * (ulong)multiPlyer) / 100;
 
-        return hp.ToString();
+        
+            Debug.Log($" 더블 : 들어온 현재 체력{curEnemyHP} / 계산된 체력 {CalcurHP}");
+            if (CalcurHP <= 0)
+            {
+                return null;
+            }
+
+            return ((ulong)CalcurHP).ToString();
+        }
+        else
+        {
+            hp = BigInteger.Parse(curEnemyHP);
+            hp = BigInteger.Divide((BigInteger.Multiply(hp, multiPlyer)), 100);
+
+            Debug.Log($"빅인티져 : 들어온 현재 체력{curEnemyHP} / 계산된 체력 {hp}");
+
+            if (hp <= 0)
+            {
+                return null;
+            }
+
+            return hp.ToString();
+        }
+             
+    
     }
 }

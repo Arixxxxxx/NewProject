@@ -69,8 +69,10 @@ public class MinigameManager : MonoBehaviour
     TMP_Text countText; // 미니게임화폐 갯수 출력
     Image fillbar;
     TMP_Text fillText;
+    TMP_Text result_MenuText, result_ReStartText;
     GameObject resultRef;
     //결과창 선택 화살표 액티브
+    [SerializeField][Tooltip("0논클릭/1클릭")] TMP_ColorGradient[] ResultMenuGradiuntPreset;
     GameObject[] resultMenuSelect = new GameObject[2];
 
     private void Awake()
@@ -127,6 +129,9 @@ public class MinigameManager : MonoBehaviour
         stars[0] = miniGamesRef.transform.Find("StartCanvas/Result/Star/0/star").gameObject;
         stars[1] = miniGamesRef.transform.Find("StartCanvas/Result/Star/1/star").gameObject;
         stars[2] = miniGamesRef.transform.Find("StartCanvas/Result/Star/2/star").gameObject;
+
+        result_MenuText = miniGamesRef.transform.Find("StartCanvas/Result/MenuBtn").GetComponent<TMP_Text>();
+        result_ReStartText = miniGamesRef.transform.Find("StartCanvas/Result/ReStartBtn").GetComponent<TMP_Text>();
         BtnInit();
     }
     void Start()
@@ -437,6 +442,8 @@ public class MinigameManager : MonoBehaviour
     int resultMenuSelectIndex = 0;
     public int ResultMenuSelectIndex { get { return resultMenuSelectIndex; } set { resultMenuSelectIndex = value; resultMenuSelectActiveInit(); } }
 
+    float nonClickFontSize = 30f;
+    float ClickFontSize= 40f;
     // Result 메뉴 팝업시 하단 화살표 이동 및 B버튼 이용 실행
     public void ResultMenuContoller()
     {
@@ -449,6 +456,11 @@ public class MinigameManager : MonoBehaviour
             if (ResultMenuSelectIndex < 1)
             {
                 ResultMenuSelectIndex++;
+                result_ReStartText.fontSize = ClickFontSize;
+                result_ReStartText.colorGradientPreset = ResultMenuGradiuntPreset[1];
+                result_MenuText.fontSize = nonClickFontSize;
+                result_MenuText.colorGradientPreset = ResultMenuGradiuntPreset[0];
+
             }
         }
         else if (MinigameController.inst.Left == true && popupresult == true)
@@ -458,6 +470,10 @@ public class MinigameManager : MonoBehaviour
             if (ResultMenuSelectIndex > 0)
             {
                 ResultMenuSelectIndex--;
+                result_ReStartText.fontSize = nonClickFontSize;
+                result_ReStartText.colorGradientPreset = ResultMenuGradiuntPreset[0];
+                result_MenuText.fontSize = ClickFontSize;
+                result_MenuText.colorGradientPreset = ResultMenuGradiuntPreset[1];
             }
         }
 

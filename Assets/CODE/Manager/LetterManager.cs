@@ -13,7 +13,7 @@ public class LetterManager : MonoBehaviour
     [SerializeField] GameObject letter;
     Queue<GameObject> letterQue = new Queue<GameObject>();
 
-    GameObject fontUIRef;
+    GameObject fontUIRef, worldUiRef;
     GameObject postOfficeRef;
     Button xBtn;
 
@@ -25,7 +25,7 @@ public class LetterManager : MonoBehaviour
     Image alrimSprite;
     Button alrimDisableBtn;
     Transform letterPool;
-
+    TMP_Text alrimCountText;
 
     //모두수락용
     Button everyAcceptBtn;
@@ -39,6 +39,9 @@ public class LetterManager : MonoBehaviour
     [SerializeField]
     LetterBoxIcon[] letterbox;
 
+    // 심볼
+    GameObject simBall;
+
     private void Awake()
     {
         if (inst == null)
@@ -50,7 +53,9 @@ public class LetterManager : MonoBehaviour
             Destroy(this);
         }
 
-        fontUIRef = GameObject.Find("---[FrontUICanvas]").gameObject;
+        worldUiRef = GameManager.inst.WorldUiRef;
+        fontUIRef = GameManager.inst.FrontUiRef;
+
         postOfficeRef = fontUIRef.transform.Find("PostOffice").gameObject;
         xBtn = postOfficeRef.transform.Find("Window/Title/X_Btn").GetComponent<Button>();
         letterViewr = postOfficeRef.transform.Find("Window/Scroll View").gameObject;
@@ -67,6 +72,9 @@ public class LetterManager : MonoBehaviour
         EveryGetAlrimFreamlayOut = EveryGetAlrimRef.transform.Find("Window/Frame_LayOut").gameObject;
         letterbox = EveryGetAlrimFreamlayOut.GetComponentsInChildren<LetterBoxIcon>(true);
         everyAcceptBackBtn = EveryGetAlrimRef.transform.Find("Window/Button").GetComponent<Button>();
+        alrimCountText = alrimWindow.transform.Find("Window/CountText").GetComponent<TMP_Text>();
+
+        simBall = worldUiRef.transform.Find("StageUI/Letter/SimBall").gameObject;
 
         BtnInIt();
         PrefabsPoolingAwake();
@@ -109,6 +117,8 @@ public class LetterManager : MonoBehaviour
     /// <param name="ItemCount"> 지급 되는 아이템의 갯수 </param>
     public void MakeLetter(int ItemType, string From, string text, int ItemCount)
     {
+        simBall.gameObject.SetActive(true);
+
         if (letterQue.Count <= 0)
         {
             GameObject objs = Instantiate(letter, letterPool);
@@ -126,7 +136,7 @@ public class LetterManager : MonoBehaviour
     }
 
 
-    /// <summary> 순서 . 2
+    /// <summary> 순서=> 2
     ///  알림윈도우 팝업시 해당창 초기화
     /// </summary>
     /// <param name="value"></param>
@@ -134,6 +144,22 @@ public class LetterManager : MonoBehaviour
     {
         // 이미지 교체해주고
         alrimSprite.sprite = itemSprite;
+        
+        switch (itemType) 
+        {
+            case 0:
+                alrimCountText.text = $"루비 +{itemCount}";
+                break;
+
+            case 1:
+                alrimCountText.text = $"골드 +{itemCount}";
+                break;
+
+            case 2:
+                alrimCountText.text = $"별 +{itemCount}";
+                break;
+        }
+
         // 받아야할 갯수 교체
 
         alrimWindow.SetActive(true);
@@ -142,7 +168,7 @@ public class LetterManager : MonoBehaviour
     }
 
 
-    /// <summary> 순서. 3
+    /// <summary> 순서 => 3
     /// 편지 수락 누른후 뜨는 알림창 => 여기서 수락누르면 오브젝트 리턴시키고 
     /// </summary>
     /// <param name="itemType"> 0 = 루비 / 1 = 골드 / 2 = 별 </param>
@@ -150,28 +176,14 @@ public class LetterManager : MonoBehaviour
     /// <param name="letterObj"> 리턴시킬 프리펩Obj </param>
     public void alrimWindowAcitveFalse(int itemType, int itemCount, GameObject letterObj)
     {
-        switch (itemType) // 최종 자원 넣어줌
-        {
-            case 0:
-                GameStatus.inst.Ruby += itemCount;
-                break;
-
-            case 1:
-                GameStatus.inst.GetGold(itemCount.ToString());
-                break;
-
-            case 2:
-                GameStatus.inst.PlusStar(itemCount.ToString());
-                break;
-        }
-
         ReturnLetter(letterObj);
 
         int count = letterBox.transform.childCount;
         if (count == 0)
         {
             // Text Init 풀링 시스템 리턴
-            OpenPostOnOfficeAndInit(true); //
+            simBall.gameObject.SetActive(false);
+
         }
 
         alrimWindow.SetActive(false);
@@ -229,6 +241,7 @@ public class LetterManager : MonoBehaviour
 
         //확인창 열어주고
         EveryGetAlrimRef.SetActive(true);
+        simBall.gameObject.SetActive(false);
         LetterBoxOnlyInit(); // 빈박스 표기
     
     }

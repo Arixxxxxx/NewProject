@@ -336,6 +336,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 825ac5986bec1ed4b86aa6f58dcda14d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ResultMenuGradiuntPreset:
+  - {fileID: 11400000, guid: baa08a31ab6499c49bec6169bab2a0bb, type: 2}
+  - {fileID: 11400000, guid: bab1deb71f2796f409bd8e70a1a69ccd, type: 2}
   selectGame: 0
 --- !u!114 &9043064537473548532
 MonoBehaviour:
@@ -450,7 +453,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffTimer: []
-  buffIconPs: []
 --- !u!1 &3933535206417726122
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,7 +674,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddbc722344f14ef4f882ebc727e99a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nickName: 
   OnGoldChanged:
     m_PersistentCalls:
       m_Calls: []
