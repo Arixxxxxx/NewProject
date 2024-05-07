@@ -94,7 +94,7 @@ public class Roulette : MonoBehaviour
         Transform canvas = GameObject.Find("---[UI Canvas]").transform;
         roulette = transform.Find("BackGround/Roulette").GetComponent<Image>();
         player = transform.Find("BackGround/Player").GetComponent<Image>();
-        openBtn = canvas.Find("RouletteBtn").GetComponent<Button>();
+        
         StartBtn = transform.Find("BackGround/StartBtn").GetComponent<Button>();
         StopBtn = transform.Find("BackGround/StopBtn").GetComponent<Button>();
         closeBtn = transform.Find("BackGround/CloseBtn").GetComponent<Button>();
