@@ -751,7 +751,7 @@ public class GameStatus : MonoBehaviour
     {
         DataManager.SaveData saveData = DataManager.inst.Get_Savedata();
         NickName = saveData.Name;
-
+        WorldUI_Manager.inst.Set_Nickname(NickName);
 
         // 1. ÀçÈ­
         Gold = saveData.Gold;

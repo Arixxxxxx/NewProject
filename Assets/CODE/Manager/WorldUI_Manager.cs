@@ -89,6 +89,8 @@ public class WorldUI_Manager : MonoBehaviour
     Action cuttonAction;
     Image frontUiCutton;
 
+    // 상단바
+    TMP_Text nickNameText;
 
     private void Awake()
     {
@@ -101,8 +103,15 @@ public class WorldUI_Manager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
-        frontUICanvas = GameObject.Find("---[FrontUICanvas]").gameObject;
+        worldUI = GameManager.inst.WorldUiRef;
+        frontUICanvas = GameManager.inst.FrontUiRef;
+
+        //혹시 카메라 빠지면 다시 채워줌
+        worldUI.GetComponent<Canvas>().worldCamera = Camera.main;
+        GameManager.inst.UiCanvasRef.GetComponent<Canvas>().worldCamera = Camera.main;
+        frontUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
+        
+
 
         //리워드관련
         rewardRef = frontUICanvas.transform.Find("ReWard").gameObject;
@@ -132,10 +141,10 @@ public class WorldUI_Manager : MonoBehaviour
         {
             weapbtnText[index] = testBtn[index].GetComponentInChildren<TMP_Text>();
         }
-        curMaterial[0] = worldUI.transform.Find("StageUI/Bottom/Gold/UI_Text").GetComponent<TMP_Text>();
-        curMaterial[1] = worldUI.transform.Find("StageUI/Bottom/Star/UI_Text").GetComponent<TMP_Text>();
-        curMaterial[3] = worldUI.transform.Find("StageUI/Bottom/Ruby/UI_Text").GetComponent<TMP_Text>();
-
+        curMaterial[0] = worldUI.transform.Find("StageUI/TopLayOut/MaterialBox/Gold/Text").GetComponent<TMP_Text>();
+        curMaterial[1] = worldUI.transform.Find("StageUI/TopLayOut/MaterialBox/Star/Text").GetComponent<TMP_Text>();
+        curMaterial[3] = worldUI.transform.Find("StageUI/TopLayOut/MaterialBox/Ruby/Text").GetComponent<TMP_Text>();
+        nickNameText = worldUI.transform.Find("StageUI/TopLayOut/Profile/NickName").GetComponent<TMP_Text>();
 
 
         questListBtn = worldUI.transform.Find("StageUI/QeustList/Button").GetComponent<Button>();
@@ -200,7 +209,7 @@ public class WorldUI_Manager : MonoBehaviour
         }
     }
 
- 
+
 
 
     /// <summary>
@@ -449,6 +458,11 @@ public class WorldUI_Manager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Load시 닉네임 초기화
+    /// </summary>
+    /// <param name="nickname"></param>
+    public void Set_Nickname(string nickname) => nickNameText.text = nickname;
     /// <summary>
     /// 버프 선택창 호출
     /// </summary>

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,17 +33,28 @@ public class EventShop_RulletManager : MonoBehaviour
 
     // ∑Í∑ø√¢ πˆ∆∞µÈ
     Button exitRulletBtn, startRulletBtn, adStartRulletBtn;
-    [SerializeField]
+ 
     ParticleSystem rulletParticle;
 
     // ΩΩ∑‘∏”Ω≈
     GameObject slotMachine;
+    Animator head_Anim;
+  
+    GameObject[] headListObj = new GameObject[5];
+    Material pandaTear;
+    Animator winHand_Anim;
+    GameObject waitHand;
 
     Material[] slot = new Material[3];
     // ΩΩ∑‘∏”Ω≈ πˆ∆∞µÈ
     Button exitRulletsBtn, startSlotMachineBtn, startadSlotMachineBtn;
-    [SerializeField]
+  
     ParticleSystem[] slotPs = new ParticleSystem[3];
+
+
+    // ∑Í∑ø
+    [SerializeField]
+    Animator rulletArrowAnim;
 
     // ¿Áª˝∞¸∑√
     int[] slotNumber = new int[3];
@@ -66,8 +76,8 @@ public class EventShop_RulletManager : MonoBehaviour
         rulletGameRef = RulletRef.transform.Find("Window/Main/Rullet").gameObject;
         slotMachineGameRef = RulletRef.transform.Find("Window/Main/SlotMachine").gameObject;
 
-        selectRulletBtn = RulletRef.transform.Find("Window/Main/RulletOnBtn").GetComponent<Button>();
-        selectSlotMachineBtn = RulletRef.transform.Find("Window/Main/SlotMachineOnBtn").GetComponent<Button>();
+        selectRulletBtn = RulletRef.transform.Find("Window/Main/BtnBg/RulletOnBtn").GetComponent<Button>();
+        selectSlotMachineBtn = RulletRef.transform.Find("Window/Main/BtnBg/SlotMachineOnBtn").GetComponent<Button>();
 
 
         //∑Í∑ø
@@ -75,6 +85,7 @@ public class EventShop_RulletManager : MonoBehaviour
         exitRulletBtn = RulletRef.transform.Find("Window/Main/Rullet/RulletBtns/ExitBtn").GetComponent<Button>();
         startRulletBtn = RulletRef.transform.Find("Window/Main/Rullet/RulletBtns/RuuletBtn").GetComponent<Button>();
         adStartRulletBtn = RulletRef.transform.Find("Window/Main/Rullet/RulletBtns/AdRulletBtn").GetComponent<Button>();
+        rulletArrowAnim = RulletRef.transform.Find("Window/Main/Rullet/Rullet/Arrow").GetComponent<Animator>();
 
         //ΩΩ∑‘∏”Ω≈
 
@@ -97,6 +108,16 @@ public class EventShop_RulletManager : MonoBehaviour
         rubyText = RulletRef.transform.Find("Window/Material/Ruby/Text").GetComponent<TMP_Text>();
         ticketText = RulletRef.transform.Find("Window/Main/Bot_Text/TicketText").GetComponent<TMP_Text>();
 
+        head_Anim = RulletRef.transform.Find("Window/Main/SlotMachine/SlotMachine/Head").GetComponent<Animator>();
+        winHand_Anim = RulletRef.transform.Find("Window/Main/SlotMachine/SlotMachine/IMG_BOX/Hand_Win").GetComponent<Animator>();
+        waitHand = RulletRef.transform.Find("Window/Main/SlotMachine/SlotMachine/IMG_BOX/Hand_Wait").gameObject;
+
+        headListObj[0] = head_Anim.transform.Find("Wait").gameObject;
+        headListObj[1] = head_Anim.transform.Find("Play").gameObject;
+        headListObj[2] = head_Anim.transform.Find("Reward2").gameObject;
+        headListObj[3] = head_Anim.transform.Find("Reward3").gameObject;
+        headListObj[4] = head_Anim.transform.Find("Sad").gameObject;
+        pandaTear = headListObj[4].transform.Find("LW").GetComponent<Image>().material;
         // ø¨√‚
         rulletAction = RulletRef.transform.Find("Window/Main/GembleBG").gameObject;
         actionPs = rulletAction.transform.Find("Ps").gameObject;
@@ -109,10 +130,18 @@ public class EventShop_RulletManager : MonoBehaviour
 
     }
 
+    Vector2 cryVec;
+    float crySpeedMultiFlyer = 4f;
     void Update()
     {
         DownRulletSpinSpeed();
+        SlotMachineCryEffect();
+
     }
+
+
+
+
 
     /// <summary>
     /// ¿Ã∫•∆Æº• On/Off
@@ -123,6 +152,7 @@ public class EventShop_RulletManager : MonoBehaviour
         RulletRef.SetActive(value);
         MaterialTextUpdater();
     }
+
 
 
     private void BtnInit()
@@ -192,21 +222,26 @@ public class EventShop_RulletManager : MonoBehaviour
         if (indexNum == 0)
         {
             rulletGameRef.SetActive(true);
+            PlayPandaAnimation(0);
             slotMachineGameRef.SetActive(false);
+
         }
         else if (indexNum == 1)
         {
             rulletGameRef.SetActive(false);
+            PlayPandaAnimation(0);
             slotMachineGameRef.SetActive(true);
         }
     }
 
     ///////////////////////////////////// ΩΩ∑‘ ∏”Ω≈ ////////////////////////////////////////////////
-    
+
     Coroutine[] slotMachines = new Coroutine[3];
     private void PlaySlotMachine()
     {
         doSlotMachine = true;
+        PlayPandaAnimation(1);
+
         RulletAction(true);
 
         if (slotMachines[0] != null)
@@ -223,7 +258,7 @@ public class EventShop_RulletManager : MonoBehaviour
 
 
     float tillingSpeedMultiplyer = 3.8f;
-    float slotFloat = 0.17f; // ≈∏¿œ∏µ 0.17¥Á 1ƒ≠
+    float slotFloat = 0.168f; // ≈∏¿œ∏µ 1ƒ≠
 
     IEnumerator SlotPlay(int value)
     {
@@ -231,7 +266,7 @@ public class EventShop_RulletManager : MonoBehaviour
         float timer = 0f;
         float randomStartValue = Random.Range(0f, 1f);
         tillingVec.y = randomStartValue;
-
+        rulletParticle.gameObject.SetActive(false);
         // ΩΩ∑‘ µπæ∆∞°¥¬ Ω√∞£ ª˝º∫
 
         float slotActiontime = 0f;
@@ -261,6 +296,7 @@ public class EventShop_RulletManager : MonoBehaviour
         float finalPosition = DetermineFinalPosition(slot[value].mainTextureOffset.y, value);
         float lerpTime = 0f;
         float duration = 1f; // Lerp∞° øœ∑·µ«¥¬ µ• « ø‰«— Ω√∞£
+        bool once = false;
 
         while (lerpTime < duration)
         {
@@ -268,31 +304,38 @@ public class EventShop_RulletManager : MonoBehaviour
             float lerpFactor = lerpTime / duration;
             tillingVec.y = Mathf.Lerp(slot[value].mainTextureOffset.y, finalPosition, lerpFactor);
             slot[value].mainTextureOffset = tillingVec;
+
+            
+
+            if (value == 2 && lerpTime > 0.15f && once == false) // 3π¯§ä ΩΩ∑‘ ∏ÿ√ﬂ∏È
+            {
+                once = true;
+                //¥Á√∑ ∑Œ¡˜
+                RewardItem();
+                MaterialTextUpdater();
+                RulletAction(false);
+            }
+
             yield return null;
         }
 
-        //slotPs[value].gameObject.SetActive(true);
-
-        if (value == 2)
+        if (value == 2) // 3π¯§ä ΩΩ∑‘ ∏ÿ√ﬂ∏È
         {
             doSlotMachine = false;
-
-            //¥Á√∑ ∑Œ¡˜
-            RewardItem();
-            MaterialTextUpdater();
-            RulletAction(false);
         }
     }
 
+    Dictionary<int, int> checkCount = new Dictionary<int, int>();
 
+    /// <summary>
+    /// æ∆¿Ã≈€ ¥Á√∑ ∫–∑˘ «‘ºˆ
+    /// </summary>
     private void RewardItem()
     {
-
-        rulletParticle.Play();
-
+        checkCount.Clear();
         bool haveReward = false;
 
-        Dictionary<int, int> checkCount = new Dictionary<int, int>();
+
         foreach (int item in slotNumber)
         {
             if (checkCount.ContainsKey(item))
@@ -309,72 +352,69 @@ public class EventShop_RulletManager : MonoBehaviour
         {
             switch (pair.Value)
             {
+                //2∞≥ ¥Á√∑Ω√
+
                 case 2:
                     haveReward = true;
+                    PlayPandaAnimation(2);
+                    rulletParticle.gameObject.SetActive(true);
 
-                    if (pair.Key == 0)
+                    if (pair.Key == 0) //∑Á∫Ò 2∞≥ ¥Á√∑
                     {
-                        Debug.Log("∑Á∫Ò 2∞≥ ¥Á√∑");
                         GameStatus.inst.Ruby += 200; //Ω««‡
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " ∑Á∫Ò +200");
                     }
-                    else if (pair.Key == 1)
+                    else if (pair.Key == 1) // ª¿ 2∞≥ ¥Á√∑
                     {
-                        Debug.Log("ª¿ 2∞≥ ¥Á√∑");
                         CrewGatchaContent.inst.MaterialCountEditor(1, 200);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " ª¿ +200");
                     }
-                    else if (pair.Key == 2)
+                    else if (pair.Key == 2) // øµ»• 2∞≥ ¥Á√∑
                     {
-                        Debug.Log("øµ»• 2∞≥ ¥Á√∑");
                         CrewGatchaContent.inst.MaterialCountEditor(0, 200);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " øµ»• +200");
                     }
-                    else if (pair.Key == 3)
+                    else if (pair.Key == 3) //∫∞ 2∞≥ ¥Á√∑
                     {
-                        Debug.Log("∫∞ 2∞≥ ¥Á√∑");
                         GameStatus.inst.PlusStar("200");
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(2), "∫∞ + 200");
                     }
-                    else if (pair.Key == 5)
+                    else if (pair.Key == 5) //√• 2∞≥ ¥Á√∑
                     {
-                        Debug.Log("√• 2∞≥ ¥Á√∑");
                         CrewGatchaContent.inst.MaterialCountEditor(2, 200);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " ∞Ìº≠ +200");
                     }
 
                     break;
 
+                //3∞≥ ¥Á√∑Ω√
                 case 3:
                     haveReward = true;
+                    PlayPandaAnimation(3);
+                    rulletParticle.gameObject.SetActive(true);
 
-                    if (pair.Key == 0)
+                    if (pair.Key == 0) //∑Á∫Ò 3∞≥ ¥Á√∑
                     {
-                        Debug.Log("∑Á∫Ò 3∞≥ ¥Á√∑");
                         GameStatus.inst.Ruby += 500; //Ω««‡
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " ∑Á∫Ò +500");
                     }
-                    else if (pair.Key == 1)
+                    else if (pair.Key == 1) //ª¿ 3∞≥ ¥Á√∑
                     {
-                        Debug.Log("ª¿ 3∞≥ ¥Á√∑");
                         CrewGatchaContent.inst.MaterialCountEditor(1, 500);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " ª¿ +500");
                     }
-                    else if (pair.Key == 2)
+                    else if (pair.Key == 2) //øµ»• 3∞≥ ¥Á√∑
                     {
-                        Debug.Log("øµ»• 3∞≥ ¥Á√∑");
                         CrewGatchaContent.inst.MaterialCountEditor(0, 500);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " øµ»• +500");
                     }
-                    else if (pair.Key == 3)
+                    else if (pair.Key == 3) //∫∞ 3∞≥ ¥Á√∑
                     {
-                        Debug.Log("∫∞ 3∞≥ ¥Á√∑");
                         GameStatus.inst.PlusStar("500");
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(2), " ∫∞ + 500");
                     }
-                    else if (pair.Key == 5)
+                    else if (pair.Key == 5) //√• 3∞≥ ¥Á√∑
                     {
-                        Debug.Log("√• 3∞≥ ¥Á√∑");
                         CrewGatchaContent.inst.MaterialCountEditor(2, 500);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " ∞Ìº≠ +500");
                     }
@@ -382,11 +422,15 @@ public class EventShop_RulletManager : MonoBehaviour
             }
         }
 
+        //≤Œ
         if (haveReward == false)
         {
             Debug.Log("≤Œ");
+            PlayPandaAnimation(4);
         }
     }
+
+    // ΩΩ∑‘∏”Ω≈ ∏ÿ√ﬂ¥¬ øπªÛ¡ˆ¡° π›»Ø
     private float DetermineFinalPosition(float currentY, int slotNumber)
     {
         int dotindex = currentY.ToString().IndexOf(".");
@@ -427,9 +471,106 @@ public class EventShop_RulletManager : MonoBehaviour
         return firstDigit + decimalNum;
     }
 
+
+    // ΩΩ∑‘∏”Ω≈ ¥Á√∑ π¯»£ ¿˙¿Â
     private void SlotNumberWrite(int value, int Number)
     {
         slotNumber[value] = Number;
+    }
+
+
+
+    /// <summary>
+    /// æÛ±º æ÷¥œ∏ﬁ¿Ãº« ¿€µø π◊ Active ¿€µø
+    /// </summary>
+    /// <param name="value"> 0 = End / 1 = Play / 2 = ∫∏ªÛ2 / 3 =∫∏ªÛ3 / 4 = ΩΩ«ƒ(≤Œ) </param>
+    private void PlayPandaAnimation(int value)
+    {
+        for (int index = 0; index < headListObj.Length; index++)
+        {
+            if (value == index)
+            {
+                headListObj[index].SetActive(true);
+            }
+            else
+            {
+                headListObj[index].SetActive(false);
+            }
+        }
+
+
+
+        switch (value)
+        {
+            case 0:
+                head_Anim.SetTrigger("End");
+                HandAcitve(0, 0);
+                cry = false;
+                break;
+            case 1:
+                head_Anim.SetTrigger("Play");
+                HandAcitve(0, 0);
+                break;
+            case 2:
+                head_Anim.SetTrigger("Reward2");
+                HandAcitve(1, 2);
+                break;
+            case 3:
+                head_Anim.SetTrigger("Reward3");
+                HandAcitve(1, 3);
+                break;
+            case 4:
+                head_Anim.SetTrigger("Sad");
+                HandAcitve(0, 0);
+                cry = true;
+                break;
+        }
+
+    }
+
+    // ¡÷∏‘, »ÁµÁº’ On Off
+    private void HandAcitve(int value, int RewardNumber)
+    {
+        if (value == 0)
+        {
+            waitHand.gameObject.SetActive(true);
+            winHand_Anim.gameObject.SetActive(false);
+
+        }
+        else
+        {
+            waitHand.gameObject.SetActive(false);
+            winHand_Anim.gameObject.SetActive(true);
+        }
+
+        StartCoroutine(PlayAnim(RewardNumber));
+    }
+
+    IEnumerator PlayAnim(int RewardNumber)
+    {
+        yield return null;
+
+        if (RewardNumber == 2)
+        {
+            winHand_Anim.SetTrigger("Reward2");
+        }
+        else if (RewardNumber == 3)
+        {
+            winHand_Anim.SetTrigger("Reward3");
+        }
+    }
+
+    bool cry;
+
+    // ¥´π∞ Effect
+    private void SlotMachineCryEffect()
+    {
+        if (cry)
+        {
+            cryVec.y += Time.deltaTime * crySpeedMultiFlyer;
+            cryVec.y = Mathf.Repeat(cryVec.y, 1);
+            pandaTear.mainTextureOffset = cryVec;
+        }
     }
 
     ////////////////////////////////////// ∑Í∑ø ////////////////////////////////////////
@@ -444,7 +585,7 @@ public class EventShop_RulletManager : MonoBehaviour
     {
         if (RulletRef.activeSelf == true && doRullet == false)
         {
-            
+            rulletParticle.gameObject.SetActive(false);
             RulletAction(true);
             StartCoroutine(RulletSpinStart());
         }
@@ -460,7 +601,8 @@ public class EventShop_RulletManager : MonoBehaviour
         rulletPan.transform.eulerAngles = rotZ;
     }
 
-    float panCountSize = 72f;
+
+    // ∑Í∑ø∆« º”µµ∞®º“
     private void DownRulletSpinSpeed()
     {
         if (doRullet == true)
@@ -472,40 +614,48 @@ public class EventShop_RulletManager : MonoBehaviour
             rulletPan.transform.Rotate(Vector3.forward * spinSpeed * Time.deltaTime);
 
             spinSpeed -= Time.deltaTime * spinSpeedDownMulyfly;
+            Debug.Log(rulletArrowAnim.speed);
+            StartCoroutine(Arrow());
 
             if (spinSpeed <= 0)
             {
                 spinSpeed = 0;
-
+                
                 // ∑Í∑ø ∫∏ªÛ
                 float checkvalue = rulletPan.transform.eulerAngles.z;
                 Debug.Log(checkvalue);
 
-                if (checkvalue >= 0 && checkvalue < panCountSize)
+                if (330 < checkvalue && checkvalue < 30)
                 {
-                    Debug.Log("∑Á∫Ò +10");
+                    rulletParticle.gameObject.SetActive(true);
                     GameStatus.inst.Ruby += 10; //Ω««‡
                     WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " ∑Á∫Ò +10");
                 }
-                else if (checkvalue >= panCountSize && checkvalue < panCountSize * 2)
+                else if (checkvalue >= 30 && checkvalue < 90)
                 {
-                    Debug.Log("∞¯∞›∑¬ πˆ«¡");
+                    Debug.Log("≤Œ");
+                }
+                else if (checkvalue >= 90 && checkvalue < 150)
+                {
+                    rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(0, 2, "∞¯∞›∑¬ πˆ«¡ 2∫–");
                     //WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(0),"∞¯∞›∑¬ πˆ«¡ 2∫–");
+
                 }
-                else if (checkvalue >= panCountSize * 2 && checkvalue < panCountSize * 3)
+                else if (checkvalue >= 150 && checkvalue < 210)
                 {
-                    Debug.Log("∞≠«— ∞¯∞›∑¬ πˆ«¡");
+                    rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(3, 2, "∞≠«— ∞¯∞›∑¬ πˆ«¡ 2∫–");
+
                 }
-                else if (checkvalue >= panCountSize * 3 && checkvalue < panCountSize * 4)
+                else if (checkvalue >= 210 && checkvalue < 270)
                 {
-                    Debug.Log("∞ÒµÂ πˆ«¡");
+                    rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(2, 2, "∞ÒµÂ »πµÊ∑Æ ¡ı∞° πˆ«¡ 2∫–");
                 }
-                else if (checkvalue >= panCountSize * 4 && checkvalue < panCountSize * 5)
+                else if (checkvalue >= 270 && checkvalue < 330)
                 {
-                    Debug.Log("¿Ãº” πˆ«¡");
+                    rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(1, 2, "¿Ãµøº”µµ ¡ı∞° πˆ«¡ 2∫–");
                 }
 
@@ -515,6 +665,30 @@ public class EventShop_RulletManager : MonoBehaviour
 
             }
         }
+    }
+
+
+    IEnumerator Arrow()
+    {
+        if (IsPlaying("Play") == false)
+        {
+            rulletArrowAnim.SetTrigger("Play");
+        }
+
+        while(spinSpeed > 10f)
+        {
+            rulletArrowAnim.speed = spinSpeed * 0.0015f;
+            yield return null;
+        }
+            
+        rulletArrowAnim.SetTrigger("Wait");
+
+    }
+    // Animator¿« «ˆ¿Á ªÛ≈¬∞° 'stateName'¿Œ¡ˆ »Æ¿Œ
+    private bool IsPlaying(string ClipName)
+    {
+        return rulletArrowAnim.GetCurrentAnimatorStateInfo(0).IsName(ClipName) &&
+                     rulletArrowAnim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f;
     }
 
     /// <summary>
@@ -541,7 +715,7 @@ public class EventShop_RulletManager : MonoBehaviour
     /// <param name="value"></param>
     private void RulletAction(bool value)
     {
-        
+
         StartCoroutine(RulletActionCoru(value));
     }
 
@@ -559,21 +733,21 @@ public class EventShop_RulletManager : MonoBehaviour
                 actionBackground.color += fadeColor * Time.deltaTime * fadeSpeedMultiPly;
                 yield return null;
             }
-           
+
         }
         else
         {
             while (actionBackground.color.a > 0)
             {
                 actionBackground.color -= fadeColor * Time.deltaTime * fadeoutSpeedMultiPly;
-                
-                if(actionBackground.color.a < 0.7f && actionPs.activeSelf == true)
+
+                if (actionBackground.color.a < 0.7f && actionPs.activeSelf == true)
                 {
                     actionPs.SetActive(false);
                 }
                 yield return null;
             }
-            
+
             rulletAction.SetActive(false);
         }
     }
