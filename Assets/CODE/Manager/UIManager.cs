@@ -12,7 +12,8 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [Header("버튼 선택, 비선택 스프라이트")]
-    [SerializeField] List<Sprite> m_BtnSprite = new List<Sprite>();//버튼 선택, 비선택 스프라이트
+    [SerializeField] List<Sprite> TopBtnSprite = new List<Sprite>();//상단 버튼 선택, 비선택 스프라이트
+    [SerializeField] List<Sprite> BotBtnSprite = new List<Sprite>();//하단 버튼 선택, 비선택 스프라이트
     /// <summary>
     /// 0 = 비선택 이미지, 1 = 선택 이미지
     /// </summary>
@@ -20,7 +21,7 @@ public class UIManager : MonoBehaviour
     /// <returns></returns>
     public Sprite GetBtnSprite(int index)
     {
-        return m_BtnSprite[index];
+        return TopBtnSprite[index];
     }
     Canvas canvas;
     List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
@@ -179,7 +180,7 @@ public class UIManager : MonoBehaviour
             list_BotBtnAnim.Add(trsBotBtn.GetChild(iNum).GetComponent<Animator>());
         }
         ShopOpenBtn = trsBotBtn.Find("Shop").GetComponent<Button>();
-        
+
 
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Quest").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Weapon").gameObject);
@@ -303,7 +304,7 @@ public class UIManager : MonoBehaviour
 
     public Sprite GetSelectUISprite(int num)
     {
-        return m_BtnSprite[num];
+        return TopBtnSprite[num];
     }
 
     void getGoldPerSceond()
@@ -325,12 +326,28 @@ public class UIManager : MonoBehaviour
     {
         m_listMainUI[bottomBtnNum].SetActive(false);
         list_BotBtnAnim[bottomBtnNum].SetTrigger("nonSelect");
-        list_BotBtnAnim[bottomBtnNum].SetBool("isSelect",false);
+        list_BotBtnAnim[bottomBtnNum].SetBool("isSelect", false);
+        if (bottomBtnNum == 0)
+        {
+            m_list_BottomBtn[bottomBtnNum].sprite = BotBtnSprite[0];
+        }
+        else
+        {
+            m_list_BottomBtn[bottomBtnNum].sprite = BotBtnSprite[1];
+        }
 
         bottomBtnNum = _num;
         list_BotBtnAnim[bottomBtnNum].SetTrigger("select");
         list_BotBtnAnim[bottomBtnNum].SetBool("isSelect", true);
         m_listMainUI[_num].SetActive(true);
+        if (bottomBtnNum == 0)
+        {
+            m_list_BottomBtn[bottomBtnNum].sprite = BotBtnSprite[3];
+        }
+        else
+        {
+            m_list_BottomBtn[bottomBtnNum].sprite = BotBtnSprite[4];
+        }
     }
 
     public void ClickOpenThisTab(GameObject _obj)
@@ -345,7 +362,7 @@ public class UIManager : MonoBehaviour
 
     public void ClickBuyCountBtn(int count)
     {
-        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[0];
+        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = TopBtnSprite[0];
         questBuyCountBtnNum = count;
         switch (count)
         {
@@ -362,12 +379,12 @@ public class UIManager : MonoBehaviour
                 QuestBuyCount = 0;
                 break;
         }
-        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = m_BtnSprite[1];
+        m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = TopBtnSprite[1];
     }
 
     public void ClickRelicBuyCountBtn(int count)
     {
-        m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = m_BtnSprite[0];
+        m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = TopBtnSprite[0];
         relicBuyCountBtnNum = count;
         switch (count)
         {
@@ -384,7 +401,7 @@ public class UIManager : MonoBehaviour
                 RelicBuyCount = 0;
                 break;
         }
-        m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = m_BtnSprite[1];
+        m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = TopBtnSprite[1];
     }
 
     public void SetGotoGachaBtn(bool value)

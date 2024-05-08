@@ -30,6 +30,25 @@ public class MissionData : MonoBehaviour
     int missionTypeIndex = 0;//선택한 상단 미션 버튼 인덱스번호
     int nowSpecialIndex { get; set; } = 0;//현재 진행중인 스페셜 미션 인덱스
 
+    GameObject simball;
+    int clearStack = 0;
+    int ClearStack
+    {
+        get => clearStack;
+        set
+        {
+            clearStack = value;
+            if (clearStack == 0)
+            {
+                simball.SetActive(false);
+            }
+            else
+            {
+                simball.SetActive(true);
+            }
+        }
+    }
+
     bool isCanResetDaily = true;
     bool isCanResetWeekly = true;
 
@@ -71,13 +90,15 @@ public class MissionData : MonoBehaviour
                     if (isClear == false && count >= maxCount)
                     {
                         count = maxCount;
+                        Instance.ClearStack++;
                         GameStatus.inst.DailyMIssionClear[index] = true;
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
+
                     }
                     else if (isClear)
                     {
-                        clearBtn.gameObject.SetActive(false);                        
+                        clearBtn.gameObject.SetActive(false);
                         Mask.SetActive(true);
                         ClearText.SetActive(true);
                     }
@@ -145,7 +166,7 @@ public class MissionData : MonoBehaviour
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
 
-            clearBtn.onClick.AddListener(ClickClearBtn);
+            clearBtn.onClick.AddListener(() => { ClickClearBtn(); Instance.ClearStack--; });
         }
 
         public void ClickClearBtn()
@@ -261,9 +282,10 @@ public class MissionData : MonoBehaviour
 
                     if (isClear == false && count >= maxCount)
                     {
-                        
+
                         count = maxCount;
                         GameStatus.inst.WeeklyMIssionClear[index] = true;
+                        Instance.ClearStack++;
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
                     }
@@ -342,7 +364,7 @@ public class MissionData : MonoBehaviour
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
 
-            clearBtn.onClick.AddListener(ClickClearBtn);
+            clearBtn.onClick.AddListener(() => { Instance.ClearStack--; ClickClearBtn(); });
         }
 
         public void ClickClearBtn()
@@ -662,6 +684,7 @@ public class MissionData : MonoBehaviour
         obj_UICanvas = GameObject.Find("---[UI Canvas]");
         Transform worldUiCanvas = GameObject.Find("---[World UI Canvas]").transform;
         MissionOpenBtn = worldUiCanvas.Find("StageUI/QeustList/Button").GetComponent<Button>();
+        simball = worldUiCanvas.Find("StageUI/QeustList/Button/Simball").gameObject;
         worldTitleText = worldUiCanvas.Find("StageUI/QeustList/BG/Step").GetComponent<TMP_Text>();
         worldDetailText = worldUiCanvas.Find("StageUI/QeustList/BG/Text").GetComponent<TMP_Text>();
 

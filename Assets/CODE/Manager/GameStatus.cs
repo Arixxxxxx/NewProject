@@ -389,6 +389,7 @@ public class GameStatus : MonoBehaviour
     }
 
     // 2. 현재 스테이지
+    public UnityEvent OnStageChanged;
     int stageLv = 1; // 층수 
     public int StageLv
     {
@@ -400,7 +401,8 @@ public class GameStatus : MonoBehaviour
         set
         {
             stageLv = value;
-
+            OnStageChanged?.Invoke();
+            Debug.Log(value);
         }
     }
 
@@ -434,6 +436,8 @@ public class GameStatus : MonoBehaviour
 
               
             }
+
+            
         }
     }
 

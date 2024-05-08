@@ -8,6 +8,7 @@ public class Pet : MonoBehaviour
 {
 
     [SerializeField] int baseCost;
+    [SerializeField] int releaseStage;
     [SerializeField] PetType type;
     int lv;
     int Lv
@@ -48,6 +49,8 @@ public class Pet : MonoBehaviour
     int nextSoul;
     int nextBorn;
     int nextBook;
+
+    GameObject mask;
     Button upBtn;
     Button DetailBtn;
     Button BuyBtn;
@@ -72,6 +75,7 @@ public class Pet : MonoBehaviour
         BornText = transform.Find("Button/Born/PriceText").GetComponent<TMP_Text>();
         BookText = transform.Find("Button/Book/PriceText").GetComponent<TMP_Text>();
         lvText = transform.Find("LvText").GetComponent<TMP_Text>();
+        mask = transform.Find("BuyBtn/BtnMask").gameObject;
 
         switch (type)
         {
@@ -94,6 +98,7 @@ public class Pet : MonoBehaviour
         BuyPriceText.text = baseCost.ToString();
         setNextCost();
         GameStatus.inst.OnRubyChanged.AddListener(checkHaveRuby);
+        GameStatus.inst.OnStageChanged.AddListener(releasePet);
         upBtn.onClick.AddListener(ClickUp);
         BuyBtn.onClick.AddListener(() =>
         {
@@ -146,5 +151,13 @@ public class Pet : MonoBehaviour
         SoulText.text = $"{nextSoul.ToString("N0")}";
         BornText.text = $"{nextBorn.ToString("N0")}";
         BookText.text = $"{nextBook.ToString("N0")}";
+    }
+
+    void releasePet()
+    {
+        if (GameStatus.inst.StageLv >= releaseStage)
+        {
+            mask.SetActive(false);
+        }
     }
 }
