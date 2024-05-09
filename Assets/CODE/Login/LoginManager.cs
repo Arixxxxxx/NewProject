@@ -26,6 +26,7 @@ public class LoginManager : MonoBehaviour
     TMP_InputField inputField;
     Button backBtn, accpectBtn;
     TMP_Text errorMsgText;
+    TMP_Text loadingText;
 
     private void Awake()
     {
@@ -50,6 +51,7 @@ public class LoginManager : MonoBehaviour
 
         loadingRef = canvasRef.transform.Find("Loading").gameObject;
         loadingFillBar = loadingRef.transform.Find("Bar/FillBar").GetComponent<Image>();
+        loadingText = loadingRef.transform.Find("Bar/LoadingText").GetComponent<TMP_Text>();
 
         backBtn = guestInputFieldRef.transform.Find("BackBtn").GetComponent<Button>();
         accpectBtn = guestInputFieldRef.transform.Find("AcceptBtn").GetComponent<Button>();
@@ -198,6 +200,8 @@ public class LoginManager : MonoBehaviour
                     yield break;
                 }
             }
+
+            loadingText.text = $"Loading ({(int)(loadingFillBar.fillAmount * 100f)}%)";
         }
     }
 

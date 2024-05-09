@@ -27,7 +27,7 @@ public class DataManager : MonoBehaviour
     [System.Serializable]
     public class SaveData
     {
-        public DateTime lastSigninDate;
+        public string LastSignDate;
 
         public string Name;
 
@@ -42,6 +42,8 @@ public class DataManager : MonoBehaviour
         public int born;
 
         // 3. 미니게임
+        public bool adRulletPlay;
+        public bool adSlotMachinePlay;
         public int miniTicket;
 
         // 3. 버프 남은 시간
@@ -53,11 +55,12 @@ public class DataManager : MonoBehaviour
         // 4. 뉴비 혜택
         public int getNewbieRewardCount;
         public bool todayGetRaward;
-        public DateTime newbieBuffLastDay;
-
+        public string newbieBuffLastDay;
+        
         // 5. 출석체크
         public int GetGiftCount;
         public bool todayGetDailyReward;
+        public bool DailyADRuby;
 
         // 6. 캐릭터 관련
         public int AtkSpeedLv;
@@ -105,21 +108,32 @@ public class DataManager : MonoBehaviour
         {
             Destroy(inst);
         }
+
         currentSceneIndex = SceneManager.GetActiveScene();
         sceneIndexNumber = currentSceneIndex.buildIndex;
 
-        if(sceneIndexNumber ==0)
+        if(sceneIndexNumber == 0)
         {
             CheckJsonFile();//최초실행시 json유무 확인
             DontDestroyOnLoad(inst);
-            Debug.Log(savedata.RelicLv.Length);
+            
         }
 
         setScreen();
+
+        // 1번씬 로딩완료시 FakeUI 작동예정
+        SceneManager.sceneLoaded += OnSceneLoaded;
+       
     }
 
-
-
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if(scene.buildIndex == 1)
+        {
+            WorldUI_Manager.inst.LoadScene_FakeScreen_Active();
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+    }
 
     [SerializeField] public bool saveAble;
     // 게임 종료시 자동저장

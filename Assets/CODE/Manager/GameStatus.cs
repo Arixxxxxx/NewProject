@@ -1,4 +1,6 @@
+using JetBrains.Annotations;
 using System;
+using System.Globalization;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -21,31 +23,49 @@ public class GameStatus : MonoBehaviour
         get { return lastLogindate; }
         set
         {
-            DateTime LoginDate = value;
+            DateTime LastLoginDate = value;
 
             //접속시 1회
             // 첫 접속시 (신규가입시)
-            if (LoginDate.Year == 1)
+            if (LastLoginDate.Year == 1)
             {
                 signUpDate = value;
                 DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
             }
-            else if (LoginDate.Year >= 2000)
+            else if (LastLoginDate.Year >= 2000)
             {
                 //하루가 지남
-                if (LoginDate.Date > lastLogindate.Date)
+                if (LastLoginDate.Date < DateTime.Now.Date)
                 {
+                     
                     //출석체크 부분
                     if (TotayGotDaily_Reward == true)
                     {
                         TotayGotDaily_Reward = false;
                         DailyADRuby = true;
                     }
-
-                    DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+                    if(DailyADRuby == true)
+                    {
+                        DailyADRuby = false;
+                    }
+                    // 슬롯머신 버튼들
+                    if(AdRulletActive == true)
+                    {
+                        AdRulletActive = false;
+                    }
+                    if(AdSlotMachineActive == true)
+                    {
+                        AdSlotMachineActive = false;
+                    }
+                }
+                else if(LastLoginDate.Date == DateTime.Now.Date) // 오늘 재접
+                {
+                    Debug.Log("다시만나서 반가워요");
                 }
 
-                lastLogindate = value;
+                DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+                lastLogindate = LastLoginDate;
+
             }
         }
     }
@@ -95,7 +115,7 @@ public class GameStatus : MonoBehaviour
         {
             DateTime ReLoginDate = value;
             // 최초 가입이라면
-            if (ReLoginDate.Month == 0001)
+            if (ReLoginDate.Year == 1)
             {
                 // 뉴비 기간 7일 입력
                 newbieBuffLastDay = DateTime.Now.AddDays(7);
@@ -107,7 +127,10 @@ public class GameStatus : MonoBehaviour
                 TimeSpan buffTime = newbieBuffLastDay - DateTime.Now;
                 BuffContoller.inst.ActiveBuff(4, buffTime.TotalMinutes);
             }
-
+            else
+            {
+                newbieBuffLastDay = value;
+            }
 
         }
     }
@@ -241,23 +264,9 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    // 3. 소지 키
-    string key = "0";
-    public string Key
-    {
-        get
-        {
-            return key;
-        }
-        set
-        {
-            key = value;
-            WorldUI_Manager.inst.CurMaterialUpdate(2, key);
-        }
-    }
-
+  
     [HideInInspector] public UnityEvent OnRubyChanged;
-    // 4. 소지 루비
+    // 3. 소지 루비
     int ruby = 0;
     public int Ruby
     {
@@ -279,7 +288,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-    // 5. 초당 골드 생산량
+    // 4. 초당 골드 생산량
     BigInteger totalProdGold = 10;
     public BigInteger TotalProdGold
     {
@@ -572,8 +581,37 @@ public class GameStatus : MonoBehaviour
         set { aryNormalRelicLv = value; }
     }
 
+    /////////////////////////////////////동은 미니게임/////////////////////////////////////////
+
+    // 룰렛 광고 체크
+    private bool adRulletActive;
+    public bool AdRulletActive { get { return adRulletActive; } 
+        set
+        {
+            adRulletActive = value;
+            EventShop_RulletManager.inst.AdPlayButtonInit(0, adRulletActive); 
+        }
+    }
+    
+    // 슬롯머신 광고 체크
+    private bool adSlotMachineActive;
+      public bool AdSlotMachineActive { get { return adSlotMachineActive; } 
+        set
+        {
+            adSlotMachineActive = value;
+            EventShop_RulletManager.inst.AdPlayButtonInit(1, adSlotMachineActive);
+        }
+    }
+
     private int minigameTicket;
-    public int MinigameTicket { get { return minigameTicket; } set { minigameTicket = value; } }
+    public int MinigameTicket { get { return minigameTicket; }
+        set 
+        {
+            minigameTicket = value; 
+            EventShop_RulletManager.inst?.BotText_Updater(); 
+        }
+    }
+
     /////////////////////////////////////미션/////////////////////////////////////////
 
     int[] dailyMissionisCount = new int[4];
@@ -637,11 +675,7 @@ public class GameStatus : MonoBehaviour
             LoadData(); // <= 데이터 싸온거 푸는 함수 #######################################
         }
 
-        // 접속날짜 확인하여 뉴비컨텐츠 초기화
-        Newbie_ContentInit();
 
-        // 뉴비 불리언변수 초기화
-        IsNewBie = true;
     }
 
     int testInt;
@@ -654,7 +688,14 @@ public class GameStatus : MonoBehaviour
             LastLoginDate = now;
         }
     }
-    void Start() { }
+    void Start()
+    {      
+       // 접속날짜 확인하여 뉴비컨텐츠 초기화
+        Newbie_ContentInit();
+
+        // 뉴비 불리언변수 초기화
+        IsNewBie = true;
+    }
 
 
 
@@ -719,14 +760,15 @@ public class GameStatus : MonoBehaviour
     public void Newbie_ContentInit()
     {
         // 7일 이내인 경우
-        if (DateTime.Now < NewbieBuffLastDay)
+        if (DateTime.Now.Date < NewbieBuffLastDay.Date)
         {
             // 매일 자정 기준으로 하루가 지났는지 확인
             if (DateTime.Now.Date > LastLoginDate.Date)
             {
                 TodayGetNewbie_Reward = false;
+                Debug.Log($"현재{DateTime.Now.Date} > 마지막 : {LastLoginDate.Date}  상태 : {TodayGetNewbie_Reward}");
             }
-
+           
             // 보상 활성화 부분
             Newbie_Content.inst.NewbieWindow_Init(TodayGetNewbie_Reward);
 
@@ -762,6 +804,8 @@ public class GameStatus : MonoBehaviour
         CrewGatchaContent.inst.Set_CrewMeterialData(saveData.Soul, saveData.born, saveData.book);
 
         // 3.미니게임
+        AdRulletActive = saveData.adRulletPlay;
+        AdSlotMachineActive = saveData.adSlotMachinePlay;
         MinigameTicket = saveData.miniTicket;
 
         // 4.버프남은시간
@@ -775,12 +819,21 @@ public class GameStatus : MonoBehaviour
         //뉴비 버프타임 추가해야됨
         TodayGetNewbie_Reward = saveData.todayGetRaward;
         GotNewbieGiftCount = saveData.getNewbieRewardCount;
-        NewbieBuffLastDay = saveData.newbieBuffLastDay;
 
+        if (saveData.newbieBuffLastDay != string.Empty)
+        {
+            NewbieBuffLastDay = DateTime.Parse(saveData.newbieBuffLastDay, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        }
+        else
+        {
+            NewbieBuffLastDay = DateTime.MinValue;
+        }
+        
 
         // 6. 출석체크
         GotDaily_Reward = saveData.GetGiftCount;
         TotayGotDaily_Reward = saveData.todayGetRaward;
+        DailyADRuby = saveData.DailyADRuby;
 
         // 7. 캐릭터 관련
         AtkSpeedLv = saveData.AtkSpeedLv;
@@ -817,8 +870,16 @@ public class GameStatus : MonoBehaviour
         BingoBoard = saveData.BingoBoard;
 
         // 0. 마지막 접속기록
-        LastLoginDate = saveData.lastSigninDate;
+        if(saveData.LastSignDate != string.Empty)
+        {
+            LastLoginDate = DateTime.Parse(saveData.LastSignDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+        }
+        else
+        {
+            LastLoginDate = DateTime.MinValue;
+        }
 
+        
         //세이브가능
         DataManager.inst.saveAble = true;
     }
@@ -845,6 +906,8 @@ public class GameStatus : MonoBehaviour
 
 
         // 3.미니게임
+        saveData.adRulletPlay = adRulletActive;
+        saveData.adSlotMachinePlay = adSlotMachineActive;
         saveData.miniTicket = MinigameTicket;
 
         // 4.버프남은시간
@@ -858,12 +921,12 @@ public class GameStatus : MonoBehaviour
         //뉴비 버프타임 추가해야됨
         saveData.todayGetRaward = TodayGetNewbie_Reward;
         saveData.getNewbieRewardCount = GotNewbieGiftCount;
-        saveData.newbieBuffLastDay = NewbieBuffLastDay;
-
+        saveData.newbieBuffLastDay = NewbieBuffLastDay.ToString("o");
 
         // 6. 출석체크
         saveData.GetGiftCount = GotDaily_Reward;
-        saveData.todayGetRaward = TotayGotDaily_Reward;
+        saveData.todayGetDailyReward = TotayGotDaily_Reward;
+        saveData.DailyADRuby = DailyADRuby;
 
         // 7. 캐릭터 관련
         saveData.AtkSpeedLv = AtkSpeedLv;
@@ -902,10 +965,9 @@ public class GameStatus : MonoBehaviour
         saveData.BingoBoard = BingoBoard;
 
         // 0. 마지막 접속기록
-        saveData.lastSigninDate = DateTime.Now;
-
+        saveData.LastSignDate = DateTime.Now.ToString("o");
+        
         save = JsonUtility.ToJson(saveData);
-
         Debug.Log(save);
 
         return save;

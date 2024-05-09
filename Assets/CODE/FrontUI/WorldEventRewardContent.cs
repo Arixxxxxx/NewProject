@@ -58,17 +58,17 @@ public class WorldEventRewardContent : MonoBehaviour
     {
         switch (type)
         {
-            // 즉시 버프 2분
+            // 즉시 버프 1분
             case 0:
-                BuffManager.inst.ActiveBuff(type, 1, "공격력x5 버프 1분");
+                BuffManager.inst.ActiveBuff(0, 1, "공격력x5 버프 1분");
                 break;
 
             case 1:
-                BuffManager.inst.ActiveBuff(type, 1, "이속증가 버프 1분");
+                BuffManager.inst.ActiveBuff(1, 1, "이속증가 버프 1분");
                 break;
 
             case 2:
-                BuffManager.inst.ActiveBuff(type, 1, "골드획득증가 버프 1분");
+                BuffManager.inst.ActiveBuff(2, 1, "골드획득증가 버프 1분");
                 break;
 
             //루비 (광고시청후)

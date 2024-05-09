@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 
 public class EventShop_RulletManager : MonoBehaviour
@@ -33,13 +34,13 @@ public class EventShop_RulletManager : MonoBehaviour
 
     // 룰렛창 버튼들
     Button exitRulletBtn, startRulletBtn, adStartRulletBtn;
- 
+
     ParticleSystem rulletParticle;
 
     // 슬롯머신
     GameObject slotMachine;
     Animator head_Anim;
-  
+
     GameObject[] headListObj = new GameObject[5];
     Material pandaTear;
     Animator winHand_Anim;
@@ -48,9 +49,10 @@ public class EventShop_RulletManager : MonoBehaviour
     Material[] slot = new Material[3];
     // 슬롯머신 버튼들
     Button exitRulletsBtn, startSlotMachineBtn, startadSlotMachineBtn;
-  
-    ParticleSystem[] slotPs = new ParticleSystem[3];
 
+    // 하단 소지 티겟 텍스트부분
+    GameObject haveTicket, nohaveTiket;
+    Animator nohaveTiketAnim;
 
     // 룰렛
     [SerializeField]
@@ -59,6 +61,9 @@ public class EventShop_RulletManager : MonoBehaviour
     // 재생관련
     int[] slotNumber = new int[3];
     bool doSlotMachine;
+
+    GameObject[] slotMachineAdPlayBtnTextRef = new GameObject[2];
+    GameObject[] rulletMachineAdPlayBtnTextRef = new GameObject[2];
 
     private void Awake()
     {
@@ -85,6 +90,9 @@ public class EventShop_RulletManager : MonoBehaviour
         exitRulletBtn = RulletRef.transform.Find("Window/Main/Rullet/RulletBtns/ExitBtn").GetComponent<Button>();
         startRulletBtn = RulletRef.transform.Find("Window/Main/Rullet/RulletBtns/RuuletBtn").GetComponent<Button>();
         adStartRulletBtn = RulletRef.transform.Find("Window/Main/Rullet/RulletBtns/AdRulletBtn").GetComponent<Button>();
+        rulletMachineAdPlayBtnTextRef[0] = adStartRulletBtn.transform.Find("True").gameObject;
+        rulletMachineAdPlayBtnTextRef[1] = adStartRulletBtn.transform.Find("False").gameObject;
+
         rulletArrowAnim = RulletRef.transform.Find("Window/Main/Rullet/Rullet/Arrow").GetComponent<Animator>();
 
         //슬롯머신
@@ -93,12 +101,13 @@ public class EventShop_RulletManager : MonoBehaviour
         slot[0] = slotMachine.transform.Find("Slot1/Ver").GetComponent<Image>().material;
         slot[1] = slotMachine.transform.Find("Slot2/Ver").GetComponent<Image>().material;
         slot[2] = slotMachine.transform.Find("Slot3/Ver").GetComponent<Image>().material;
+
         exitRulletsBtn = RulletRef.transform.Find("Window/Main/SlotMachine/SlotMachinetBtns/ExitBtn").GetComponent<Button>();
         startSlotMachineBtn = RulletRef.transform.Find("Window/Main/SlotMachine/SlotMachinetBtns/RuuletBtn").GetComponent<Button>();
         startadSlotMachineBtn = RulletRef.transform.Find("Window/Main/SlotMachine/SlotMachinetBtns/AdRulletBtn").GetComponent<Button>();
-        slotPs[0] = RulletRef.transform.Find("Window/Main/SlotPs0").GetComponent<ParticleSystem>();
-        slotPs[1] = RulletRef.transform.Find("Window/Main/SlotPs1").GetComponent<ParticleSystem>();
-        slotPs[2] = RulletRef.transform.Find("Window/Main/SlotPs2").GetComponent<ParticleSystem>();
+        slotMachineAdPlayBtnTextRef[0] = startadSlotMachineBtn.transform.Find("True").gameObject;
+        slotMachineAdPlayBtnTextRef[1] = startadSlotMachineBtn.transform.Find("False").gameObject;
+
         rulletParticle = RulletRef.transform.Find("Window/Main/RulletPs").GetComponent<ParticleSystem>();
 
         soulText = RulletRef.transform.Find("Window/Material/Soul/Text").GetComponent<TMP_Text>();
@@ -118,10 +127,16 @@ public class EventShop_RulletManager : MonoBehaviour
         headListObj[3] = head_Anim.transform.Find("Reward3").gameObject;
         headListObj[4] = head_Anim.transform.Find("Sad").gameObject;
         pandaTear = headListObj[4].transform.Find("LW").GetComponent<Image>().material;
+
         // 연출
         rulletAction = RulletRef.transform.Find("Window/Main/GembleBG").gameObject;
         actionPs = rulletAction.transform.Find("Ps").gameObject;
         actionBackground = RulletRef.transform.Find("Window/Main/GembleBG/BG").GetComponent<Image>();
+
+        // 하단 문구
+        haveTicket = RulletRef.transform.Find("Window/Main/Bot_Text/TicketText").gameObject;
+        nohaveTiket = RulletRef.transform.Find("Window/Main/Bot_Text/NoTicket").gameObject;
+        nohaveTiketAnim = nohaveTiket.GetComponent<Animator>();
 
         BtnInit();
     }
@@ -137,6 +152,10 @@ public class EventShop_RulletManager : MonoBehaviour
         DownRulletSpinSpeed();
         SlotMachineCryEffect();
 
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            GameStatus.inst.MinigameTicket++;
+        };
     }
 
 
@@ -151,6 +170,7 @@ public class EventShop_RulletManager : MonoBehaviour
     {
         RulletRef.SetActive(value);
         MaterialTextUpdater();
+        BotText_Updater();
     }
 
 
@@ -180,36 +200,122 @@ public class EventShop_RulletManager : MonoBehaviour
 
         });
 
-
         exitRulletBtn.onClick.AddListener(() => { if (doRullet == true) { return; } Active_RulletEventShop(false); });
         exitRulletsBtn.onClick.AddListener(() => { if (doSlotMachine == true) { return; } Active_RulletEventShop(false); });
 
-        //슬롯머신
+        //슬롯머신 일반
         startSlotMachineBtn.onClick.AddListener(() =>
         {
             if (doSlotMachine == true) { return; }
+            if (GameStatus.inst.MinigameTicket <= 0) { nohaveTiketAnim.SetTrigger("False"); return; }
+            if (GameStatus.inst.MinigameTicket > 0)
+            {
+                GameStatus.inst.MinigameTicket--;
+            }
+
             PlaySlotMachine();
+
         });
 
+        //슬롯머신 광고
         startadSlotMachineBtn.onClick.AddListener(() =>
         {
             if (doSlotMachine == true) { return; }
-            ADViewManager.inst.SampleAD_Active_Funtion(() => PlaySlotMachine());
+            ADViewManager.inst.SampleAD_Active_Funtion(() =>
+            {
+                // 하루 추가
+                GameStatus.inst.AdSlotMachineActive = true;
+                PlaySlotMachine();
+            });
         });
 
-        //룰렛
+        //룰렛 일반
         startRulletBtn.onClick.AddListener(() =>
         {
             if (doRullet == true) { return; }
+            if (GameStatus.inst.MinigameTicket <= 0) { nohaveTiketAnim.SetTrigger("False"); return; }
+            if (GameStatus.inst.MinigameTicket > 0)
+            {
+                GameStatus.inst.MinigameTicket--;
+            }
+
             RulletStart();
         });
+
+        //룰렛 광고
         adStartRulletBtn.onClick.AddListener(() =>
         {
             if (doRullet == true) { return; }
-            ADViewManager.inst.SampleAD_Active_Funtion(() => RulletStart());
+            ADViewManager.inst.SampleAD_Active_Funtion(() => 
+            {
+                GameStatus.inst.AdRulletActive = true;
+                RulletStart(); 
+            });
+
         });
 
 
+    }
+
+    /// <summary>
+    /// AD광고 버튼 활성 / 비활성화 해주는 함수
+    /// </summary>
+    /// <param name="gameNumber"></param>
+    /// <param name="Active"></param>
+    public void AdPlayButtonInit(int gameNumber, bool Active)
+    {
+        // true 로 들어오면 비활성화, false는 활성화
+        if (!Active)
+        {
+            switch (gameNumber)
+            {
+                case 0:
+                    adStartRulletBtn.interactable = true;
+                    rulletMachineAdPlayBtnTextRef[0].SetActive(true);
+                    rulletMachineAdPlayBtnTextRef[1].SetActive(false);
+                    break;
+
+                case 1:
+                    startadSlotMachineBtn.interactable = true;
+                    slotMachineAdPlayBtnTextRef[0].SetActive(true);
+                    slotMachineAdPlayBtnTextRef[1].SetActive(false);
+                    break;
+            }
+        }
+        else
+        {
+            switch (gameNumber)
+            {
+                case 0:
+                    adStartRulletBtn.interactable = false;
+                    rulletMachineAdPlayBtnTextRef[0].SetActive(false);
+                    rulletMachineAdPlayBtnTextRef[1].SetActive(true);
+                    break;
+
+                case 1:
+                    startadSlotMachineBtn.interactable = false;
+                    slotMachineAdPlayBtnTextRef[0].SetActive(false);
+                    slotMachineAdPlayBtnTextRef[1].SetActive(true);
+                    break;
+            }
+        }
+        
+    }
+    public void BotText_Updater()
+    {
+        int ticket = GameStatus.inst.MinigameTicket;
+
+        if (ticket > 0)
+        {
+            ticketText.text = $"이벤트 티켓 갯수 : {GameStatus.inst.MinigameTicket}";
+            haveTicket.SetActive(true);
+            nohaveTiket.SetActive(false);
+        }
+        else if (ticket <= 0)
+        {
+            haveTicket.SetActive(false);
+            nohaveTiket.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -305,7 +411,7 @@ public class EventShop_RulletManager : MonoBehaviour
             tillingVec.y = Mathf.Lerp(slot[value].mainTextureOffset.y, finalPosition, lerpFactor);
             slot[value].mainTextureOffset = tillingVec;
 
-            
+
 
             if (value == 2 && lerpTime > 0.15f && once == false) // 3번쨰 슬롯 멈추면
             {
@@ -581,6 +687,7 @@ public class EventShop_RulletManager : MonoBehaviour
     float spinSpeedDownMulyfly;
 
     Vector3 rotZ;
+
     private void RulletStart()
     {
         if (RulletRef.activeSelf == true && doRullet == false)
@@ -614,13 +721,12 @@ public class EventShop_RulletManager : MonoBehaviour
             rulletPan.transform.Rotate(Vector3.forward * spinSpeed * Time.deltaTime);
 
             spinSpeed -= Time.deltaTime * spinSpeedDownMulyfly;
-            Debug.Log(rulletArrowAnim.speed);
             StartCoroutine(Arrow());
 
             if (spinSpeed <= 0)
             {
                 spinSpeed = 0;
-                
+
                 // 룰렛 보상
                 float checkvalue = rulletPan.transform.eulerAngles.z;
                 Debug.Log(checkvalue);
@@ -675,15 +781,16 @@ public class EventShop_RulletManager : MonoBehaviour
             rulletArrowAnim.SetTrigger("Play");
         }
 
-        while(spinSpeed > 10f)
+        while (spinSpeed > 10f)
         {
             rulletArrowAnim.speed = spinSpeed * 0.0015f;
             yield return null;
         }
-            
+
         rulletArrowAnim.SetTrigger("Wait");
 
     }
+
     // Animator의 현재 상태가 'stateName'인지 확인
     private bool IsPlaying(string ClipName)
     {
@@ -702,7 +809,6 @@ public class EventShop_RulletManager : MonoBehaviour
         bookText.text = material[2].ToString("N0");
         starText.text = CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star);
         rubyText.text = GameStatus.inst.Ruby.ToString("N0");
-        ticketText.text = $"이벤트 티켓 갯수 : {GameStatus.inst.MinigameTicket}";
     }
 
 
@@ -710,12 +816,11 @@ public class EventShop_RulletManager : MonoBehaviour
 
 
     /// <summary>
-    /// 배경 Fade + Particle Effect
+    /// Rullet 1회 플레이 (배경 Fade + Particle Effect)
     /// </summary>
     /// <param name="value"></param>
     private void RulletAction(bool value)
     {
-
         StartCoroutine(RulletActionCoru(value));
     }
 

@@ -92,6 +92,7 @@ public class WorldUI_Manager : MonoBehaviour
     // 상단바
     TMP_Text nickNameText;
 
+    Image fakeScreen;
     private void Awake()
     {
         if (inst == null)
@@ -105,6 +106,9 @@ public class WorldUI_Manager : MonoBehaviour
 
         worldUI = GameManager.inst.WorldUiRef;
         frontUICanvas = GameManager.inst.FrontUiRef;
+
+        //로드시 페이크 스크린
+        fakeScreen = frontUICanvas.transform.Find("FakeScreen").GetComponent<Image>();
 
         //혹시 카메라 빠지면 다시 채워줌
         worldUI.GetComponent<Canvas>().worldCamera = Camera.main;
@@ -456,6 +460,36 @@ public class WorldUI_Manager : MonoBehaviour
         rewards[curIndex].Set_RewardIncludeAction(sprite, text, funtion);
         curIndex++;
     }
+
+
+    Color fadeOutColor = new Color(0, 0, 0, 0.05f);
+    float FadeOutSpeedMultiFlyer = 12f;
+
+    /// <summary>
+    /// 로그인씬에서 메인씬 로드완료시 페이크 페이드아웃 실행
+    /// </summary>
+    public void LoadScene_FakeScreen_Active()
+    {
+        StartCoroutine(FakeScreenStart());
+    }
+
+    IEnumerator FakeScreenStart()
+    {
+        if (!fakeScreen.gameObject.activeSelf)
+        {
+            fakeScreen.gameObject.SetActive(true);
+        }
+  
+        while (fakeScreen.color.a > 0f)
+        {
+            fakeScreen.color -= fadeOutColor * Time.deltaTime * FadeOutSpeedMultiFlyer;
+            yield return null;
+        }
+
+        fakeScreen.gameObject.SetActive(false);
+    }
+
+
 
 
     /// <summary>

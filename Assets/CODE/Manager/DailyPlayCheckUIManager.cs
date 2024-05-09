@@ -97,9 +97,13 @@ public class DailyPlayCheckUIManager : MonoBehaviour
 
         adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
         {
-            ADViewManager.inst.SampleAD_Get_Currency(0, 100); //재화주기
-            WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
-            
+            ADViewManager.inst.SampleAD_Active_Funtion(() =>
+            {
+                GameStatus.inst.Ruby += 100;
+                WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
+                GameStatus.inst.DailyADRuby = true;
+                adViewAndGetRubyBtn_Init(false);
+            });
         });
     }
 
@@ -125,7 +129,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         GetBtnAcitve(!Boolian);
         simBall.SetActive(!Boolian);
 
-        adViewAndGetRubyBtn_Init(GameStatus.inst.DailyADRuby); // 하단부 광고버튼 (1일에 한번 열림) => 다른곳이사
+        adViewAndGetRubyBtn_Init(!GameStatus.inst.DailyADRuby); // 하단부 광고버튼 (1일에 한번 열림) => 다른곳이사
 
         if (Boolian == false)
         {
@@ -217,10 +221,13 @@ public class DailyPlayCheckUIManager : MonoBehaviour
             adViewAndGetRubyBtn.onClick.RemoveAllListeners(); 
             adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
             {
-                ADViewManager.inst.SampleAD_Get_Currency(0, 100); //재화주기
-                WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
-                GameStatus.inst.DailyADRuby = false;
-
+                ADViewManager.inst.SampleAD_Active_Funtion(() =>
+                {
+                    GameStatus.inst.Ruby += 100;
+                    WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
+                    GameStatus.inst.DailyADRuby = true;
+                    adViewAndGetRubyBtn_Init(false);
+                });
             });
         }
         else
