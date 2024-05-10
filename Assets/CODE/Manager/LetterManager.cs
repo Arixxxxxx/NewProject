@@ -32,15 +32,15 @@ public class LetterManager : MonoBehaviour
     List<LetterPrefab> letterList = new List<LetterPrefab>();
     int[] saveLetterItemDic = new int[3]; // 현재 아이템종류 3가지
 
-    [SerializeField]
     GameObject EveryGetAlrimRef, EveryGetAlrimFreamlayOut;
-    [SerializeField]
     Button everyAcceptBackBtn;
-    [SerializeField]
     LetterBoxIcon[] letterbox;
 
     // 심볼
     GameObject simBall;
+
+    // 우편 생성시 클래스 생성하여 저장
+    List<SaveLetter> saveLetterList = new List<SaveLetter>();
 
     private void Awake()
     {
@@ -130,10 +130,14 @@ public class LetterManager : MonoBehaviour
         obj.GetComponent<LetterPrefab>().Set_Letter(ItemType, From, text, ItemCount);
         obj.transform.SetParent(letterBox.transform);
         obj.SetActive(true);
-        
+
+
+        // 기록
+        saveLetterList.Add(new SaveLetter(ItemType, From, text, ItemCount, obj.GetComponent<LetterPrefab>()));
 
         LetterBoxOnlyInit(); // 최신화한번더
     }
+
 
 
     /// <summary> 순서=> 2
@@ -166,6 +170,7 @@ public class LetterManager : MonoBehaviour
         alrimDisableBtn.onClick.RemoveAllListeners();
         alrimDisableBtn.onClick.AddListener(() => alrimWindowAcitveFalse(itemType, itemCount, letterObj)); // 편지 리턴
     }
+
 
 
     /// <summary> 순서 => 3
@@ -301,4 +306,50 @@ public class LetterManager : MonoBehaviour
             notthingLetter.gameObject.SetActive(true);
         }
     }
+
+
+    //우편확인후 리스트에서 삭제
+    public void RemoveLetter(LetterPrefab letter)
+    {
+        saveLetterList.RemoveAll(saveLetter => saveLetter.letterPrefab == letter);
+    }
+
+
+    //남은 편지 받아가
+    public List<SaveLetter> GetLeftLetter => saveLetterList;
+
+    //시작할때 편지 생성
+    public void LeftLetterMake(List<SaveLetter> list)
+    {
+        if(list.Count <= 0) {  return; }   
+
+        for(int index =0; index< list.Count; index++)
+        {
+            MakeLetter(list[index].itemtype, list[index].letterFrom, list[index].letterText, list[index].letterItemCount);
+        }
+    }
+
+   
+
+    
 }
+
+[Serializable]
+public class SaveLetter
+{
+    public int itemtype;
+    public string letterFrom;
+    public string letterText;
+    public int letterItemCount;
+    public LetterPrefab letterPrefab;
+    public SaveLetter(int itemtype, string letterFrom, string letterText, int letterItemCount, LetterPrefab letterPrefabs)
+    {
+        this.itemtype = itemtype;
+        this.letterFrom = letterFrom;
+        this.letterText = letterText;
+        this.letterItemCount = letterItemCount;
+        this.letterPrefab = letterPrefabs;
+    }
+}
+
+

@@ -16,7 +16,7 @@ public class BuffManager : MonoBehaviour
     [SerializeField][Tooltip("0번 : UI창 루비 ATK \n1번 : UI 창 루비 이동속도\n2번: UI창 루비 골드획득량")] float[] RubyBuffTime;
 
     GameObject mainWindow;
-    GameObject buffWindow;
+    GameObject frontUIRef;
     GameObject buffSelectUIWindow;
   
 
@@ -42,7 +42,7 @@ public class BuffManager : MonoBehaviour
     GameObject noHaveRubyMainWindow;
     Button[] noHaveRubyWindowYesOrNoBtn = new Button[2];
 
-    GameObject worldUI;
+    GameObject worldUIRef;
 
     //화면에 임시로 뜨는 광고 공격력증가 버튼
     Button adBuffBtn;
@@ -68,14 +68,15 @@ public class BuffManager : MonoBehaviour
         }
 
         viewAdATKBuff = Random.Range(10f, 15f);
-        worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
-        adBuffBtn = worldUI.transform.Find("ADBuff").GetComponent<Button>(); // 인게임 팝업 버프아이콘
+        worldUIRef = GameManager.inst.WorldUiRef;
+        frontUIRef = GameManager.inst.FrontUiRef;
 
-        buffWindow = GameObject.Find("---[FrontUICanvas]").gameObject;
-      
+        adBuffBtn = worldUIRef.transform.Find("ADBuff").GetComponent<Button>(); // 인게임 팝업 버프아이콘
+
+        
         //기본 버프선택창
-        mainWindow = buffWindow.transform.Find("Buff_Window").gameObject;
-        buffSelectUIWindow = buffWindow.transform.Find("Buff_Window/Window").gameObject;
+        mainWindow = frontUIRef.transform.Find("Buff_Window").gameObject;
+        buffSelectUIWindow = frontUIRef.transform.Find("Buff_Window/Window").gameObject;
         exitBtn = buffSelectUIWindow.transform.Find("ExitBtn").GetComponent<Button>();
 
         btnCount = buffSelectUIWindow.transform.Find("Buff_Layout").childCount;
@@ -88,7 +89,7 @@ public class BuffManager : MonoBehaviour
         buffIconBottomTime = new TMP_Text[btnCount];
 
         //물어보는창 
-        alrimWindow = buffWindow.transform.Find("Buff_Window/Alrim_Window").gameObject;
+        alrimWindow = frontUIRef.transform.Find("Buff_Window/Alrim_Window").gameObject;
         rubyValueText = alrimWindow.transform.Find("Title/RubyValue_Text").GetComponent<TMP_Text>();
         alrimYesOrNoBtn[0] = alrimWindow.transform.Find("Title/NoBtn").GetComponent<Button>();
         alrimYesOrNoBtn[1] = alrimWindow.transform.Find("Title/YesBtn").GetComponent<Button>();
@@ -128,7 +129,7 @@ public class BuffManager : MonoBehaviour
         useRubyBtn[2] = buffSelectUIWindow.transform.Find("Buff_Layout/Gold_Up/ChoiseBtn_Ruby").GetComponent<Button>();
 
         //뉴비 관련
-        newbiebuffIcon = worldUI.transform.Find("StageUI/Buff/NewBie").gameObject;
+        newbiebuffIcon = worldUIRef.transform.Find("StageUI/Buff/NewBie").gameObject;
         newbiebuffIconActive = newbiebuffIcon.transform.Find("Active").gameObject;
 
         uiWindowTimeInfo[0].text = $"+{adBuffTime[0]}M";

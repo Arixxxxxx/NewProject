@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -869,8 +870,11 @@ public class GameStatus : MonoBehaviour
         RouletteTicket = saveData.RouletteTicket;
         BingoBoard = saveData.BingoBoard;
 
+        //우편
+        LetterManager.inst.LeftLetterMake(saveData.LetterBox);
+
         // 0. 마지막 접속기록
-        if(saveData.LastSignDate != string.Empty)
+        if (saveData.LastSignDate != string.Empty)
         {
             LastLoginDate = DateTime.Parse(saveData.LastSignDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
         }
@@ -964,10 +968,13 @@ public class GameStatus : MonoBehaviour
         saveData.RouletteTicket = RouletteTicket;
         saveData.BingoBoard = BingoBoard;
 
+        // 우편 남은것
+        saveData.LetterBox.AddRange(LetterManager.inst.GetLeftLetter);
+
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");
         
-        save = JsonUtility.ToJson(saveData);
+        save = JsonUtility.ToJson(saveData, true);
         Debug.Log(save);
 
         return save;

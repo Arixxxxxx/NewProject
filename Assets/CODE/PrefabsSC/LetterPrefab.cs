@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 
+[Serializable]
 public class LetterPrefab : MonoBehaviour
 {
     [SerializeField] Sprite[] sprites;
@@ -16,6 +16,12 @@ public class LetterPrefab : MonoBehaviour
     TMP_Text returnItemText;
 
     Button getBtn;
+
+    //편지내용
+    public int letterItemType;
+    public string letterFrom;
+    public string letterText;
+    public int letterItemCount;
 
     // 편지내용 확인 변수들
     int[] itemtypeAndCount = new int[2];
@@ -54,13 +60,20 @@ public class LetterPrefab : MonoBehaviour
     /// <param name="ItemCount"> 지급 되는 아이템의 갯수 </param>
     public void Set_Letter(int ItemType, string From, string text, int ItemCount)
     {
-        if (mainIMG == null)
+        if(mainIMG == null)
         {
             AwakeInit();
         }
-        // 내부변수 초기화
+
+        // 내부변수 초기화 (리턴용)
         itemtypeAndCount[0] = ItemType;
         itemtypeAndCount[1] = ItemCount;
+
+        // 저장용
+        letterItemType = ItemType;
+        letterFrom = From;
+        letterText = text;
+        letterItemCount = ItemCount;
 
         // 이미지아이콘 및 텍스트 초기화
         string itemTypetext = ItemType == 0 ? "루비" : ItemType == 1 ? "골드" : "별";
@@ -73,9 +86,9 @@ public class LetterPrefab : MonoBehaviour
         getBtn.onClick.RemoveAllListeners();
         getBtn.onClick.AddListener( ()=> 
         {
-            //알림창 초기화 및 켜주기
+            // 편지수락 알림창 초기화 및 켜주기
             LetterManager.inst.alrimWindowAcitveTrueAndInit(mainIMG.sprite, ItemType, ItemCount, gameObject);
-
+            LetterManager.inst.RemoveLetter(this);
             switch (ItemType) // 최종 자원 넣어줌
             {
                 case 0:
@@ -90,6 +103,8 @@ public class LetterPrefab : MonoBehaviour
                     GameStatus.inst.PlusStar(ItemCount.ToString());
                     break;
             }
+
+
         });
 
     }
@@ -110,6 +125,5 @@ public class LetterPrefab : MonoBehaviour
     {
         LetterManager.inst.ReturnLetter(gameObject);
     }
-        
 
 }

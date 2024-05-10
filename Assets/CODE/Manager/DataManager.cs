@@ -95,6 +95,9 @@ public class DataManager : MonoBehaviour
         //11. 빙고 현황
         public bool[] BingoBoard = new bool[8];
         public int RouletteTicket;
+
+        //12 우편
+        public List<SaveLetter> LetterBox = new List<SaveLetter>();
     }
 
 
@@ -183,7 +186,7 @@ public class DataManager : MonoBehaviour
     public void Save_NewCreateAccount(string inputText)
     {
         savedata.Name = inputText;
-        string json = JsonUtility.ToJson(savedata);
+        string json = JsonUtility.ToJson(savedata,true);
         File.WriteAllText(path, json);
     }
     
