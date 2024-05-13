@@ -100,6 +100,16 @@ public class UIManager : MonoBehaviour
     Transform relicParents;
     Button GotoRelicShopBtn;
     List<Image> m_list_RelicBuyCountBtn = new List<Image>();
+    List<GameObject> list_haveRelic = new List<GameObject>();
+    public List<GameObject> GetHaveRelic()
+    {
+        return list_haveRelic;
+    }
+
+    public void SetHaveRelic(List<GameObject> list)
+    {
+        list_haveRelic = list;
+    }
     int relicBuyCountBtnNum = 0;
     public int RelicBuyCountBtnNum
     {
@@ -135,6 +145,7 @@ public class UIManager : MonoBehaviour
     {
         return ShopOpenBtn;
     }
+    Button ShopCloseBtn;
 
     /////////////////////////////////////////////∑Í∑ø///////////////////////////////////////////
     GameObject ObjRoulette;
@@ -180,6 +191,9 @@ public class UIManager : MonoBehaviour
             list_BotBtnAnim.Add(trsBotBtn.GetChild(iNum).GetComponent<Animator>());
         }
         ShopOpenBtn = trsBotBtn.Find("Shop").GetComponent<Button>();
+        ShopOpenBtn.onClick.AddListener(() => { canvas.sortingOrder = 15; });
+        ShopCloseBtn = canvas.transform.Find("ScreenArea/Shop/MainShopClosdBtn").GetComponent<Button>();
+        ShopCloseBtn.onClick.AddListener(() => { canvas.sortingOrder = 12; });
 
 
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Quest").gameObject);
@@ -269,8 +283,8 @@ public class UIManager : MonoBehaviour
 
         //¿Øπ∞ √ ±‚»≠
 
-        int[] relicLv = GameStatus.inst.AryNormalRelicLv;
-        int relicCount = relicLv.Length;
+        List<int> relicLv = GameStatus.inst.GetAryRelicLv();
+        int relicCount = relicLv.Count;
         for (int iNum = 0; iNum < relicCount; iNum++)
         {
             if (relicLv[iNum] != 0)
@@ -280,6 +294,7 @@ public class UIManager : MonoBehaviour
                 sc.initRelic();
                 sc.Lv = relicLv[iNum];
                 SetGotoGachaBtn(false);
+                list_haveRelic.Add(obj);
             }
         }
 

@@ -23,7 +23,7 @@ public class Relic : MonoBehaviour
         set
         {
             lv = value;
-            GameStatus.inst.AryNormalRelicLv[(int)itemNum] = value;
+            GameStatus.inst.SetAryRelicLv((int)itemNum, value);
             if (limitLv != 0 && lv >= limitLv)
             {
                 upBtn.gameObject.SetActive(false);

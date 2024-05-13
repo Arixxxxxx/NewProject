@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -389,7 +390,7 @@ public class GameStatus : MonoBehaviour
     }
 
     // 2. 현재 스테이지
-    public UnityEvent OnStageChanged;
+    [HideInInspector] public UnityEvent OnStageChanged;
     int stageLv = 1; // 층수 
     public int StageLv
     {
@@ -518,8 +519,9 @@ public class GameStatus : MonoBehaviour
     }
 
     /////////////////////////////// 하단 UI 데이터 //////////////////////////////////
-    public UnityEvent OnQuestLvChanged;
-    private int[] aryQuestLv = new int[30];
+    [HideInInspector] public UnityEvent OnQuestLvChanged;
+    //private int[] aryQuestLv = new int[30];
+    List<int> aryQuestLv = new List<int>();
 
     public int GetAryQuestLv(int Num)
     {
@@ -532,7 +534,7 @@ public class GameStatus : MonoBehaviour
         MissionData.Instance.SetSpecialMission(Num, Value, SpMissionTag.Quest);
     }
 
-    int[] aryWeaponLv = new int[30];
+    List<int> aryWeaponLv = new List<int>();
 
     public int GetAryWeaponLv(int Num)
     {
@@ -568,32 +570,82 @@ public class GameStatus : MonoBehaviour
         OnPercentageChanged?.Invoke();
     }
 
-    int[] aryNormalRelicLv = new int[11];
-
-    public int[] AryNormalRelicLv
+    List<int> aryRelicLv = new List<int>();
+    public int GetAryRelicLv(int index)
     {
-        get => aryNormalRelicLv;
-        set { aryNormalRelicLv = value; }
+        return aryRelicLv[index];
+    }
+    public List<int> GetAryRelicLv()
+    {
+        return aryRelicLv;
+    }
+
+    public void SetAryRelicLv(int index,int Lv)
+    {
+        aryRelicLv[index] = Lv;
     }
 
     private int minigameTicket;
     public int MinigameTicket { get { return minigameTicket; } set { minigameTicket = value; } }
     /////////////////////////////////////미션/////////////////////////////////////////
+    List<int> dailyMissionisCount = new List<int>();
+    public int GetDailyMissionCount(int index)
+    {
+        return dailyMissionisCount[index];
+    }
+    public void SetDailyMissionCount(int index, int value)
+    {
+        dailyMissionisCount[index] = value;
+    }
 
-    int[] dailyMissionisCount = new int[4];
-    public int[] DailyMIssionisCount { get => dailyMissionisCount; set { dailyMissionisCount = value; } }
+    List<int> weeklyMissionisCount = new List<int>();
+    public int GetWeeklyMissionCount(int index)
+    {
+        return weeklyMissionisCount[index];
+    }
+    public void SetWeeklyMissionCount(int index, int value)
+    {
+        weeklyMissionisCount[index] = value;
+    }
+    //int[] weeklyMissionisCount = new int[4];
+    //public int[] WeeklyMissionisCount { get => weeklyMissionisCount; set { weeklyMissionisCount = value; } }
 
-    int[] weeklyMissionisCount = new int[4];
-    public int[] WeeklyMissionisCount { get => weeklyMissionisCount; set { weeklyMissionisCount = value; } }
+    List<int> specialMissionisCount = new List<int>();
+    public int GetSpecailMissionCount(int index)
+    {
+        return specialMissionisCount[index];
+    }
+    public void SetSpecialMissionCount(int index, int value)
+    {
+        specialMissionisCount[index] = value;
+    }
+    //int[] specialMissionisCount = new int[6];
+    //public int[] SpecialMissionisCount { get => specialMissionisCount; set { specialMissionisCount = value; } }
 
-    int[] specialMissionisCount = new int[6];
-    public int[] SpecialMissionisCount { get => specialMissionisCount; set { specialMissionisCount = value; } }
+    List<bool> dailyMIssionClear = new List<bool>();
+    public bool GetDailyMIssionClear(int index)
+    {
+        return dailyMIssionClear[index];
+    }
+    public void SetDailyMIssionClear(int index, bool value)
+    {
+        dailyMIssionClear[index] = value;
+    }
+    //bool[] dailyMIssionClear = new bool[4];
+    //public bool[] DailyMIssionClear { get => dailyMIssionClear; set { dailyMIssionClear = value; } }
 
-    bool[] dailyMIssionClear = new bool[4];
-    public bool[] DailyMIssionClear { get => dailyMIssionClear; set { dailyMIssionClear = value; } }
+    List<bool> weeklyMIssionClear = new List<bool>();
+    public bool GetWeeklyMIssionClear(int index)
+    {
+        return weeklyMIssionClear[index];
+    }
+    public void SetWeeklyMIssionClear(int index, bool value)
+    {
+        weeklyMIssionClear[index] = value;
+    }
 
-    bool[] weeklyMIssionClear = new bool[4];
-    public bool[] WeeklyMIssionClear { get => weeklyMIssionClear; set { weeklyMIssionClear = value; } }
+    //bool[] weeklyMIssionClear = new bool[4];
+    //public bool[] WeeklyMIssionClear { get => weeklyMIssionClear; set { weeklyMIssionClear = value; } }
 
     int specialMIssionClearNum;
     public int SpecialMIssionClearNum { get => specialMIssionClearNum; set { specialMIssionClearNum = value; } }
@@ -604,10 +656,27 @@ public class GameStatus : MonoBehaviour
     bool isCanResetWeeklyMIssion;
     public bool IsCanResetWeeklyMIssion { get => isCanResetWeeklyMIssion; set { isCanResetWeeklyMIssion = value; } }
 
-    bool[] bingoBoard = new bool[8];
-    public bool[] BingoBoard { get => bingoBoard; set { bingoBoard = value; } }
+    List<bool> bingoBoard = new List<bool>();
+    public bool GetBingoBoard(int index)
+    {
+        return bingoBoard[index];
+    }
+    public List<bool> GetBingoBoard()
+    {
+        return bingoBoard;
+    }
+    public void SetBingoBoard(int index, bool value)
+    {
+        bingoBoard[index] = value;
+    }
+    public void SetBingoBoard(List<bool> value)
+    {
+        bingoBoard = value;
+    }
+    //bool[] bingoBoard = new bool[8];
+    //public bool[] BingoBoard { get => bingoBoard; set { bingoBoard = value; } }
 
-    public UnityEvent OnRouletteTicketChanged;
+    [HideInInspector] public UnityEvent OnRouletteTicketChanged;
     int rouletteTicket;
     public int RouletteTicket 
     {
@@ -803,22 +872,22 @@ public class GameStatus : MonoBehaviour
         // 10. 메인 하단 UI 현황
         aryQuestLv = saveData.QuestLv;
         aryWeaponLv = saveData.WeaponLv;
-        AryNormalRelicLv = saveData.RelicLv;
+        aryRelicLv = saveData.RelicLv;
         EquipWeaponNum = saveData.NowEquipWeaponNum;
 
         // 11. 미션 현황
-        DailyMIssionisCount = saveData.DailyMissionCount;
-        WeeklyMissionisCount = saveData.WeeklyMissionCount;
-        SpecialMissionisCount = saveData.SpecialMissionCount;
-        DailyMIssionClear = saveData.DailyMIssionClear;
-        WeeklyMIssionClear = saveData.WeeklyMissionClear;
+        dailyMissionisCount = saveData.DailyMissionCount;
+        weeklyMissionisCount = saveData.WeeklyMissionCount;
+        specialMissionisCount = saveData.SpecialMissionCount;
+        dailyMIssionClear = saveData.DailyMIssionClear;
+        weeklyMIssionClear = saveData.WeeklyMissionClear;
         SpecialMIssionClearNum = saveData.SpecialMissionClearNum;
         IsCanResetDailyMIssion = saveData.canResetDailyMission;
         IsCanResetWeeklyMIssion = saveData.canResetWeeklyMission;
 
         // 12. 빙고 현황
         RouletteTicket = saveData.RouletteTicket;
-        BingoBoard = saveData.BingoBoard;
+        bingoBoard = saveData.BingoBoard;
 
         // 0. 마지막 접속기록
         LastLoginDate = saveData.lastSigninDate;
@@ -885,14 +954,14 @@ public class GameStatus : MonoBehaviour
 
         // 10. 메인 하단 UI 현황
         saveData.WeaponLv = aryWeaponLv;
-        saveData.RelicLv = AryNormalRelicLv;
+        saveData.RelicLv = aryRelicLv;
         saveData.NowEquipWeaponNum = EquipWeaponNum;
 
         // 11. 미션 현황
-        saveData.DailyMIssionClear = DailyMIssionClear;
-        saveData.WeeklyMissionClear = WeeklyMIssionClear;
+        saveData.DailyMIssionClear = dailyMIssionClear;
+        saveData.WeeklyMissionClear = weeklyMIssionClear;
 
-        saveData.DailyMissionCount = DailyMIssionisCount;
+        saveData.DailyMissionCount = dailyMissionisCount;
         saveData.WeeklyMissionCount = weeklyMissionisCount;
         saveData.SpecialMissionCount = specialMissionisCount;
 
@@ -903,7 +972,7 @@ public class GameStatus : MonoBehaviour
 
         // 12. 빙고 현황
         saveData.RouletteTicket = RouletteTicket;
-        saveData.BingoBoard = BingoBoard;
+        saveData.BingoBoard = bingoBoard;
 
         // 0. 마지막 접속기록
         saveData.lastSigninDate = DateTime.Now;

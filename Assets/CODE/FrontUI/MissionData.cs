@@ -85,13 +85,12 @@ public class MissionData : MonoBehaviour
                 if (count < maxCount)
                 {
                     count = value;
-                    GameStatus.inst.DailyMIssionisCount[index] = count;
+                    GameStatus.inst.SetDailyMissionCount(index,count);
 
                     if (isClear == false && count >= maxCount)
                     {
                         count = maxCount;
                         Instance.ClearStack++;
-                        GameStatus.inst.DailyMIssionClear[index] = true;
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
 
@@ -121,8 +120,9 @@ public class MissionData : MonoBehaviour
             Mask = trs.Find("Mask").gameObject;
             index = trs.GetSiblingIndex();
 
-            isClear = GameStatus.inst.DailyMIssionClear[index];
-            Count = GameStatus.inst.DailyMIssionisCount[index];
+            isClear = GameStatus.inst.GetDailyMIssionClear(index);
+            Debug.Log(isClear);
+            Count = GameStatus.inst.GetDailyMissionCount(index);
 
             NameText.text = Name;
             switch (rewardTag)
@@ -196,6 +196,7 @@ public class MissionData : MonoBehaviour
                 Instance.SetWeeklyMission("일일미션 모두 클리어", 1);
             }
             GameStatus.inst.RouletteTicket += 10;
+            GameStatus.inst.SetDailyMIssionClear(index, true);
             clearBtn.gameObject.SetActive(false);
             trs.SetAsLastSibling();
             Mask.SetActive(true);
@@ -278,13 +279,11 @@ public class MissionData : MonoBehaviour
                 if (count < maxCount)
                 {
                     count = value;
-                    GameStatus.inst.WeeklyMissionisCount[index] = count;
+                    GameStatus.inst.SetWeeklyMissionCount(index, count);
 
                     if (isClear == false && count >= maxCount)
                     {
-
                         count = maxCount;
-                        GameStatus.inst.WeeklyMIssionClear[index] = true;
                         Instance.ClearStack++;
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
@@ -314,8 +313,8 @@ public class MissionData : MonoBehaviour
             Mask = trs.Find("Mask").gameObject;
             index = trs.GetSiblingIndex();
 
-            isClear = GameStatus.inst.WeeklyMIssionClear[index];
-            Count = GameStatus.inst.WeeklyMissionisCount[index];
+            isClear = GameStatus.inst.GetWeeklyMIssionClear(index);
+            Count = GameStatus.inst.GetWeeklyMissionCount(index);
 
             NameText.text = Name;
             switch (rewardTag)
@@ -385,6 +384,7 @@ public class MissionData : MonoBehaviour
                     GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
                     break;
             }
+            GameStatus.inst.SetWeeklyMIssionClear(index, true);
             clearBtn.gameObject.SetActive(false);
             trs.SetAsLastSibling();
             Mask.SetActive(true);
@@ -469,11 +469,11 @@ public class MissionData : MonoBehaviour
                 if (count < maxCount)
                 {
                     count = value;
-                    GameStatus.inst.SpecialMissionisCount[index] = count;
+                    GameStatus.inst.SetSpecialMissionCount(index,count);
                     if (isActive && count >= maxCount)
                     {
                         count = maxCount;
-                        GameStatus.inst.SpecialMissionisCount[index] = count;
+                        GameStatus.inst.SetSpecialMissionCount(index, count);
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
                     }
@@ -497,7 +497,7 @@ public class MissionData : MonoBehaviour
             NameText.text = $"{index + 1}단계 미션";
             MissionText.text = Name;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
-            Count = GameStatus.inst.SpecialMissionisCount[index];
+            Count = GameStatus.inst.GetSpecailMissionCount(index);
 
             switch (rewardTag)
             {
@@ -547,7 +547,7 @@ public class MissionData : MonoBehaviour
                 trs.SetParent(Instance.GetSpecialParents());
                 trs.GetComponent<RectTransform>().sizeDelta = new Vector2(278, 60);
                 trs.SetAsLastSibling();
-
+                GameStatus.inst.SetWeeklyMIssionClear(index, true);
                 Instance.nowSpecialIndex = index + 1;
                 GameStatus.inst.SpecialMIssionClearNum = Instance.nowSpecialIndex;
                 Instance.SetSpecialMissionRectPosition();
@@ -720,8 +720,6 @@ public class MissionData : MonoBehaviour
         {
             list_DailyMission[iNum].SetClearState();
         }
-
-
 
         //주간 미션 초기화
         int WeeklyCount = list_WeeklyMission.Count;

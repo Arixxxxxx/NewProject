@@ -15,7 +15,7 @@ public class Gacha : MonoBehaviour
     [SerializeField] Button OkBtn;
     List<GaChaEffect> list_resultImage = new List<GaChaEffect>();
 
-    List<GameObject> list_haveRelic = new List<GameObject>();
+    
     int openCount = 0;
     int maxOpenCount = 10;
     Button adRelicBtn;
@@ -73,6 +73,7 @@ public class Gacha : MonoBehaviour
 
     IEnumerator gachaEffect(int GachaCount)
     {
+        List<GameObject> list_haveRelic = UIManager.Instance.GetHaveRelic();
         if (list_haveRelic.Count == 0)
         {
             UIManager.Instance.SetGotoGachaBtn(false);
@@ -136,10 +137,21 @@ public class Gacha : MonoBehaviour
                 ListResultSprite.Add(sc.GetSprite());
             }
         }
-        sortingRelicList();
-        int count = ListResultSprite.Count;
+
+        //유물 정렬
+        list_haveRelic.Sort(compareRelic);
+        int haveCount = list_haveRelic.Count;
+        for (int iNum = 0; iNum < haveCount; iNum++)
+        {
+            int indexNum = (int)list_haveRelic[iNum].GetComponent<Relic>().GetMyType().y;
+            list_haveRelic[iNum].transform.SetSiblingIndex(indexNum);
+        }
+        UIManager.Instance.SetHaveRelic(list_haveRelic);
+
+        //이미지 변경 및 표시
+        int spriteCount = ListResultSprite.Count;
         gachaResultObj.SetActive(true);
-        for (int iNum = 0; iNum < count; iNum++)
+        for (int iNum = 0; iNum < spriteCount; iNum++)
         {
             yield return new WaitForSecondsRealtime(0.2f);
             list_resultImage[iNum].Setsprite(ListResultSprite[iNum], (RankType)ListRank[iNum]);
@@ -163,17 +175,6 @@ public class Gacha : MonoBehaviour
             list_resultImage[iNum].GetOpenBtn().onClick?.Invoke();
         }
 
-    }
-
-    void sortingRelicList()
-    {
-        list_haveRelic.Sort(compareRelic);
-        int count = list_haveRelic.Count;
-        for (int iNum = 0; iNum < count; iNum++) 
-        {
-            int indexNum = (int)list_haveRelic[iNum].GetComponent<Relic>().GetMyType().y;
-            list_haveRelic[iNum].transform.SetSiblingIndex(indexNum);
-        }
     }
 
     int compareRelic(GameObject A, GameObject B)

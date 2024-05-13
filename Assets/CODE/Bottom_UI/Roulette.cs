@@ -28,16 +28,27 @@ public class Roulette : MonoBehaviour
             GameStatus.inst.RouletteStack = rouletteStack;
         }
     }
-    bool[] boingoBoard = new bool[8];
-    bool[] BingoBoard
+    List<bool> bingoBoard = new List<bool>();
+    void SetBingoBoard(int index, bool value)
     {
-        get => boingoBoard;
-        set
-        {
-            boingoBoard = value;
-            GameStatus.inst.BingoBoard = boingoBoard;
-        }
+        bingoBoard[index] = value;
+        GameStatus.inst.SetBingoBoard(bingoBoard);
     }
+    void SetBingoBoard(List<bool> value)
+    {
+        bingoBoard = value;
+        GameStatus.inst.SetBingoBoard(bingoBoard);
+    }
+    //bool[] boingoBoard = new bool[8];
+    //bool[] BingoBoard
+    //{
+    //    get => boingoBoard;
+    //    set
+    //    {
+    //        boingoBoard = value;
+    //        GameStatus.inst.SetBingoBoard(boingoBoard);
+    //    }
+    //}
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     [SerializeField] float setspd;
@@ -117,7 +128,7 @@ public class Roulette : MonoBehaviour
         list_countBtnImage[2] = transform.Find("BackGround/CountBtn/Button (2)").GetComponent<Image>();
 
         RouletteStack = GameStatus.inst.RouletteStack;
-        BingoBoard = GameStatus.inst.BingoBoard;
+        SetBingoBoard(GameStatus.inst.GetBingoBoard());
 
         //ºù°íÆÇ ÃÊ±âÈ­
         BingoParents = transform.Find("BackGround/bingo");
@@ -131,7 +142,7 @@ public class Roulette : MonoBehaviour
         int bingoCount = bingoMask.Count;
         for (int iNum = 0; iNum < bingoCount; iNum++)
         {
-            if (BingoBoard[iNum])
+            if (bingoBoard[iNum])
             {
                 bingoMask[iNum].SetActive(true);
             }
@@ -242,10 +253,10 @@ public class Roulette : MonoBehaviour
         if (RouletteStack >= 24)
         {
             //È¹µæ¸øÇÑ º¸»ó ¸ðµÎ È¹µæ
-            int bingoCount = BingoBoard.Length;
+            int bingoCount = bingoBoard.Count;
             for (int iNum = 0; iNum < bingoCount; iNum++)
             {
-                if (BingoBoard[iNum] == false)
+                if (bingoBoard[iNum] == false)
                 {
                     ListRewardNum.Add(new UnityEngine.Vector2(iNum, 0));
 
@@ -290,7 +301,7 @@ public class Roulette : MonoBehaviour
                 if (index == -1)
                 {
                     ListRewardNum.Add(new UnityEngine.Vector2(value, 0));
-                    BingoBoard[value] = true;
+                    bingoBoard[value] = true;
                 }
                 //È¹µæÇß´Ù¸é y°ªÀ» 1¿Ã·ÁÁÜ
                 else
@@ -302,10 +313,10 @@ public class Roulette : MonoBehaviour
 
                 //ºù°í Ã¼Å©
                 bool isBingo = false;
-                int bingoCount = BingoBoard.Length;
+                int bingoCount = bingoBoard.Count;
                 for (int jNum = 0; jNum < bingoCount; jNum++)
                 {
-                    if (BingoBoard[jNum] == false)
+                    if (bingoBoard[jNum] == false)
                     {
                         isBingo = false;
                         break;
@@ -431,53 +442,53 @@ public class Roulette : MonoBehaviour
     IEnumerator checkBingo()
     {
         //°¡·Îºù°í
-        if (horizontalBingo[0] && BingoBoard[0] && BingoBoard[1] && BingoBoard[2])
+        if (horizontalBingo[0] && bingoBoard[0] && bingoBoard[1] && bingoBoard[2])
         {
             horizontalBingo[0] = true;
         }
 
-        if (horizontalBingo[1] && BingoBoard[3] && BingoBoard[4])
+        if (horizontalBingo[1] && bingoBoard[3] && bingoBoard[4])
         {
             horizontalBingo[1] = true;
         }
 
-        if (horizontalBingo[2] && BingoBoard[5] && BingoBoard[6] && BingoBoard[7])
+        if (horizontalBingo[2] && bingoBoard[5] && bingoBoard[6] && bingoBoard[7])
         {
             horizontalBingo[2] = true;
         }
 
         //¼¼·Îºù°í
-        if (verticalBingo[0] && BingoBoard[0] && BingoBoard[3] && BingoBoard[5])
+        if (verticalBingo[0] && bingoBoard[0] && bingoBoard[3] && bingoBoard[5])
         {
             verticalBingo[0] = true;
         }
 
-        if (verticalBingo[1] && BingoBoard[1] && BingoBoard[6])
+        if (verticalBingo[1] && bingoBoard[1] && bingoBoard[6])
         {
             verticalBingo[1] = true;
         }
 
-        if (verticalBingo[2] && BingoBoard[2] && BingoBoard[4] && BingoBoard[7])
+        if (verticalBingo[2] && bingoBoard[2] && bingoBoard[4] && bingoBoard[7])
         {
             verticalBingo[2] = true;
         }
 
         //´ë°¢ºù°í
-        if (crossBingo[0] && BingoBoard[0] && BingoBoard[7])
+        if (crossBingo[0] && bingoBoard[0] && bingoBoard[7])
         {
             crossBingo[0] = true;
         }
 
-        if (crossBingo[1] && BingoBoard[2] && BingoBoard[5])
+        if (crossBingo[1] && bingoBoard[2] && bingoBoard[5])
         {
             crossBingo[1] = true;
         }
 
         //ºù°í ´Ù Ã¤¿îÁö È®ÀÎ
-        int count = BingoBoard.Length;
+        int count = bingoBoard.Count;
         for (int iNum = 0; iNum < count; iNum++)
         {
-            if (BingoBoard[iNum] == false)
+            if (bingoBoard[iNum] == false)
             {
                 yield break;
             }
@@ -491,7 +502,7 @@ public class Roulette : MonoBehaviour
         //´Ù Ã¤¿öÁ® ÀÖÀ¸¸é ºù°íÆÇ ¸®¼Â
         for (int iNum = 0; iNum < count; iNum++)
         {
-            BingoBoard[iNum] = false;
+            bingoBoard[iNum] = false;
             bingoMask[iNum].SetActive(false);
         }
         RouletteStack = 0;

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6897853786723102489}
   - component: {fileID: 7424144532071084090}
   - component: {fileID: 8376633681631703050}
+  - component: {fileID: 2930800237260549368}
   m_Layer: 5
   m_Name: Weapon
   m_TagString: Untagged
@@ -94,7 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   costGrowthRate: 1.35
-  atkpowNumRate: 0.1
+  atkpowNumRate: 0.2
   Name: 
   priceText: {fileID: 1147194082101947668}
   upAtkText: {fileID: 433331736225987493}
@@ -103,6 +104,19 @@ MonoBehaviour:
   nameText: {fileID: 2241911270024630169}
   objBtn: {fileID: 3364550774679967550}
   mask: {fileID: 3983435716361660366}
+--- !u!114 &2930800237260549368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 55157694111789206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowMaskGraphic: 1
 --- !u!1 &297248806945767726
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,7 +720,7 @@ MonoBehaviour:
   m_text: "1. \uC8FD\uB3C4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e41df3195dcf6884493d4820eff097a8, type: 2}
-  m_sharedMaterial: {fileID: -4053106430251194955, guid: e41df3195dcf6884493d4820eff097a8, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 2dad1ecb26bf7b445865ad40a530b6b6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1108,8 +1122,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.0000038146973, y: 25}
+  m_AnchoredPosition: {x: 0, y: 0.000022888184}
+  m_SizeDelta: {x: 0, y: 25}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2561675094021748981
 CanvasRenderer:

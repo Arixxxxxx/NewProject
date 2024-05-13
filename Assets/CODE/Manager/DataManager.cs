@@ -74,23 +74,24 @@ public class DataManager : MonoBehaviour
         public int Crew2Lv = 0;
 
         // 9. 메인 하단 UI 현황
-        public int[] QuestLv = new int[30];
-        public int[] WeaponLv = new int[30];
-        public int[] RelicLv = new int[11];
+        //public int[] QuestLv = new int[30];
+        public List<int> QuestLv = new List<int>();
+        public List<int> WeaponLv = new List<int>();
+        public List<int> RelicLv = new List<int>();        
         public int NowEquipWeaponNum;
 
         // 10. 미션 현황
-        public bool[] DailyMIssionClear = new bool[4];
-        public bool[] WeeklyMissionClear = new bool[4];
+        public List<bool> DailyMIssionClear = new List<bool>();
+        public List<bool> WeeklyMissionClear = new List<bool>();
         public int SpecialMissionClearNum;
-        public int[] DailyMissionCount = new int[4];
-        public int[] WeeklyMissionCount = new int[4];
-        public int[] SpecialMissionCount = new int[6];
+        public List<int> DailyMissionCount = new List<int>();
+        public List<int> WeeklyMissionCount = new List<int>();
+        public List<int> SpecialMissionCount = new List<int>();
         public bool canResetDailyMission;
         public bool canResetWeeklyMission;
 
         //11. 빙고 현황
-        public bool[] BingoBoard = new bool[8];
+        public List<bool> BingoBoard = new List<bool>();
         public int RouletteTicket;
     }
 
@@ -112,7 +113,6 @@ public class DataManager : MonoBehaviour
         {
             CheckJsonFile();//최초실행시 json유무 확인
             DontDestroyOnLoad(inst);
-            Debug.Log(savedata.RelicLv.Length);
         }
 
         setScreen();
