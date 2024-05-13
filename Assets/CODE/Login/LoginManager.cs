@@ -1,3 +1,4 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,12 +99,18 @@ public class LoginManager : MonoBehaviour
 
         accpectBtn.onClick.AddListener(() =>
         {
-            Create_Account_SetName(inputField.text);
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Create_Account_SetName(inputField.text);
+            });
         });
 
         inputField.onSubmit.AddListener((text) =>
         {
-            Create_Account_SetName(inputField.text);
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Create_Account_SetName(inputField.text);
+            });
         });
     }
 
@@ -137,11 +144,12 @@ public class LoginManager : MonoBehaviour
         else if (IsHangulJamoOnly(inputText) == 3)
         {
             //Ã¢´Ý°í ·Îµù
-            DataManager.inst.Save_NewCreateAccount(inputText);
-            inputField.text = string.Empty;
-            loginRef.SetActive(false);
-            guestInputFieldRef.SetActive(false);
-            LoadScene(1);
+                DataManager.inst.Save_NewCreateAccount(inputText);
+                inputField.text = string.Empty;
+                loginRef.SetActive(false);
+                guestInputFieldRef.SetActive(false);
+                LoadScene(1);
+       
         }
     }
 
@@ -192,6 +200,7 @@ public class LoginManager : MonoBehaviour
     private void LoadScene(int TargetSceneNumber)
     {
         sceneNumber = TargetSceneNumber;
+                    
         StartCoroutine(LoadScene());
     }
 

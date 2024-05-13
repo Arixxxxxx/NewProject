@@ -18,7 +18,11 @@ public class DataManager : MonoBehaviour
     RectTransform ScreenArea;
 
     public SaveData savedata = new SaveData();
-    string path = Path.Combine(Application.dataPath, "Save.json");
+
+
+
+
+    
 
     bool isHaveJsonFile = false;
     public bool IshaveJsonFile { get { return isHaveJsonFile; } }
@@ -101,9 +105,14 @@ public class DataManager : MonoBehaviour
         public List<SaveLetter> LetterBox = new List<SaveLetter>();
     }
 
-
+    string path = string.Empty;
     private void Awake()
     {
+#if UNITY_EDITOR
+         path = Path.Combine(Application.dataPath, "Save.json");
+#else
+          path = Path.Combine(Application.persistentDataPath, "Save.json");
+#endif
         if (inst == null)
         {
             inst = this;
@@ -112,6 +121,7 @@ public class DataManager : MonoBehaviour
         {
             Destroy(inst);
         }
+
 
         currentSceneIndex = SceneManager.GetActiveScene();
         sceneIndexNumber = currentSceneIndex.buildIndex;
