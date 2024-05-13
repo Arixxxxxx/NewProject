@@ -108,11 +108,13 @@ public class DataManager : MonoBehaviour
     string path = string.Empty;
     private void Awake()
     {
+
 #if UNITY_EDITOR
          path = Path.Combine(Application.dataPath, "Save.json");
 #else
           path = Path.Combine(Application.persistentDataPath, "Save.json");
 #endif
+
         if (inst == null)
         {
             inst = this;
@@ -122,7 +124,7 @@ public class DataManager : MonoBehaviour
             Destroy(inst);
         }
 
-
+        Application.targetFrameRate = 60;
         currentSceneIndex = SceneManager.GetActiveScene();
         sceneIndexNumber = currentSceneIndex.buildIndex;
 
