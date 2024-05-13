@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Globalization;
 using System.Numerics;
@@ -277,18 +278,18 @@ public class GameStatus : MonoBehaviour
         set
         {
             int UseRuby = ruby - value;
+            
             if (UseRuby > 0)
             {
                 MissionData.Instance.SetDailyMission("루비 사용", UseRuby);
             }
             ruby = value;
+            
             WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString("N0"));
-            
-            if(DataManager.inst.saveAble == true)
-            {
-                WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(SpriteResource.inst.CoinIMG(0), $"루비 +{value}");
-            }
-            
+
+ 
+
+
             OnRubyChanged?.Invoke();
         }
     }
@@ -751,6 +752,17 @@ public class GameStatus : MonoBehaviour
         string result = CalCulator.inst.BigIntigerMinus(gold, getValue);
         Gold = result;
     }
+
+    public void PlusRuby(int value)
+    {
+        Ruby += value;
+
+        if (DataManager.inst.saveAble == true && value > 0)
+        {
+            WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(SpriteResource.inst.CoinIMG(0), $"루비 +{value}");
+        }
+    }
+
 
     /// <summary>
     /// 환생시 스테이지 레벨 및 층수 초기화

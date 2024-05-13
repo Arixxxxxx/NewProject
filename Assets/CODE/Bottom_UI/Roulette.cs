@@ -398,7 +398,7 @@ public class Roulette : MonoBehaviour
         switch (value)
         {
             case 0:
-                GameStatus.inst.Ruby += 100;
+                GameStatus.inst.PlusRuby(100);
                 break;
             case 1:
                 GameStatus.inst.PlusStar("100");
@@ -407,7 +407,7 @@ public class Roulette : MonoBehaviour
                 GameStatus.inst.PlusGold($"{nowTotalGold * 2}");
                 break;
             case 3:
-                GameStatus.inst.Ruby += 200;
+                GameStatus.inst.PlusRuby(200);
                 break;
             case 4:
                 GameStatus.inst.PlusStar("1000");

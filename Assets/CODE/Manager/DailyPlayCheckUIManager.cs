@@ -99,7 +99,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
         {
             ADViewManager.inst.SampleAD_Active_Funtion(() =>
             {
-                GameStatus.inst.Ruby += 100;
+                GameStatus.inst.PlusRuby(100);
                 WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
                 GameStatus.inst.DailyADRuby = true;
                 adViewAndGetRubyBtn_Init(false);
@@ -223,7 +223,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
             {
                 ADViewManager.inst.SampleAD_Active_Funtion(() =>
                 {
-                    GameStatus.inst.Ruby += 100;
+                    GameStatus.inst.PlusRuby(100);
                     WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
                     GameStatus.inst.DailyADRuby = true;
                     adViewAndGetRubyBtn_Init(false);

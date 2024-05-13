@@ -101,7 +101,7 @@ public class LetterPrefab : MonoBehaviour
             switch (ItemType) // 최종 자원 넣어줌
             {
                 case 0:
-                    GameStatus.inst.Ruby += ItemCount;
+                    GameStatus.inst.PlusRuby(ItemCount);
                     break;
 
                 case 1:

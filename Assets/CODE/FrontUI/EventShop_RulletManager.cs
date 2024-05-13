@@ -467,7 +467,7 @@ public class EventShop_RulletManager : MonoBehaviour
 
                     if (pair.Key == 0) //루비 2개 당첨
                     {
-                        GameStatus.inst.Ruby += 200; //실행
+                        GameStatus.inst.PlusRuby(200); //실행
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " 루비 +200");
                     }
                     else if (pair.Key == 1) // 뼈 2개 당첨
@@ -501,7 +501,7 @@ public class EventShop_RulletManager : MonoBehaviour
 
                     if (pair.Key == 0) //루비 3개 당첨
                     {
-                        GameStatus.inst.Ruby += 500; //실행
+                        GameStatus.inst.PlusRuby(500); //실행
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " 루비 +500");
                     }
                     else if (pair.Key == 1) //뼈 3개 당첨
@@ -734,7 +734,7 @@ public class EventShop_RulletManager : MonoBehaviour
                 if (330 < checkvalue && checkvalue < 30)
                 {
                     rulletParticle.gameObject.SetActive(true);
-                    GameStatus.inst.Ruby += 10; //실행
+                    GameStatus.inst.PlusRuby(10); //실행
                     WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " 루비 +10");
                 }
                 else if (checkvalue >= 30 && checkvalue < 90)

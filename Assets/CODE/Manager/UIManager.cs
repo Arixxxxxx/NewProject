@@ -146,7 +146,7 @@ public class UIManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameStatus.inst.Ruby += 1000;
+            GameStatus.inst.PlusRuby(1000);
             GameStatus.inst.PlusStar("100000000");
         }
 
