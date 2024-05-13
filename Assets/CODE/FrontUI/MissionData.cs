@@ -497,7 +497,9 @@ public class MissionData : MonoBehaviour
             NameText.text = $"{index + 1}단계 미션";
             MissionText.text = Name;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
+          
             Count = GameStatus.inst.GetSpecailMissionCount(index);
+            
 
             switch (rewardTag)
             {

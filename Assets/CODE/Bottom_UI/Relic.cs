@@ -124,6 +124,7 @@ public class Relic : MonoBehaviour
         {
             GameStatus.inst.MinusStar(nextCost.ToString());
             Lv += buyCount;
+            MissionData.Instance.SetSpecialMission((int)itemNum, Lv, SpMissionTag.Relic);
         }
     }
 
