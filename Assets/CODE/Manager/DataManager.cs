@@ -18,7 +18,7 @@ public class DataManager : MonoBehaviour
     RectTransform ScreenArea;
 
     public SaveData savedata = new SaveData();
-    string path = Path.Combine(Application.dataPath, "Save.json");
+    string path;
 
     bool isHaveJsonFile = false;
     public bool IshaveJsonFile { get { return isHaveJsonFile; } }
@@ -112,7 +112,7 @@ public class DataManager : MonoBehaviour
         {
             Destroy(inst);
         }
-
+        path = Application.persistentDataPath + "/Save.json";
         currentSceneIndex = SceneManager.GetActiveScene();
         sceneIndexNumber = currentSceneIndex.buildIndex;
 
@@ -126,12 +126,12 @@ public class DataManager : MonoBehaviour
 
         // 1번씬 로딩완료시 FakeUI 작동예정
         SceneManager.sceneLoaded += OnSceneLoaded;
-       
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if(scene.buildIndex == 1)
+        setScreen();
+        if (scene.buildIndex == 1)
         {
             WorldUI_Manager.inst.LoadScene_FakeScreen_Active();
             SceneManager.sceneLoaded -= OnSceneLoaded;

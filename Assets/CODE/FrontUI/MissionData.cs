@@ -9,13 +9,15 @@ public class MissionData : MonoBehaviour
 {
     public static MissionData Instance;
 
-    GameObject obj_UICanvas; //캔버스
+    Canvas UICanvas; //캔버스
     Transform obj_MissionWindow; //미션창
     Transform obj_DailyContents; //일일미션 컨텐츠
     Transform obj_WeeklyContents; //주간미션 컨텐츠
     Transform obj_SpecialContents; //스페셜미션 컨텐츠
     Transform trs_NowMissionParents; //현재진행중인 미션 부모
     Button MissionOpenBtn;//미션창 여는 버튼
+    Button MissionCloseBtn;//미션창 닫는 버튼
+    Button MissionBGBtn;//미션창 백그라운드 버튼
     TMP_Text topTitleText;//미션창 상단 타이틀 텍스트
     TMP_Text topDetailText;//미션창 상단 세부텍스트
     TMP_Text worldTitleText;//메인화면 미션 타이틀 텍스트
@@ -121,7 +123,6 @@ public class MissionData : MonoBehaviour
             index = trs.GetSiblingIndex();
 
             isClear = GameStatus.inst.GetDailyMIssionClear(index);
-            Debug.Log(isClear);
             Count = GameStatus.inst.GetDailyMissionCount(index);
 
             NameText.text = Name;
@@ -683,14 +684,16 @@ public class MissionData : MonoBehaviour
 
     void Start()
     {
-        obj_UICanvas = GameObject.Find("---[UI Canvas]");
+        UICanvas = GameObject.Find("---[UI Canvas]").GetComponent<Canvas>();
         Transform worldUiCanvas = GameObject.Find("---[World UI Canvas]").transform;
         MissionOpenBtn = worldUiCanvas.Find("StageUI/QeustList/Button").GetComponent<Button>();
         simball = worldUiCanvas.Find("StageUI/QeustList/Button/Simball").gameObject;
         worldTitleText = worldUiCanvas.Find("StageUI/QeustList/BG/Step").GetComponent<TMP_Text>();
         worldDetailText = worldUiCanvas.Find("StageUI/QeustList/BG/Text").GetComponent<TMP_Text>();
+        MissionCloseBtn = UICanvas.transform.Find("ScreenArea/Mission/Mission/Window/Title/X_Btn").GetComponent<Button>();
+        MissionBGBtn = UICanvas.transform.Find("ScreenArea/Mission/BG(B)").GetComponent<Button>();
 
-        obj_MissionWindow = obj_UICanvas.transform.Find("ScreenArea/Mission");
+        obj_MissionWindow = UICanvas.transform.Find("ScreenArea/Mission");
         list_MissionWindow[0] = obj_MissionWindow.Find("Mission/Window/Daily(Scroll View)").gameObject;
         list_MissionWindow[1] = obj_MissionWindow.Find("Mission/Window/Weekly(Scroll View)").gameObject;
         list_MissionWindow[2] = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)").gameObject;
@@ -771,7 +774,10 @@ public class MissionData : MonoBehaviour
         MissionOpenBtn.onClick.AddListener(() =>
         {
             obj_MissionWindow.gameObject.SetActive(true);
+            UICanvas.sortingOrder = 15;
         });
+        MissionCloseBtn.onClick.AddListener(() => { UICanvas.sortingOrder = 12; });
+        MissionBGBtn.onClick.AddListener(() => { UICanvas.sortingOrder = 12; });
     }
 
     // 1. 상부 일일,주간,스페셜 미션 버튼 클릭
