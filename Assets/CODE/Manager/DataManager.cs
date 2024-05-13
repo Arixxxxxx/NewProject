@@ -47,10 +47,10 @@ public class DataManager : MonoBehaviour
         public int miniTicket;
 
         // 3. 버프 남은 시간
-        public double buffAtkTime;
-        public double buffGoldTime;
-        public double buffMoveSpeedTime;
-        public double buffBigAtkTime;
+        public int buffAtkTime;
+        public int buffGoldTime;
+        public int buffMoveSpeedTime;
+        public int buffBigAtkTime;
 
         // 4. 뉴비 혜택
         public int getNewbieRewardCount;

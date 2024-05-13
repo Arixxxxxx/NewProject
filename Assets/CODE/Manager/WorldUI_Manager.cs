@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,8 +10,10 @@ public class WorldUI_Manager : MonoBehaviour
     public static WorldUI_Manager inst;
 
     [SerializeField] Sprite[] stageSprite;
-    [SerializeField] GameObject getGoldAndStar_Text;
-    Queue<GameObject> getGoldAndStar_TextQue = new Queue<GameObject>();
+    [Header("# Reward 및 금화획득 풀링 ")]
+    [SerializeField] GameObject[] poolingObj;
+    Queue<GameObject>[] poolingQue;
+
     Transform fontDanymic;
     Transform[] fontPoint = new Transform[2]; // 풀링오브젝트 스타트포인트 초기화용
 
@@ -38,8 +39,6 @@ public class WorldUI_Manager : MonoBehaviour
     GameObject rewardRef;
     Reward_Parts[] rewards;
     int rewardChildCount;
-    [SerializeField]
-    GameObject stageUI;
 
     //우편 수신함
 
@@ -77,6 +76,10 @@ public class WorldUI_Manager : MonoBehaviour
     // 빙고게임 버튼
     Button bingoBtn;
 
+    // 버프샵
+    Button buffShopBtn;
+    Animator buffWindowAnim;
+
     //레드심볼 관리
     List<GameObject> redSimBall_Icons = new List<GameObject>();
 
@@ -93,6 +96,11 @@ public class WorldUI_Manager : MonoBehaviour
     TMP_Text nickNameText;
 
     Image fakeScreen;
+
+    
+
+    //아이템획득 애니메이션
+    VerticalLayoutGroup getItemLayOut;
     private void Awake()
     {
         if (inst == null)
@@ -114,7 +122,7 @@ public class WorldUI_Manager : MonoBehaviour
         worldUI.GetComponent<Canvas>().worldCamera = Camera.main;
         GameManager.inst.UiCanvasRef.GetComponent<Canvas>().worldCamera = Camera.main;
         frontUICanvas.GetComponent<Canvas>().worldCamera = Camera.main;
-        
+
 
 
         //리워드관련
@@ -125,11 +133,13 @@ public class WorldUI_Manager : MonoBehaviour
 
         //버프창
         buffSelectUIWindow = frontUICanvas.transform.Find("Buff_Window").gameObject;
+        buffWindowAnim = buffSelectUIWindow.GetComponent<Animator>();
 
         cuttonBlack = worldUI.transform.Find("Cutton(B)").GetComponent<Animator>();
         stageText = worldUI.transform.Find("StageUI/StageInfo/Text").GetComponent<TMP_Text>();
         uiBossHead = worldUI.transform.Find("StageUI/StageInfo/Boss").GetComponent<Image>();
         fontDanymic = worldUI.transform.Find("StageUI/Dyanamic").GetComponent<Transform>();
+        getItemLayOut = worldUI.transform.Find("StageUI/Get").GetComponent<VerticalLayoutGroup>();
 
         for (int index = 0; index < stageSlot.Length; index++)
         {
@@ -167,7 +177,7 @@ public class WorldUI_Manager : MonoBehaviour
         adDeleteBtn = worldUI.transform.Find("StageUI/AdDelete").GetComponent<Button>(); // 광고제거
         openMenuIcon = worldUI.transform.Find("StageUI/MenuBox/MeneOpen/RealBtn").GetComponent<Button>(); // 메뉴 삼각형버튼
         checkArrowScaleX = openMenuIcon.transform.parent.GetComponent<Transform>();
-
+        buffShopBtn = worldUI.transform.Find("StageUI/BuffShop").GetComponent<Button>(); // 버프상점
         crewViewrBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/CrewViewr").GetComponent<Button>();      // 동료 살펴보기 버튼
         weaponShopBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/WeaponDogam").GetComponent<Button>();        // 무기도감버튼
         eventShopBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/EventShop").GetComponent<Button>();        // 이벤트샵 버튼
@@ -186,14 +196,8 @@ public class WorldUI_Manager : MonoBehaviour
 
     void Start()
     {
-        //테스트용 나중에 지워야함
         BtnInIt();
-
-        //// 최초 소지재화들 초기화
-        //curMaterial[0].text = GameStatus.inst.Gold;
-        //curMaterial[1].text = GameStatus.inst.Star;
-        //curMaterial[2].text = GameStatus.inst.Key;
-        //curMaterial[3].text = GameStatus.inst.Ruby.ToString("N0");
+        menuAnim.SetTrigger("Open");
     }
 
 
@@ -262,29 +266,14 @@ public class WorldUI_Manager : MonoBehaviour
     private void BtnInIt()
     {
 
-        //testBtn[0].onClick.AddListener(() =>
-        //{
-        //    GameStatus.inst.AtkSpeedLv++;
-        //    if (GameStatus.inst.AtkSpeedLv < 10)
-        //    {
-        //        weapbtnText[0].text = $"공격 속도 x {GameStatus.inst.AtkSpeedLv}";
-        //    }
-        //    else if (GameStatus.inst.AtkSpeedLv >= 10)
-        //    {
-        //        weapbtnText[0].text = $"만렙";
-        //    }
-        //});
-
-
         // 월드 버튼 초기화
-
         hwanSengBtn.onClick.AddListener(() => HwanSengSystem.inst.Set_HwansengUIActive(true)); //환생버튼
         getLetterBtn.onClick.AddListener(() => { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
         newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
         mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
         adDeleteBtn.onClick.AddListener(() => AdDelete.inst.ActiveAdDeleteWindow());
-
+        buffShopBtn.onClick.AddListener(() => { BuffManager.inst.Buff_UI_Active(true); });
         crewViewrBtn.onClick.AddListener(() =>
         {
             PetDetailViewr_UI.inst.TopArrayBtnActive(0);
@@ -326,51 +315,118 @@ public class WorldUI_Manager : MonoBehaviour
 
     private void Prefabs_Awake()
     {
+        int poolingCount = poolingObj.Length;
+
+        // Que 초기화        
+        poolingQue = new Queue<GameObject>[poolingCount];
+        for (int index = 0; index < poolingCount; index++)
+        {
+            poolingQue[index] = new Queue<GameObject>();
+        }
         int count = 10;
+
+
+
+        for (int forCount = 0; forCount < poolingCount; forCount++)
+        {
+            for (int index = 0; index < count; index++)
+            {
+                InstantiatePrefabs(forCount);
+            }
+        }
 
         fontPoint[0] = worldUI.transform.Find("StageUI/Dyanamic/0").GetComponent<Transform>();
         fontPoint[1] = worldUI.transform.Find("StageUI/Dyanamic/1").GetComponent<Transform>();
 
-        for (int index = 0; index < count; index++)
-        {
-            GameObject obj = Instantiate(getGoldAndStar_Text, fontDanymic);
-            getGoldAndStar_TextQue.Enqueue(obj);
-            obj.transform.position = fontDanymic.transform.position;
-            obj.SetActive(false);
-        }
+
     }
+
     /// <summary>
-    /// 화면 자원바 획득한 자원량 숫자올라가는 연출 ( Gold = 0 / Star = 1 )
+    /// 오브젝트 생성
+    /// </summary>
+    /// <param name="value"></param>
+    private void InstantiatePrefabs(int value)
+    {
+        GameObject obj = null;
+
+        switch (value)
+        {
+            case 0: // Reward
+                obj = Instantiate(poolingObj[value], rewardRef.transform);
+                break;
+
+            case 1: //좌하단
+                obj = Instantiate(poolingObj[value], getItemLayOut.gameObject.transform);
+                break;
+
+            case 2: // 골드증가 폰트
+                obj = Instantiate(poolingObj[value], fontDanymic);
+                obj.transform.position = fontDanymic.transform.position;
+                break;
+        }
+        poolingQue[value].Enqueue(obj);
+        obj.SetActive(false);
+    }
+
+
+
+    /// <summary>
+    ///  WorldUI_Prefabs
+    /// </summary>
+    /// <param name="index"> 0Reward 상단바 / 1 좌측하단 겟아이템 </param>
+    /// <returns></returns>
+    public GameObject Get_WorldUIPooling_Prefabs_Object(int index)
+    {
+        GameObject obj;
+
+        if (poolingQue[index].Count <= 0)
+        {
+            InstantiatePrefabs(index);
+        }
+
+        obj = poolingQue[index].Dequeue();
+                
+        return obj;
+    }
+
+    /// <summary>
+    /// World UI 좌측하단 알림
     /// </summary>
     /// <param name="index"></param>
+    /// <param name="img"></param>
+    /// <param name="Value"></param>
     /// <returns></returns>
-    public void Get_Increase_GetGoldAndStar_Font(int index, string textvalue)
+    public GameObject Get_ItemInfomation_UI_Active(Sprite img, string Value)
     {
-        if (getGoldAndStar_TextQue.Count <= 1)
+        GameObject obj;
+
+        if (poolingQue[1].Count <= 0)
         {
-            GameObject obj = Instantiate(getGoldAndStar_Text, fontDanymic);
-            getGoldAndStar_TextQue.Enqueue(obj);
-            obj.transform.position = fontDanymic.transform.position;
-            obj.SetActive(false);
+            InstantiatePrefabs(1);
         }
 
+        obj = poolingQue[1].Dequeue();
+        obj.gameObject.SetActive(true);
+        obj.GetComponent<GetItemPrefabs>().Set_GetItemSpriteAndText(img, Value);
 
-        GameObject objs = getGoldAndStar_TextQue.Dequeue();
-        objs.transform.localPosition = fontPoint[index].localPosition;
-        objs.GetComponent<UI_IncreaseValueFont>().Set_PosAndColorInit(index, textvalue);
-        objs.gameObject.SetActive(true);
+        return obj;
     }
 
-    public void Return_GoldAndStarFontPrefabs(GameObject obj)
+    /// <summary>
+    /// WorldUI Prefabs Return
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="value"> 0 Reward / 1 UI Material</param>
+    public void Return_WorldUIObjPoolingObj(GameObject obj, int value)
     {
         if (obj.activeSelf)
         {
             obj.SetActive(false);
         }
-
-        getGoldAndStar_TextQue.Enqueue(obj);
-
+        poolingQue[value].Enqueue(obj);
     }
+
+  
 
     Coroutine cuttonCor;
     Color colorFadeValue = new Color(0, 0, 0, 0.2f);
@@ -436,7 +492,7 @@ public class WorldUI_Manager : MonoBehaviour
 
     }
 
-    int curIndex = 0;
+    
     /// <summary>
     /// 월드 중앙 상단 Reward창 호출
     /// </summary>
@@ -444,9 +500,8 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="text"> 아이템 설명내용</param>
     public void Set_RewardUI_Invoke(Sprite sprite, string text)
     {
-        curIndex = (int)Mathf.Repeat(curIndex, rewardChildCount);
-        rewards[curIndex].Set_Reward(sprite, text);
-        curIndex++;
+        GameObject obj = Get_WorldUIPooling_Prefabs_Object(0);
+        obj.GetComponent<Reward_Parts>().Set_Reward(sprite, text);
     }
 
     /// <summary>
@@ -456,10 +511,10 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="text"> 아이템 설명내용</param>
     public void Set_Reward_InclueAction(Sprite sprite, string text, Action funtion)
     {
-        curIndex = (int)Mathf.Repeat(curIndex, rewardChildCount);
-        rewards[curIndex].Set_RewardIncludeAction(sprite, text, funtion);
-        curIndex++;
+        GameObject obj = Get_WorldUIPooling_Prefabs_Object(0);
+        obj.GetComponent<Reward_Parts>().Set_RewardIncludeAction(sprite, text, funtion);
     }
+
 
 
     Color fadeOutColor = new Color(0, 0, 0, 0.05f);
@@ -479,7 +534,7 @@ public class WorldUI_Manager : MonoBehaviour
         {
             fakeScreen.gameObject.SetActive(true);
         }
-  
+
         while (fakeScreen.color.a > 0f)
         {
             fakeScreen.color -= fadeOutColor * Time.deltaTime * FadeOutSpeedMultiFlyer;
@@ -497,13 +552,15 @@ public class WorldUI_Manager : MonoBehaviour
     /// </summary>
     /// <param name="nickname"></param>
     public void Set_Nickname(string nickname) => nickNameText.text = nickname;
-    /// <summary>
-    /// 버프 선택창 호출
-    /// </summary>
-    /// <param name="value"> true / false </param>
-    public void buffSelectUIWindowAcitve(bool value) => buffSelectUIWindow.SetActive(value);
+
 
     public void NewbieBtnAcitveFalse() => newBieBtn.gameObject.SetActive(false);
+
+    /// <summary>
+    /// 아이템획득 레이아웃 껏다켯다
+    /// </summary>
+    /// <param name="value"></param>
+    public void GetTrs_VerticalLayOutActive(bool value) => getItemLayOut.enabled = value;
 
 
 

@@ -41,7 +41,10 @@ public class Reward_Parts : MonoBehaviour
 
         parentRef.SetActive(true);
         gameObject.SetActive(true);
+
     }
+
+
     public void Set_RewardIncludeAction(Sprite sprite, string text, Action funtion)
     {
         if (itemIMG == null)
@@ -60,9 +63,9 @@ public class Reward_Parts : MonoBehaviour
         rewardAction?.Invoke();
     }
 
+
     private void A_GameObjectActiveFalse()
     {
-        parentRef.SetActive(false);
-        gameObject.SetActive(false);
+        WorldUI_Manager.inst.Return_WorldUIObjPoolingObj(gameObject, 0);
     }
 }

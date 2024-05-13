@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [Serializable]
 public class LetterPrefab : MonoBehaviour
 {
-    [SerializeField] Sprite[] sprites;
+
     Image mainIMG;
 
     GameObject textSpace;
@@ -18,10 +18,10 @@ public class LetterPrefab : MonoBehaviour
     Button getBtn;
 
     //편지내용
-    public int letterItemType;
-    public string letterFrom;
-    public string letterText;
-    public int letterItemCount;
+    int letterItemType;
+    string letterFrom;
+    string letterText;
+    int letterItemCount;
 
     // 편지내용 확인 변수들
     int[] itemtypeAndCount = new int[2];
@@ -32,7 +32,7 @@ public class LetterPrefab : MonoBehaviour
     }
     void Start()
     {
-        
+
     }
 
     private void AwakeInit()
@@ -60,7 +60,7 @@ public class LetterPrefab : MonoBehaviour
     /// <param name="ItemCount"> 지급 되는 아이템의 갯수 </param>
     public void Set_Letter(int ItemType, string From, string text, int ItemCount)
     {
-        if(mainIMG == null)
+        if (mainIMG == null)
         {
             AwakeInit();
         }
@@ -75,16 +75,25 @@ public class LetterPrefab : MonoBehaviour
         letterText = text;
         letterItemCount = ItemCount;
 
+
         // 이미지아이콘 및 텍스트 초기화
         string itemTypetext = ItemType == 0 ? "루비" : ItemType == 1 ? "골드" : "별";
-        mainIMG.sprite = sprites[ItemType];
+        mainIMG.sprite = SpriteResource.inst.CoinIMG(ItemType);
 
         title.text = From;
         mainText.text = text;
-        returnItemText.text = $"{itemTypetext}  +{ItemCount.ToString("N0")}";
+
+        if(ItemType == 0)
+        {
+            returnItemText.text = $"{itemTypetext}  +{ItemCount.ToString("N0")}";
+        }
+        else
+        {
+            returnItemText.text = $"{itemTypetext}  +{CalCulator.inst.StringFourDigitAddFloatChanger(ItemCount.ToString())}";
+        }
 
         getBtn.onClick.RemoveAllListeners();
-        getBtn.onClick.AddListener( ()=> 
+        getBtn.onClick.AddListener(() =>
         {
             // 편지수락 알림창 초기화 및 켜주기
             LetterManager.inst.alrimWindowAcitveTrueAndInit(mainIMG.sprite, ItemType, ItemCount, gameObject);

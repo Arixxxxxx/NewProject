@@ -472,6 +472,10 @@ public class DogamManager : MonoBehaviour
         float randomValue = Random.Range(0,100f);
         if (randomValue > getChance) { return; };
         Get_DogamIconPooling(); // 정수얻은 폰트연출
+
+        Sprite IMG = SpriteResource.inst.CoinIMG(3);
+        string text = $"{dogamIndex}번 도감정수";
+        WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(IMG, text);
         mosterCollectionConut[dogamIndex]++; // 값 올림
 
     }
@@ -483,7 +487,7 @@ public class DogamManager : MonoBehaviour
 
 
     //////////////////////////////////정수 프리펩 풀링 ////////////////////////////////
-    
+
     Queue<GameObject> dogamFontQue = new Queue<GameObject>();
 
     private void ObjPoolingIntit()

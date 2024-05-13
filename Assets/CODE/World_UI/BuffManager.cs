@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,9 +17,12 @@ public class BuffManager : MonoBehaviour
     [SerializeField][Tooltip("0번 : UI창 루비 ATK \n1번 : UI 창 루비 이동속도\n2번: UI창 루비 골드획득량")] float[] RubyBuffTime;
 
     GameObject mainWindow;
+    Animator mainWindowAnim;
+
+
     GameObject frontUIRef;
     GameObject buffSelectUIWindow;
-  
+
 
     Button exitBtn;
     int btnCount;
@@ -34,15 +38,9 @@ public class BuffManager : MonoBehaviour
     // 루비 선택창관련
     Button[] useRubyBtn;
     TMP_Text[] rubyPrice;
-    //정말 살껀지 물어보는창
-    GameObject alrimWindow;
-    TMP_Text rubyValueText;
-    Button[] alrimYesOrNoBtn = new Button[2];
-    // 루비 부족시 뜨는창
-    GameObject noHaveRubyMainWindow;
-    Button[] noHaveRubyWindowYesOrNoBtn = new Button[2];
+ 
 
-    GameObject worldUIRef;
+    GameObject worldUIRef, buffLayOutRef;
 
     //화면에 임시로 뜨는 광고 공격력증가 버튼
     Button adBuffBtn;
@@ -54,6 +52,7 @@ public class BuffManager : MonoBehaviour
     GameObject newbiebuffIcon;
     GameObject newbiebuffIconActive;
 
+    
     // 화면메인 Reward 문구
     string[] buffstringText = new string[4];
     private void Awake()
@@ -73,13 +72,17 @@ public class BuffManager : MonoBehaviour
 
         adBuffBtn = worldUIRef.transform.Find("ADBuff").GetComponent<Button>(); // 인게임 팝업 버프아이콘
 
-        
+
         //기본 버프선택창
         mainWindow = frontUIRef.transform.Find("Buff_Window").gameObject;
+        mainWindowAnim = mainWindow.GetComponent<Animator>();
+
         buffSelectUIWindow = frontUIRef.transform.Find("Buff_Window/Window").gameObject;
         exitBtn = buffSelectUIWindow.transform.Find("ExitBtn").GetComponent<Button>();
 
         btnCount = buffSelectUIWindow.transform.Find("Buff_Layout").childCount;
+        buffLayOutRef = buffSelectUIWindow.transform.Find("Buff_Layout").gameObject;
+
         viewAdBtn = new Button[btnCount];
         viewAdCoolTimer = new float[btnCount];
         btnAdActiveIMG = new GameObject[btnCount];
@@ -88,16 +91,6 @@ public class BuffManager : MonoBehaviour
         rubyPrice = new TMP_Text[btnCount];
         buffIconBottomTime = new TMP_Text[btnCount];
 
-        //물어보는창 
-        alrimWindow = frontUIRef.transform.Find("Buff_Window/Alrim_Window").gameObject;
-        rubyValueText = alrimWindow.transform.Find("Title/RubyValue_Text").GetComponent<TMP_Text>();
-        alrimYesOrNoBtn[0] = alrimWindow.transform.Find("Title/NoBtn").GetComponent<Button>();
-        alrimYesOrNoBtn[1] = alrimWindow.transform.Find("Title/YesBtn").GetComponent<Button>();
-
-        // 루비없어 창
-        noHaveRubyMainWindow = mainWindow.transform.Find("NoHaveRuby").gameObject;
-        noHaveRubyWindowYesOrNoBtn[0] = noHaveRubyMainWindow.transform.Find("Title/NoBtn").GetComponent<Button>();
-        noHaveRubyWindowYesOrNoBtn[1] = noHaveRubyMainWindow.transform.Find("Title/YesBtn").GetComponent<Button>();
 
         //ATK 초기화
         viewAdBtn[0] = buffSelectUIWindow.transform.Find("Buff_Layout/ATK_Up/ChoiseBtn_AD").GetComponent<Button>();
@@ -164,15 +157,39 @@ public class BuffManager : MonoBehaviour
 
     private void BtnInIt()
     {
+        exitBtn.onClick.AddListener(() => { Buff_UI_Active(false); });
 
-        
-        exitBtn.onClick.AddListener(() => { WorldUI_Manager.inst.buffSelectUIWindowAcitve(false); });
-
-        //광고 버프활성화 버튼들
+        // 1. 광고 버프 
         viewAdBtn[0].onClick.AddListener(() => AdBuffActive(0));
         viewAdBtn[1].onClick.AddListener(() => AdBuffActive(1));
         viewAdBtn[2].onClick.AddListener(() => AdBuffActive(2));
 
+        // 2. 루비 구매
+
+        useRubyBtn[0].onClick.AddListener(() =>
+        {
+            RubyPayment.inst.RubyPaymentUiActive(100, () =>
+            {
+                RubyPayBtnInit(0);
+            });
+        });
+
+        useRubyBtn[1].onClick.AddListener(() => {
+
+            RubyPayment.inst.RubyPaymentUiActive(100, () =>
+            {
+                RubyPayBtnInit(1);
+            });
+        });
+
+        useRubyBtn[2].onClick.AddListener(() => {
+            RubyPayment.inst.RubyPaymentUiActive(100, () =>
+            {
+                RubyPayBtnInit(2);
+            });
+        });
+
+    
         // 인게임 광고 보고 공격력증가 버튼
         adBuffBtn.onClick.AddListener(() => ADViewManager.inst.SampleAD_Active_Funtion(() =>
         {
@@ -182,28 +199,50 @@ public class BuffManager : MonoBehaviour
             WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(3), buffstringText[3]);
         }));
 
-        // 루비로 구매버튼 => 정말 구매하시껍니까 창으로 연결
-        useRubyBtn[0].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(0));
-        useRubyBtn[1].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(1));
-        useRubyBtn[2].onClick.AddListener(() => Set_ReallyBuyBuffWindow_Active(2));
-
-        alrimYesOrNoBtn[0].onClick.AddListener(() => alrimWindow.SetActive(false));
-
-        //루비로 구매하지만 부족 창버튼
-        noHaveRubyWindowYesOrNoBtn[0].onClick.AddListener(() => noHaveRubyMainWindow.SetActive(false)); // No 버튼
-        noHaveRubyWindowYesOrNoBtn[1].onClick.AddListener(() =>  // Yes버튼
-        {
-            noHaveRubyMainWindow.SetActive(false);
-            mainWindow.SetActive(false);
-            ShopManager.Instance.OpenShop(4);
-        });
-
     }
 
-  
-    
+    /// <summary>
+    /// 버프샵 On/Off
+    /// </summary>
+    /// <param name="value"></param>
+    public void Buff_UI_Active(bool value)
+    {
+        if (value)
+        {
+            mainWindow.SetActive(true);
+
+        }
+        else 
+        {
+            buffLayOutRef.SetActive(false);
+            exitBtn.gameObject.SetActive(false);
+            mainWindowAnim.SetTrigger("Exit");
+        }
+    }
+
+    // 애니메이션 적용
+    public void MainWindow_Active_False() => mainWindow.SetActive(false);
+
+
+
+
+    private void RubyPayBtnInit(int value)
+    {
+        BuffContoller.inst.ActiveBuff(value, RubyBuffTime[value]);
+        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(value), RewardStringMaker(value));
+        mainWindow.SetActive(false);
+    }
+
+    //기존에 있던 버프 string 배열 가져와서 재활용
+    private string RewardStringMaker(int value)
+    {
+        int findindex = buffstringText[value].IndexOf('프');
+        return new string(buffstringText[value].Substring(0,findindex + 1).ToArray()) + $" {RubyBuffTime[value]} 분";
+    }
+
+
     private void AdBuffActive(int value)
-    { 
+    {
         ADViewManager.inst.SampleAD_Active_Funtion(() =>
         {
             BuffContoller.inst.ActiveBuff(value, AdbuffTime(value)); //버프활성화
@@ -227,53 +266,7 @@ public class BuffManager : MonoBehaviour
         BuffContoller.inst.ActiveBuff(type, Time); //버프활성화
         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(type), text);
     }
-    /// <summary>
-    /// 정말 구매하실껀지 물어보는창 초기화 및 yes버튼 초기화
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="indexNum"></param>
-    private void Set_ReallyBuyBuffWindow_Active(int indexNum)
-    {
-
-        // 네 창에 재화 계산되는양 계산 초기화
-        int curRuby = GameStatus.inst.Ruby; //현재 소지 루비
-        useRutyTemp = RubyPrice.inst.Get_buffRubyPrice(indexNum); // 사용할 루비
-        int leftPrice = curRuby - useRutyTemp; // 잔액
-
-        if (curRuby >= useRutyTemp) //가진 루비가 적을경우
-        {
-            rubyValueText.text = $"{curRuby}\n-{useRutyTemp}\n\n{leftPrice}";
-
-            //네 버튼 여기서 초기화
-            alrimYesOrNoBtn[1].onClick.RemoveAllListeners();
-
-            alrimYesOrNoBtn[1].onClick.AddListener(() =>
-            {
-                GameStatus.inst.Ruby -= useRutyTemp;  //루비차감
-                useRutyTemp = 0;
-
-                BuffContoller.inst.ActiveBuff(indexNum, RubyBuffTime[indexNum]); // 버프주기
-
-                alrimWindow.SetActive(false); //창닫기
-                mainWindow.SetActive(false);
-
-                ADViewManager.inst.Set_TextAlrim(MakeAlrimMSG(indexNum, (int)RubyBuffTime[indexNum])); // 알림바 넣어주기
-            });
-
-            alrimWindow.SetActive(true);
-        }
-        else if (curRuby < useRutyTemp) //가진 루비가 적을경우
-        {
-            noHaveRubyMainWindow.SetActive(true);
-        }
-    }
-
-
-
-    public void viewAdCoolTime(int buffIndexNum)
-    {
-        viewAdCoolTimer[buffIndexNum] += 15 * 60;
-    }
+ 
 
 
     // UI 창 버프 시간 Text 업데이트해주는 함수
@@ -336,6 +329,7 @@ public class BuffManager : MonoBehaviour
     }
 
 
+
     /// <summary>
     /// 광고 쿨타임에 시간넣기
     /// </summary>
@@ -343,26 +337,12 @@ public class BuffManager : MonoBehaviour
     /// <param name="Time">시간(분)</param>
     public void AddBuffCoolTime(int index, int Time) => viewAdCoolTimer[index] = Time * 60;
 
-    public string MakeAlrimMSG(int indexNum, int Time)
-    {
 
-        switch (indexNum)
-        {
-            case 0:
-                return $"공격력 버프가 {Time}분 활성화 되었습니다.";
-
-
-            case 1:
-                return $"골드획득 버프가 {Time}분 활성화 되었습니다.";
-
-
-            case 2:
-                return $"이동속도 버프가 {Time}분 활성화 되었습니다.";
-
-        }
-
-        return null;
-    }
+    /// <summary>
+    /// 광고 버프 남은시간 Return
+    /// </summary>
+    /// <param name="buffIndexNum"></param>
+    public void viewAdCoolTime(int buffIndexNum) => viewAdCoolTimer[buffIndexNum] += 15 * 60;
 
 
     /// <summary>

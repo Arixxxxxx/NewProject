@@ -1,7 +1,5 @@
-using JetBrains.Annotations;
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -285,6 +283,12 @@ public class GameStatus : MonoBehaviour
             }
             ruby = value;
             WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString("N0"));
+            
+            if(DataManager.inst.saveAble == true)
+            {
+                WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(SpriteResource.inst.CoinIMG(0), $"루비 +{value}");
+            }
+            
             OnRubyChanged?.Invoke();
         }
     }
@@ -715,7 +719,8 @@ public class GameStatus : MonoBehaviour
     public void PlusStar(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(Star, getValue);
-        WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(1, CalCulator.inst.StringFourDigitAddFloatChanger(getValue));
+        Sprite img = SpriteResource.inst.CoinIMG(2);
+        string text = $"별 +{CalCulator.inst.StringFourDigitAddFloatChanger(getValue)}";
         Star = result;
     }
 
@@ -726,7 +731,12 @@ public class GameStatus : MonoBehaviour
     public void PlusGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue);
-        WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitAddFloatChanger(getValue));
+        Sprite img = SpriteResource.inst.CoinIMG(1);
+        string outputText = $"골드 +{CalCulator.inst.StringFourDigitAddFloatChanger(getValue)}";
+        WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(img, outputText);
+
+        //WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, CalCulator.inst.StringFourDigitAddFloatChanger(getValue));
+        // 구버전 재화 위에 숫자만 올라가는 연출
         Gold = result;
     }
 
@@ -916,10 +926,10 @@ public class GameStatus : MonoBehaviour
 
         // 4.버프남은시간
         double[] BuffTime = BuffContoller.inst.BuffTimer;
-        saveData.buffAtkTime = BuffTime[0];
-        saveData.buffMoveSpeedTime = BuffTime[1];
-        saveData.buffGoldTime = BuffTime[2];
-        saveData.buffBigAtkTime = BuffTime[3];
+        saveData.buffAtkTime = (int)BuffTime[0] / 60;
+        saveData.buffMoveSpeedTime = (int)BuffTime[1] / 60;
+        saveData.buffGoldTime = (int)BuffTime[2] / 60;
+        saveData.buffBigAtkTime = (int)BuffTime[3] / 60;
 
         // 5. 뉴비 혜택
         //뉴비 버프타임 추가해야됨
