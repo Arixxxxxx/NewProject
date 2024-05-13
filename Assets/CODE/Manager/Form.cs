@@ -47,8 +47,8 @@ public enum SpMissionTag
 public enum PetType
 { 
     AtkPet,
-    BuffPet,
     GoldPet,
+    BuffPet,
 }
 
 public enum DailyMissionTag

@@ -329,7 +329,7 @@ public class UIManager : MonoBehaviour
 
     void SetWeaponScroll()
     {
-        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * (haveWeaponNum / 5) - 64);
+        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * haveWeaponNum - 64);
     }
 
     public void changeSortOder(int value)

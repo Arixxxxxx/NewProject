@@ -401,6 +401,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             accumlateFloor = value;
+            Debug.Log($"Floor = {value}");
         }
     }
 
@@ -418,7 +419,7 @@ public class GameStatus : MonoBehaviour
         {
             stageLv = value;
             OnStageChanged?.Invoke();
-            Debug.Log(value);
+            Debug.Log($"Stage = {value}");
         }
     }
 

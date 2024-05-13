@@ -15,7 +15,7 @@ public class Gacha : MonoBehaviour
     [SerializeField] Button OkBtn;
     List<GaChaEffect> list_resultImage = new List<GaChaEffect>();
 
-    
+
     int openCount = 0;
     int maxOpenCount = 10;
     Button adRelicBtn;
@@ -67,7 +67,7 @@ public class Gacha : MonoBehaviour
         adRelicBtn = transform.Find("Btns/RelicGachaBtn (2)").GetComponent<Button>();
         adRelicBtn.onClick.AddListener(() =>
         {
-            ADViewManager.inst.SampleAD_Active_Funtion(() => clickGacha(10));
+            ADViewManager.inst.SampleAD_Active_Funtion(() => { StartCoroutine(gachaEffect(10)); });
         });
     }
 
@@ -162,8 +162,20 @@ public class Gacha : MonoBehaviour
 
     public void clickGacha(int GachaCount)
     {
-        StartCoroutine(gachaEffect(GachaCount));
-        maxOpenCount = GachaCount;
+        int price;
+        if (GachaCount == 1)
+        {
+            price = 100;
+        }
+        else
+        {
+            price = 900;
+        }
+        RubyPayment.inst.RubyPaymentUiActive(price, () =>
+        {
+            StartCoroutine(gachaEffect(GachaCount));
+            maxOpenCount = GachaCount;
+        });
     }
 
     public void ClickAllOpen()
@@ -187,7 +199,7 @@ public class Gacha : MonoBehaviour
         {
             return 1;
         }
-        
+
     }
 
     void allOpenBtnActive()

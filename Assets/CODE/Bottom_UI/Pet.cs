@@ -46,6 +46,7 @@ public class Pet : MonoBehaviour
         }
     }
     bool ishave = false;
+    bool isRelease = false;
     int nextSoul;
     int nextBorn;
     int nextBook;
@@ -114,7 +115,7 @@ public class Pet : MonoBehaviour
 
     void checkHaveRuby()
     {
-        if (BuyBtn.gameObject.activeSelf)
+        if (isRelease && BuyBtn.gameObject.activeSelf)
         {
             int haveRuby = GameStatus.inst.Ruby;
             if (haveRuby >= baseCost)
@@ -157,6 +158,8 @@ public class Pet : MonoBehaviour
     {
         if (GameStatus.inst.StageLv >= releaseStage)
         {
+            isRelease = true;
+            upBtn.interactable = true;
             mask.SetActive(false);
         }
     }

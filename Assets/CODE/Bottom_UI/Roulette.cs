@@ -105,7 +105,8 @@ public class Roulette : MonoBehaviour
         Transform canvas = GameObject.Find("---[UI Canvas]").transform;
         roulette = transform.Find("BackGround/Roulette").GetComponent<Image>();
         player = transform.Find("BackGround/Player").GetComponent<Image>();
-        
+
+        openBtn = GameObject.Find("---[World UI Canvas]").transform.Find("StageUI/MenuBox/Btns/Bingo").GetComponent<Button>();
         StartBtn = transform.Find("BackGround/StartBtn").GetComponent<Button>();
         StopBtn = transform.Find("BackGround/StopBtn").GetComponent<Button>();
         closeBtn = transform.Find("BackGround/CloseBtn").GetComponent<Button>();
@@ -442,44 +443,44 @@ public class Roulette : MonoBehaviour
     IEnumerator checkBingo()
     {
         //°¡·Îºù°í
-        if (horizontalBingo[0] && bingoBoard[0] && bingoBoard[1] && bingoBoard[2])
+        if (horizontalBingo[0] == false && bingoBoard[0] && bingoBoard[1] && bingoBoard[2])
         {
             horizontalBingo[0] = true;
         }
 
-        if (horizontalBingo[1] && bingoBoard[3] && bingoBoard[4])
+        if (horizontalBingo[1] == false && bingoBoard[3] && bingoBoard[4])
         {
             horizontalBingo[1] = true;
         }
 
-        if (horizontalBingo[2] && bingoBoard[5] && bingoBoard[6] && bingoBoard[7])
+        if (horizontalBingo[2] == false && bingoBoard[5] && bingoBoard[6] && bingoBoard[7])
         {
             horizontalBingo[2] = true;
         }
 
         //¼¼·Îºù°í
-        if (verticalBingo[0] && bingoBoard[0] && bingoBoard[3] && bingoBoard[5])
+        if (verticalBingo[0] == false && bingoBoard[0] && bingoBoard[3] && bingoBoard[5])
         {
             verticalBingo[0] = true;
         }
 
-        if (verticalBingo[1] && bingoBoard[1] && bingoBoard[6])
+        if (verticalBingo[1] == false && bingoBoard[1] && bingoBoard[6])
         {
             verticalBingo[1] = true;
         }
 
-        if (verticalBingo[2] && bingoBoard[2] && bingoBoard[4] && bingoBoard[7])
+        if (verticalBingo[2] == false && bingoBoard[2] && bingoBoard[4] && bingoBoard[7])
         {
             verticalBingo[2] = true;
         }
 
         //´ë°¢ºù°í
-        if (crossBingo[0] && bingoBoard[0] && bingoBoard[7])
+        if (crossBingo[0] == false && bingoBoard[0] && bingoBoard[7])
         {
             crossBingo[0] = true;
         }
 
-        if (crossBingo[1] && bingoBoard[2] && bingoBoard[5])
+        if (crossBingo[1] == false && bingoBoard[2] && bingoBoard[5])
         {
             crossBingo[1] = true;
         }
