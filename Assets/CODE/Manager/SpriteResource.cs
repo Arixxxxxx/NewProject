@@ -28,6 +28,7 @@ public class SpriteResource : MonoBehaviour
     [SerializeField] private Sprite[] coinMG;
     [Header("# 동료 강화 재료 아이콘")]
     [SerializeField] private Sprite[] crewMaterialIMG;
+    
     /// <summary>
     /// 버프 아이콘 스프라이트
     /// </summary>
@@ -38,7 +39,7 @@ public class SpriteResource : MonoBehaviour
     /// <summary>
     ///  재화 스프라이트
     /// </summary>
-    /// <param name="value"> 0루비 / 1골드 </param>
+    /// <param name="value"> 0루비 / 1골드 / 2별 / 3도감 정수 </param>
     /// <returns></returns>
     public Sprite CoinIMG(int value) => coinMG[value];
 

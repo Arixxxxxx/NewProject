@@ -666,7 +666,6 @@ public class CalCulator : MonoBehaviour
             double CalcurHP = (hpUlong * (ulong)multiPlyer) / 100;
 
         
-            Debug.Log($" 더블 : 들어온 현재 체력{curEnemyHP} / 계산된 체력 {CalcurHP}");
             if (CalcurHP <= 0)
             {
                 return null;
@@ -679,7 +678,6 @@ public class CalCulator : MonoBehaviour
             hp = BigInteger.Parse(curEnemyHP);
             hp = BigInteger.Divide((BigInteger.Multiply(hp, multiPlyer)), 100);
 
-            Debug.Log($"빅인티져 : 들어온 현재 체력{curEnemyHP} / 계산된 체력 {hp}");
 
             if (hp <= 0)
             {

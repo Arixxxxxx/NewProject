@@ -28,7 +28,7 @@ public class BuffBtns : MonoBehaviour
             case buffType.AD_ATK:
                 btn.onClick.AddListener(() =>
                 {
-                    WorldUI_Manager.inst.buffSelectUIWindowAcitve(true);
+                    BuffManager.inst.Buff_UI_Active(true);
                 });
                 break;
 

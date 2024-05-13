@@ -236,7 +236,7 @@ public class ActionManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            
+            WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(SpriteResource.inst.CoinIMG(0), "루비 +100");
         }
       
         if (Input.GetKeyDown(KeyCode.Alpha4))
@@ -483,8 +483,8 @@ public class ActionManager : MonoBehaviour
 
             // 현재 받아야되는 돈 계산
             string getGold = Get_EnemyDeadGold();
-            WorldUI_Manager.inst.Get_Increase_GetGoldAndStar_Font(0, getGold);
             GameStatus.inst.PlusGold(getGold);
+
             EnemyDeadFloorUp();
             GameStatus.inst.NewbieAttackCountUp(false); // 뉴비버프 어택카운트0
 

@@ -52,7 +52,7 @@ public class UI_IncreaseValueFont : MonoBehaviour
 
     private void returnObj()
     {
-        WorldUI_Manager.inst.Return_GoldAndStarFontPrefabs(gameObject);
+        WorldUI_Manager.inst.Return_WorldUIObjPoolingObj(gameObject,1);
     }
 
     

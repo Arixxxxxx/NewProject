@@ -26,6 +26,7 @@ public class LoginManager : MonoBehaviour
     TMP_InputField inputField;
     Button backBtn, accpectBtn;
     TMP_Text errorMsgText;
+    TMP_Text loadingText;
 
     private void Awake()
     {
@@ -50,12 +51,13 @@ public class LoginManager : MonoBehaviour
 
         loadingRef = canvasRef.transform.Find("Loading").gameObject;
         loadingFillBar = loadingRef.transform.Find("Bar/FillBar").GetComponent<Image>();
+        loadingText = loadingRef.transform.Find("Bar/LoadingText").GetComponent<TMP_Text>();
 
         backBtn = guestInputFieldRef.transform.Find("BackBtn").GetComponent<Button>();
         accpectBtn = guestInputFieldRef.transform.Find("AcceptBtn").GetComponent<Button>();
         errorMsgText = guestInputFieldRef.transform.Find("Window/ErrorMsg").GetComponent<TMP_Text>();
 
-        inputField = guestInputFieldRef.transform.Find("InputField (TMP)").GetComponent<TMP_InputField>();   
+        inputField = guestInputFieldRef.transform.Find("Window/TextBoxIMG/Input").GetComponent<TMP_InputField>();
 
     }
     void Start()
@@ -117,32 +119,57 @@ public class LoginManager : MonoBehaviour
             errorMsgText.text = $"최소 2자이상 6자 이내여야 합니다.";
             errorMsgText.gameObject.SetActive(true);
         }
-        else if (!IsHangulJamoOnly(inputText))
+        else if (IsHangulJamoOnly(inputText) == 0)
         {
-            errorMsgText.text = $"완성형 글자여야 합니다.";
+            errorMsgText.text = $"한글과 영어를 혼합할 수 없습니다.";
             errorMsgText.gameObject.SetActive(true);
         }
-        else
+        else if (IsHangulJamoOnly(inputText) == 1)
+        {
+            errorMsgText.text = $"완성형 한글을 사용해야 합니다.";
+            errorMsgText.gameObject.SetActive(true);
+        }
+        else if (IsHangulJamoOnly(inputText) == 2)
+        {
+            errorMsgText.text = $"완성형 한글을 사용해야 합니다.";
+            errorMsgText.gameObject.SetActive(true);
+        }
+        else if (IsHangulJamoOnly(inputText) == 3)
         {
             //창닫고 로딩
             DataManager.inst.Save_NewCreateAccount(inputText);
             inputField.text = string.Empty;
+            loginRef.SetActive(false);
             guestInputFieldRef.SetActive(false);
             LoadScene(1);
         }
     }
 
     //닉네임 한글 완성형 체크
-    private bool IsHangulJamoOnly(string text)
+    private int IsHangulJamoOnly(string text)
     {
+        bool containsHangul = false;
+        bool containsEnglish = false;
+
         foreach (char c in text)
         {
-            if (!(c >= 0xAC00 && c <= 0xD7AF)) // 한글 완성형 유니코드 범위
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) // 영문자 범위 검사
             {
-                return false;
+                if (containsHangul) return 0; // 한글이 이미 포함된 경우 false
+                containsEnglish = true;
+            }
+            else if (c >= 0xAC00 && c <= 0xD7AF) // 완성형 한글 범위 검사
+            {
+                if (containsEnglish) return 1; // 영어가 이미 포함된 경우 false
+                containsHangul = true;
+            }
+            else
+            {
+                return 2; // 영어나 한글이 아닌 다른 문자가 포함되면 false
             }
         }
-        return true;
+
+        return 3; 
     }
 
 
@@ -198,6 +225,8 @@ public class LoginManager : MonoBehaviour
                     yield break;
                 }
             }
+
+            loadingText.text = $"Loading ({(int)(loadingFillBar.fillAmount * 100f)}%)";
         }
     }
 

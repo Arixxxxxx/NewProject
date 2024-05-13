@@ -96,7 +96,7 @@ public class BuffContoller : MonoBehaviour
     /// <param name="Time">½Ã°£(ºÐ)</param>
     public void ActiveBuff(int Num, double Time)
     {
-        buffTimer[Num] = 0;
+
         buffTimer[Num] += Time * 60;
         buffIconBg[Num].gameObject.SetActive(false);
         BuffValueActiver(Num, true);

@@ -284,12 +284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a0479c31c21a29468eed9565636ebbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rulletParticle: {fileID: 0}
-  slotPs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  spinSpeedDownMulyfly: 0
+  rulletArrowAnim: {fileID: 0}
+  spinSpeedDownMulyfly: 400
 --- !u!1 &2562581402446063995
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,7 +413,9 @@ MonoBehaviour:
   - {fileID: 1899164654, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
   - {fileID: -1113515469, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
   - {fileID: 1121342626, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
-  getGoldAndStar_Text: {fileID: 7590727819067225288, guid: cf8fd12e99f015349a14132c5c82dc08, type: 3}
+  poolingObj:
+  - {fileID: 5653821492268183441, guid: 91f1c198bbc08f447b1e76b1804801b0, type: 3}
+  - {fileID: 8335622449627231134, guid: e7a94963dd424e44285ae7568a01aa74, type: 3}
   stageUI: {fileID: 0}
 --- !u!114 &5293482492015374371
 MonoBehaviour:
@@ -689,6 +687,9 @@ MonoBehaviour:
   OnPercentageChanged:
     m_PersistentCalls:
       m_Calls: []
+  OnRouletteTicketChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8406171563017925295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -716,10 +717,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   letter: {fileID: 2212636165233051943, guid: 42e8d957bc12a2a42afafbd60fb26434, type: 3}
-  EveryGetAlrimRef: {fileID: 0}
-  EveryGetAlrimFreamlayOut: {fileID: 0}
-  everyAcceptBackBtn: {fileID: 0}
-  letterbox: []
 --- !u!114 &5206211488151109852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -800,6 +797,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d9242b4c1ae7a9b40b0b61b2a8d5889a, type: 3}
   - {fileID: 21300000, guid: 3d4561e7dba3d75429ec4decc6176723, type: 3}
   - {fileID: 21300000, guid: 23666430086f9594e8bb3e7680b12c23, type: 3}
+  - {fileID: 21300000, guid: e68996545d72e8c4ebb06f5378981a9a, type: 3}
   crewMaterialIMG:
   - {fileID: -480492995, guid: 031e097540eb98646b85e31442c57b72, type: 3}
   - {fileID: 394849108, guid: 031e097540eb98646b85e31442c57b72, type: 3}
