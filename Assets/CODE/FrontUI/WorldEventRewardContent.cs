@@ -78,7 +78,7 @@ public class WorldEventRewardContent : MonoBehaviour
                     //광고보고
                     ADViewManager.inst.SampleAD_Active_Funtion(() =>
                     {
-                        GameStatus.inst.Ruby += 100; //실행
+                        GameStatus.inst.PlusRuby(100); //실행
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " 루비 +100");
                     });
                 });

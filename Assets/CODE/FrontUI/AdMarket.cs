@@ -131,7 +131,7 @@ public class AdMarket : MonoBehaviour
                 case 1:
                     WorldUI_Manager.inst.Set_Reward_InclueAction(SpriteResource.inst.CoinIMG(0), "·çºñ +200", () =>
                     {
-                        GameStatus.inst.Ruby += 200;
+                        GameStatus.inst.PlusRuby(200);
                     });
                     break;
 
