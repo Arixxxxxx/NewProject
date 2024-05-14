@@ -223,8 +223,8 @@ public class UIManager : MonoBehaviour
         //무기 초기화
         m_WeaponParents = canvas.transform.Find("ScreenArea/BackGround/Weapon/Scroll View").GetComponent<ScrollRect>().content;
         m_WeaponParentRect = m_WeaponParents.GetComponent<RectTransform>();
-        m_totalAtk = canvas.transform.Find("ScreenArea/BackGround/Weapon/TotalAtk").GetComponent<TextMeshProUGUI>();
-        WeaponBook = canvas.transform.Find("ScreenArea/BackGround/Weapon/AllLvUpBtn/DogamBtn").GetComponent<Button>();
+        m_totalAtk = canvas.transform.Find("ScreenArea/BackGround/Weapon/TotalAtkBG/TotalAtk").GetComponent<TextMeshProUGUI>();
+        WeaponBook = canvas.transform.Find("ScreenArea/BackGround/Weapon/TopBg/DogamBtn").GetComponent<Button>();
         int weaponCount = m_WeaponParents.childCount;
         for (int iNum = 0; iNum < weaponCount; iNum++)
         {

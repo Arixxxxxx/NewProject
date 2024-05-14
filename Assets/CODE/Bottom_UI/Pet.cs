@@ -19,17 +19,17 @@ public class Pet : MonoBehaviour
             lv = value;
             switch (type)
             {
-                case PetType.AtkPet:
+                case PetType.Bomb:
                     GameStatus.inst.Pet0_Lv = value;
 
                     break;
 
-                case PetType.BuffPet:
+                case PetType.Panda:
                     GameStatus.inst.Pet1_Lv = value;
 
                     break;
 
-                case PetType.GoldPet:
+                case PetType.Necromancer:
                     GameStatus.inst.Pet2_Lv = value;
 
                     break;
@@ -68,29 +68,29 @@ public class Pet : MonoBehaviour
 
     public void initPet()
     {
-        upBtn = transform.Find("Button").GetComponent<Button>();
+        upBtn = transform.Find("LvUpBtn").GetComponent<Button>();
         DetailBtn = transform.Find("imageBtn").GetComponent<Button>();
         BuyBtn = transform.Find("BuyBtn").GetComponent<Button>();
         BuyPriceText = transform.Find("BuyBtn/TextBox/PriceText").GetComponent<TMP_Text>();
-        SoulText = transform.Find("Button/Soul/PriceText").GetComponent<TMP_Text>();
-        BornText = transform.Find("Button/Born/PriceText").GetComponent<TMP_Text>();
-        BookText = transform.Find("Button/Book/PriceText").GetComponent<TMP_Text>();
+        SoulText = transform.Find("LvUpBtn/Soul/PriceText").GetComponent<TMP_Text>();
+        BornText = transform.Find("LvUpBtn/Born/PriceText").GetComponent<TMP_Text>();
+        BookText = transform.Find("LvUpBtn/Book/PriceText").GetComponent<TMP_Text>();
         lvText = transform.Find("LvText").GetComponent<TMP_Text>();
         mask = transform.Find("BuyBtn/BtnMask").gameObject;
 
         switch (type)
         {
-            case PetType.AtkPet:
+            case PetType.Bomb:
                 Lv = GameStatus.inst.Pet0_Lv;
 
                 break;
 
-            case PetType.BuffPet:
+            case PetType.Panda:
                 Lv = GameStatus.inst.Pet1_Lv;
 
                 break;
 
-            case PetType.GoldPet:
+            case PetType.Necromancer:
                 Lv = GameStatus.inst.Pet2_Lv;
 
                 break;
