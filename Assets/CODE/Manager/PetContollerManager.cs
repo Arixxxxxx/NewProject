@@ -199,6 +199,7 @@ public class PetContollerManager : MonoBehaviour
         {
             ActionManager.inst.A_CrewAttackToEnemy(0);
             pet0Ps[0].Stop();
+            pet0Ps[1].transform.position = ActionManager.inst.Get_CurEnemyCenterPosition();
             pet0Ps[1].Play();
 
         }

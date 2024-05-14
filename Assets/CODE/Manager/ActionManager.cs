@@ -80,7 +80,8 @@ public class ActionManager : MonoBehaviour
     [Space]
 
     //타격 이펙트
-    GameObject effectRef;
+    GameObject effectRef, playerAttackEffectRef, playerCriAttackEffectRef;
+
     ParticleSystem[] playerAtkEffect;
     ParticleSystem[] playerAtkCriEffect;
     ParticleSystem swordEffect;
@@ -151,6 +152,9 @@ public class ActionManager : MonoBehaviour
         enemyAnim = enemySr.GetComponent<Animator>();
 
         int atkEffectCount = effectRef.transform.Find("AtkEffect").childCount;
+        playerAttackEffectRef = effectRef.transform.Find("AtkEffect").gameObject;
+        playerCriAttackEffectRef = effectRef.transform.Find("CriEffect").gameObject;
+
         playerAtkEffect = new ParticleSystem[atkEffectCount];
         for (int index = 0; index < atkEffectCount; index++)
         {
@@ -607,8 +611,12 @@ public class ActionManager : MonoBehaviour
     int effectCriIndexCount = 0;
 
     //에너미 피격 이펙트 함수
+    Vector3 particleEffectPo = Vector3.zero;
+
     private void EnemyOnHitEffect(bool cri)
     {
+        particleEffectPo = Get_CurEnemyCenterPosition();
+
         if (cri == false)
         {
             if (effectIndexCount == playerAtkEffect.Length - 1)
@@ -616,6 +624,8 @@ public class ActionManager : MonoBehaviour
                 effectIndexCount = 0;
             }
 
+          
+            playerAttackEffectRef.transform.position = particleEffectPo;
             playerAtkEffect[effectIndexCount].Play();
             effectIndexCount++;
         }
@@ -625,7 +635,7 @@ public class ActionManager : MonoBehaviour
             {
                 effectCriIndexCount = 0;
             }
-
+            playerCriAttackEffectRef.transform.position = particleEffectPo; 
             playerAtkCriEffect[effectCriIndexCount].Play();
             effectCriIndexCount++;
         }
