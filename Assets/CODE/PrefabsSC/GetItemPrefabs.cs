@@ -42,14 +42,20 @@ public class GetItemPrefabs : MonoBehaviour
         itemIMG.sprite = img;
         itemText.text = Text;
 
+        transform.SetAsLastSibling();
+
+        if(!gameObject.activeInHierarchy) 
+        {
+            gameObject.SetActive(true);
+        }
+        
+
         StartCoroutine(Play());
     }
 
     WaitForSeconds endTime = new WaitForSeconds(2f);
     IEnumerator Play()
     {
-        transform.SetAsLastSibling();
-        gameObject.SetActive(true);
         WorldUI_Manager.inst.GetTrs_VerticalLayOutActive(true);
         yield return null;
         WorldUI_Manager.inst.GetTrs_VerticalLayOutActive(false);

@@ -1,4 +1,3 @@
-using PimDeWitte.UnityMainThreadDispatcher;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +30,7 @@ public class LoginManager : MonoBehaviour
 
     private void Awake()
     {
-        if(inst == null)
+        if (inst == null)
         {
             inst = this;
         }
@@ -47,15 +46,15 @@ public class LoginManager : MonoBehaviour
         taptoScrrenRef = canvasRef.transform.Find("TapToScreen").gameObject;
         guestInputFieldRef = canvasRef.transform.Find("GuestInputField").gameObject;
 
-          googlePlayBtn = loginRef.transform.Find("GoogleBtn").GetComponent<Button>();
+        googlePlayBtn = loginRef.transform.Find("GoogleBtn").GetComponent<Button>();
         guestBtn = loginRef.transform.Find("GuestBtn").GetComponent<Button>();
 
         loadingRef = canvasRef.transform.Find("Loading").gameObject;
         loadingFillBar = loadingRef.transform.Find("Bar/FillBar").GetComponent<Image>();
         loadingText = loadingRef.transform.Find("Bar/LoadingText").GetComponent<TMP_Text>();
 
-        backBtn = guestInputFieldRef.transform.Find("BackBtn").GetComponent<Button>();
-        accpectBtn = guestInputFieldRef.transform.Find("AcceptBtn").GetComponent<Button>();
+        backBtn = guestInputFieldRef.transform.Find("Window/BackBtn").GetComponent<Button>();
+        accpectBtn = guestInputFieldRef.transform.Find("Window/AcceptBtn").GetComponent<Button>();
         errorMsgText = guestInputFieldRef.transform.Find("Window/ErrorMsg").GetComponent<TMP_Text>();
 
         inputField = guestInputFieldRef.transform.Find("Window/TextBoxIMG/Input").GetComponent<TMP_InputField>();
@@ -99,18 +98,12 @@ public class LoginManager : MonoBehaviour
 
         accpectBtn.onClick.AddListener(() =>
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                Create_Account_SetName(inputField.text);
-            });
+            Create_Account_SetName(inputField.text);
         });
 
         inputField.onSubmit.AddListener((text) =>
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                Create_Account_SetName(inputField.text);
-            });
+            Create_Account_SetName(inputField.text);
         });
     }
 
@@ -120,7 +113,7 @@ public class LoginManager : MonoBehaviour
     private void Create_Account_SetName(string inputText)
     {
         int count = inputText.Count();
-        
+
         if (count < 2 || count > 6)
         {
             errorMsgText.text = $"최소 2자이상 6자 이내여야 합니다.";
@@ -144,12 +137,12 @@ public class LoginManager : MonoBehaviour
         else if (IsHangulJamoOnly(inputText) == 3)
         {
             //창닫고 로딩
-                DataManager.inst.Save_NewCreateAccount(inputText);
-                inputField.text = string.Empty;
-                loginRef.SetActive(false);
-                guestInputFieldRef.SetActive(false);
-                LoadScene(1);
-       
+            DataManager.inst.Save_NewCreateAccount(inputText);
+            inputField.text = string.Empty;
+            loginRef.SetActive(false);
+            guestInputFieldRef.SetActive(false);
+            LoadScene(1);
+
         }
     }
 
@@ -177,7 +170,7 @@ public class LoginManager : MonoBehaviour
             }
         }
 
-        return 3; 
+        return 3;
     }
 
 
@@ -190,7 +183,7 @@ public class LoginManager : MonoBehaviour
                 taptoScrrenRef.SetActive(false);
                 loginRef.SetActive(true);
             }
-            else if(DataManager.inst.IshaveJsonFile == true)
+            else if (DataManager.inst.IshaveJsonFile == true)
             {
                 taptoScrrenRef.SetActive(false);
                 LoadScene(1);
@@ -200,7 +193,7 @@ public class LoginManager : MonoBehaviour
     private void LoadScene(int TargetSceneNumber)
     {
         sceneNumber = TargetSceneNumber;
-                    
+
         StartCoroutine(LoadScene());
     }
 

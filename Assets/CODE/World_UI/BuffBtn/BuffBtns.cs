@@ -35,7 +35,7 @@ public class BuffBtns : MonoBehaviour
             case buffType.NewBie:
                 btn.onClick.AddListener(() =>
                 {
-                    Newbie_Content.inst.NewBieBuffInfoWindowActive(true); // 뉴비 버프 정보창
+                    Newbie_Content.inst.Set_NewbieWindowActive(true); // 뉴비 버프 정보창
                 });
                 break;
         }

@@ -212,6 +212,8 @@ public class MinigameManager : MonoBehaviour
         selectGameRef.SetActive(true);
     }
 
+    [SerializeField] float fadeDuration = 10f;
+
     /// <summary>
     /// 게임시작시 페이드아웃
     /// </summary>
@@ -226,15 +228,21 @@ public class MinigameManager : MonoBehaviour
     {
         cutton.color = blackColor;
 
-        while (cutton.color.a > 0)
+        float elapsedTime = 0f;
+
+        // 페이드 아웃
+        while (elapsedTime < fadeDuration)
         {
-            cutton.color -= outColor;
+            cutton.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsedTime / fadeDuration));
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
     }
 
     [SerializeField]
     bool selectGame;
+
+
     /// <summary>
     /// 게임 고르고 시작할때 호출하는 페이드인아웃
     /// </summary>
@@ -251,28 +259,42 @@ public class MinigameManager : MonoBehaviour
 
         StartCoroutine(CuttonFadeInOut());
     }
-    Color inOutColor = new Color(0, 0, 0, 0.005f);
+
+  
     IEnumerator CuttonFadeInOut()
     {
-        while (cutton.color.a < 1)
+
+        float elapsedTime = 0f;
+
+        // 페이드 인
+        while (elapsedTime < fadeDuration)
         {
-            cutton.color += inOutColor;
+            cutton.color = new Color(0, 0, 0, Mathf.Clamp01(elapsedTime / fadeDuration));
+            elapsedTime += Time.deltaTime * 0.5f;
             yield return null;
         }
 
+        cutton.color = new Color(0, 0, 0, 1);
         startGameFuntion?.Invoke();
 
         yield return nextMenuTime;
         yield return nextMenuTime;
         yield return nextMenuTime;
-        yield return nextMenuTime;
-        yield return nextMenuTime;
 
-        while (cutton.color.a > 0)
+
+
+        elapsedTime = 0f;
+
+        // 페이드 아웃
+        while (elapsedTime < fadeDuration)
         {
-            cutton.color -= inOutColor;
+            cutton.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsedTime / fadeDuration));
+            elapsedTime += Time.deltaTime * 0.5f;
             yield return null;
         }
+
+        cutton.color = new Color(0, 0, 0, 0);
+        selectGame = false;
 
         selectGame = false;
     }

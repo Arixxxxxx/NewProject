@@ -6,15 +6,19 @@ using UnityEngine.UI;
 
 public class LetterBoxIcon : MonoBehaviour
 {
+    public enum ItemType { Ruby, Gold, Star }
+
+    public ItemType Type;
+
     TMP_Text valueText;
 
     private void Awake()
     {
-         valueText = GetComponentInChildren<TMP_Text>(true);
+        valueText = GetComponentInChildren<TMP_Text>(true);
     }
     private void Start()
     {
-        
+
     }
     // 모두수락창 아이콘 초기화 및 켜주고 꺼주기    
     public void SetIconAndValue(int value)
@@ -28,12 +32,26 @@ public class LetterBoxIcon : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
-             
-        if(valueText == null)
+
+        if (valueText == null)
         {
             valueText = GetComponentInChildren<TMP_Text>(true);
         }
-        valueText.text = $"+{value.ToString()}";
+
+        switch (Type)
+        {
+            case ItemType.Ruby:
+                valueText.text = $"+ {value.ToString("N0")}";
+                break;
+
+            case ItemType.Gold:
+            case ItemType.Star:
+                valueText.text = $"+ {CalCulator.inst.StringFourDigitAddFloatChanger(value.ToString())}";
+                break;
+
+        }
+
+       
     }
-     
+
 }

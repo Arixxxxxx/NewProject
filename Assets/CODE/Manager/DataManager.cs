@@ -6,6 +6,7 @@ using System.IO;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEditor;
 
 public class DataManager : MonoBehaviour
 {
@@ -150,6 +151,11 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        AutoSave();
+    }
+
     [SerializeField] public bool saveAble;
     // 게임 종료시 자동저장
     void OnApplicationQuit()
@@ -160,6 +166,35 @@ public class DataManager : MonoBehaviour
             Debug.Log($"{path} 경로로 Save");
         }
     }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause) // 어플리케이션이 일시 정지될 때
+        {
+            if (saveAble)
+            {
+                Save_EndGame();
+                Debug.Log($"{path} 경로로 Save");
+            }
+        }
+    }
+
+
+    float saveTime = 30f;
+    float saveTimer = 0;
+    private void AutoSave()
+    {
+        if(saveAble) 
+        {
+            saveTimer = Time.deltaTime;
+            if(saveTimer > saveTime)
+            {
+                saveTimer = 0;
+                Save_EndGame();
+            }
+        }
+    }
+
 
     void setScreen()
     {

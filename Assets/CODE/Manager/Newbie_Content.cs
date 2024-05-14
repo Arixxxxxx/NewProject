@@ -25,6 +25,7 @@ public class Newbie_Content : MonoBehaviour
     TMP_Text mainTaxt;
     // 수락버튼
     [Tooltip("0 받기 활성화 / 1비활성화")] GameObject[] GetBtn = new GameObject[2];
+    Image bottomBoxIMG;
 
     GameObject alrimWindow;
     Image alrimWindowItemIMG;
@@ -44,7 +45,7 @@ public class Newbie_Content : MonoBehaviour
     // 뉴비 버프 아이콘 설명창
     GameObject buffInfoWindow;
     TMP_Text buffLeftTimeText;
-    Button buffinfoBottomBtn;
+    
 
     //알림 심볼
     GameObject simBall;
@@ -72,8 +73,7 @@ public class Newbie_Content : MonoBehaviour
         layoutRef = gameWindow.transform.Find("RubyList").gameObject;
         xBtn = gameWindow.transform.Find("Title/X_Btn").GetComponent<Button>();
         xBtn.onClick.AddListener(() => Set_NewbieWindowActive(false));
-        buffViewrBtn = gameWindow.transform.Find("TextLayOut_2/NoGet/GetGiftBtn").GetComponent<Button>();
-        buffViewrBtn.onClick.AddListener(() => { newbieWindow.gameObject.SetActive(false); NewBieBuffInfoWindowActive(true); });
+
 
         iconLayoutCount = layoutRef.transform.childCount;
         iconLayoutIMG = new Image[iconLayoutCount];
@@ -81,7 +81,7 @@ public class Newbie_Content : MonoBehaviour
         checkIcon = new GameObject[iconLayoutCount];
         iconBG = new GameObject[iconLayoutCount];
 
-        mainTaxt = gameWindow.transform.Find("TextLayOut/NoGet").GetComponent<TMP_Text>();
+        mainTaxt = gameWindow.transform.Find("TextLayOut/Bottom/NoGet").GetComponent<TMP_Text>();
 
         for (int index = 0; index < iconLayoutCount; index++) // 아이콘 박스
         {
@@ -95,8 +95,9 @@ public class Newbie_Content : MonoBehaviour
             iconRoadLineIMG[index] = gameWindow.transform.Find("Line").GetChild(index).GetComponent<Image>();
         }
 
-        GetBtn[0] = gameWindow.transform.Find("TextLayOut/NoGet").gameObject;
-        GetBtn[1] = gameWindow.transform.Find("TextLayOut/Got").gameObject;
+        bottomBoxIMG = gameWindow.transform.Find("TextLayOut/Bottom").GetComponent<Image>();
+        GetBtn[0] = gameWindow.transform.Find("TextLayOut/Bottom/NoGet").gameObject;
+        GetBtn[1] = gameWindow.transform.Find("TextLayOut/Bottom/Got").gameObject;
 
         alrimWindow = newbieWindow.transform.Find("Alrim").gameObject;
         alrimWindowItemIMG = alrimWindow.transform.Find("Window/Frame_LayOut/IMG_Frame/IMG").GetComponent<Image>();
@@ -104,11 +105,8 @@ public class Newbie_Content : MonoBehaviour
         alrimBtn.onClick.AddListener(() => { alrimWindow.SetActive(false); });
 
 
-        //버프 아이콘클릭시 정보창
-        buffInfoWindow = frontUI.transform.Find("NewbieBtnInfo").gameObject;
-        buffLeftTimeText = buffInfoWindow.transform.Find("Window/TextLayOut/NoGet").GetComponent<TMP_Text>();
-        buffinfoBottomBtn = buffLeftTimeText.transform.GetComponentInChildren<Button>();
-        buffinfoBottomBtn.onClick.AddListener(() => buffInfoWindow.gameObject.SetActive(false));
+        buffLeftTimeText = gameWindow.transform.Find("TextLayOut/LeftTime/TimeText").GetComponent<TMP_Text>();
+
 
         simBall = worldUiRef.transform.Find("StageUI/NewBie/SimBall").gameObject;
     }
@@ -121,8 +119,7 @@ public class Newbie_Content : MonoBehaviour
     {
         if (value == true)
         {
-            buffLeftTimeText.text = $"- 최초가입 후 7일간 적용됩니다.\n- 버프 만료까지 남은시간\n   " +
-                $"  <color=green>   {(BuffContoller.inst.GetBuffTime(4) / 60) / 24}일 {(BuffContoller.inst.GetBuffTime(4) / 60) % 24}시간 {BuffContoller.inst.GetBuffTime(4) % 60}분</color>";
+          
 
             buffInfoWindow.SetActive(true);
         }
@@ -142,6 +139,8 @@ public class Newbie_Content : MonoBehaviour
     public void Set_NewbieWindowActive(bool value)
     {
         newbieWindow.SetActive(value);
+        buffLeftTimeText.text = $"신규유저 혜택 남은시간 : " +
+              $"<color=green>{(BuffContoller.inst.GetBuffTime(4) / 60) / 24}일 {(BuffContoller.inst.GetBuffTime(4) / 60) % 24}시간 {BuffContoller.inst.GetBuffTime(4) % 60}분</color>";
     }
 
 
@@ -230,11 +229,13 @@ public class Newbie_Content : MonoBehaviour
         {
             GetBtn[0].gameObject.SetActive(true);
             GetBtn[1].gameObject.SetActive(false);
+            bottomBoxIMG.color = Color.white;
         }
         else
         {
             GetBtn[0].gameObject.SetActive(false);
             GetBtn[1].gameObject.SetActive(true);
+            bottomBoxIMG.color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
     }
 

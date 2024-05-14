@@ -136,14 +136,14 @@ public class WorldUI_Manager : MonoBehaviour
         buffWindowAnim = buffSelectUIWindow.GetComponent<Animator>();
 
         cuttonBlack = worldUI.transform.Find("Cutton(B)").GetComponent<Animator>();
-        stageText = worldUI.transform.Find("StageUI/StageInfo/Text").GetComponent<TMP_Text>();
-        uiBossHead = worldUI.transform.Find("StageUI/StageInfo/Boss").GetComponent<Image>();
+        stageText = worldUI.transform.Find("StageUI/TopLayOut/StageInfo/Text").GetComponent<TMP_Text>();
+        uiBossHead = worldUI.transform.Find("StageUI/TopLayOut/StageInfo/Boss").GetComponent<Image>();
         fontDanymic = worldUI.transform.Find("StageUI/Dyanamic").GetComponent<Transform>();
         getItemLayOut = worldUI.transform.Find("StageUI/Get").GetComponent<VerticalLayoutGroup>();
 
         for (int index = 0; index < stageSlot.Length; index++)
         {
-            stageSlot[index] = worldUI.transform.Find("StageUI/StageInfo").GetChild(index).GetComponent<Image>();
+            stageSlot[index] = worldUI.transform.Find("StageUI/TopLayOut/StageInfo").GetChild(index).GetComponent<Image>();
         }
 
         //테스트 버튼
@@ -155,9 +155,9 @@ public class WorldUI_Manager : MonoBehaviour
         {
             weapbtnText[index] = testBtn[index].GetComponentInChildren<TMP_Text>();
         }
-        curMaterial[0] = worldUI.transform.Find("StageUI/TopLayOut/MaterialBox/Gold/Text").GetComponent<TMP_Text>();
-        curMaterial[1] = worldUI.transform.Find("StageUI/TopLayOut/MaterialBox/Star/Text").GetComponent<TMP_Text>();
-        curMaterial[3] = worldUI.transform.Find("StageUI/TopLayOut/MaterialBox/Ruby/Text").GetComponent<TMP_Text>();
+        curMaterial[0] = worldUI.transform.Find("StageUI/MaterialBox/Gold/Text").GetComponent<TMP_Text>();
+        curMaterial[1] = worldUI.transform.Find("StageUI/MaterialBox/Star/Text").GetComponent<TMP_Text>();
+        curMaterial[3] = worldUI.transform.Find("StageUI/MaterialBox/Ruby/Text").GetComponent<TMP_Text>();
         nickNameText = worldUI.transform.Find("StageUI/TopLayOut/Profile/NickName").GetComponent<TMP_Text>();
 
 
@@ -385,7 +385,7 @@ public class WorldUI_Manager : MonoBehaviour
         }
 
         obj = poolingQue[index].Dequeue();
-                
+
         return obj;
     }
 
@@ -396,8 +396,10 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="img"></param>
     /// <param name="Value"></param>
     /// <returns></returns>
-    public GameObject Get_ItemInfomation_UI_Active(Sprite img, string Value)
+    public void Get_ItemInfomation_UI_Active(Sprite img, string Value)
     {
+        if(!worldUI.gameObject.activeInHierarchy) { return; }
+
         GameObject obj;
 
         if (poolingQue[1].Count <= 0)
@@ -409,7 +411,6 @@ public class WorldUI_Manager : MonoBehaviour
         obj.gameObject.SetActive(true);
         obj.GetComponent<GetItemPrefabs>().Set_GetItemSpriteAndText(img, Value);
 
-        return obj;
     }
 
     /// <summary>
@@ -426,7 +427,7 @@ public class WorldUI_Manager : MonoBehaviour
         poolingQue[value].Enqueue(obj);
     }
 
-  
+
 
     Coroutine cuttonCor;
     Color colorFadeValue = new Color(0, 0, 0, 0.2f);
@@ -492,7 +493,7 @@ public class WorldUI_Manager : MonoBehaviour
 
     }
 
-    
+
     /// <summary>
     /// 월드 중앙 상단 Reward창 호출
     /// </summary>
@@ -500,6 +501,8 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="text"> 아이템 설명내용</param>
     public void Set_RewardUI_Invoke(Sprite sprite, string text)
     {
+        if (!worldUI.gameObject.activeInHierarchy) { return; }
+
         GameObject obj = Get_WorldUIPooling_Prefabs_Object(0);
         obj.GetComponent<Reward_Parts>().Set_Reward(sprite, text);
     }
@@ -511,6 +514,8 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="text"> 아이템 설명내용</param>
     public void Set_Reward_InclueAction(Sprite sprite, string text, Action funtion)
     {
+        if (!worldUI.gameObject.activeInHierarchy) { return; }
+
         GameObject obj = Get_WorldUIPooling_Prefabs_Object(0);
         obj.GetComponent<Reward_Parts>().Set_RewardIncludeAction(sprite, text, funtion);
     }

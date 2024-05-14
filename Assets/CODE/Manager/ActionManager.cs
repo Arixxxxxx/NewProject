@@ -61,6 +61,9 @@ public class ActionManager : MonoBehaviour
     GameObject enemyObj;
     SpriteRenderer enemySr;
     Animator enemyAnim;
+    GameObject[] hpBar_OutLine = new GameObject[2];
+
+    GameObject hpBarRef;
     Image hpBar_IMG;
     Image hpBar_BackIMG;
     TMP_Text hpBar_Text;
@@ -164,9 +167,14 @@ public class ActionManager : MonoBehaviour
 
 
         dmgFontParent = worldSpaceRef.transform.Find("DmgFontCanvas/FontPosition").GetComponent<Transform>();
+
+        hpBarRef = enemyObj.transform.Find("HPBar_Canvas").gameObject;
         hpBar_IMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Front").GetComponent<Image>();
         hpBar_BackIMG = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Back").GetComponent<Image>();
         hpBar_Text = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/Text").GetComponent<TMP_Text>();
+
+        hpBar_OutLine[0] = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/NormalOutLine").gameObject;
+        hpBar_OutLine[1] = enemyObj.transform.Find("HPBar_Canvas/HP_Bar/BossOutLine").gameObject;
 
         enemy_StartPoint = worldSpaceRef.transform.Find("SpawnPoint").GetComponent<Transform>();
         enemy_StopPoint = worldSpaceRef.transform.Find("StopPoint").GetComponent<Transform>();
@@ -629,11 +637,21 @@ public class ActionManager : MonoBehaviour
 
 
     // 몬스터 초기화
+    Vector3 hpbarPos;
+
+    float hpBar_downX = 0.1f;
+    float hpBar_downY = 0.2f;
     private void Enemyinit()
     {
         // 나중에 체력 초기화 연산 바꿔야함
         swordEffect.Stop();
         enemyObj.transform.position = enemy_StartPoint.position; // 위치 초기화
+        
+        // HPBar 위치 초기화
+        hpbarPos = enemyObj.transform.position;
+        hpbarPos.x -= hpBar_downX;
+        hpbarPos.y -= hpBar_downY;
+        hpBarRef.transform.position = hpbarPos;
 
         enemyMaxHP = CalCulator.inst.EnemyHpSetup();
         enemyCurHP = enemyMaxHP;
@@ -641,21 +659,34 @@ public class ActionManager : MonoBehaviour
         //Hpbar 초기화
         hpBar_IMG.fillAmount = 1;
         hpBar_Text.text = string.Empty;
+
         EnemyHPBar_FillAmount_Init(); // 체력
 
-        //스프라이트 값 할당
-        if(GameStatus.inst.FloorLv != 5)
+        //Boss
+        Set_EnemyBossOrNormal();
+    }
+
+
+    /// <summary>
+    /// 에너미 보스 설정
+    /// </summary>
+    /// <param name="isBoss"></param>
+    private void Set_EnemyBossOrNormal()
+    {
+        if (GameStatus.inst.FloorLv != 5)
         {
             curEnemyNum = UnityEngine.Random.Range(0, enemySmallSprite.Length);
             enemySr.sprite = enemySmallSprite[curEnemyNum];
+            hpBar_OutLine[0].SetActive(true);
+            hpBar_OutLine[1].SetActive(false);
         }
-        else if(GameStatus.inst.FloorLv == 5)
+        else if (GameStatus.inst.FloorLv == 5)
         {
-
             curEnemyNum = UnityEngine.Random.Range(0, enemyLargeSprite.Length);
             enemySr.sprite = enemyLargeSprite[curEnemyNum];
+            hpBar_OutLine[0].SetActive(false);
+            hpBar_OutLine[1].SetActive(true);
         }
-   
     }
 
 
@@ -680,7 +711,7 @@ public class ActionManager : MonoBehaviour
     }
 
     // 체력 후방바 
-    float backHpBarFillSpeed_MultiFlyer = 0.2f;
+    float backHpBarFillSpeed_MultiFlyer = 0.4f;
     private void BackHPBarUpdater()
     {
         if (hpBar_BackIMG.fillAmount > hpBar_IMG.fillAmount)
@@ -850,6 +881,7 @@ public class ActionManager : MonoBehaviour
         palyerWeapenSr.sprite = weaponSprite[index];
 
     }
+ 
 
 
     // 몬스터 죽고 골드 상승

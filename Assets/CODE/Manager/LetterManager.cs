@@ -152,15 +152,15 @@ public class LetterManager : MonoBehaviour
         switch (itemType) 
         {
             case 0:
-                alrimCountText.text = $"루비 +{itemCount}";
+                alrimCountText.text = $"루비 +{itemCount.ToString("N0")}";
                 break;
 
             case 1:
-                alrimCountText.text = $"골드 +{itemCount}";
+                alrimCountText.text = $"골드 +{CalCulator.inst.StringFourDigitAddFloatChanger(itemCount.ToString())}";
                 break;
 
             case 2:
-                alrimCountText.text = $"별 +{itemCount}";
+                alrimCountText.text = $"별 +{CalCulator.inst.StringFourDigitAddFloatChanger(itemCount.ToString())}";
                 break;
         }
 
@@ -199,6 +199,7 @@ public class LetterManager : MonoBehaviour
     {
         //초기화
         letterList.Clear();
+
         for (int index = 0; index < saveLetterItemDic.Length; index++)
         {
             saveLetterItemDic[index] = 0;
@@ -223,7 +224,7 @@ public class LetterManager : MonoBehaviour
             switch (index)
             {
                 case 0: //루비
-                    GameStatus.inst.Ruby += saveLetterItemDic[index];
+                    GameStatus.inst.PlusRuby(saveLetterItemDic[index]);
                     break;
 
                 case 1: //골드

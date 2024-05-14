@@ -162,8 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imgBoxSideSprite:
-  - {fileID: -1400070277, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
-  - {fileID: -1622704582, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
+  - {fileID: -1192569112, guid: 2397ef282023b464d915484a57d753fe, type: 3}
+  - {fileID: -882721078, guid: 2397ef282023b464d915484a57d753fe, type: 3}
   gotItemColor: {r: 0.30980393, g: 0.92549026, b: 0.9803922, a: 1}
 --- !u!114 &5040793008239040397
 MonoBehaviour:
@@ -335,6 +335,7 @@ MonoBehaviour:
   ResultMenuGradiuntPreset:
   - {fileID: 11400000, guid: baa08a31ab6499c49bec6169bab2a0bb, type: 2}
   - {fileID: 11400000, guid: bab1deb71f2796f409bd8e70a1a69ccd, type: 2}
+  fadeDuration: 10
   selectGame: 0
 --- !u!114 &9043064537473548532
 MonoBehaviour:
@@ -410,13 +411,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageSprite:
-  - {fileID: 1899164654, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
-  - {fileID: -1113515469, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
-  - {fileID: 1121342626, guid: f349461410e11ee4e8bd9465bfbd434f, type: 3}
+  - {fileID: -1867807768, guid: bd3ee5d3669eb7d4cb7042518650fd64, type: 3}
+  - {fileID: -2010666117, guid: bd3ee5d3669eb7d4cb7042518650fd64, type: 3}
+  - {fileID: -537837652, guid: bd3ee5d3669eb7d4cb7042518650fd64, type: 3}
   poolingObj:
   - {fileID: 5653821492268183441, guid: 91f1c198bbc08f447b1e76b1804801b0, type: 3}
   - {fileID: 8335622449627231134, guid: e7a94963dd424e44285ae7568a01aa74, type: 3}
-  stageUI: {fileID: 0}
 --- !u!114 &5293482492015374371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,6 +679,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnRubyChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnStageChanged:
     m_PersistentCalls:
       m_Calls: []
   OnQuestLvChanged:
