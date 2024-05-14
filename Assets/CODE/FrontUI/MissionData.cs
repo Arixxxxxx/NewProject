@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
 using TMPro;
@@ -18,6 +19,7 @@ public class MissionData : MonoBehaviour
     Button MissionOpenBtn;//미션창 여는 버튼
     Button MissionCloseBtn;//미션창 닫는 버튼
     Button MissionBGBtn;//미션창 백그라운드 버튼
+    Button topMoveBtn;//미션창 상단 이동 버튼
     TMP_Text topTitleText;//미션창 상단 타이틀 텍스트
     TMP_Text topDetailText;//미션창 상단 세부텍스트
     TMP_Text worldTitleText;//메인화면 미션 타이틀 텍스트
@@ -87,7 +89,7 @@ public class MissionData : MonoBehaviour
                 if (count < maxCount)
                 {
                     count = value;
-                    GameStatus.inst.SetDailyMissionCount(index,count);
+                    GameStatus.inst.SetDailyMissionCount(index, count);
 
                     if (isClear == false && count >= maxCount)
                     {
@@ -470,7 +472,7 @@ public class MissionData : MonoBehaviour
                 if (count < maxCount)
                 {
                     count = value;
-                    GameStatus.inst.SetSpecialMissionCount(index,count);
+                    GameStatus.inst.SetSpecialMissionCount(index, count);
                     if (isActive && count >= maxCount)
                     {
                         count = maxCount;
@@ -498,9 +500,9 @@ public class MissionData : MonoBehaviour
             NameText.text = $"{index + 1}단계 미션";
             MissionText.text = Name;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
-          
+
             Count = GameStatus.inst.GetSpecailMissionCount(index);
-            
+
 
             switch (rewardTag)
             {
@@ -582,6 +584,11 @@ public class MissionData : MonoBehaviour
             trs.SetAsLastSibling();
         }
 
+        public SpMissionTag GetMissionType()
+        {
+            return missionType;
+        }
+
         public void ActiveTrue()
         {
             isActive = true;
@@ -624,6 +631,24 @@ public class MissionData : MonoBehaviour
             topDetailText.text = list_SpecialMIssion[nowSpecialIndex].Name;
             worldTitleText.text = $"{nowSpecialIndex + 1}단계 미션";
             worldDetailText.text = list_SpecialMIssion[nowSpecialIndex].Name;
+            topMoveBtn.onClick.RemoveAllListeners();
+            topMoveBtn.onClick.AddListener(() => {
+                switch (list_SpecialMIssion[nowSpecialIndex].GetMissionType())
+                {
+                    case SpMissionTag.Quest:
+                        UIManager.Instance.ClickBotBtn(0);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        break;
+                    case SpMissionTag.Weapon:
+                        UIManager.Instance.ClickBotBtn(1);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        break;
+                    case SpMissionTag.Relic:
+                        UIManager.Instance.ClickBotBtn(3);
+                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        break;
+                }
+            });
         }
     }
 
@@ -699,6 +724,7 @@ public class MissionData : MonoBehaviour
         list_MissionWindow[2] = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)").gameObject;
         topTitleText = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/Title_Text").GetComponent<TMP_Text>();
         topDetailText = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/Detail_Text").GetComponent<TMP_Text>();
+        topMoveBtn = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/MoveBtn").GetComponent<Button>();
 
         Transform trsTopBtn = obj_MissionWindow.Find("Mission/Window/Top_Btn");
         int TopBtnCount = trsTopBtn.childCount;

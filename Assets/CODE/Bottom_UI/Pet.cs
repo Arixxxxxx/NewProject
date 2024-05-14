@@ -98,6 +98,7 @@ public class Pet : MonoBehaviour
 
         BuyPriceText.text = baseCost.ToString();
         setNextCost();
+        releasePet();
         GameStatus.inst.OnRubyChanged.AddListener(checkHaveRuby);
         GameStatus.inst.OnStageChanged.AddListener(releasePet);
         upBtn.onClick.AddListener(ClickUp);

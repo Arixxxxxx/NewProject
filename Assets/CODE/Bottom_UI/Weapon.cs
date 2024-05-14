@@ -19,11 +19,15 @@ public class Weapon : MonoBehaviour
 
             if (lv >= 5)
             {
-                if (objBtn == null)
-                {
-                    objBtn = transform.Find("Button").GetComponent<Button>();
-                }
-                objBtn.gameObject.SetActive(false);
+                //if (objBtn == null)
+                //{
+                //    objBtn = transform.Find("Button").GetComponent<Button>();
+                //}
+                //objBtn.gameObject.SetActive(false);
+                SetbtnActive();
+                priceText.text = "";
+                upBtnImage.SetActive(false);
+                upBtnMask.SetActive(true);
                 UIManager.Instance.WeaponUpComplete(transform);
                 DogamManager.inst.GetWeaponCheck(Number + 1);
             }
@@ -56,6 +60,8 @@ public class Weapon : MonoBehaviour
     [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] Button objBtn;
     [SerializeField] GameObject mask;
+    [SerializeField] GameObject upBtnMask;
+    [SerializeField] GameObject upBtnImage;
 
     private void Awake()
     {
@@ -99,10 +105,13 @@ public class Weapon : MonoBehaviour
 
     private void setText()
     {
-        priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
         LvText.text = $"Lv. {Lv} / 5";
         upAtkText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString());
         totalAtkText.text = $"Atk {CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString())}";
+        if (Lv < 5)
+        {
+            priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
+        }
     }
 
     public void ClickBuy()
@@ -136,18 +145,21 @@ public class Weapon : MonoBehaviour
 
     private void setNextCost()
     {
-        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
-        nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
+        if (Lv <= 5)
+        {
+            float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+            nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
+        }
     }
 
     private void SetbtnActive()
     {
         BigInteger havegold = BigInteger.Parse(GameStatus.inst.Gold);
-        if (havegold < nextCost)
+        if (havegold < nextCost || Lv >= 5)
         {
             objBtn.interactable = false;
         }
-        else if(mask.activeSelf == false)
+        else if (mask.activeSelf == false)
         {
             objBtn.interactable = true;
         }

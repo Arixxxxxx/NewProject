@@ -217,7 +217,7 @@ public class UIManager : MonoBehaviour
             m_list_Quest.Add(m_QuestParents.GetChild(iNum));
         }
 
-        m_totalGold = canvas.transform.Find("ScreenArea/BackGround/Quest/TotalGps").GetComponent<TextMeshProUGUI>();
+        m_totalGold = canvas.transform.Find("ScreenArea/BackGround/Quest/TotalGpsBG/TotalGps").GetComponent<TextMeshProUGUI>();
 
 
         //무기 초기화

@@ -24,12 +24,14 @@ public class Relic : MonoBehaviour
         {
             lv = value;
             GameStatus.inst.SetAryRelicLv((int)itemNum, value);
-            if (limitLv != 0 && lv >= limitLv)
-            {
-                upBtn.gameObject.SetActive(false);
-            }
             setNextCost();
             setText();
+            if (limitLv != 0 && lv >= limitLv)
+            {
+                PriceText.text = "";
+                priceImage.SetActive(false);
+                priceMask.SetActive(true);
+            }
         }
     }
     Button upBtn;
@@ -37,14 +39,18 @@ public class Relic : MonoBehaviour
     TextMeshProUGUI LvText;
     TextMeshProUGUI PercentText;
     TextMeshProUGUI PriceText;
+    GameObject priceImage;
+    GameObject priceMask;
 
     public void initRelic()
     {
-        LvText = transform.Find("Button/LvText").GetComponent<TextMeshProUGUI>();
+        LvText = transform.Find("LvText").GetComponent<TextMeshProUGUI>();
         PercentText = transform.Find("TextBox/PercentageText").GetComponent<TextMeshProUGUI>();
         PriceText = transform.Find("Button/PriceText").GetComponent<TextMeshProUGUI>();
         upBtn = transform.Find("Button").GetComponent<Button>();
         relicImgae = transform.Find("IMG_Layout/IMG").GetComponent<Image>();
+        priceImage = transform.Find("Button/Image").gameObject;
+        priceMask = transform.Find("Button/Mask").gameObject;
         UIManager.Instance.OnRelicBuyCountChanged.AddListener(() => _OnCountChanged());
         GameStatus.inst.OnStartChanged.AddListener(checkStar);
         setNextCost();
