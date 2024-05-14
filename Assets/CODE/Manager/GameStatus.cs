@@ -438,7 +438,7 @@ public class GameStatus : MonoBehaviour
             if (floorLv == 6)
             {
                 floorLv = 1;
-                stageLv++;
+                StageLv++;
             }
             else if(floorLv < 6)
             {

@@ -50,6 +50,7 @@ public class WorldEventRewardContent : MonoBehaviour
     {
         // ¸Ê¹þ¾î³¯½Ã
         BoxPostionCheker();
+
         // ¸®½ºÆù
         reSpawnCheker();
     }
@@ -112,8 +113,6 @@ public class WorldEventRewardContent : MonoBehaviour
         {
             eventBoxReset();
         }
-
-        
     }
 
     private void reSpawnCheker()

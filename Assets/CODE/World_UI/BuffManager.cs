@@ -66,7 +66,7 @@ public class BuffManager : MonoBehaviour
             Destroy(inst);
         }
 
-        viewAdATKBuff = Random.Range(10f, 15f);
+        viewAdATKBuff = Random.Range(60f, 120f);
         worldUIRef = GameManager.inst.WorldUiRef;
         frontUIRef = GameManager.inst.FrontUiRef;
 
@@ -195,7 +195,7 @@ public class BuffManager : MonoBehaviour
         {
             adBuffBtn.gameObject.SetActive(false);
             BuffContoller.inst.ActiveBuff(3, AdbuffTime(3)); //버프활성화
-            viewAdATKBuff += 15f; // Re PopUp CoomTime
+            viewAdATKBuff += Random.Range(2 * 60f, 3 * 60); // Re PopUp CoomTime
             WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(3), buffstringText[3]);
         }));
 
@@ -222,9 +222,6 @@ public class BuffManager : MonoBehaviour
 
     // 애니메이션 적용
     public void MainWindow_Active_False() => mainWindow.SetActive(false);
-
-
-
 
     private void RubyPayBtnInit(int value)
     {
