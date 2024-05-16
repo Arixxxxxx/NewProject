@@ -55,8 +55,8 @@ public class WorldUI_Manager : MonoBehaviour
     // 미니게임 버튼 
     Button minigameAlrimBtn;
 
-    // 몬스터도감 버튼
-    Button mosterDogamBtn;
+    //// 몬스터도감 버튼  ( 무기도감과 합병 24.05.16 )
+    //Button mosterDogamBtn;
 
     //환생버튼
     Button hwanSengBtn;
@@ -172,7 +172,7 @@ public class WorldUI_Manager : MonoBehaviour
         getLetterBtn = worldUI.transform.Find("StageUI/Letter").GetComponent<Button>(); // 우편함
         dailyPlayCheckBtn = worldUI.transform.Find("StageUI/DailyCheck").GetComponent<Button>(); //출석체크
         newBieBtn = worldUI.transform.Find("StageUI/NewBie").GetComponent<Button>(); //뉴비
-        mosterDogamBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MosterDogam").GetComponent<Button>(); //몬스터도감
+        //mosterDogamBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MosterDogam").GetComponent<Button>(); //몬스터도감
         minigameAlrimBtn = worldUI.transform.Find("StageUI/MenuBox/Btns/MiniGame").GetComponent<Button>(); //미니게임
         adDeleteBtn = worldUI.transform.Find("StageUI/AdDelete").GetComponent<Button>(); // 광고제거
         openMenuIcon = worldUI.transform.Find("StageUI/MenuBox/MeneOpen/RealBtn").GetComponent<Button>(); // 메뉴 삼각형버튼
@@ -271,7 +271,7 @@ public class WorldUI_Manager : MonoBehaviour
         getLetterBtn.onClick.AddListener(() => { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
         newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
-        mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
+        //mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
         adDeleteBtn.onClick.AddListener(() => AdDelete.inst.ActiveAdDeleteWindow());
         buffShopBtn.onClick.AddListener(() => { BuffManager.inst.Buff_UI_Active(true); });
         crewViewrBtn.onClick.AddListener(() =>

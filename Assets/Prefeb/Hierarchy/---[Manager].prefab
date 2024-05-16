@@ -129,11 +129,11 @@ MonoBehaviour:
   - {fileID: 1248989535, guid: 964c4382b0645dc40b56b9d401478ae7, type: 3}
   - {fileID: 21300000, guid: a7be8fc6faf771f4baef74990efe02b0, type: 3}
   topArrayBtnIMG:
-  - {fileID: 539993994, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
-  - {fileID: -477037525, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
+  - {fileID: -1941686816, guid: 442beae6f33871446821f79357a75af6, type: 3}
+  - {fileID: 1065963176, guid: 442beae6f33871446821f79357a75af6, type: 3}
   middleArrayBtnIMG:
-  - {fileID: 1538992618, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
-  - {fileID: 623041215, guid: a93bbefcc1565b34c8816358acaac402, type: 3}
+  - {fileID: -1648052617, guid: 442beae6f33871446821f79357a75af6, type: 3}
+  - {fileID: 2117656262, guid: 442beae6f33871446821f79357a75af6, type: 3}
 --- !u!114 &2814709135380697339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +224,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354cf8484511d7e4dbc8f44a62ab8e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buyBtnBoxText:
+  - {fileID: 0}
+  - {fileID: 0}
+  bottomBoxText:
+  - {fileID: 0}
+  - {fileID: 0}
+  buffTime: 0
+  isAdDeleteBuy: 0
 --- !u!114 &6767617472122134259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +343,6 @@ MonoBehaviour:
   ResultMenuGradiuntPreset:
   - {fileID: 11400000, guid: baa08a31ab6499c49bec6169bab2a0bb, type: 2}
   - {fileID: 11400000, guid: bab1deb71f2796f409bd8e70a1a69ccd, type: 2}
-  fadeDuration: 10
   selectGame: 0
 --- !u!114 &9043064537473548532
 MonoBehaviour:

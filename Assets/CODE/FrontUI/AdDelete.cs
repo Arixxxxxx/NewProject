@@ -17,17 +17,22 @@ public class AdDelete : MonoBehaviour
     Button buyBtn;
 
     // 구매전, 후 설정 변수들
+    [SerializeField]
     GameObject[] buyBtnBoxText = new GameObject[2];
+    [SerializeField]
     TMP_Text[] bottomBoxText = new TMP_Text[2];
 
     // 광고제거 카운트다운
+    [SerializeField]
     double buffTime;
-    
+
+    [SerializeField]
+
     bool isAdDeleteBuy;
     public bool IsAdDeleteBuy
     {
         get { return isAdDeleteBuy; }
-        set 
+        set
         {
             isAdDeleteBuy = value;
             Set_AdDeleteBought(value);
@@ -61,11 +66,11 @@ public class AdDelete : MonoBehaviour
         buyBtn = windowRef.transform.Find("Main/TextBox/BuyBtn").GetComponent<Button>();
 
         buyBtnBoxText[0] = buyBtn.transform.GetChild(0).gameObject;
-        buyBtnBoxText[1] = buyBtn.transform.GetChild(0).gameObject;
+        buyBtnBoxText[1] = buyBtn.transform.GetChild(1).gameObject;
 
         bottomBoxText[0] = windowRef.transform.Find("Main/Bottom_Box/BottomText_True").GetComponent<TMP_Text>();
         bottomBoxText[1] = windowRef.transform.Find("Main/Bottom_Box/BottomText_False").GetComponent<TMP_Text>();
-       
+
         BtnInIt();
     }
 
@@ -82,7 +87,7 @@ public class AdDelete : MonoBehaviour
     private void BtnInIt()
     {
         xBtn.onClick.AddListener(() => AdDeleteUiRef.SetActive(false));
-        
+
         //구매 버튼
         buyBtn.onClick.AddListener(() =>
         {
@@ -93,7 +98,7 @@ public class AdDelete : MonoBehaviour
     }
 
     public void ActiveAdDeleteWindow()
-    { 
+    {
         AdDeleteUiRef.SetActive(true);
     }
 
@@ -103,17 +108,17 @@ public class AdDelete : MonoBehaviour
     /// </summary>
     public void Set_AdDeleteBuffTime(string buffEndDateValue)
     {
-        if(buffEndDateValue == string.Empty) { return; }
+        if (buffEndDateValue == string.Empty) { return; }
 
         endBuffDate = DateTime.Parse(buffEndDateValue);
-        TimeSpan timeSpan =endBuffDate - DateTime.Now;
-        buffTime += timeSpan.TotalMilliseconds;
+        TimeSpan timeSpan = endBuffDate - DateTime.Now;
+        buffTime += timeSpan.TotalSeconds;
     }
 
     //
     private void BuffUpdater()
     {
-        if(buffTime ==0) { return; }
+        if (buffTime == 0) { return; }
 
         if (buffTime <= 0)
         {
@@ -125,12 +130,22 @@ public class AdDelete : MonoBehaviour
         }
         else if (buffTime > 0) // 광고시간 진행중
         {
-            if(IsAdDeleteBuy == false) // 버프적용중 버튼 비활성화
+            if (IsAdDeleteBuy == false) // 버프적용중 버튼 비활성화
             {
                 IsAdDeleteBuy = true;
             }
-                
+
             buffTime -= Time.deltaTime;
+
+            if (buffTime <= 0)
+            {
+                if (IsAdDeleteBuy == true) // 버프적용중 버튼 비활성화
+                {
+                    IsAdDeleteBuy = false;
+                    buffTime = 0;
+                    return;
+                }
+            }
 
             int days = (int)buffTime / 86400;
             int hours = ((int)buffTime % 86400) / 3600;
@@ -156,7 +171,7 @@ public class AdDelete : MonoBehaviour
                 timeText += $"{seconds}초";
             }
 
-            bottomBoxText[0].text = timeText;
+            bottomBoxText[1].text = timeText;
         }
     }
 
@@ -168,21 +183,23 @@ public class AdDelete : MonoBehaviour
     /// <param name="value"></param>
     private void Set_AdDeleteBought(bool value)
     {
-        int select = value ? 0 : 1;
+        int select = value ? 1 : 0;
 
-            for(int index=0; index < bottomBoxText.Length; index++)
+        for (int index = 0; index < buyBtnBoxText.Length; index++)
+        {
+            if (select == index)
+            {
+                buyBtnBoxText[index].SetActive(true);
+                bottomBoxText[index].gameObject.SetActive(true);
+            }
+            else
             {
                 buyBtnBoxText[index].SetActive(false);
                 bottomBoxText[index].gameObject.SetActive(false);
-
-                if(select == index)
-                {
-                    buyBtnBoxText[index].SetActive(true);
-                    bottomBoxText[index].gameObject.SetActive(true);
-                }
             }
+        }
     }
-    
+
     /// <summary>
     /// Save 용
     /// </summary>
