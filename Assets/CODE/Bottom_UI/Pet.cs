@@ -63,7 +63,7 @@ public class Pet : MonoBehaviour
 
     void Start()
     {
-
+        
     }
 
     public void initPet()

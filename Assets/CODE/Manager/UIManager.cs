@@ -55,6 +55,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void QeustUpComplete(int index)
+    {
+        if (m_list_Quest.Count > index + 1)
+        {
+            m_list_Quest[index + 1].GetComponent<Quest>().SetMaskActive(false);
+        }
+    }
+
     ////////////////////////////////////////////¹«±â///////////////////////////////////////
 
     List<Transform> m_list_Weapon = new List<Transform>();
