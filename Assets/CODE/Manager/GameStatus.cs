@@ -967,6 +967,9 @@ public class GameStatus : MonoBehaviour
         //우편
         LetterManager.inst.LeftLetterMake(saveData.LetterBox);
 
+        // 광고제거
+        AdDelete.inst.Set_AdDeleteBuffTime(saveData.adDeleteBuffTime);
+
         // 0. 마지막 접속기록
         if (saveData.LastSignDate != string.Empty)
         {
@@ -1064,6 +1067,9 @@ public class GameStatus : MonoBehaviour
 
         // 우편 남은것
         saveData.LetterBox.AddRange(LetterManager.inst.GetLeftLetter);
+
+        // 광고제거
+        saveData.adDeleteBuffTime = AdDelete.inst.Get_AdDeleteBuffTime();
 
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");

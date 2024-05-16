@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,14 +12,13 @@ public class AdDelete : MonoBehaviour
     //Ref
     GameObject worldUIRef, fontUIRef, AdDeleteUiRef, windowRef;
     Button xBtn;
-
+    DateTime endBuffDate;
     //구매버튼
     Button buyBtn;
-    TMP_Text buyBtnText;
-    Image buyBtnImg;
 
-    //하단 텍스트
-    TMP_Text bottomText;
+    // 구매전, 후 설정 변수들
+    GameObject[] buyBtnBoxText = new GameObject[2];
+    TMP_Text[] bottomBoxText = new TMP_Text[2];
 
     // 광고제거 카운트다운
     double buffTime;
@@ -27,12 +27,16 @@ public class AdDelete : MonoBehaviour
     public bool IsAdDeleteBuy
     {
         get { return isAdDeleteBuy; }
+        set 
+        {
+            isAdDeleteBuy = value;
+            Set_AdDeleteBought(value);
+        }
+
     }
 
-    // 기타참조
-    Color greenColor = new Color(0.2f, 1, 1, 1);
-    Color redColor = new Color(1, 0.2f, 0, 1);
-    string btnTextTemp; // 버튼 텍스트 임시저장용
+
+
 
     private void Awake()
     {
@@ -47,7 +51,6 @@ public class AdDelete : MonoBehaviour
 
         // 월드버튼
         worldUIRef = GameManager.inst.WorldUiRef;
-
         fontUIRef = GameManager.inst.FrontUiRef;
 
         AdDeleteUiRef = fontUIRef.transform.Find("Ad_Delete").gameObject;
@@ -56,11 +59,13 @@ public class AdDelete : MonoBehaviour
         xBtn = windowRef.transform.Find("Title/X_Btn").GetComponent<Button>();
 
         buyBtn = windowRef.transform.Find("Main/TextBox/BuyBtn").GetComponent<Button>();
-        buyBtnText = buyBtn.transform.GetComponentInChildren<TMP_Text>();
-        buyBtnImg = buyBtn.transform.Find("Image").GetComponent<Image>();
 
-        bottomText = windowRef.transform.Find("Main/BottomText").GetComponent<TMP_Text>();
-        btnTextTemp = buyBtnText.text;
+        buyBtnBoxText[0] = buyBtn.transform.GetChild(0).gameObject;
+        buyBtnBoxText[1] = buyBtn.transform.GetChild(0).gameObject;
+
+        bottomBoxText[0] = windowRef.transform.Find("Main/Bottom_Box/BottomText_True").GetComponent<TMP_Text>();
+        bottomBoxText[1] = windowRef.transform.Find("Main/Bottom_Box/BottomText_False").GetComponent<TMP_Text>();
+       
         BtnInIt();
     }
 
@@ -82,7 +87,7 @@ public class AdDelete : MonoBehaviour
         buyBtn.onClick.AddListener(() =>
         {
             int Price = RubyPrice.inst.AdDeletePrice; // 루비가격 초기화
-            RubyPayment.inst.RubyPaymentUiActive(Price, AddAdDeleteTime);
+            RubyPayment.inst.RubyPaymentUiActive(Price, () => Set_AdDeleteBuffTime(DateTime.Now.AddDays(30).ToString("O")));
         });
 
     }
@@ -92,43 +97,47 @@ public class AdDelete : MonoBehaviour
         AdDeleteUiRef.SetActive(true);
     }
 
+
+    /// <summary>
+    /// 30일 시간 넣어주는 함수
+    /// </summary>
+    public void Set_AdDeleteBuffTime(string buffEndDateValue)
+    {
+        if(buffEndDateValue == string.Empty) { return; }
+
+        endBuffDate = DateTime.Parse(buffEndDateValue);
+        TimeSpan timeSpan =endBuffDate - DateTime.Now;
+        buffTime += timeSpan.TotalMilliseconds;
+    }
+
     //
     private void BuffUpdater()
     {
+        if(buffTime ==0) { return; }
+
         if (buffTime <= 0)
         {
-            if (isAdDeleteBuy == true) // 버프적용중 버튼 비활성화
+            if (IsAdDeleteBuy == true) // 버프적용중 버튼 비활성화
             {
-                isAdDeleteBuy = false;
-                buyBtn.enabled = true;
-                buyBtnText.alignment = TextAlignmentOptions.Center;
-                buyBtnText.text = btnTextTemp;
-                buyBtnImg.enabled = true;
+                IsAdDeleteBuy = false;
                 buffTime = 0;
-                bottomText.color = redColor;
-                bottomText.text = "광고 제거 미적용";
             }
         }
         else if (buffTime > 0) // 광고시간 진행중
         {
-            if(isAdDeleteBuy == false) // 버프적용중 버튼 비활성화
+            if(IsAdDeleteBuy == false) // 버프적용중 버튼 비활성화
             {
-                isAdDeleteBuy = true;
-                buyBtn.enabled = false;
-                buyBtnText.alignment = TextAlignmentOptions.Left;
-                buyBtnText.text = " 구매 완료";
-                buyBtnImg.enabled = false;
+                IsAdDeleteBuy = true;
             }
                 
             buffTime -= Time.deltaTime;
-            bottomText.color = greenColor;
 
             int days = (int)buffTime / 86400;
             int hours = ((int)buffTime % 86400) / 3600;
             int minutes = ((int)buffTime % 3600) / 60;
             int seconds = ((int)buffTime % 60);
 
-            string timeText = "광고 제거 기능 남은 시간: ";
+            string timeText = "광고 제거 남은 시간 : ";
 
             if (days > 0)
             {
@@ -147,16 +156,37 @@ public class AdDelete : MonoBehaviour
                 timeText += $"{seconds}초";
             }
 
-            bottomText.text = timeText;
+            bottomBoxText[0].text = timeText;
         }
     }
 
+
+
     /// <summary>
-    /// 30일 시간 넣어주는 함수
+    /// 구매 하고 안하 유무로 UI 컨트롤 Setter에 묶여있음
     /// </summary>
-    private void AddAdDeleteTime()
+    /// <param name="value"></param>
+    private void Set_AdDeleteBought(bool value)
     {
-        buffTime += 2592000;
+        int select = value ? 0 : 1;
+
+            for(int index=0; index < bottomBoxText.Length; index++)
+            {
+                buyBtnBoxText[index].SetActive(false);
+                bottomBoxText[index].gameObject.SetActive(false);
+
+                if(select == index)
+                {
+                    buyBtnBoxText[index].SetActive(true);
+                    bottomBoxText[index].gameObject.SetActive(true);
+                }
+            }
     }
+    
+    /// <summary>
+    /// Save 용
+    /// </summary>
+    /// <returns></returns>
+    public string Get_AdDeleteBuffTime() => endBuffDate.ToString("O");
 
 }

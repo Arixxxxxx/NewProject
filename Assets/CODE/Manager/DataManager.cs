@@ -104,6 +104,10 @@ public class DataManager : MonoBehaviour
 
         //12 우편
         public List<SaveLetter> LetterBox = new List<SaveLetter>();
+
+        // 광고제거
+
+        public string adDeleteBuffTime = string.Empty;
     }
 
     string path = string.Empty;

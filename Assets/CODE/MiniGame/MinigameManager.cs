@@ -212,7 +212,8 @@ public class MinigameManager : MonoBehaviour
         selectGameRef.SetActive(true);
     }
 
-    [SerializeField] float fadeDuration = 10f;
+    float startFadeDuration = 2;
+    float ingameFadeDuration = 1.25f;
 
     /// <summary>
     /// 게임시작시 페이드아웃
@@ -231,9 +232,9 @@ public class MinigameManager : MonoBehaviour
         float elapsedTime = 0f;
 
         // 페이드 아웃
-        while (elapsedTime < fadeDuration)
+        while (elapsedTime < startFadeDuration)
         {
-            cutton.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsedTime / fadeDuration));
+            cutton.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsedTime / startFadeDuration));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -267,10 +268,10 @@ public class MinigameManager : MonoBehaviour
         float elapsedTime = 0f;
 
         // 페이드 인
-        while (elapsedTime < fadeDuration)
+        while (elapsedTime < ingameFadeDuration)
         {
-            cutton.color = new Color(0, 0, 0, Mathf.Clamp01(elapsedTime / fadeDuration));
-            elapsedTime += Time.deltaTime * 0.5f;
+            cutton.color = new Color(0, 0, 0, Mathf.Clamp01(elapsedTime / ingameFadeDuration));
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
@@ -286,9 +287,9 @@ public class MinigameManager : MonoBehaviour
         elapsedTime = 0f;
 
         // 페이드 아웃
-        while (elapsedTime < fadeDuration)
+        while (elapsedTime < ingameFadeDuration)
         {
-            cutton.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsedTime / fadeDuration));
+            cutton.color = new Color(0, 0, 0, 1 - Mathf.Clamp01(elapsedTime / ingameFadeDuration));
             elapsedTime += Time.deltaTime * 0.5f;
             yield return null;
         }
