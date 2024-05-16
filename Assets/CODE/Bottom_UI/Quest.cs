@@ -17,6 +17,7 @@ public class Quest : MonoBehaviour
     [SerializeField] float baseProd;//기초 생산량
     [Header("단계별 상승량 지수")]
     [SerializeField] float powNumRate;//단계별 상승량 지수
+    [SerializeField] GameObject objMask;//단계별 상승량 지수
     int lv;//퀘스트 업그레이드 레벨
     int Lv
     {
@@ -119,6 +120,11 @@ public class Quest : MonoBehaviour
         {
             Debug.Log("돈이 부족합니다.");
         }
+
+        if (Lv >= 1)
+        {
+            UIManager.Instance.QeustUpComplete(Number);
+        }
     }
 
     void setItemCur()
@@ -186,5 +192,10 @@ public class Quest : MonoBehaviour
     public int GetLv()
     {
         return Lv;
+    }
+
+    public void SetMaskActive(bool value)
+    {
+        objMask.SetActive(value);
     }
 }
