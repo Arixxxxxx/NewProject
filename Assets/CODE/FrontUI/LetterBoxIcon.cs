@@ -18,7 +18,7 @@ public class LetterBoxIcon : MonoBehaviour
     }
     private void Start()
     {
-
+        Type = (ItemType)transform.GetSiblingIndex();
     }
     // 모두수락창 아이콘 초기화 및 켜주고 꺼주기    
     public void SetIconAndValue(int value)
@@ -46,6 +46,7 @@ public class LetterBoxIcon : MonoBehaviour
 
             case ItemType.Gold:
             case ItemType.Star:
+                Debug.Log(value);
                 valueText.text = $"+ {CalCulator.inst.StringFourDigitAddFloatChanger(value.ToString())}";
                 break;
 
