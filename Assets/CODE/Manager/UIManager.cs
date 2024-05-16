@@ -307,7 +307,7 @@ public class UIManager : MonoBehaviour
         }
 
         InvokeRepeating("getGoldPerSceond", 0, 1);//초당 골드 획득
-        m_totalGold.text = "초당 골드생산량 : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
+        m_totalGold.text = "골드 자동 획득 (초) : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
         SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         initButton();
     }
@@ -321,7 +321,7 @@ public class UIManager : MonoBehaviour
     {
         if (m_totalGold != null)
         {
-            m_totalGold.text = "초당 골드생산량 : " + _text;
+            m_totalGold.text = $"골드 자동 획득 (초)  : " + _text;
         }
     }
 
@@ -458,6 +458,6 @@ public class UIManager : MonoBehaviour
 
     public void SetAtkText(string _atk)
     {
-        m_totalAtk.text = "초당 데미지 : " + _atk;
+        m_totalAtk.text = $"현재 타격 대미지 : {_atk} / 타";
     }
 }

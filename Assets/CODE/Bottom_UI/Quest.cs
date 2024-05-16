@@ -94,11 +94,11 @@ public class Quest : MonoBehaviour
 
     private void setText()
     {
-        upGoldText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger($"{initialProd * (Lv + buyCount) - initialProd * (Lv)}");
+        upGoldText.text = "LV별 증가치 +" + CalCulator.inst.StringFourDigitAddFloatChanger($"{initialProd * (Lv + buyCount) - initialProd * (Lv)}");
         priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
 
         LvText.text = "Lv : " + CalCulator.inst.StringFourDigitChanger(Lv.ToString());
-        totalGoldText.text = "Gps : " + CalCulator.inst.StringFourDigitChanger($"{totalProd}");
+        totalGoldText.text = $"퀘스트 골드 증가량 : {CalCulator.inst.StringFourDigitAddFloatChanger($"{totalProd}")} / 초";
     }
 
     public void ClickBuy()
