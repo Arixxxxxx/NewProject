@@ -174,8 +174,7 @@ public class PetContollerManager : MonoBehaviour
     {
         for (int index = 0; index < animCount; index++)
         {
-            if (petAnim[index].gameObject.activeSelf == false) { return; }
-
+            if (petAnim[index].gameObject.activeSelf == false) { continue; }
             petAnim[index].SetBool("Move", action);
         }
 
@@ -332,7 +331,17 @@ public class PetContollerManager : MonoBehaviour
             petWind[petNum].SetActive(true);
             petAnim[petNum].gameObject.SetActive(true);
             petShadow[petNum].SetActive(true);
+            StartCoroutine(PlayAnim(petNum));
         }
+    }
+
+    //시작시 애니메이션 작동
+    IEnumerator PlayAnim(int petNum)
+    {
+        yield return null;
+        Debug.Log($"{petNum} , {ActionManager.inst.IsMove}");
+        petAnim[petNum].SetBool("Move", ActionManager.inst.IsMove);
+
     }
 
 }

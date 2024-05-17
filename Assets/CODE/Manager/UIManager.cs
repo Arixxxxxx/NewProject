@@ -108,6 +108,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject[] list_ObjRelic;
     Transform relicParents;
     Button GotoRelicShopBtn;
+    GameObject infoRef;
+
     List<Image> m_list_RelicBuyCountBtn = new List<Image>();
     List<GameObject> list_haveRelic = new List<GameObject>();
     public List<GameObject> GetHaveRelic()
@@ -118,7 +120,14 @@ public class UIManager : MonoBehaviour
     public void SetHaveRelic(List<GameObject> list)
     {
         list_haveRelic = list;
+
+        // º≥∏Ì√¢ ¡æ∑·
+        if(list_haveRelic.Count > 0 && infoRef.activeInHierarchy)
+        {
+            infoRef.SetActive(false);
+        }
     }
+
     int relicBuyCountBtnNum = 0;
     public int RelicBuyCountBtnNum
     {
@@ -246,6 +255,7 @@ public class UIManager : MonoBehaviour
         }
 
         //¿Øπ∞ √ ±‚»≠
+
         relicParents = canvas.transform.Find("ScreenArea/BackGround/Relic/NormalScroll View/Viewport/Content");
         GotoRelicShopBtn = canvas.transform.Find("ScreenArea/BackGround/Relic/GotoRelicShopBtn").GetComponent<Button>();
         GotoRelicShopBtn.onClick.AddListener(() =>
@@ -259,6 +269,7 @@ public class UIManager : MonoBehaviour
             m_list_RelicBuyCountBtn.Add(RelicAllUpBtnParents.GetChild(iNum).GetComponent<Image>());
         }
 
+        infoRef = canvas.transform.Find("ScreenArea/BackGround/Relic/Info").gameObject;
         //∆Í √ ±‚»≠
         petRef = canvas.transform.Find("ScreenArea/BackGround/Pet").gameObject;
         soulText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Soul/Text (TMP)").GetComponent<TMP_Text>();
@@ -314,7 +325,8 @@ public class UIManager : MonoBehaviour
 
         InvokeRepeating("getGoldPerSceond", 0, 1);//√ ¥Á ∞ÒµÂ »πµÊ
         m_totalGold.text = "∞ÒµÂ ¿⁄µø »πµÊ (√ ) : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
-        SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
+        //SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
+        SetAtkText(GameStatus.inst.TotalAtk.ToString());
         initButton();
     }
 

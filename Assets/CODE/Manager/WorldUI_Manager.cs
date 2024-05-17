@@ -197,7 +197,7 @@ public class WorldUI_Manager : MonoBehaviour
     void Start()
     {
         BtnInIt();
-        menuAnim.SetTrigger("Open");
+        //menuAnim.SetTrigger("Open");
     }
 
 

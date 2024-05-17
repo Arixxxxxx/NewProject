@@ -91,6 +91,7 @@ public class ActionManager : MonoBehaviour
 
     bool actionStart;
     bool isatk, ismove;
+    public bool IsMove {  get { return ismove; } }
     
 
     // 이동애니메이션

@@ -322,7 +322,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             totalAtk = value;
-            UIManager.Instance.SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
+            UIManager.Instance.SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(TotalAtk.ToString()));
         }
     }
 

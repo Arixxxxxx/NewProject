@@ -60,7 +60,7 @@ public class Pet : MonoBehaviour
     TMP_Text BornText;
     TMP_Text BookText;
     TMP_Text lvText;
-
+    
     void Start()
     {
         
@@ -79,7 +79,7 @@ public class Pet : MonoBehaviour
 
         buyBtnTextBox = transform.Find("BuyBtn/TextBox").gameObject;
         mask = transform.Find("BuyBtn/BtnMask").gameObject;
-
+        
         switch (type)
         {
             case PetType.Bomb:

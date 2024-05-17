@@ -194,9 +194,6 @@ public class CalCulator : MonoBehaviour
         /// 무기도감 카운트만큼 % 합산
         result = DigitPercentMultiply(result, DogamManager.inst.weaponDogamGetCount);
 
-        // 하단 UI 텍스트 표시
-        UIManager.Instance.SetAtkText(inst.StringFourDigitAddFloatChanger(result));
-
         return result;
     }
 
