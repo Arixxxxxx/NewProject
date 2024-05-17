@@ -231,7 +231,7 @@ public class Quest : MonoBehaviour
             "부서진 수레 수리하기", //20
             "PX에서 고참 빵사오기", //21
             "판다 쓰다듬기", //22
-            "여자친구 만들기", //23
+            "고백하기", //23
         };
 
         return questName[QeustNumber];

@@ -41,12 +41,28 @@ public class Relic : MonoBehaviour
     TextMeshProUGUI PriceText;
     GameObject priceImage;
     GameObject priceMask;
+    GameObject starImgRef;
+    
+    GameObject effectRef;
+    float rotateSpeedMultiPlyer = 15f;
+    private void Update()
+    {
+        if (rankNum != RankType.Rare)
+        {
+            if(effectRef == null)
+            {
+                effectRef = transform.Find("IMG_Layout/Bg_Effect").gameObject;
+            }
 
+            effectRef.transform.Rotate(UnityEngine.Vector3.forward * Time.deltaTime * rotateSpeedMultiPlyer);
+        }
+    }
     public void initRelic()
     {
-        LvText = transform.Find("LvText").GetComponent<TextMeshProUGUI>();
+        LvText = transform.Find("IMG_Layout/LvText").GetComponent<TextMeshProUGUI>();
         PercentText = transform.Find("TextBox/PercentageText").GetComponent<TextMeshProUGUI>();
         PriceText = transform.Find("Button/PriceText").GetComponent<TextMeshProUGUI>();
+        starImgRef = transform.Find("Button/Image").gameObject;
         upBtn = transform.Find("Button").GetComponent<Button>();
         relicImgae = transform.Find("IMG_Layout/IMG").GetComponent<Image>();
         priceImage = transform.Find("Button/Image").gameObject;
