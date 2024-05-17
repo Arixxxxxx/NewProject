@@ -26,6 +26,10 @@ public class Quest : MonoBehaviour
         {
             lv = value;
             GameStatus.inst.SetAryQuestLv(Number, value);
+            if (lv >= 1)
+            {
+                UIManager.Instance.QeustUpComplete(Number);
+            }
         }
     }
     int LvCur = 1; //레벨보정
@@ -126,11 +130,6 @@ public class Quest : MonoBehaviour
         else
         {
             Debug.Log("돈이 부족합니다.");
-        }
-
-        if (Lv >= 1)
-        {
-            UIManager.Instance.QeustUpComplete(Number);
         }
     }
 
