@@ -54,9 +54,11 @@ public class Quest : MonoBehaviour
     [SerializeField] TextMeshProUGUI LvText;
     [SerializeField] TextMeshProUGUI totalGoldText;
 
+    // 자동 초기화
+
     void Start()
     {
-       
+
     }
 
     public void initQuest()
@@ -64,6 +66,11 @@ public class Quest : MonoBehaviour
         Number = transform.GetSiblingIndex();
         Lv = GameStatus.inst.GetAryQuestLv(Number);
         initValue();
+
+        //자동초기화
+        transform.Find("NameText").GetComponent<TMP_Text>().text = Set_QuestName(Number);
+        transform.Find("IMG_LayOut/IMG").GetComponent<Image>().sprite = SpriteResource.inst.Get_QuestIcon(Number);
+
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
         UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);
         GameStatus.inst.OnGoldChanged.AddListener(() =>
@@ -197,5 +204,36 @@ public class Quest : MonoBehaviour
     public void SetMaskActive(bool value)
     {
         objMask.SetActive(value);
+    }
+
+    private string Set_QuestName(int QeustNumber)
+    {
+        string[] questName =
+            {
+            "등산 하기", //1
+            "동전 줍기", //2
+            "항아리 만들기", //3
+            "허브차 마시기", //4
+            "판다 응가 치우기", //5
+            "전단지 나눠주기", //6
+            "편의점 알바하기", //7
+            "판다동상 만들기", //8
+            "그림 그리기", //9
+            "선물 포장하기", //11
+            "뒷산 제초작업", //12
+            "폭탄 제조하기 ", //13
+            "캠핑장 관리하기", //14
+            "바다낚시 하기", //15
+            "자전거 라이딩", //16
+            "양파 다듬기", //17
+            "마당 청소하기", //18
+            "후임 전투화 물광내기", //19
+            "부서진 수레 수리하기", //20
+            "PX에서 고참 빵사오기", //21
+            "판다 쓰다듬기", //22
+            "여자친구 만들기", //23
+        };
+
+        return questName[QeustNumber];
     }
 }

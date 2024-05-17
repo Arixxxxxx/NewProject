@@ -75,10 +75,12 @@ public class Weapon : MonoBehaviour
 
     public void InitWeapon()
     {
+        
         weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
         initValue();
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
-        nameText.text = $"{Number + 1}. " + Name;
+        nameText.text = $"{Number + 1}. {Set_WeaponName(Number)}";
+        //nameText.text = $"{Number + 1}. " + Name;
         SetbtnActive();
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
@@ -106,8 +108,8 @@ public class Weapon : MonoBehaviour
     private void setText()
     {
         LvText.text = $"Lv. {Lv} / 5";
-        upAtkText.text = "+" + CalCulator.inst.StringFourDigitAddFloatChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString());
-        totalAtkText.text = $"Atk {CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString())}";
+        upAtkText.text = $"LV 증가치 +{CalCulator.inst.StringFourDigitAddFloatChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString())}";
+        totalAtkText.text = $"종합 대미지 : {CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString())} / 타격";
         if (Lv < 5)
         {
             priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
@@ -182,5 +184,49 @@ public class Weapon : MonoBehaviour
     public void SetMaskActive(bool value)
     {
         mask.SetActive(value);
+    }
+    
+
+    /// <summary>
+    /// 무기이름 초기화
+    /// </summary>
+    /// <param name="WeaponNumber"> Sibling</param>
+    /// <returns></returns>
+    private string Set_WeaponName(int WeaponNumber)
+    {
+        string[] weaponName = 
+            {
+            "죽도", //1
+            "목검", //2
+            "중식도", //3
+            "손도끼",//4
+            "낫", //5
+            "일본도",//6
+            "박도", //7
+            "장창", //8
+            "언월도", //9
+            "홍접선", //10
+            "보검", //11
+            "호두구", //12
+            "여의봉", //13 
+            "장팔사모", //14
+            "청룡언월도", //15
+            "탁구채", //16
+            "칠교칠선", //17
+            "뒤짚개", //18
+            "화장실 청소도구", //19
+            "경광봉", //20
+            "우리아이딸랑이", //21 
+            "뚤어뻥",  //22
+            "왕~뿅망치", //23
+            "빠루", //24
+            "고오급 샤미센", //25
+            "신선한 청새치", //26
+            "짜앙~돌", //27
+            "왕사탕",  //28
+            "엄마 탕후루", //29
+            "응가 쏘시개"  //30
+        };
+        return weaponName[WeaponNumber];
     }
 }

@@ -96,6 +96,7 @@ public class UIManager : MonoBehaviour
 
     ////////////////////////////////////////////∆Í///////////////////////////////////////
 
+    GameObject petRef;
     Transform petParents;
     TMP_Text soulText;
     TMP_Text bornText;
@@ -170,11 +171,15 @@ public class UIManager : MonoBehaviour
             GameStatus.inst.PlusStar("100000000");
         }
 
-        int[] petmat = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+        if (petRef.activeInHierarchy)
+        {
+            int[] petmat = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
 
-        soulText.text = string.Format("{0:#,0}", petmat[0]);
-        bornText.text = string.Format("{0:#,0}", petmat[1]);
-        bookText.text = string.Format("{0:#,0}", petmat[2]);
+            soulText.text = string.Format("{0:#,0}", petmat[0]);
+            bornText.text = string.Format("{0:#,0}", petmat[1]);
+            bookText.text = string.Format("{0:#,0}", petmat[2]);
+        }
+        
     }
     private void Awake()
     {
@@ -255,6 +260,7 @@ public class UIManager : MonoBehaviour
         }
 
         //∆Í √ ±‚»≠
+        petRef = canvas.transform.Find("ScreenArea/BackGround/Pet").gameObject;
         soulText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Soul/Text (TMP)").GetComponent<TMP_Text>();
         bornText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Born/Text (TMP)").GetComponent<TMP_Text>();
         bookText = canvas.transform.Find("ScreenArea/BackGround/Pet/TopButton/Book/Text (TMP)").GetComponent<TMP_Text>();

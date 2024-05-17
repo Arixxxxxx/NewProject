@@ -51,7 +51,7 @@ public class Pet : MonoBehaviour
     int nextBorn;
     int nextBook;
 
-    GameObject mask;
+    GameObject buyBtnTextBox, mask;
     Button upBtn;
     Button DetailBtn;
     Button BuyBtn;
@@ -76,6 +76,8 @@ public class Pet : MonoBehaviour
         BornText = transform.Find("LvUpBtn/Born/PriceText").GetComponent<TMP_Text>();
         BookText = transform.Find("LvUpBtn/Book/PriceText").GetComponent<TMP_Text>();
         lvText = transform.Find("LvText").GetComponent<TMP_Text>();
+
+        buyBtnTextBox = transform.Find("BuyBtn/TextBox").gameObject;
         mask = transform.Find("BuyBtn/BtnMask").gameObject;
 
         switch (type)
@@ -99,7 +101,10 @@ public class Pet : MonoBehaviour
         BuyPriceText.text = baseCost.ToString();
         setNextCost();
         releasePet();
-        GameStatus.inst.OnRubyChanged.AddListener(checkHaveRuby);
+
+        //GameStatus.inst.OnRubyChanged.AddListener(checkHaveRuby);
+        // 상시 열려있는걸로 변경
+
         GameStatus.inst.OnStageChanged.AddListener(releasePet);
         upBtn.onClick.AddListener(ClickUp);
         BuyBtn.onClick.AddListener(() =>
@@ -149,7 +154,7 @@ public class Pet : MonoBehaviour
         nextBorn = baseCost + Lv * 100;
         nextBook = baseCost + Lv * 100;
 
-        lvText.text = $"Lv.{Lv}";
+        lvText.text = $"현재 Lv.{Lv}";
         SoulText.text = $"{nextSoul.ToString("N0")}";
         BornText.text = $"{nextBorn.ToString("N0")}";
         BookText.text = $"{nextBook.ToString("N0")}";
@@ -160,8 +165,10 @@ public class Pet : MonoBehaviour
         if (GameStatus.inst.StageLv >= releaseStage)
         {
             isRelease = true;
-            upBtn.interactable = true;
+            
             mask.SetActive(false);
+            buyBtnTextBox.SetActive(true);
+            BuyBtn.interactable = true;
         }
     }
 }

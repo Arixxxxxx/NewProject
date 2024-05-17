@@ -28,7 +28,10 @@ public class SpriteResource : MonoBehaviour
     [SerializeField] private Sprite[] coinMG;
     [Header("# 동료 강화 재료 아이콘")]
     [SerializeField] private Sprite[] crewMaterialIMG;
-    
+    [Header("# Quest 아이콘")]
+    [SerializeField] private Sprite[] questIcon;
+
+    public Sprite Get_QuestIcon(int value) => questIcon[value];
     /// <summary>
     /// 버프 아이콘 스프라이트
     /// </summary>
