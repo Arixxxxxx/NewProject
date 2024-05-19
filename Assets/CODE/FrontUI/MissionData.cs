@@ -53,9 +53,6 @@ public class MissionData : MonoBehaviour
         }
     }
 
-    bool isCanResetDaily = true;
-    bool isCanResetWeekly = true;
-
     //////////////////일일 미션//////////////////
     [Header("일일 미션 목록")]
     [SerializeField] List<DailyMission> list_DailyMission = new List<DailyMission>();
@@ -86,29 +83,31 @@ public class MissionData : MonoBehaviour
             get => count;
             set
             {
-                if (count < maxCount)
+                count = value;
+                if (count > maxCount)
                 {
-                    count = value;
-                    GameStatus.inst.SetDailyMissionCount(index, count);
-
-                    if (isClear == false && count >= maxCount)
-                    {
-                        count = maxCount;
-                        Instance.ClearStack++;
-                        moveBtn.gameObject.SetActive(false);
-                        clearBtn.gameObject.SetActive(true);
-
-                    }
-                    else if (isClear)
-                    {
-                        clearBtn.gameObject.SetActive(false);
-                        Mask.SetActive(true);
-                        ClearText.SetActive(true);
-                    }
-
-                    BarText.text = $"{count} / {maxCount}";
-                    imageBar.fillAmount = (float)count / maxCount;
+                    count = maxCount;
                 }
+                GameStatus.inst.SetDailyMissionCount(index, count);
+
+                if (isClear == false && count >= maxCount)
+                {
+                    count = maxCount;
+                    Instance.ClearStack++;
+                    moveBtn.gameObject.SetActive(false);
+                    clearBtn.gameObject.SetActive(true);
+
+                }
+                else if (isClear)
+                {
+                    clearBtn.gameObject.SetActive(false);
+                    Mask.SetActive(true);
+                    ClearText.SetActive(true);
+                }
+
+                BarText.text = $"{count} / {maxCount}";
+                imageBar.fillAmount = (float)count / maxCount;
+
             }
         }
         public void InitStart()
@@ -218,8 +217,10 @@ public class MissionData : MonoBehaviour
         public void initMission()
         {
             Count = 0;
+            isClear = false;
             Mask.SetActive(false);
             ClearText.SetActive(false);
+            clearBtn.gameObject.SetActive(false);
             moveBtn.gameObject.SetActive(true);
         }
         public void SetClearState()
@@ -279,28 +280,31 @@ public class MissionData : MonoBehaviour
             get => count;
             set
             {
-                if (count < maxCount)
+
+                count = value;
+                if (count > maxCount)
                 {
-                    count = value;
-                    GameStatus.inst.SetWeeklyMissionCount(index, count);
-
-                    if (isClear == false && count >= maxCount)
-                    {
-                        count = maxCount;
-                        Instance.ClearStack++;
-                        moveBtn.gameObject.SetActive(false);
-                        clearBtn.gameObject.SetActive(true);
-                    }
-                    else if (isClear)
-                    {
-                        clearBtn.gameObject.SetActive(false);
-                        Mask.SetActive(true);
-                        ClearText.SetActive(true);
-                    }
-
-                    BarText.text = $"{count} / {maxCount}";
-                    imageBar.fillAmount = (float)count / maxCount;
+                    count = maxCount;
                 }
+                GameStatus.inst.SetWeeklyMissionCount(index, count);
+
+                if (isClear == false && count >= maxCount)
+                {
+                    count = maxCount;
+                    Instance.ClearStack++;
+                    moveBtn.gameObject.SetActive(false);
+                    clearBtn.gameObject.SetActive(true);
+                }
+                else if (isClear)
+                {
+                    clearBtn.gameObject.SetActive(false);
+                    Mask.SetActive(true);
+                    ClearText.SetActive(true);
+                }
+
+                BarText.text = $"{count} / {maxCount}";
+                imageBar.fillAmount = (float)count / maxCount;
+
             }
         }
         public void InitStart()
@@ -406,8 +410,10 @@ public class MissionData : MonoBehaviour
         public void initMission()
         {
             Count = 0;
+            isClear = false;
             Mask.SetActive(false);
             ClearText.SetActive(false);
+            clearBtn.gameObject.SetActive(false);
             moveBtn.gameObject.SetActive(true);
         }
         public void SetClearState()
@@ -632,7 +638,8 @@ public class MissionData : MonoBehaviour
             worldTitleText.text = $"{nowSpecialIndex + 1}단계 미션";
             worldDetailText.text = list_SpecialMIssion[nowSpecialIndex].Name;
             topMoveBtn.onClick.RemoveAllListeners();
-            topMoveBtn.onClick.AddListener(() => {
+            topMoveBtn.onClick.AddListener(() =>
+            {
                 switch (list_SpecialMIssion[nowSpecialIndex].GetMissionType())
                 {
                     case SpMissionTag.Quest:
@@ -824,31 +831,60 @@ public class MissionData : MonoBehaviour
     {
         checkDay();
         checkWeek();
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            initDailyMission();
+        }
     }
 
     void checkDay()
     {
-        if (DateTime.Now.ToString("HH") == "00" && isCanResetDaily == true)
+        TimeSpan resetTime = new TimeSpan(5, 0, 0);
+        string lastResetTimeStr = GameStatus.inst.DailyMissionResetTime;
+
+        DateTime lastResetTime = DateTime.Parse(lastResetTimeStr);
+
+        DateTime now = DateTime.Now;
+
+        DateTime lastResetDateTime = lastResetTime.Date + resetTime;// 마지막으로 초기화한 날의 5시
+        DateTime todayResetDateTime = now.Date + resetTime;// 오늘 5시
+
+        if (now >= todayResetDateTime && lastResetDateTime < todayResetDateTime)// 현재시간이 초기화시간을 넘었는지 && 마지막 초기화 시간이 오늘 초기화 시간보다 낮은지
         {
-            isCanResetDaily = false;
             initDailyMission();
-        }
-        else if (DateTime.Now.ToString("HH") != "00")
-        {
-            isCanResetDaily = true;
+            GameStatus.inst.DailyMissionResetTime = todayResetDateTime.ToString();
         }
     }
     void checkWeek()
     {
-        if (DateTime.Today.DayOfWeek == DayOfWeek.Monday && isCanResetWeekly == true)
-        {
-            isCanResetWeekly = false;
+        TimeSpan resetTime = new TimeSpan(5, 0, 0);
+        string lastResetTimeStr = GameStatus.inst.WeeklyMissionResetTime;
+
+        DateTime lastResetTime = DateTime.Parse(lastResetTimeStr);
+
+        DateTime now = DateTime.Now;
+        DateTime lastMonday = getLastMonday(now);//이번주 월요일 리턴
+
+        DateTime lastResetDateTime = lastResetTime.Date + resetTime;// 마지막으로 리셋한 날짜의 새벽 5시
+        DateTime lastMondayDateTime = lastMonday.Date + resetTime;// 이번주 월요일 날짜의 새벽 5시 현재 월요일이라면 지난주 월요일 새벽 5시
+
+
+        if (lastResetDateTime < lastMondayDateTime && now >= lastMondayDateTime)//마지막 리셋날짜가 이번주 월요일보다 전일 경우 && 현재시간이 이번주 월요일 리셋시간보다 앞일경우
+        { 
             initWeeklyMission();
+            GameStatus.inst.WeeklyMissionResetTime = lastMonday.ToString();
         }
-        else if (DateTime.Today.DayOfWeek != DayOfWeek.Monday)
+    }
+
+    DateTime getLastMonday(DateTime date)
+    {
+        int daysSinceMonday = (int)date.DayOfWeek - (int)DayOfWeek.Monday;//오늘과 월요일의 차이 구하기
+        if (daysSinceMonday < 0)//월요일이 아니면 이번주 월요일 도출 월요일이면 지난주 월요일 도출
         {
-            isCanResetWeekly = true;
+            daysSinceMonday += 7;
         }
+        return date.AddDays(-daysSinceMonday).Date;//이번주 월요일 리턴
     }
 
     void initDailyMission()//일일 미션 초기화
@@ -857,15 +893,8 @@ public class MissionData : MonoBehaviour
 
         for (int iNum = count - 1; iNum >= 0; iNum--)
         {
-            for (int jNum = 0; jNum < count; jNum++)
-            {
-                if (list_DailyMission[jNum].GetIndex() == iNum)
-                {
-                    list_DailyMission[jNum].Trs.SetAsFirstSibling();
-                    list_DailyMission[jNum].initMission();
-                    break;
-                }
-            }
+            list_DailyMission[iNum].Trs.SetAsFirstSibling();
+            list_DailyMission[iNum].initMission();
         }
     }
     void initWeeklyMission()//주간 미션 초기화
@@ -874,15 +903,10 @@ public class MissionData : MonoBehaviour
 
         for (int iNum = count - 1; iNum >= 0; iNum--)
         {
-            for (int jNum = 0; jNum < count; jNum++)
-            {
-                if (list_WeeklyMission[jNum].GetIndex() == iNum)
-                {
-                    list_WeeklyMission[jNum].Trs.SetAsFirstSibling();
-                    list_WeeklyMission[jNum].initMission();
-                    break;
-                }
-            }
+
+            list_WeeklyMission[iNum].Trs.SetAsFirstSibling();
+            list_WeeklyMission[iNum].initMission();
+
         }
     }
 }

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BingoAnim : MonoBehaviour
 {
     [SerializeField] Animator animator;
+    [SerializeField] Button btn;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,7 @@ public class BingoAnim : MonoBehaviour
     public void ClickBtn()
     {
         animator.SetTrigger("click");
+        btn.interactable = false;
     }
 
     public void SetActive()

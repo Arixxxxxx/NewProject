@@ -95,12 +95,13 @@ public class DataManager : MonoBehaviour
         public List<int> DailyMissionCount = new List<int>();
         public List<int> WeeklyMissionCount = new List<int>();
         public List<int> SpecialMissionCount = new List<int>();
-        public bool canResetDailyMission;
-        public bool canResetWeeklyMission;
+        public string DailyMissionResetTime = DateTime.Now.ToString();
+        public string WeeklyMissionResetTime = DateTime.Now.ToString();
 
         //11. 빙고 현황
         public List<bool> BingoBoard = new List<bool>();
         public int RouletteTicket;
+        public int BingoStack;
 
         //12 우편
         public List<SaveLetter> LetterBox = new List<SaveLetter>();

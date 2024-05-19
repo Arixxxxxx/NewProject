@@ -1,35 +1,35 @@
 {
-    "LastSignDate": "2024-05-17T22:30:37.5368291+09:00",
-    "Name": "",
-    "Gold": "24530",
-    "Star": "96200488",
-    "Ruby": 6300,
+    "LastSignDate": "2024-05-20T06:45:05.4730240+09:00",
+    "Name": "겸희",
+    "Gold": "23694",
+    "Star": "300000000",
+    "Ruby": 1300,
     "Soul": 0,
     "book": 0,
     "born": 0,
     "adRulletPlay": false,
     "adSlotMachinePlay": false,
     "miniTicket": 0,
-    "buffAtkTime": 12,
-    "buffGoldTime": 13,
-    "buffMoveSpeedTime": 12,
-    "buffBigAtkTime": 2,
-    "getNewbieRewardCount": 1,
-    "todayGetRaward": true,
-    "newbieBuffLastDay": "2024-05-24T22:24:00.0089218+09:00",
-    "GetGiftCount": 1,
-    "todayGetDailyReward": true,
+    "buffAtkTime": 0,
+    "buffGoldTime": 26,
+    "buffMoveSpeedTime": 0,
+    "buffBigAtkTime": 0,
+    "getNewbieRewardCount": 0,
+    "todayGetRaward": false,
+    "newbieBuffLastDay": "2024-05-27T03:51:06.6559353+09:00",
+    "GetGiftCount": 0,
+    "todayGetDailyReward": false,
     "DailyADRuby": false,
-    "AtkSpeedLv": 1,
+    "AtkSpeedLv": 0,
     "HwanSeangCount": 0,
-    "TotalFloor": 19,
-    "Stage": 4,
+    "TotalFloor": 24,
+    "Stage": 5,
     "NowFloor": 4,
     "Crew0Lv": 0,
     "Crew1Lv": 0,
     "Crew2Lv": 0,
     "QuestLv": [
-        0,
+        10,
         0,
         0,
         0,
@@ -62,9 +62,9 @@
     ],
     "WeaponLv": [
         5,
-        0,
-        0,
-        0,
+        5,
+        5,
+        5,
         0,
         0,
         0,
@@ -93,55 +93,55 @@
         0
     ],
     "RelicLv": [
-        48,
-        1,
-        1,
-        0,
-        1,
-        1,
-        2,
         0,
         0,
-        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
         0
     ],
-    "NowEquipWeaponNum": 0,
+    "NowEquipWeaponNum": 3,
     "DailyMIssionClear": [
+        true,
+        true,
         false,
-        true,
-        true,
         false
     ],
     "WeeklyMissionClear": [
         false,
         false,
-        false,
+        true,
         false
     ],
     "SpecialMissionClearNum": 0,
     "DailyMissionCount": [
-        1,
-        900,
-        10,
-        2
+        0,
+        0,
+        2,
+        0
     ],
     "WeeklyMissionCount": [
         0,
         0,
         0,
-        5
-    ],
-    "SpecialMissionCount": [
-        0,
-        48,
-        0,
-        0,
-        0,
-        0,
         0
     ],
-    "canResetDailyMission": false,
-    "canResetWeeklyMission": false,
+    "SpecialMissionCount": [
+        10,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+    ],
+    "DailyMissionResetTime": "2024-05-20 오전 5:00:00",
+    "WeeklyMissionResetTime": "2024-05-20 오전 12:00:00",
     "BingoBoard": [
         false,
         false,
@@ -152,15 +152,16 @@
         false,
         false
     ],
-    "RouletteTicket": 120,
+    "RouletteTicket": 40,
+    "BingoStack": 0,
     "LetterBox": [
         {
             "itemtype": 0,
-            "letterFrom": "게임GM",
-            "letterText": "신규유저 1일차 보상",
-            "letterItemCount": 1000,
+            "letterFrom": "미션",
+            "letterText": "일일미션 클리어!",
+            "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -377434
+                "instanceID": -3045910
             }
         },
         {
@@ -169,27 +170,36 @@
             "letterText": "일일미션 클리어!",
             "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -377508
-            }
-        },
-        {
-            "itemtype": 2,
-            "letterFrom": "미션",
-            "letterText": "일일미션 클리어!",
-            "letterItemCount": 100,
-            "letterPrefab": {
-                "instanceID": -377582
+                "instanceID": -3045984
             }
         },
         {
             "itemtype": 0,
-            "letterFrom": "게임GM",
-            "letterText": "출석체크 1일차 보상",
-            "letterItemCount": 10,
+            "letterFrom": "미션",
+            "letterText": "일일미션 클리어!",
+            "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -377656
+                "instanceID": -3046058
+            }
+        },
+        {
+            "itemtype": 1,
+            "letterFrom": "미션",
+            "letterText": "주간미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -3046132
+            }
+        },
+        {
+            "itemtype": 0,
+            "letterFrom": "미션",
+            "letterText": "일일미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -3046206
             }
         }
     ],
-    "adDeleteBuffTime": "2024-06-16T22:27:45.8187525+09:00"
+    "adDeleteBuffTime": "0001-01-01T00:00:00.0000000"
 }

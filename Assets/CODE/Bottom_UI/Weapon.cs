@@ -28,8 +28,16 @@ public class Weapon : MonoBehaviour
                 priceText.text = "";
                 upBtnImage.SetActive(false);
                 upBtnMask.SetActive(true);
-                UIManager.Instance.WeaponUpComplete(transform);
+                UIManager.Instance.WeaponUpComplete(Number);
                 DogamManager.inst.GetWeaponCheck(Number + 1);
+                if (Lv >= 5)
+                {
+                    UIManager.Instance.SetTopWeaponNum(Number + 1);
+                }
+                else
+                {
+                    UIManager.Instance.SetTopWeaponNum(Number);
+                }
             }
         }
     }
@@ -126,14 +134,6 @@ public class Weapon : MonoBehaviour
             MissionData.Instance.SetWeeklyMission("무기 강화", 1);
             Atk = BigInteger.Multiply(resultPowNum, Lv);
             GameStatus.inst.MinusGold(nextCost.ToString());
-            if (Lv >= 5)
-            {
-                UIManager.Instance.SetTopWeaponNum(Number + 1);
-            }
-            else
-            {
-                UIManager.Instance.SetTopWeaponNum(Number);
-            }
             clickWeaponImage();
             setNextCost();
             setText();

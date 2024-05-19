@@ -9,7 +9,6 @@ public enum RankType
 public enum ItemTag
 {
     Atk,
-    AtkSpeed,
     Critical,
     QuestGold,
     KillGold,
@@ -17,6 +16,7 @@ public enum ItemTag
     QuestWeaponPrice,
     CriticalDmg,
     PandaBuff,
+    AtkSpeed,
     FeverTime,
     GetStar
 }

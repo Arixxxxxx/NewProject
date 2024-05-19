@@ -15,7 +15,7 @@ public class Roulette : MonoBehaviour
     //    set
     //    {
     //        rouletteTicket = value;
-            
+
     //    }
     //}
     int rouletteStack;
@@ -78,7 +78,10 @@ public class Roulette : MonoBehaviour
     TMP_Text[] list_CountText;
     Transform BingoParents;
     Transform ShowRewardParents;
+    Transform ShowBingoParents;
     GameObject showBingo;
+    Button showBingoCloseBtn;
+
     Image roulette;
     Image player;
     Button openBtn;
@@ -94,10 +97,21 @@ public class Roulette : MonoBehaviour
 
     BigInteger nowTotalGold;
     float speed;
-    int useCount = 1;
     bool isSpin;
+    int useCount = 1;
+    int bingoStack;
+    int BingoStack
+    {
+        get => bingoStack;
+        set
+        {
+            bingoStack = value;
+            GameStatus.inst.BingoStack = bingoStack;
+        }
+    }
 
     List<GameObject> bingoMask = new List<GameObject>();
+    List<GameObject> showBingoMask = new List<GameObject>();
 
 
     private void Start()
@@ -110,6 +124,8 @@ public class Roulette : MonoBehaviour
         StartBtn = transform.Find("BackGround/StartBtn").GetComponent<Button>();
         StopBtn = transform.Find("BackGround/StopBtn").GetComponent<Button>();
         closeBtn = transform.Find("BackGround/CloseBtn").GetComponent<Button>();
+        showBingoCloseBtn = transform.Find("BackGround/ShowBingo/Button").GetComponent<Button>();
+
         goldText2[0] = transform.Find("BackGround/Roulette/Gold2/Text (TMP)").GetComponent<TMP_Text>();
         goldText2[1] = transform.Find("BackGround/bingo/Coin2/Text (TMP)").GetComponent<TMP_Text>();
         goldText2[2] = transform.Find("BackGround/ShowBingo/Bingo/Coin2/Text (TMP)").GetComponent<TMP_Text>();
@@ -129,6 +145,7 @@ public class Roulette : MonoBehaviour
         list_countBtnImage[2] = transform.Find("BackGround/CountBtn/Button (2)").GetComponent<Image>();
 
         RouletteStack = GameStatus.inst.RouletteStack;
+        BingoStack = GameStatus.inst.BingoStack;
         SetBingoBoard(GameStatus.inst.GetBingoBoard());
 
         //빙고판 초기화
@@ -140,14 +157,33 @@ public class Roulette : MonoBehaviour
         }
         bingoMask.RemoveAt(4);
 
+        //빙고 달성창 초기화
+        ShowBingoParents = transform.Find("BackGround/ShowBingo/Bingo");
+        int showBingoCount = ShowBingoParents.childCount;
+        for (int iNum = 0; iNum < showBingoCount; iNum++)
+        {
+            showBingoMask.Add(ShowBingoParents.GetChild(iNum).Find("Mask").gameObject);
+        }
+
         int bingoCount = bingoMask.Count;
         for (int iNum = 0; iNum < bingoCount; iNum++)
         {
             if (bingoBoard[iNum])
             {
                 bingoMask[iNum].SetActive(true);
+                if (iNum < 4)
+                {
+                    showBingoMask[iNum].SetActive(true);
+                }
+                else
+                {
+                    showBingoMask[iNum + 1].SetActive(true);
+                }
             }
         }
+        showBingoMask[4].SetActive(true);
+
+
 
         //보상 확인창 초기화
         ShowRewardParents = transform.Find("BackGround/ShowReward");
@@ -163,12 +199,16 @@ public class Roulette : MonoBehaviour
 
         }
         clickOpen();
-        GameStatus.inst.OnRouletteTicketChanged.AddListener(() => 
+        GameStatus.inst.OnRouletteTicketChanged.AddListener(() =>
         {
             ticketText.text = GameStatus.inst.RouletteTicket.ToString();
             if (GameStatus.inst.RouletteTicket <= 0)
             {
                 StartBtn.interactable = false;
+            }
+            else
+            {
+                StartBtn.interactable = true;
             }
         });
         GameStatus.inst.RouletteTicket = GameStatus.inst.RouletteTicket;
@@ -184,7 +224,7 @@ public class Roulette : MonoBehaviour
         StopAllCoroutines();
         rouletteRect.eulerAngles = UnityEngine.Vector3.zero;
         StartBtn.gameObject.SetActive(true);
-        StartBtn.interactable = true;
+        GameStatus.inst.RouletteTicket = GameStatus.inst.RouletteTicket;
         StopBtn.gameObject.SetActive(false);
         StopBtn.interactable = true;
     }
@@ -260,7 +300,7 @@ public class Roulette : MonoBehaviour
                 if (bingoBoard[iNum] == false)
                 {
                     ListRewardNum.Add(new UnityEngine.Vector2(iNum, 0));
-
+                    bingoBoard[iNum] = true;
                     GetReward(iNum);
                 }
             }
@@ -351,6 +391,14 @@ public class Roulette : MonoBehaviour
         {
             //bingoBoard[(int)ListRewardNum[iNum].x] = true;
             bingoMask[(int)ListRewardNum[iNum].x].SetActive(true);
+            if ((int)ListRewardNum[iNum].x < 4)
+            {
+                showBingoMask[(int)ListRewardNum[iNum].x].SetActive(true);
+            }
+            else
+            {
+                showBingoMask[(int)ListRewardNum[iNum].x + 1].SetActive(true);
+            }
         }
 
         speed = 0;
@@ -394,6 +442,10 @@ public class Roulette : MonoBehaviour
 
             ShowRewardParents.GetChild(iNum).gameObject.SetActive(true);
         }
+
+
+
+        //빙고창 끌때까지 대기
         while (ShowRewardParents.gameObject.activeSelf)
         {
             yield return null;
@@ -413,7 +465,7 @@ public class Roulette : MonoBehaviour
                 GameStatus.inst.PlusRuby(100);
                 break;
             case 1:
-                GameStatus.inst.PlusStar("100");
+                GameStatus.inst.PlusStar("10");
                 break;
             case 2:
                 GameStatus.inst.PlusGold($"{nowTotalGold * 2}");
@@ -422,13 +474,13 @@ public class Roulette : MonoBehaviour
                 GameStatus.inst.PlusRuby(200);
                 break;
             case 4:
-                GameStatus.inst.PlusStar("1000");
+                GameStatus.inst.PlusStar("50");
                 break;
             case 5:
                 GameStatus.inst.PlusGold($"{nowTotalGold * 5}");
                 break;
             case 6:
-                GameStatus.inst.PlusStar("10000");
+                GameStatus.inst.PlusStar("100");
                 break;
             case 7:
                 GameStatus.inst.PlusGold($"{nowTotalGold * 10}");
@@ -442,71 +494,198 @@ public class Roulette : MonoBehaviour
 
     IEnumerator checkBingo()
     {
+        List<int> bingoList = new List<int>();
+        int preStack = BingoStack;
         //가로빙고
         if (horizontalBingo[0] == false && bingoBoard[0] && bingoBoard[1] && bingoBoard[2])
         {
             horizontalBingo[0] = true;
+            bingoList.Add(0);
+            bingoList.Add(1);
+            bingoList.Add(2);
+            BingoStack++;
         }
 
         if (horizontalBingo[1] == false && bingoBoard[3] && bingoBoard[4])
         {
             horizontalBingo[1] = true;
+            bingoList.Add(3);
+            bingoList.Add(4);
+            bingoList.Add(5);
+            BingoStack++;
         }
 
         if (horizontalBingo[2] == false && bingoBoard[5] && bingoBoard[6] && bingoBoard[7])
         {
             horizontalBingo[2] = true;
+            bingoList.Add(6);
+            bingoList.Add(7);
+            bingoList.Add(8);
+            BingoStack++;
         }
 
         //세로빙고
         if (verticalBingo[0] == false && bingoBoard[0] && bingoBoard[3] && bingoBoard[5])
         {
             verticalBingo[0] = true;
+            bingoList.Add(0);
+            bingoList.Add(3);
+            bingoList.Add(6);
+            BingoStack++;
         }
 
         if (verticalBingo[1] == false && bingoBoard[1] && bingoBoard[6])
         {
             verticalBingo[1] = true;
+            bingoList.Add(1);
+            bingoList.Add(4);
+            bingoList.Add(7);
+            BingoStack++;
         }
 
         if (verticalBingo[2] == false && bingoBoard[2] && bingoBoard[4] && bingoBoard[7])
         {
             verticalBingo[2] = true;
+            bingoList.Add(2);
+            bingoList.Add(5);
+            bingoList.Add(8);
+            BingoStack++;
         }
 
         //대각빙고
         if (crossBingo[0] == false && bingoBoard[0] && bingoBoard[7])
         {
             crossBingo[0] = true;
+            bingoList.Add(0);
+            bingoList.Add(4);
+            bingoList.Add(8);
+            BingoStack++;
         }
 
         if (crossBingo[1] == false && bingoBoard[2] && bingoBoard[5])
         {
             crossBingo[1] = true;
+            bingoList.Add(2);
+            bingoList.Add(4);
+            bingoList.Add(6);
+            BingoStack++;
         }
 
-        //빙고 다 채운지 확인
-        int count = bingoBoard.Count;
-        for (int iNum = 0; iNum < count; iNum++)
+        //빙고 채운게 있는지 확인
+        if (bingoList.Count == 0)
+        {
+            yield break;
+        }
+
+        //빙고 달성 이펙트
+        showBingo.SetActive(true);
+        int clearBingoListCount = bingoList.Count;
+        for (int iNum = 0; iNum < clearBingoListCount; iNum++)
+        {
+            showBingoMask[bingoList[iNum]].GetComponent<Animator>().Play("BingoGetEffect", -1, 0);
+            yield return new WaitForSeconds(0.33f);
+        }
+        showBingoCloseBtn.interactable = true;
+
+        ////빙고 달성창 꺼질 때까지 대기(꺼지는 함수는 애니메이터에 연결돼있음)
+        //while (showBingo.activeSelf == true)
+        //{
+        //    yield return null;
+        //}
+
+        //보상창 자식 모두 꺼주기
+        int rewardCount = ShowRewardParents.childCount;
+        for (int iNum = 0; iNum < rewardCount; iNum++)
+        {
+            ShowRewardParents.GetChild(iNum).gameObject.SetActive(false);
+        }
+
+        int jNum = 0;
+        //빙고달성 보상 지급
+        for (int iNum = preStack; iNum < BingoStack; iNum++)
+        {
+
+            Sprite sprite = null;
+            switch (iNum)
+            {
+                case 0:
+                    GameStatus.inst.PlusStar("20");
+                    sprite = UIManager.Instance.GetProdSprite(1);
+                    list_CountText[jNum].text = "20";
+
+                    break;
+                case 1:
+                    GameStatus.inst.PlusGold($"{nowTotalGold * 5}");
+                    sprite = UIManager.Instance.GetProdSprite(0);
+                    list_CountText[jNum].text = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 5).ToString());
+                    break;
+                case 2:
+                    GameStatus.inst.PlusStar("100");
+                    sprite = UIManager.Instance.GetProdSprite(1);
+                    list_CountText[jNum].text = "100";
+                    break;
+                case 3:
+                    GameStatus.inst.PlusGold($"{nowTotalGold * 10}");
+                    sprite = UIManager.Instance.GetProdSprite(0);
+                    list_CountText[jNum].text = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 10).ToString());
+                    break;
+                case 4:
+                    GameStatus.inst.PlusStar("200");
+                    sprite = UIManager.Instance.GetProdSprite(1);
+                    list_CountText[jNum].text = "200";
+                    break;
+                case 5:
+                    GameStatus.inst.PlusGold($"{nowTotalGold * 15}");
+                    sprite = UIManager.Instance.GetProdSprite(0);
+                    list_CountText[jNum].text = CalCulator.inst.StringFourDigitAddFloatChanger((nowTotalGold * 15).ToString());
+                    break;
+                case 6:
+                    GameStatus.inst.PlusRuby(200);
+                    sprite = UIManager.Instance.GetProdSprite(2);
+                    list_CountText[jNum].text = "200";
+                    break;
+                case 7:
+                    GameStatus.inst.PlusRuby(300);
+                    sprite = UIManager.Instance.GetProdSprite(2);
+                    list_CountText[jNum].text = "300";
+                    break;
+            }
+            //스프라이트 교체
+            list_showImage[jNum].sprite = sprite;
+            float ratio = sprite.bounds.size.x / sprite.bounds.size.y;
+            list_showImage[jNum].rectTransform.sizeDelta = new UnityEngine.Vector2(ratio * 40, 40);
+
+            //텍스트 교체
+            list_GetText[jNum].text = $"Get!";
+
+            //오브젝트 활성화
+            ShowRewardParents.GetChild(jNum).gameObject.SetActive(true);
+
+            jNum++;
+        }
+
+        ShowRewardParents.gameObject.SetActive(true);
+
+        //올빙고 달성했는지 확인
+        int bingoCount = bingoBoard.Count;
+        for (int iNum = 0; iNum < bingoCount; iNum++)
         {
             if (bingoBoard[iNum] == false)
             {
                 yield break;
             }
         }
-        //빙고 달성창 꺼질 때까지 대기(꺼지는 함수는 애니메이터에 연결돼있음)
-        showBingo.SetActive(true);
-        while (showBingo.activeSelf == true)
-        {
-            yield return null;
-        }
+
         //다 채워져 있으면 빙고판 리셋
-        for (int iNum = 0; iNum < count; iNum++)
+        for (int iNum = 0; iNum < bingoCount; iNum++)
         {
             bingoBoard[iNum] = false;
             bingoMask[iNum].SetActive(false);
+            showBingoMask[iNum].SetActive(false);
         }
+        showBingoMask[4].SetActive(true);
         RouletteStack = 0;
+        BingoStack = 0;
         horizontalBingo[0] = false;
         horizontalBingo[1] = false;
         horizontalBingo[2] = false;

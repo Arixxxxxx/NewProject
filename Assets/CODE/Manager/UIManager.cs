@@ -74,9 +74,8 @@ public class UIManager : MonoBehaviour
     int haveWeaponNum;//보유중인 무기중 제일 최상위 무기 번호
 
 
-    public void WeaponUpComplete(Transform _trs)
+    public void WeaponUpComplete(int index)
     {
-        int index = m_list_Weapon.FindIndex(x => x == _trs);
 
         if (m_list_Weapon.Count > index + 1)
         {
@@ -92,6 +91,30 @@ public class UIManager : MonoBehaviour
     public void SetTopWeaponNum(int _num)
     {
         haveWeaponNum = _num;
+    }
+
+    public void MaxBuyWeapon()
+    {
+        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
+
+        if (m_list_Weapon.Count > haveWeaponNum)
+        {
+            BigInteger nextcost = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>().GetNextCost();
+            while (haveGold >= nextcost)
+            {
+                if (m_list_Weapon.Count > haveWeaponNum)
+                {
+                    Weapon ScWeapon = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>();
+                    ScWeapon.ClickBuy();
+                    haveGold -= nextcost;
+                    nextcost = ScWeapon.GetNextCost();
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
     }
 
     ////////////////////////////////////////////펫///////////////////////////////////////
@@ -151,7 +174,7 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="index">0 = 골드, 1 = 루비, 2 = 별</param>
+    /// <param name="index">0 = 골드, 1 = 별, 2 = 루비</param>
     /// <returns></returns>
     public Sprite GetProdSprite(int index)
     {
@@ -448,34 +471,13 @@ public class UIManager : MonoBehaviour
     public void SetGotoGachaBtn(bool value)
     {
         GotoRelicShopBtn.gameObject.SetActive(value);
+        infoRef.SetActive(value);
     }
 
-    public void MaxBuyWeapon()
-    {
-        BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
 
-        if (m_list_Weapon.Count > haveWeaponNum)
-        {
-            BigInteger nextcost = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>().GetNextCost();
-            while (haveGold >= nextcost)
-            {
-                if (m_list_Weapon.Count > haveWeaponNum)
-                {
-                    Weapon ScWeapon = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>();
-                    ScWeapon.ClickBuy();
-                    haveGold -= nextcost;
-                    nextcost = ScWeapon.GetNextCost();
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-    }
 
     public void SetAtkText(string _atk)
     {
-        m_totalAtk.text = $"현재 타격 대미지 : {_atk} / 타";
+        m_totalAtk.text = $"현재 타격 대미지 : {CalCulator.inst.StringFourDigitAddFloatChanger(_atk)} / 타";
     }
 }

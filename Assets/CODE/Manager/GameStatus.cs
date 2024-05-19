@@ -322,7 +322,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             totalAtk = value;
-            UIManager.Instance.SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(TotalAtk.ToString()));
+            UIManager.Instance.SetAtkText(totalAtk.ToString());
         }
     }
 
@@ -693,12 +693,13 @@ public class GameStatus : MonoBehaviour
     int specialMIssionClearNum;
     public int SpecialMIssionClearNum { get => specialMIssionClearNum; set { specialMIssionClearNum = value; } }
 
-    bool isCanResetDailyMIssion;
-    public bool IsCanResetDailyMIssion { get => isCanResetDailyMIssion; set { isCanResetDailyMIssion = value; } }
+    string dailyMissionResetTime = "";
+    public string DailyMissionResetTime { get => dailyMissionResetTime; set { dailyMissionResetTime = value; } }
 
-    bool isCanResetWeeklyMIssion;
-    public bool IsCanResetWeeklyMIssion { get => isCanResetWeeklyMIssion; set { isCanResetWeeklyMIssion = value; } }
+    string weeklyMissionResetTime = "";
+    public string WeeklyMissionResetTime { get => weeklyMissionResetTime; set { weeklyMissionResetTime = value; } }
 
+    ///////////////////////빙고///////////////////
     List<bool> bingoBoard = new List<bool>();
     public bool GetBingoBoard(int index)
     {
@@ -716,8 +717,15 @@ public class GameStatus : MonoBehaviour
     {
         bingoBoard = value;
     }
-    //bool[] bingoBoard = new bool[8];
-    //public bool[] BingoBoard { get => bingoBoard; set { bingoBoard = value; } }
+    int bingoStack;
+    public int BingoStack
+    {
+        get => bingoStack;
+        set
+        {
+            bingoStack = value;
+        }
+    }
 
     [HideInInspector] public UnityEvent OnRouletteTicketChanged;
     int rouletteTicket;
@@ -957,12 +965,13 @@ public class GameStatus : MonoBehaviour
         dailyMIssionClear = saveData.DailyMIssionClear;
         weeklyMIssionClear = saveData.WeeklyMissionClear;
         SpecialMIssionClearNum = saveData.SpecialMissionClearNum;
-        IsCanResetDailyMIssion = saveData.canResetDailyMission;
-        IsCanResetWeeklyMIssion = saveData.canResetWeeklyMission;
+        DailyMissionResetTime = saveData.DailyMissionResetTime;
+        WeeklyMissionResetTime = saveData.WeeklyMissionResetTime;
 
         // 12. 빙고 현황
         RouletteTicket = saveData.RouletteTicket;
         bingoBoard = saveData.BingoBoard;
+        BingoStack = saveData.BingoStack; 
 
         //우편
         LetterManager.inst.LeftLetterMake(saveData.LetterBox);
@@ -1058,12 +1067,13 @@ public class GameStatus : MonoBehaviour
 
         saveData.SpecialMissionClearNum = SpecialMIssionClearNum;
 
-        saveData.canResetDailyMission = IsCanResetDailyMIssion;
-        saveData.canResetWeeklyMission = IsCanResetWeeklyMIssion;
+        saveData.DailyMissionResetTime = DailyMissionResetTime;
+        saveData.WeeklyMissionResetTime = WeeklyMissionResetTime;
 
         // 12. 빙고 현황
         saveData.RouletteTicket = RouletteTicket;
         saveData.BingoBoard = bingoBoard;
+        saveData.BingoStack = BingoStack;
 
         // 우편 남은것
         saveData.LetterBox.AddRange(LetterManager.inst.GetLeftLetter);

@@ -26,9 +26,10 @@ public class Quest : MonoBehaviour
         {
             lv = value;
             GameStatus.inst.SetAryQuestLv(Number, value);
-            if (lv >= 1)
+            if (nextRelease == false && lv >= 1)
             {
                 UIManager.Instance.QeustUpComplete(Number);
+                nextRelease = true;
             }
         }
     }
@@ -36,6 +37,7 @@ public class Quest : MonoBehaviour
     float itemCur = 1; //아이템보정
     float powNum;//단계별 지수
     int buyCount = 1;
+    bool nextRelease = false;
 
     BigInteger baseCost;//초기 비용
     BigInteger nextCost;//다음레벨 비용
@@ -189,7 +191,7 @@ public class Quest : MonoBehaviour
         {
             UpBtn.interactable = false;
         }
-        else
+        else if (objMask.activeSelf == false)
         {
             UpBtn.interactable = true;
         }
