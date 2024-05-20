@@ -583,7 +583,10 @@ public class GameStatus : MonoBehaviour
         OnPercentageChanged?.Invoke();
     }
 
+    // 작업해야함
+    [Tooltip("0 : 일반공격력\n1 : 퀘스트골드증가\n2 : 처치골드증가\n3 : 퀘스트구매가격인하\n4 : 무기구매가격인하\n5 : 크리대미지상승\n6 : 어택스피드\n7 : 피버타임증가\n8 : 별지급량증가")]
     List<int> aryRelicLv = new List<int>();
+
     public int GetAryRelicLv(int index)
     {
         return aryRelicLv[index];
@@ -789,8 +792,17 @@ public class GameStatus : MonoBehaviour
     public void GetGold(string getValue)
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue); // 기본 골드
-        result = CalCulator.inst.DigidPlus(result, buffAddGold); // 상점 버프로인한값 추가
-        result = CalCulator.inst.DigidPlus(result, newbieGoldBuffValue); // 뉴비 버프로인한값 추가
+
+        if(BuffAddGold != "0")
+        {
+            result = CalCulator.inst.DigidPlus(result, BuffAddGold); // 상점 버프로인한값 추가
+        }
+
+        if(NewbieGoldBuffValue != "0")
+        {
+            result = CalCulator.inst.DigidPlus(result, NewbieGoldBuffValue); // 뉴비 버프로인한값 추가
+        }
+        
         Gold = result;
     }
 
