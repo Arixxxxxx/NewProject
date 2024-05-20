@@ -436,13 +436,8 @@ public class ActionManager : MonoBehaviour
         enemyAnim.SetTrigger("Hit");
         //PlayerInit();
         // 뉴비버프 어택카운트 및 버프 
-        GameStatus.inst.NewbieAttackCountUp(true);
-        if (GameStatus.inst.IsNewBie)
-        {
-            atkPower = CalCulator.inst.StringAndIntMultiPly(atkPower, GameStatus.inst.Get_NewBieAttackBuff_MultiplyValue());
-        }
 
-        string DMG = atkPower;
+        string DMG = CalCulator.inst.Get_CurPlayerATK();
         string CrewATK = string.Empty;
         string MinusValue = string.Empty;
 
@@ -481,6 +476,7 @@ public class ActionManager : MonoBehaviour
             {
                 obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 1);
             }
+
             obj.SetActive(true);
         }
         else if (MinusValue == "0")//에너미 사망 및 초기화
