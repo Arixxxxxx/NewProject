@@ -372,12 +372,7 @@ public class ActionManager : MonoBehaviour
 
         // 뉴비버프 어택카운트 및 버프 
         GameStatus.inst.NewbieAttackCountUp(true);
-        if (GameStatus.inst.IsNewBie)
-        {
-            atkPower = CalCulator.inst.StringAndIntMultiPly(atkPower, GameStatus.inst.Get_NewBieAttackBuff_MultiplyValue());
-        }
-
-        string DMG = atkPower;
+        string DMG = CalCulator.inst.Get_CurPlayerATK();
         swordEffect.Play();
 
         // 크리티컬 계산
@@ -704,7 +699,7 @@ public class ActionManager : MonoBehaviour
     // 플레이어 초기화
     private void PlayerInit()
     {
-        atkPower = CalCulator.inst.Get_CurPlayerATK();
+        //atkPower = CalCulator.inst.Get_CurPlayerATK();
         attackSpeedLv = GameStatus.inst.AtkSpeedLv;
         float attackTempSpeed = 0.6f;
 

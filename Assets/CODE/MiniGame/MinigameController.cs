@@ -26,7 +26,7 @@ public class MinigameController : MonoBehaviour
     public bool Left { get { return left; } set { if (left == !value) left = value; } }
     public bool Right { get { return right; } set { if (right == !value) right = value; } }
     public bool Abtn { get { return aBtn; } set { if (aBtn == !value) aBtn = value; } }
-    public bool Bbtn { get { return bBtn; } set { if (bBtn == !value) bBtn = value; Debug.Log("´­¸²"); } }
+    public bool Bbtn { get { return bBtn; } set { if (bBtn == !value) bBtn = value; } }
     public bool SelectBtn { get { return selectBtn; } set { if (selectBtn == !value) selectBtn = value; } }
     public bool StartBtn { get { return startBtn; } set { if (startBtn == !value) startBtn = value; } }
     bool red, green, blue;
@@ -154,24 +154,29 @@ public class MinigameController : MonoBehaviour
         waitAction = false;
     }
 
-
+    float releaseGameFontSize = 45;
+    float non_releaseGameFontSize = 38;
     private void GameNameTextInit()
     {
         switch(gameIndex)
         {
             case 0:
-                gameNameText.text = "<color=yellow>Á×¼ø Á×¼ø!</color>";
+                gameNameText.fontSize = releaseGameFontSize;
+                gameNameText.text = "<color=white>Á×¼ø Á×¼ø!</color>";
                 break;
 
             case 1:
-                gameNameText.text = "<color=yellow>ºñ½Ã ¹Ù½Ã!";
+                gameNameText.fontSize = non_releaseGameFontSize;
+                gameNameText.text = "<color=red>Coming Soon!";
                 break;
 
             case 2:
+                gameNameText.fontSize = non_releaseGameFontSize;
                 gameNameText.text = "<color=red>Coming Soon";
                 break;
 
             case 3:
+                gameNameText.fontSize = non_releaseGameFontSize;
                 gameNameText.text = "<color=red>Coming Soon";
                 break;
         }

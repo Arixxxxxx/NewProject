@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using System;
 using System.Globalization;
 using System.Collections.Generic;
@@ -769,9 +768,7 @@ public class GameStatus : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            testInt++;
-            DateTime now = DateTime.Now.AddDays(testInt);
-            LastLoginDate = now;
+          
         }
     }
     void Start()

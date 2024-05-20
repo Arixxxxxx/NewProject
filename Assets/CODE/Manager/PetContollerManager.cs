@@ -257,18 +257,18 @@ public class PetContollerManager : MonoBehaviour
         switch (buffNum)
         {
             case 0: // 현재 공격력 * 레벨+1 추가
-                GameStatus.inst.AddPetAtkBuff = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_CurPlayerATK(), GameStatus.inst.Pet0_Lv);
+                GameStatus.inst.AddPetAtkBuff = "1";
                 Pet1_Particle_Player(1);
                 break;
 
             case 1: // 크리티컬확률 10%씩증가
-                GameStatus.inst.AddPetCriChanceBuff = 10 * GameStatus.inst.Pet1_Lv;
+                GameStatus.inst.AddPetCriChanceBuff = 10 + GameStatus.inst.Pet1_Lv;
                 Pet1_Particle_Player(2);
                 break;
 
             case 2: // 모두 증가
                 GameStatus.inst.AddPetAtkBuff = CalCulator.inst.StringAndIntMultiPly(CalCulator.inst.Get_CurPlayerATK(), GameStatus.inst.Pet0_Lv);
-                GameStatus.inst.AddPetCriChanceBuff = 10 * GameStatus.inst.Pet1_Lv;
+                GameStatus.inst.AddPetCriChanceBuff = 10 + GameStatus.inst.Pet1_Lv;
                 Pet1_Particle_Player(3);
                 break;
         }

@@ -177,22 +177,51 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string Get_CurPlayerATK()
     {
-        string result = string.Empty;
+        string result = GameStatus.inst.TotalAtk.ToString();
 
-        // 15분 버프량 체크
-        result = DigidPlus(GameStatus.inst.TotalAtk.ToString(), GameStatus.inst.BuffAddATK);
+        string[] addBuffValue = new string[4];
+        
+        // 2배 버프 체크
+        // { //result = DigidPlus(result, GameStatus.inst.BuffAddATK);}
 
-        //// 5분 버프량 체크 (화면광고)
-        result = DigidPlus(result, GameStatus.inst.BuffAddAdATK);
+        if (GameStatus.inst.BuffAddATK != "0")
+        {
+            addBuffValue[0] = StringAndIntMultiPly(result, 2-1);
+        }
 
-        //// 초심자 버프
-        result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
+        //// 3배 버프 체크
+        //result = DigidPlus(result, GameStatus.inst.BuffAddAdATK);
+        if (GameStatus.inst.BuffAddATK != "0")
+        {
+            addBuffValue[1] = StringAndIntMultiPly(result, 3-1);
+        }
 
-        // 펫 버프량 체크
-        result = DigidPlus(result, GameStatus.inst.AddPetAtkBuff);
+        ////// 초심자 버프 2배
+        //result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
+        if (GameStatus.inst.NewbieATKBuffValue != "0")
+        {
+            addBuffValue[2] = StringAndIntMultiPly(result, 2-1);
+        }
 
-        /// 무기도감 카운트만큼 % 합산
-        result = DigitPercentMultiply(result, DogamManager.inst.weaponDogamGetCount);
+        //// 펫 버프량 체크 { 레벨당 10% 증가}
+        //result = DigidPlus(result, GameStatus.inst.AddPetAtkBuff);
+        if (GameStatus.inst.AddPetAtkBuff != "0")
+        {
+            addBuffValue[3] = DigitPercentMultiply(result, GameStatus.inst.Pet0_Lv * 10);
+        }
+
+        ///// 무기도감 카운트만큼 % 합산
+        //result = DigitPercentMultiply(result, DogamManager.inst.weaponDogamGetCount);
+
+
+        for (int index = 0; index < addBuffValue.Length; index++)
+        {
+            
+            if (addBuffValue[index] != null)
+            {
+                result = DigidPlus(result, addBuffValue[index]);
+            }
+        }
 
         return result;
     }
@@ -202,19 +231,35 @@ public class CalCulator : MonoBehaviour
         return value.ToString();
     }
 
+    // 선형구조
+    //public BigInteger baseHP = new BigInteger(100);  // 기본 체력
+    //public BigInteger hpIncreaseFactor = new BigInteger(15);  // 층당 체력 증가 계수 (밸런스 변수)
 
-    public BigInteger baseHP = new BigInteger(100);  // 기본 체력
-    public BigInteger hpIncreaseFactor = new BigInteger(15);  // 층당 체력 증가 계수 (밸런스 변수)
+    //public string EnemyHpSetup()
+    //{
+    //    int floor = GameStatus.inst.AccumlateFloor+1;
+    //    BigInteger health = baseHP + hpIncreaseFactor * floor * floor; // 층수의 제곱을 이용한 체력 계산
+
+    //    //Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
+    //    return health.ToString();
+    //}
+    public BigInteger baseHP = new BigInteger(150);  // 기본 체력
+    public double hpIncreaseFactor = 1.03;  // 체력 증가 계수 (밸런스 변수)
 
     public string EnemyHpSetup()
     {
-        int floor = GameStatus.inst.AccumlateFloor+1;
-        BigInteger health = baseHP + hpIncreaseFactor * floor * floor; // 층수의 제곱을 이용한 체력 계산
+        // 현재 층수를 가져옴 (0부터 시작한다고 가정)
+        int floor = GameStatus.inst.AccumlateFloor + 1;
 
-        //Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
+        // 체력 계산: 기본 체력 + (체력 증가 계수 * 층수의 세제곱)
+        BigInteger health = baseHP + new BigInteger(hpIncreaseFactor * Mathf.Pow(floor, 3));
+
+        // 체력 로그 출력 (디버그 용도)
+        // Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
+
+        // 체력을 문자열로 반환
         return health.ToString();
     }
-
 
 
     /// <summary>
@@ -554,15 +599,18 @@ public class CalCulator : MonoBehaviour
     }
 
 
-    /// <summary>
     /// string * int => return string
+    /// <summary>
     /// </summary>
     /// <param name="a"> string / int </param>
     /// <returns></returns>
     public string StringAndIntMultiPly(string value, int multiplyValue)
     {
-        sb.Clear();
-        return sb.Append(BigInteger.Multiply(BigInteger.Parse(value), multiplyValue)).ToString();
+        sb.Clear();  // StringBuilder 초기화
+        BigInteger bigIntValue = BigInteger.Parse(value);
+        BigInteger result = BigInteger.Multiply(bigIntValue, multiplyValue);
+        return result.ToString();
+        //return sb.Append(BigInteger.Multiply(BigInteger.Parse(value), multiplyValue)).ToString();
 
     }
 

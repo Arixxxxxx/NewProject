@@ -20,6 +20,10 @@ public class LoginManager : MonoBehaviour
     Image loadingFillBar;
     int sceneNumber;
 
+    GameObject AlrimRef;
+    TMP_Text alrimText;
+    Button alrimBackBtn, alrimYesBtn;
+    string nickName;
 
     // 닉네임설정
     GameObject guestInputFieldRef;
@@ -58,6 +62,12 @@ public class LoginManager : MonoBehaviour
         errorMsgText = guestInputFieldRef.transform.Find("Window/ErrorMsg").GetComponent<TMP_Text>();
 
         inputField = guestInputFieldRef.transform.Find("Window/TextBoxIMG/Input").GetComponent<TMP_InputField>();
+
+        // 로그인알림
+        AlrimRef = guestInputFieldRef.transform.Find("Alrim").gameObject;
+        alrimText = AlrimRef.transform.Find("bg/Window/Text (TMP)").GetComponent<TMP_Text>();
+        alrimYesBtn = AlrimRef.transform.Find("bg/Window/YesBtn").GetComponent<Button>();
+        alrimBackBtn = AlrimRef.transform.Find("bg/Window/NoBtn").GetComponent<Button>();
 
     }
     void Start()
@@ -105,6 +115,20 @@ public class LoginManager : MonoBehaviour
         {
             Create_Account_SetName(inputField.text);
         });
+
+        alrimYesBtn.onClick.AddListener(() =>
+        {
+            DataManager.inst.Save_NewCreateAccount(nickName);
+            inputField.text = string.Empty;
+            loginRef.SetActive(false);
+            guestInputFieldRef.SetActive(false);
+            LoadScene(1);
+        });
+
+        alrimBackBtn.onClick.AddListener(() =>
+        {
+            Active_ReallyCreateNickename("", false);
+        });
     }
 
 
@@ -137,13 +161,26 @@ public class LoginManager : MonoBehaviour
         else if (IsHangulJamoOnly(inputText) == 3)
         {
             //창닫고 로딩
-            DataManager.inst.Save_NewCreateAccount(inputText);
-            inputField.text = string.Empty;
-            loginRef.SetActive(false);
-            guestInputFieldRef.SetActive(false);
-            LoadScene(1);
+            Active_ReallyCreateNickename(inputText, true);
+
+    
 
         }
+    }
+
+    private void Active_ReallyCreateNickename(string inputText, bool Acitve)
+    {
+        if (Acitve)
+        {
+            nickName = inputText;
+            alrimText.text = $"<color=#FFEE00>' {inputText} '</color> 가 맞습니까?";
+        }
+        else
+        {
+            inputField.text = string.Empty;
+        }
+
+        AlrimRef.SetActive(Acitve);
     }
 
     //닉네임 한글 완성형 체크

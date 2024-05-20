@@ -240,7 +240,7 @@ public class BuffContoller : MonoBehaviour
             switch (buffIndex)
             {
                 case 0: // 버프창 공격력증가
-                    GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 4);
+                    GameStatus.inst.BuffAddATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 2);
                     break;
 
                 case 1: // 이동속도 증가
@@ -252,13 +252,13 @@ public class BuffContoller : MonoBehaviour
                     break;
 
                 case 3: // 강한 공격력
-                    GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 8);
+                    GameStatus.inst.BuffAddAdATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 3);
                     break;
 
                 case 4: //뉴비버프
-                    GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 4);
+                    GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 2);
                     GameStatus.inst.NewbieAttackSpeed = 0.2f;
-                    GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 4);
+                    GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 2);
                     GameStatus.inst.NewbieMoveSpeedBuffValue = 0.3f;
                     break;
             }
