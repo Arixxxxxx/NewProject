@@ -868,7 +868,7 @@ public class MissionData : MonoBehaviour
         if (now >= todayResetDateTime && lastResetDateTime < todayResetDateTime)// 현재시간이 초기화시간을 넘었는지 && 마지막 초기화 시간이 오늘 초기화 시간보다 낮은지
         {
             initDailyMission();
-            GameStatus.inst.DailyMissionResetTime = todayResetDateTime.ToString();
+            GameStatus.inst.DailyMissionResetTime = todayResetDateTime.ToString("O");
         }
     }
     void checkWeek()
@@ -888,7 +888,7 @@ public class MissionData : MonoBehaviour
         if (lastResetDateTime < lastMondayDateTime && now >= lastMondayDateTime)//마지막 리셋날짜가 이번주 월요일보다 전일 경우 && 현재시간이 이번주 월요일 리셋시간보다 앞일경우
         {
             initWeeklyMission();
-            GameStatus.inst.WeeklyMissionResetTime = lastMonday.ToString();
+            GameStatus.inst.WeeklyMissionResetTime = lastMonday.ToString("O");
         }
     }
 
