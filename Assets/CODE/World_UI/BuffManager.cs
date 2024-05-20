@@ -132,10 +132,10 @@ public class BuffManager : MonoBehaviour
         uiWindowTimeInfo[4].text = $"+{adBuffTime[2]}M";
         uiWindowTimeInfo[5].text = $"+{RubyBuffTime[2]}M";
 
-        buffstringText[0] = $"공격력x5 버프 {AdbuffTime(0)} 분";
-        buffstringText[1] = $"이동속도 버프 {AdbuffTime(1)} 분";
-        buffstringText[2] = $"골드획득량 버프 {AdbuffTime(2)} 분";
-        buffstringText[3] = $" 공격력x9 버프 {AdbuffTime(3)} 분";
+        buffstringText[0] = $"공격력 2배 버프 {AdbuffTime(0)} 분";
+        buffstringText[1] = $"이동속도 2배 버프 {AdbuffTime(1)} 분";
+        buffstringText[2] = $"골드획득량 2배 버프 {AdbuffTime(2)} 분";
+        buffstringText[3] = $" 공격력 3배 버프 {AdbuffTime(3)} 분";
     }
 
     private void Start()

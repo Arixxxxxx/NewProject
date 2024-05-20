@@ -65,6 +65,10 @@ public class EventShop_RulletManager : MonoBehaviour
     GameObject[] slotMachineAdPlayBtnTextRef = new GameObject[2];
     GameObject[] rulletMachineAdPlayBtnTextRef = new GameObject[2];
 
+
+    // ≈◊Ω∫∆ÆøÎ ƒ°∆Æπˆ∆∞
+    Button cheetBtn;
+
     private void Awake()
     {
         if (inst == null)
@@ -137,6 +141,9 @@ public class EventShop_RulletManager : MonoBehaviour
         haveTicket = RulletRef.transform.Find("Window/Main/Bot_Text/TicketText").gameObject;
         nohaveTiket = RulletRef.transform.Find("Window/Main/Bot_Text/NoTicket").gameObject;
         nohaveTiketAnim = nohaveTiket.GetComponent<Animator>();
+
+        cheetBtn = RulletRef.transform.Find("Window/Main/Cheet").GetComponent<Button>();
+        cheetBtn.onClick.AddListener(() => { GameStatus.inst.MinigameTicket++; });
 
         BtnInit();
     }
@@ -470,25 +477,25 @@ public class EventShop_RulletManager : MonoBehaviour
                         GameStatus.inst.PlusRuby(200); //Ω««‡
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " ∑Á∫Ò +200");
                     }
-                    else if (pair.Key == 1) // ª¿ 2∞≥ ¥Á√∑
+                    else if (pair.Key == 1) // (»≠æ‡) ª¿ 2∞≥ ¥Á√∑
                     {
                         CrewGatchaContent.inst.MaterialCountEditor(1, 200);
-                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " ª¿ +200");
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " Ω∫∆ƒ≈©¿« »≠æ‡ +200");
                     }
-                    else if (pair.Key == 2) // øµ»• 2∞≥ ¥Á√∑
+                    else if (pair.Key == 2) // ∫Œ¿˚(±∏ øµ»•) 2∞≥ ¥Á√∑
                     {
                         CrewGatchaContent.inst.MaterialCountEditor(0, 200);
-                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " øµ»• +200");
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " ∑…»≠¿« ∫Œ¿˚ +200");
                     }
                     else if (pair.Key == 3) //∫∞ 2∞≥ ¥Á√∑
                     {
                         GameStatus.inst.PlusStar("200");
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(2), "∫∞ + 200");
                     }
-                    else if (pair.Key == 5) //√• 2∞≥ ¥Á√∑
+                    else if (pair.Key == 5) //±ºº“Ω∫(±∏ √•) 2∞≥ ¥Á√∑
                     {
                         CrewGatchaContent.inst.MaterialCountEditor(2, 200);
-                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " ∞Ìº≠ +200");
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " »£µŒ¿« ±ºº“Ω∫ +200");
                     }
 
                     break;
@@ -504,15 +511,15 @@ public class EventShop_RulletManager : MonoBehaviour
                         GameStatus.inst.PlusRuby(500); //Ω««‡
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " ∑Á∫Ò +500");
                     }
-                    else if (pair.Key == 1) //ª¿ 3∞≥ ¥Á√∑
+                    else if (pair.Key == 1) // »≠æ‡ ª¿ 3∞≥ ¥Á√∑
                     {
                         CrewGatchaContent.inst.MaterialCountEditor(1, 500);
-                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " ª¿ +500");
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " Ω∫∆ƒ≈©¿« »≠æ‡ +500");
                     }
                     else if (pair.Key == 2) //øµ»• 3∞≥ ¥Á√∑
                     {
                         CrewGatchaContent.inst.MaterialCountEditor(0, 500);
-                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " øµ»• +500");
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " ∑…»≠¿« ∫Œ¿˚  +500");
                     }
                     else if (pair.Key == 3) //∫∞ 3∞≥ ¥Á√∑
                     {
@@ -522,7 +529,7 @@ public class EventShop_RulletManager : MonoBehaviour
                     else if (pair.Key == 5) //√• 3∞≥ ¥Á√∑
                     {
                         CrewGatchaContent.inst.MaterialCountEditor(2, 500);
-                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " ∞Ìº≠ +500");
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " »£µŒ¿« ±ºº“Ω∫ +500");
                     }
                     break;
             }
