@@ -66,6 +66,15 @@ public class MissionData : MonoBehaviour
         [SerializeField] DailyMissionTag MissionTag;
         int index;
         bool isClear;
+        bool IsClear
+        {
+            get => isClear;
+            set 
+            { 
+                isClear = value;
+                GameStatus.inst.SetDailyMIssionClear(index,value);
+            }
+        }
         Transform trs;
         public Transform Trs { get => trs; set { trs = value; } }
         Image imageIcon;
@@ -84,13 +93,8 @@ public class MissionData : MonoBehaviour
             set
             {
                 count = value;
-                if (count > maxCount)
-                {
-                    count = maxCount;
-                }
-                GameStatus.inst.SetDailyMissionCount(index, count);
 
-                if (isClear == false && count >= maxCount)
+                if (IsClear == false && count >= maxCount)
                 {
                     count = maxCount;
                     Instance.ClearStack++;
@@ -98,13 +102,14 @@ public class MissionData : MonoBehaviour
                     clearBtn.gameObject.SetActive(true);
 
                 }
-                else if (isClear)
+                else if (IsClear)
                 {
                     clearBtn.gameObject.SetActive(false);
                     Mask.SetActive(true);
                     ClearText.SetActive(true);
                 }
 
+                GameStatus.inst.SetDailyMissionCount(index, count);
                 BarText.text = $"{count} / {maxCount}";
                 imageBar.fillAmount = (float)count / maxCount;
 
@@ -123,7 +128,7 @@ public class MissionData : MonoBehaviour
             Mask = trs.Find("Mask").gameObject;
             index = trs.GetSiblingIndex();
 
-            isClear = GameStatus.inst.GetDailyMIssionClear(index);
+            IsClear = GameStatus.inst.GetDailyMIssionClear(index);
             Count = GameStatus.inst.GetDailyMissionCount(index);
 
             NameText.text = Name;
@@ -168,12 +173,12 @@ public class MissionData : MonoBehaviour
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
 
-            clearBtn.onClick.AddListener(() => { ClickClearBtn(); Instance.ClearStack--; });
+            clearBtn.onClick.AddListener(() => { ClickClearBtn(); });
         }
 
         public void ClickClearBtn()
         {
-            isClear = true;
+            IsClear = true;
             switch (rewardTag)
             {
                 case ProductTag.Gold:
@@ -203,6 +208,7 @@ public class MissionData : MonoBehaviour
             trs.SetAsLastSibling();
             Mask.SetActive(true);
             ClearText.SetActive(true);
+            Instance.ClearStack--;
         }
 
         public int GetIndex()
@@ -217,7 +223,7 @@ public class MissionData : MonoBehaviour
         public void initMission()
         {
             Count = 0;
-            isClear = false;
+            IsClear = false;
             Mask.SetActive(false);
             ClearText.SetActive(false);
             clearBtn.gameObject.SetActive(false);
@@ -225,7 +231,7 @@ public class MissionData : MonoBehaviour
         }
         public void SetClearState()
         {
-            if (isClear)
+            if (IsClear)
             {
                 trs.SetAsLastSibling();
             }
@@ -274,6 +280,15 @@ public class MissionData : MonoBehaviour
         GameObject ClearText;
         GameObject Mask;
         bool isClear;
+        bool IsClear
+        {
+            get => isClear;
+            set 
+            { 
+                isClear = value;
+                GameStatus.inst.SetWeeklyMIssionClear(index, value);
+            }
+        }
         int count;
         public int Count
         {
@@ -282,26 +297,22 @@ public class MissionData : MonoBehaviour
             {
 
                 count = value;
-                if (count > maxCount)
-                {
-                    count = maxCount;
-                }
-                GameStatus.inst.SetWeeklyMissionCount(index, count);
 
-                if (isClear == false && count >= maxCount)
+                if (IsClear == false && count >= maxCount)
                 {
                     count = maxCount;
                     Instance.ClearStack++;
                     moveBtn.gameObject.SetActive(false);
                     clearBtn.gameObject.SetActive(true);
                 }
-                else if (isClear)
+                else if (IsClear)
                 {
                     clearBtn.gameObject.SetActive(false);
                     Mask.SetActive(true);
                     ClearText.SetActive(true);
                 }
 
+                GameStatus.inst.SetWeeklyMissionCount(index, count);
                 BarText.text = $"{count} / {maxCount}";
                 imageBar.fillAmount = (float)count / maxCount;
 
@@ -320,7 +331,7 @@ public class MissionData : MonoBehaviour
             Mask = trs.Find("Mask").gameObject;
             index = trs.GetSiblingIndex();
 
-            isClear = GameStatus.inst.GetWeeklyMIssionClear(index);
+            IsClear = GameStatus.inst.GetWeeklyMIssionClear(index);
             Count = GameStatus.inst.GetWeeklyMissionCount(index);
 
             NameText.text = Name;
@@ -370,12 +381,12 @@ public class MissionData : MonoBehaviour
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
 
-            clearBtn.onClick.AddListener(() => { Instance.ClearStack--; ClickClearBtn(); });
+            clearBtn.onClick.AddListener(() => { ClickClearBtn(); });
         }
 
         public void ClickClearBtn()
         {
-            isClear = true;
+            IsClear = true;
             switch (rewardTag)
             {
                 case ProductTag.Gold:
@@ -396,6 +407,7 @@ public class MissionData : MonoBehaviour
             trs.SetAsLastSibling();
             Mask.SetActive(true);
             ClearText.SetActive(true);
+            Instance.ClearStack--;
         }
 
         public int GetIndex()
@@ -410,7 +422,7 @@ public class MissionData : MonoBehaviour
         public void initMission()
         {
             Count = 0;
-            isClear = false;
+            IsClear = false;
             Mask.SetActive(false);
             ClearText.SetActive(false);
             clearBtn.gameObject.SetActive(false);
@@ -418,7 +430,7 @@ public class MissionData : MonoBehaviour
         }
         public void SetClearState()
         {
-            if (isClear)
+            if (IsClear)
             {
                 trs.SetAsLastSibling();
             }
@@ -475,18 +487,20 @@ public class MissionData : MonoBehaviour
             get => count;
             set
             {
-                if (count < maxCount)
+                count = value;
+                if (count >= maxCount)
                 {
-                    count = value;
+                    count = maxCount;
+                    Instance.ClearStack++;
                     GameStatus.inst.SetSpecialMissionCount(index, count);
-                    if (isActive && count >= maxCount)
+                    if (isActive)
                     {
-                        count = maxCount;
-                        GameStatus.inst.SetSpecialMissionCount(index, count);
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
                     }
                 }
+                GameStatus.inst.SetSpecialMissionCount(index, count);
+
             }
         }
 
@@ -562,6 +576,7 @@ public class MissionData : MonoBehaviour
                 Instance.nowSpecialIndex = index + 1;
                 GameStatus.inst.SpecialMIssionClearNum = Instance.nowSpecialIndex;
                 Instance.SetSpecialMissionRectPosition();
+                Instance.ClearStack--;
 
                 switch (rewardTag)
                 {
@@ -871,7 +886,7 @@ public class MissionData : MonoBehaviour
 
 
         if (lastResetDateTime < lastMondayDateTime && now >= lastMondayDateTime)//마지막 리셋날짜가 이번주 월요일보다 전일 경우 && 현재시간이 이번주 월요일 리셋시간보다 앞일경우
-        { 
+        {
             initWeeklyMission();
             GameStatus.inst.WeeklyMissionResetTime = lastMonday.ToString();
         }

@@ -1,9 +1,9 @@
 {
-    "LastSignDate": "2024-05-20T06:45:05.4730240+09:00",
+    "LastSignDate": "2024-05-20T22:06:43.2600443+09:00",
     "Name": "겸희",
-    "Gold": "23694",
-    "Star": "300000000",
-    "Ruby": 1300,
+    "Gold": "21563",
+    "Star": "300000100",
+    "Ruby": 1500,
     "Soul": 0,
     "book": 0,
     "born": 0,
@@ -11,20 +11,20 @@
     "adSlotMachinePlay": false,
     "miniTicket": 0,
     "buffAtkTime": 0,
-    "buffGoldTime": 26,
+    "buffGoldTime": 0,
     "buffMoveSpeedTime": 0,
     "buffBigAtkTime": 0,
     "getNewbieRewardCount": 0,
     "todayGetRaward": false,
-    "newbieBuffLastDay": "2024-05-27T03:51:06.6559353+09:00",
+    "newbieBuffLastDay": "2024-05-27T07:49:36.8602275+09:00",
     "GetGiftCount": 0,
     "todayGetDailyReward": false,
     "DailyADRuby": false,
     "AtkSpeedLv": 0,
     "HwanSeangCount": 0,
-    "TotalFloor": 24,
-    "Stage": 5,
-    "NowFloor": 4,
+    "TotalFloor": 28,
+    "Stage": 6,
+    "NowFloor": 3,
     "Crew0Lv": 0,
     "Crew1Lv": 0,
     "Crew2Lv": 0,
@@ -64,7 +64,7 @@
         5,
         5,
         5,
-        5,
+        3,
         0,
         0,
         0,
@@ -93,12 +93,12 @@
         0
     ],
     "RelicLv": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        1,
+        2,
+        1,
+        3,
+        1,
+        2,
         0,
         0,
         0,
@@ -109,27 +109,27 @@
     "DailyMIssionClear": [
         true,
         true,
-        false,
-        false
+        true,
+        true
     ],
     "WeeklyMissionClear": [
-        false,
+        true,
         false,
         true,
-        false
+        true
     ],
-    "SpecialMissionClearNum": 0,
+    "SpecialMissionClearNum": 1,
     "DailyMissionCount": [
-        0,
-        0,
-        2,
-        0
+        1,
+        1000,
+        24,
+        3
     ],
     "WeeklyMissionCount": [
+        1,
         0,
-        0,
-        0,
-        0
+        10,
+        10
     ],
     "SpecialMissionCount": [
         10,
@@ -140,8 +140,8 @@
         0,
         1
     ],
-    "DailyMissionResetTime": "2024-05-20 오전 5:00:00",
-    "WeeklyMissionResetTime": "2024-05-20 오전 12:00:00",
+    "DailyMissionResetTime": "2024-05-20 오전 7:42:20",
+    "WeeklyMissionResetTime": "2024-05-20 오전 7:42:20",
     "BingoBoard": [
         false,
         false,
@@ -156,12 +156,12 @@
     "BingoStack": 0,
     "LetterBox": [
         {
-            "itemtype": 0,
+            "itemtype": 1,
             "letterFrom": "미션",
-            "letterText": "일일미션 클리어!",
+            "letterText": "주간미션 클리어!",
             "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -3045910
+                "instanceID": -99060
             }
         },
         {
@@ -170,7 +170,7 @@
             "letterText": "일일미션 클리어!",
             "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -3045984
+                "instanceID": -99134
             }
         },
         {
@@ -179,7 +179,16 @@
             "letterText": "일일미션 클리어!",
             "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -3046058
+                "instanceID": -99208
+            }
+        },
+        {
+            "itemtype": 0,
+            "letterFrom": "미션",
+            "letterText": "특별미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -99282
             }
         },
         {
@@ -188,7 +197,16 @@
             "letterText": "주간미션 클리어!",
             "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -3046132
+                "instanceID": -99356
+            }
+        },
+        {
+            "itemtype": 2,
+            "letterFrom": "미션",
+            "letterText": "일일미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -99430
             }
         },
         {
@@ -197,7 +215,7 @@
             "letterText": "일일미션 클리어!",
             "letterItemCount": 100,
             "letterPrefab": {
-                "instanceID": -3046206
+                "instanceID": -99504
             }
         }
     ],
