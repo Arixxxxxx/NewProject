@@ -149,7 +149,7 @@ public class Weapon : MonoBehaviour
     {
         if (Lv <= 5)
         {
-            float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+            float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.WeaponDiscount);
             nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
         }
     }
@@ -169,7 +169,7 @@ public class Weapon : MonoBehaviour
 
     public BigInteger GetNextCost()
     {
-        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
         return nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
     }
 

@@ -144,7 +144,7 @@ public class Quest : MonoBehaviour
     private void setNextCost()
     {
         int btnnum = UIManager.Instance.QuestBuyCountBtnNum;
-        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
         if (btnnum != 3)//max°¡ ¾Æ´Ò¶§
         {
             nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
@@ -166,7 +166,7 @@ public class Quest : MonoBehaviour
 
     private void setNextCost(int count)
     {
-        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestWeaponPrice);
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
         nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
     }
 

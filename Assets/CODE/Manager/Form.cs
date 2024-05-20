@@ -12,10 +12,9 @@ public enum ItemTag
     Critical,
     QuestGold,
     KillGold,
-    OfflineGold,
-    QuestWeaponPrice,
+    QuestDiscount,
+    WeaponDiscount,
     CriticalDmg,
-    PandaBuff,
     AtkSpeed,
     FeverTime,
     GetStar

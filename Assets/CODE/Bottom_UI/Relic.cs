@@ -106,9 +106,7 @@ public class Relic : MonoBehaviour
             case ItemTag.Atk:
             case ItemTag.QuestGold:
             case ItemTag.KillGold:
-            case ItemTag.OfflineGold:
             case ItemTag.CriticalDmg:
-            case ItemTag.PandaBuff:
             case ItemTag.FeverTime:
             case ItemTag.GetStar:
                 percentage = 100 * Mathf.Pow(1.05f, Lv);
@@ -120,7 +118,8 @@ public class Relic : MonoBehaviour
             case ItemTag.Critical:
                 percentage = 100 + Lv;
                 break;
-            case ItemTag.QuestWeaponPrice:
+            case ItemTag.QuestDiscount:
+            case ItemTag.WeaponDiscount:
                 percentage = 100 + Lv;
                 break;
         }
