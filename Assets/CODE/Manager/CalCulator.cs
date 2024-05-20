@@ -243,8 +243,8 @@ public class CalCulator : MonoBehaviour
     //    //Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
     //    return health.ToString();
     //}
-    public BigInteger baseHP = new BigInteger(150);  // 기본 체력
-    public double hpIncreaseFactor = 1.03;  // 체력 증가 계수 (밸런스 변수)
+    public BigInteger baseHP = new BigInteger(160);  // 기본 체력
+    public double hpIncreaseFactor = 1.05;  // 체력 증가 계수 (밸런스 변수)
 
     public string EnemyHpSetup()
     {
