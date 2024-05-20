@@ -74,7 +74,10 @@ public class MinigameManager : MonoBehaviour
     //결과창 선택 화살표 액티브
     [SerializeField][Tooltip("0논클릭/1클릭")] TMP_ColorGradient[] ResultMenuGradiuntPreset;
     GameObject[] resultMenuSelect = new GameObject[2];
+    Canvas gameEndCanvas;
 
+    [SerializeField]
+    Canvas[] minigameCanvas;
     private void Awake()
     {
         if (inst == null)
@@ -87,6 +90,14 @@ public class MinigameManager : MonoBehaviour
         }
 
         miniGameRef = GameManager.inst.MiniGameRef;
+
+        //모든 캔버스 다 찾아서 
+        minigameCanvas = miniGameRef.GetComponentsInChildren<Canvas>(true);
+        for(int index =0; index < minigameCanvas.Length; index++)
+        {
+            minigameCanvas[index].worldCamera = Camera.main;
+        }
+
         frontUiRef = GameManager.inst.FrontUiRef;
 
         //미니게임 입장창
@@ -111,6 +122,9 @@ public class MinigameManager : MonoBehaviour
         gameEndBtn = miniGameRef.transform.Find("GameController/GameBoyPad/OnOFFBtn").GetComponent<Button>();
 
         endGameQuestionBox = miniGameRef.transform.Find("GameEnd").gameObject;
+        gameEndCanvas = endGameQuestionBox.transform.Find("Window").GetComponent<Canvas>();
+        gameEndCanvas.worldCamera = Camera.main;
+
         noBtn = endGameQuestionBox.transform.Find("Window/Cutton/Middle/No").GetComponent<Button>();
         YesBtn = endGameQuestionBox.transform.Find("Window/Cutton/Middle/Yes").GetComponent<Button>();
 
@@ -133,6 +147,7 @@ public class MinigameManager : MonoBehaviour
         result_MenuText = miniGamesRef.transform.Find("StartCanvas/Result/MenuBtn").GetComponent<TMP_Text>();
         result_ReStartText = miniGamesRef.transform.Find("StartCanvas/Result/ReStartBtn").GetComponent<TMP_Text>();
         BtnInit();
+     
     }
     void Start()
     {
