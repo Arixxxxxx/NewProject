@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
 using TMPro;
+using System.Globalization;
 
 public class MissionData : MonoBehaviour
 {
@@ -110,6 +111,7 @@ public class MissionData : MonoBehaviour
                 else if (IsClear)
                 {
                     clearBtn.gameObject.SetActive(false);
+                    moveBtn.gameObject.SetActive(false);
                     Mask.SetActive(true);
                     ClearText.SetActive(true);
                 }
@@ -881,9 +883,10 @@ public class MissionData : MonoBehaviour
     void checkDay()
     {
         TimeSpan resetTime = new TimeSpan(5, 0, 0);
-        string lastResetTimeStr = GameStatus.inst.DailyMissionResetTime;
+        DateTime lastResetTime;
 
-        DateTime lastResetTime = DateTime.Parse(lastResetTimeStr);
+        lastResetTime = GameStatus.inst.DailyMissionResetTime;
+
 
         DateTime now = DateTime.Now;
 
@@ -893,15 +896,14 @@ public class MissionData : MonoBehaviour
         if (now >= todayResetDateTime && lastResetDateTime < todayResetDateTime)// 현재시간이 초기화시간을 넘었는지 && 마지막 초기화 시간이 오늘 초기화 시간보다 낮은지
         {
             initDailyMission();
-            GameStatus.inst.DailyMissionResetTime = todayResetDateTime.ToString("O");
+            GameStatus.inst.DailyMissionResetTime = todayResetDateTime;
         }
     }
     void checkWeek()
     {
         TimeSpan resetTime = new TimeSpan(5, 0, 0);
-        string lastResetTimeStr = GameStatus.inst.WeeklyMissionResetTime;
 
-        DateTime lastResetTime = DateTime.Parse(lastResetTimeStr);
+        DateTime lastResetTime = GameStatus.inst.WeeklyMissionResetTime;
 
         DateTime now = DateTime.Now;
         DateTime lastMonday = getLastMonday(now);//이번주 월요일 리턴
@@ -913,7 +915,7 @@ public class MissionData : MonoBehaviour
         if (lastResetDateTime < lastMondayDateTime && now >= lastMondayDateTime)//마지막 리셋날짜가 이번주 월요일보다 전일 경우 && 현재시간이 이번주 월요일 리셋시간보다 앞일경우
         {
             initWeeklyMission();
-            GameStatus.inst.WeeklyMissionResetTime = lastMonday.ToString("O");
+            GameStatus.inst.WeeklyMissionResetTime = lastMonday;
         }
     }
 

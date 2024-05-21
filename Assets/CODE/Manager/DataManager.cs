@@ -95,8 +95,8 @@ public class DataManager : MonoBehaviour
         public List<int> DailyMissionCount = new List<int>();
         public List<int> WeeklyMissionCount = new List<int>();
         public List<int> SpecialMissionCount = new List<int>();
-        public string DailyMissionResetTime = DateTime.Now.ToString();
-        public string WeeklyMissionResetTime = DateTime.Now.ToString();
+        public string DailyMissionResetTime;
+        public string WeeklyMissionResetTime;
 
         //11. ºù°í ÇöÈ²
         public List<bool> BingoBoard = new List<bool>();

@@ -693,11 +693,11 @@ public class GameStatus : MonoBehaviour
     int specialMIssionClearNum;
     public int SpecialMIssionClearNum { get => specialMIssionClearNum; set { specialMIssionClearNum = value; } }
 
-    string dailyMissionResetTime = "";
-    public string DailyMissionResetTime { get => dailyMissionResetTime; set { dailyMissionResetTime = value; } }
+    DateTime dailyMissionResetTime;
+    public DateTime DailyMissionResetTime { get => dailyMissionResetTime; set { dailyMissionResetTime = value; } }
 
-    string weeklyMissionResetTime = "";
-    public string WeeklyMissionResetTime { get => weeklyMissionResetTime; set { weeklyMissionResetTime = value; } }
+    DateTime weeklyMissionResetTime;
+    public DateTime WeeklyMissionResetTime { get => weeklyMissionResetTime; set { weeklyMissionResetTime = value; } }
 
     ///////////////////////ºù°í///////////////////
     List<bool> bingoBoard = new List<bool>();
@@ -973,8 +973,22 @@ public class GameStatus : MonoBehaviour
         dailyMIssionClear = saveData.DailyMIssionClear;
         weeklyMIssionClear = saveData.WeeklyMissionClear;
         SpecialMIssionClearNum = saveData.SpecialMissionClearNum;
-        DailyMissionResetTime = saveData.DailyMissionResetTime;
-        WeeklyMissionResetTime = saveData.WeeklyMissionResetTime;
+        if (saveData.DailyMissionResetTime != string.Empty)
+        {
+            DailyMissionResetTime = DateTime.Parse(saveData.DailyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        }
+        else
+        {
+            DailyMissionResetTime = DateTime.MinValue;
+        }
+        if (saveData.WeeklyMissionResetTime != string.Empty)
+        {
+            WeeklyMissionResetTime = DateTime.Parse(saveData.WeeklyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        }
+        else
+        {
+            WeeklyMissionResetTime = DateTime.MinValue;
+        }
 
         // 12. ºù°í ÇöÈ²
         RouletteTicket = saveData.RouletteTicket;
@@ -1075,8 +1089,8 @@ public class GameStatus : MonoBehaviour
 
         saveData.SpecialMissionClearNum = SpecialMIssionClearNum;
 
-        saveData.DailyMissionResetTime = DailyMissionResetTime;
-        saveData.WeeklyMissionResetTime = WeeklyMissionResetTime;
+        saveData.DailyMissionResetTime = DailyMissionResetTime.ToString("o");
+        saveData.WeeklyMissionResetTime = WeeklyMissionResetTime.ToString("o");
 
         // 12. ºù°í ÇöÈ²
         saveData.RouletteTicket = RouletteTicket;
