@@ -83,18 +83,18 @@ public class DataManager : MonoBehaviour
 
         // 9. 메인 하단 UI 현황
         //public int[] QuestLv = new int[30];
-        public List<int> QuestLv = new List<int>();
-        public List<int> WeaponLv = new List<int>();
-        public List<int> RelicLv = new List<int>();        
+        public List<int> QuestLv = new List<int>(100);
+        public List<int> WeaponLv = new List<int>(100);
+        public List<int> RelicLv = new List<int>(20);        
         public int NowEquipWeaponNum;
 
         // 10. 미션 현황
-        public List<bool> DailyMIssionClear = new List<bool>();
-        public List<bool> WeeklyMissionClear = new List<bool>();
+        public List<bool> DailyMIssionClear = new List<bool>(10);
+        public List<bool> WeeklyMissionClear = new List<bool>(10);
         public int SpecialMissionClearNum;
-        public List<int> DailyMissionCount = new List<int>();
-        public List<int> WeeklyMissionCount = new List<int>();
-        public List<int> SpecialMissionCount = new List<int>();
+        public List<int> DailyMissionCount = new List<int>(10);
+        public List<int> WeeklyMissionCount = new List<int>(10);
+        public List<int> SpecialMissionCount = new List<int>(100);
         public string DailyMissionResetTime;
         public string WeeklyMissionResetTime;
 
