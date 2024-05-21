@@ -343,6 +343,7 @@ MonoBehaviour:
   ResultMenuGradiuntPreset:
   - {fileID: 11400000, guid: baa08a31ab6499c49bec6169bab2a0bb, type: 2}
   - {fileID: 11400000, guid: bab1deb71f2796f409bd8e70a1a69ccd, type: 2}
+  minigameCanvas: []
   selectGame: 0
 --- !u!114 &9043064537473548532
 MonoBehaviour:
@@ -418,9 +419,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageSprite:
-  - {fileID: -1867807768, guid: bd3ee5d3669eb7d4cb7042518650fd64, type: 3}
-  - {fileID: -2010666117, guid: bd3ee5d3669eb7d4cb7042518650fd64, type: 3}
-  - {fileID: -537837652, guid: bd3ee5d3669eb7d4cb7042518650fd64, type: 3}
+  - {fileID: 784346660, guid: cd70467fa37c4d94fb19cd040d0c186b, type: 3}
+  - {fileID: -925061698, guid: cd70467fa37c4d94fb19cd040d0c186b, type: 3}
+  - {fileID: -1586043579, guid: cd70467fa37c4d94fb19cd040d0c186b, type: 3}
   poolingObj:
   - {fileID: 5653821492268183441, guid: 91f1c198bbc08f447b1e76b1804801b0, type: 3}
   - {fileID: 8335622449627231134, guid: e7a94963dd424e44285ae7568a01aa74, type: 3}
@@ -510,10 +511,6 @@ MonoBehaviour:
   enemyCurHP: 0
   enemyMaxHP: 0
   attackReady: 0
-  enemySprite:
-  - {fileID: 21300000, guid: 64819c3240cc6f54b91b6582658f87b0, type: 3}
-  - {fileID: 21300000, guid: 7a3aec9896391e54f973346b706303b1, type: 3}
-  - {fileID: 21300000, guid: d3694fabefd0b0747985d8fb7235c444, type: 3}
   enemySpawnSpeed: 0.12
   shakeTime: 0.25
 --- !u!114 &7882652714519950570
@@ -715,6 +712,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffRubyPrice: 64000000fa00000064000000
   adDeletePrice: 10
+  hwansengPrice: 500
 --- !u!114 &4904963902540086993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,7 +754,19 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 50b080c0f7473f945b140d29f6baa4cd, type: 3}
   - {fileID: 21300000, guid: d4fc8d6698b263f439c09faf41f401b3, type: 3}
   - {fileID: 21300000, guid: efc947be1ea3eb64fa6840a979e13463, type: 3}
-  monster:
+  stage1_Enemy:
+  - {fileID: 21300000, guid: a19a24c1cbc81194c9946d7949342b20, type: 3}
+  - {fileID: 21300000, guid: 34baf0ad2846a7b49a8ad129cdf2433f, type: 3}
+  - {fileID: 21300000, guid: d1c7371ca9f940542930ca15e543b78b, type: 3}
+  - {fileID: 21300000, guid: 33a072c9b6edc394cb3b39b3b5b1b7cb, type: 3}
+  - {fileID: 21300000, guid: 6875242788c7c824abb56c45ed5ee55f, type: 3}
+  stage2_Enemy:
+  - {fileID: 21300000, guid: a19a24c1cbc81194c9946d7949342b20, type: 3}
+  - {fileID: 21300000, guid: ec997f9546964e44e815345e76477b9b, type: 3}
+  - {fileID: 21300000, guid: 06d1fee429ae95e4abcd321f1ea841b0, type: 3}
+  - {fileID: 21300000, guid: bbf06607c0ce20743ac4fc5e0f1a07fe, type: 3}
+  - {fileID: 21300000, guid: 33e6d9fa2fbd0aa4b9fbd7ecc325ac35, type: 3}
+  stage3_Enemy:
   - {fileID: 21300000, guid: e99a73ce155aef54f98e219fd5942016, type: 3}
   - {fileID: 21300000, guid: d2a70662fafab414f9f52d443d017f6b, type: 3}
   - {fileID: 21300000, guid: cea8d788a24a9564e8b89be82a4521a6, type: 3}

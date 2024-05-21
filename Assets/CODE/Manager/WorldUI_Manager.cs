@@ -12,6 +12,7 @@ public class WorldUI_Manager : MonoBehaviour
     [SerializeField] Sprite[] stageSprite;
     [Header("# Reward 및 금화획득 풀링 ")]
     [SerializeField] GameObject[] poolingObj;
+    UI_IncreaseValueFont[] minusMaterialFont;
     Queue<GameObject>[] poolingQue;
 
     Transform fontDanymic;
@@ -97,7 +98,12 @@ public class WorldUI_Manager : MonoBehaviour
 
     Image fakeScreen;
 
-    
+    // 로우이미지 관리자
+    GameObject rawCam;
+    GameObject[] rawImageRef;
+
+    // 이펙트 커튼(하얀색)
+    Image whiteCutton;
 
     //아이템획득 애니메이션
     VerticalLayoutGroup getItemLayOut;
@@ -113,7 +119,17 @@ public class WorldUI_Manager : MonoBehaviour
         }
 
         worldUI = GameManager.inst.WorldUiRef;
+        
         frontUICanvas = GameManager.inst.FrontUiRef;
+
+        //로우이미지
+        rawCam = GameManager.inst.CamsRef.transform.Find("RenderCam").gameObject;
+        int rawIMGCount = GameManager.inst.RawImgRef.transform.childCount;
+        rawImageRef = new GameObject[rawIMGCount];
+        for(int index=0; index<rawIMGCount; index++)
+        {
+            rawImageRef[index] = GameManager.inst.RawImgRef.transform.GetChild(index).gameObject; 
+        }
 
         //로드시 페이크 스크린
         fakeScreen = frontUICanvas.transform.Find("FakeScreen").GetComponent<Image>();
@@ -187,6 +203,9 @@ public class WorldUI_Manager : MonoBehaviour
 
         // FrontUI
         frontUiCutton = frontUICanvas.transform.Find("Cutton").GetComponent<Image>();
+
+        // 화이트커튼 이펙트용
+        whiteCutton = frontUICanvas.transform.Find("Cutton(W)").GetComponent<Image>();
 
         Prefabs_Awake();
 
@@ -316,6 +335,7 @@ public class WorldUI_Manager : MonoBehaviour
     private void Prefabs_Awake()
     {
         int poolingCount = poolingObj.Length;
+        minusMaterialFont = new UI_IncreaseValueFont[poolingCount];
 
         // Que 초기화        
         poolingQue = new Queue<GameObject>[poolingCount];
@@ -359,8 +379,9 @@ public class WorldUI_Manager : MonoBehaviour
                 obj = Instantiate(poolingObj[value], getItemLayOut.gameObject.transform);
                 break;
 
-            case 2: // 골드증가 폰트
+            case 2: // 골드소모 폰트
                 obj = Instantiate(poolingObj[value], fontDanymic);
+                minusMaterialFont[value] = obj.GetComponent<UI_IncreaseValueFont>();
                 obj.transform.position = fontDanymic.transform.position;
                 break;
         }
@@ -389,6 +410,24 @@ public class WorldUI_Manager : MonoBehaviour
         return obj;
     }
 
+    /// <summary>
+    /// 골드 및 별 사용 UI에서 숫자 올라감
+    /// </summary>
+    /// <param name="type"> 0골드, 1 별</param>
+    /// <param name="Matrielvalue"></param>
+    public void Use_GoldOrStarMetrialFontPooling(int type, string Matrielvalue)
+    {
+        GameObject obj;
+
+        if (poolingQue[2].Count <= 0)
+        {
+            InstantiatePrefabs(2);
+        }
+       
+        obj = poolingQue[2].Dequeue();
+        obj.transform.localPosition = fontPoint[type].localPosition;
+        obj.GetComponent<UI_IncreaseValueFont>().Set_PosAndColorInit(Matrielvalue);
+    }
     /// <summary>
     /// World UI 좌측하단 알림
     /// </summary>
@@ -549,8 +588,58 @@ public class WorldUI_Manager : MonoBehaviour
         fakeScreen.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// 로우이미지 키고 켜기
+    /// </summary>
+    /// <param name="indexNum"></param>
+    /// <param name="Active"></param>
+    public void RawImagePlay(int indexNum, bool Active)
+    {
+       rawCam.SetActive(Active);
+       rawImageRef[indexNum].SetActive(Active);
+    }
 
+    public void RawImagePlay(bool Active)
+    {
+        rawCam.SetActive(Active);
+        for(int index=0; index < rawImageRef.Length; index++)
+        {
+            if (rawImageRef[index].activeSelf)
+            {
+                rawImageRef[index].SetActive(Active);
+            }
+        }
+    }
 
+    /// <summary>
+    /// 화면 페이드 하얘졌다가 점점 내림
+    /// </summary>
+    public void Effect_WhiteCutton()
+    {
+        StartCoroutine(PlayWhiteEffect());
+    }
+
+    Color fadeStartColor = new Color(1, 1, 1, 0.9f);
+    float duration = 2f;
+    float fadeTimer = 0f;
+
+    IEnumerator PlayWhiteEffect()
+    {
+        fadeTimer = 0;
+        whiteCutton.color = fadeStartColor;
+        whiteCutton.gameObject.SetActive(true); 
+        
+        while(fadeTimer < duration)
+        {
+            float alpha = Mathf.Lerp(fadeStartColor.a, 0f, fadeTimer / duration);
+            whiteCutton.color = new Color(1, 1, 1, alpha);
+            fadeTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        whiteCutton.color = new Color(1,1,1,0);
+        whiteCutton.gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// Load시 닉네임 초기화

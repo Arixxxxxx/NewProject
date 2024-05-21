@@ -66,13 +66,13 @@ public class RubyPayment : MonoBehaviour
     void Start()
     {
 
-        
+
     }
 
     private void buttonInit()
     {
         //결제창 버튼 초기화
-        rubyPayNo.onClick.AddListener(() => CloseUI() );
+        rubyPayNo.onClick.AddListener(() => CloseUI());
 
         // 루비없는 창 버튼 초기화
         goToRubyShopBtnNo.onClick.AddListener(() => // 아니요 버튼
@@ -104,12 +104,12 @@ public class RubyPayment : MonoBehaviour
         // 현재 소지 루비량 체크
         int curRuby = GameStatus.inst.Ruby;
         int totalPrice = curRuby - Price;
-        
+
         if (totalPrice < 0)  // 돈부족 => 루비상점으로 갈껀지 물어봄
         {
             nohaveRubyRef.SetActive(true);
         }
-        else if(totalPrice >= 0) // 결제창 초기화
+        else if (totalPrice >= 0) // 결제창 초기화
         {
             curRubyText.text = curRuby.ToString("N0");
             minusRubyText.text = Price.ToString("N0");
@@ -131,10 +131,37 @@ public class RubyPayment : MonoBehaviour
 
             payReadyRef.SetActive(true);
         }
-
-
     }
 
+    // 결제창 호출 및 초기화
+    /// <summary>
+    ///  루비 결제창 호출 (돈부족하다면 루비상점으로 연결창으로뜸) / 돈이 많다면 결제바로되는게아니고 이벤트만 실행
+    /// </summary>
+    /// <param name="Price"> 상품 가격 </param>
+    /// <param name="action">실행될 함수</param>
+    public void RubyPaymentOnlyFuntion(int Price, Action action)
+    {
+        if (parentRef.activeSelf == false) //메인창 켜짐
+        {
+            parentRef.SetActive(true);
+        }
+
+        // 현재 소지 루비량 체크
+        int curRuby = GameStatus.inst.Ruby;
+        int totalPrice = curRuby - Price;
+
+        if (totalPrice < 0)  // 돈부족 => 루비상점으로 갈껀지 물어봄
+        {
+            nohaveRubyRef.SetActive(true);
+        }
+        else if (totalPrice >= 0) // 결제창 초기화
+        {
+            paymentAction += action;
+            paymentAction?.Invoke();
+            paymentAction = null;
+            parentRef.SetActive(false);
+        }
+    }
 
     private void CloseUI()
     {

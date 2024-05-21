@@ -49,14 +49,12 @@ public class ActionManager : MonoBehaviour
     string atkPower;
     SpriteRenderer palyerWeapenSr;
     Sprite[] weaponSprite;
-    
+
     SpriteRenderer backGroundIMG;
     GameObject moveWindParticle;
     ParticleSystem playerDustPs;
 
     // 에너미
-    Sprite[] enemySmallSprite;
-    Sprite[] enemyLargeSprite;
 
     GameObject enemyObj;
     SpriteRenderer enemySr;
@@ -67,17 +65,17 @@ public class ActionManager : MonoBehaviour
     Image hpBar_IMG;
     Image hpBar_BackIMG;
     TMP_Text hpBar_Text;
-    int curEnemyNum;
+
     [Header("5. ReadOnly ★ <Color=#CC3D3D>( Check Data )")]
     [Space]
     [SerializeField] string enemyCurHP;
     [SerializeField] string enemyMaxHP;
     [SerializeField] bool attackReady;
     [Space]
-    [Header("6. Insert Enemy List => <Color=#47C832>( Sprite File )")]
-    [Space]
-    [SerializeField] Sprite[] enemySprite;
-    [Space]
+    //[Header("6. Insert Enemy List => <Color=#47C832>( Sprite File )")]
+    //[Space]
+    //[SerializeField] Sprite[] enemySprite;
+    //[Space]
 
     //타격 이펙트
     GameObject effectRef, playerAttackEffectRef, playerCriAttackEffectRef;
@@ -91,11 +89,11 @@ public class ActionManager : MonoBehaviour
 
     bool actionStart;
     bool isatk, ismove;
-    public bool IsMove {  get { return ismove; } }
-    
+    public bool IsMove { get { return ismove; } }
+
 
     // 이동애니메이션
-    
+
     float checkPosition;
     Vector2 enemyVec;
     float enemyPosX;
@@ -194,14 +192,12 @@ public class ActionManager : MonoBehaviour
 
     void Start()
     {
-        enemySmallSprite = SpriteResource.inst.MonsterSmall;
-        enemyLargeSprite = SpriteResource.inst.MonsterLargeSize;
-      
+
         //최초 init
         Enemyinit();
         UI_Init();
-        
-        
+
+
     }
 
     Vector2 matVec;
@@ -251,7 +247,7 @@ public class ActionManager : MonoBehaviour
         {
             WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(SpriteResource.inst.CoinIMG(0), "루비 +100");
         }
-      
+
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             //BuffContoller.inst.ActiveBuff(4, 3);
@@ -271,7 +267,7 @@ public class ActionManager : MonoBehaviour
     // UI Bar 초기화
     private void UI_Init()
     {
-       
+
     }
 
     // 움직이기전 초기화
@@ -331,13 +327,13 @@ public class ActionManager : MonoBehaviour
 
         checkPosition = enemyObj.transform.position.x - enemy_StopPoint.position.x;
 
-        if (checkPosition > 1.4f) 
+        if (checkPosition > 1.4f)
         {
             enemyPosX += (Time.deltaTime * enemySpawnSpeed) * (1 + (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
-        else if (checkPosition < 1.4f) 
+        else if (checkPosition < 1.4f)
         {
             attackReady = true;
 
@@ -350,7 +346,7 @@ public class ActionManager : MonoBehaviour
     public void A_PlayerAttackToEnemy()
     {
         StopCoroutine(PlayerOnHitDMG());
-        StartCoroutine(PlayerOnHitDMG()); 
+        StartCoroutine(PlayerOnHitDMG());
     }
 
 
@@ -404,7 +400,7 @@ public class ActionManager : MonoBehaviour
         }
         else if (checkDMG == "0")//에너미 사망 및 초기화
         {
-            DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
+            DogamManager.inst.MosterDogamIndexValueUP(curEnemyNumber[0], curEnemyNumber[1]); // 몬스터 도감조각 얻기
             StartCoroutine(GetGoldActionParticle()); // 골드 획득하는 파티클 재생
 
             // 현재 받아야되는 돈 계산
@@ -457,22 +453,22 @@ public class ActionManager : MonoBehaviour
 
             MinusValue = CalCulator.inst.BigIntigerMinus(enemyCurHP, CrewATK);
         }
-        
+
 
         if (MinusValue != "0" && attackReady == true)
         {
             enemyCurHP = MinusValue;
             EnemyHPBar_FillAmount_Init();
-            
+
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
             obj.transform.position = enemySr.bounds.center;
 
             if (CrewType == 0)
             {
-                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 0); 
+                obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 0);
             }
-            else if(CrewType == 1)
+            else if (CrewType == 1)
             {
                 obj.GetComponent<DMG_Font>().SetText(CalCulator.inst.StringFourDigitAddFloatChanger(CrewATK), false, 1);
             }
@@ -481,8 +477,8 @@ public class ActionManager : MonoBehaviour
         }
         else if (MinusValue == "0")//에너미 사망 및 초기화
         {
-            
-            DogamManager.inst.MosterDogamIndexValueUP(curEnemyNum); // 몬스터 도감조각 얻기
+
+            DogamManager.inst.MosterDogamIndexValueUP(curEnemyNumber[0], curEnemyNumber[1]); // 몬스터 도감조각 얻기
             StartCoroutine(GetGoldActionParticle());
 
             // 현재 받아야되는 돈 계산
@@ -518,19 +514,10 @@ public class ActionManager : MonoBehaviour
     {
         attackReady = false;
 
-
-        if (GameStatus.inst.FloorLv < 4)
+        if (GameStatus.inst.FloorLv < 5)
         {
             GameStatus.inst.FloorLv++;
             Enemyinit();
-            
-        }
-        else if (GameStatus.inst.FloorLv == 4)
-        {
-            GameStatus.inst.FloorLv++;
-            Enemyinit();
-            //보스피통 늘려주는 
-            
         }
         else if (GameStatus.inst.FloorLv == 5)
         {
@@ -543,7 +530,7 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    
+
     /// <summary>
     /// 피버시 출력
     /// </summary>
@@ -616,7 +603,7 @@ public class ActionManager : MonoBehaviour
                 effectIndexCount = 0;
             }
 
-          
+
             playerAttackEffectRef.transform.position = particleEffectPo;
             playerAtkEffect[effectIndexCount].Play();
             effectIndexCount++;
@@ -627,7 +614,7 @@ public class ActionManager : MonoBehaviour
             {
                 effectCriIndexCount = 0;
             }
-            playerCriAttackEffectRef.transform.position = particleEffectPo; 
+            playerCriAttackEffectRef.transform.position = particleEffectPo;
             playerAtkCriEffect[effectCriIndexCount].Play();
             effectCriIndexCount++;
         }
@@ -641,54 +628,67 @@ public class ActionManager : MonoBehaviour
     // 몬스터 초기화
     Vector3 hpbarPos;
 
-    float hpBar_downX = 0.1f;
-    float hpBar_downY = 0.2f;
+    //float hpBar_downX = 0.1f;
+    float hpBar_downY = 0f;
     private void Enemyinit()
     {
         // 나중에 체력 초기화 연산 바꿔야함
         swordEffect.Stop();
         enemyObj.transform.position = enemy_StartPoint.position; // 위치 초기화
-        
-        // HPBar 위치 초기화
-        hpbarPos = enemyObj.transform.position;
-        hpbarPos.x -= hpBar_downX;
-        hpbarPos.y -= hpBar_downY;
-        hpBarRef.transform.position = hpbarPos;
-
-        enemyMaxHP = CalCulator.inst.EnemyHpSetup();
-        enemyCurHP = enemyMaxHP;
 
         //Hpbar 초기화
         hpBar_IMG.fillAmount = 1;
         hpBar_Text.text = string.Empty;
 
-        EnemyHPBar_FillAmount_Init(); // 체력
-
-        //Boss
         Set_EnemyBossOrNormal();
     }
 
 
+    [Tooltip("Stage, Enemy Number")] int[] curEnemyNumber = new int[2];
+    Sprite[] curStageEnemy;
+    Vector3 bossSpriteSize = new Vector3(1.5f, 1.5f, 1);
     /// <summary>
     /// 에너미 보스 설정
     /// </summary>
     /// <param name="isBoss"></param>
     private void Set_EnemyBossOrNormal()
     {
-        if (GameStatus.inst.FloorLv != 5)
+        // 현재 스테이지에 맞는 에너미 생성
+        int curStage = (GameStatus.inst.StageLv - 1) % 3 + 1;
+        curEnemyNumber[0] = curStage;
+        curStageEnemy = SpriteResource.inst.enemySprite(curStage);
+
+        curEnemyNumber[1] = UnityEngine.Random.Range(0, curStageEnemy.Length);
+        enemySr.sprite = curStageEnemy[curEnemyNumber[1]];
+
+        enemyMaxHP = CalCulator.inst.EnemyHpSetup();
+
+        if (GameStatus.inst.FloorLv != 5) // 일반몹
         {
-            curEnemyNum = UnityEngine.Random.Range(0, enemySmallSprite.Length);
-            enemySr.sprite = enemySmallSprite[curEnemyNum];
+            enemySr.transform.localScale = Vector3.one;
+
+            //몬스터 HP바 아웃라인
             hpBar_OutLine[0].SetActive(true);
             hpBar_OutLine[1].SetActive(false);
         }
-        else if (GameStatus.inst.FloorLv == 5)
+        else if (GameStatus.inst.FloorLv == 5) // 보스몹
         {
-            curEnemyNum = UnityEngine.Random.Range(0, enemyLargeSprite.Length);
-            enemySr.sprite = enemyLargeSprite[curEnemyNum];
+            //보스체력 2배
+            enemyMaxHP = CalCulator.inst.StringAndIntMultiPly(enemyMaxHP, 2);
+            enemySr.transform.localScale = bossSpriteSize;
+            //몬스터 HP바 아웃라인
             hpBar_OutLine[0].SetActive(false);
             hpBar_OutLine[1].SetActive(true);
         }
+
+        // HPBar 위치 초기화
+        hpbarPos = enemyObj.transform.position;
+        //hpbarPos.x -= hpBar_downX;
+        hpbarPos.y -= hpBar_downY;
+        hpBarRef.transform.position = hpbarPos;
+
+        enemyCurHP = enemyMaxHP;
+        EnemyHPBar_FillAmount_Init(); // 체력
     }
 
 
@@ -703,7 +703,7 @@ public class ActionManager : MonoBehaviour
         attackSpeed = attackTempSpeed - (attackSpeedLv * 0.15f);
     }
 
-    
+
 
     // 몬스터 체력바 업데이터
     private void EnemyHPBar_FillAmount_Init()
@@ -833,13 +833,13 @@ public class ActionManager : MonoBehaviour
     // 카메라 쉐이크
     public void F_PlayerOnHitCamShake()
     {
-        if(GameManager.inst.MiniGameMode == true) { return; }
+        if (GameManager.inst.MiniGameMode == true) { return; }
         StopCoroutine(ShakeCam());
         StartCoroutine(ShakeCam());
     }
 
 
-   
+
     IEnumerator ShakeCam()
     {
         camShake.m_AmplitudeGain = 2.5f;
@@ -867,7 +867,7 @@ public class ActionManager : MonoBehaviour
     // 무기 스프라이트 변경 함수
     public void Set_WeaponSprite_Changer(int index)
     {
-        palyerWeapenSr.sprite =  weaponSprite[index];
+        palyerWeapenSr.sprite = weaponSprite[index];
     }
 
 
@@ -883,7 +883,7 @@ public class ActionManager : MonoBehaviour
         palyerWeapenSr.sprite = weaponSprite[index];
 
     }
- 
+
 
 
     // 몬스터 죽고 골드 상승
@@ -906,6 +906,6 @@ public class ActionManager : MonoBehaviour
     /// <param name="index"></param>
     /// <returns></returns>
     public Vector3 Get_CurEnemyCenterPosition() => enemySr.bounds.center;
-    
+
 
 }

@@ -104,6 +104,8 @@ public class DogamManager : MonoBehaviour
 
     // 풀링
     GameObject worldUI, poolParent;
+
+    Sprite[] Stage1Sprite, Stage2Sprite, Stage3Sprite; 
     
     private void Awake()
     {
@@ -166,6 +168,15 @@ public class DogamManager : MonoBehaviour
 
         bonusEnemyDogamAtkText = monsterInfoRef.transform.Find("BottomInfo/Top").GetComponent<TMP_Text>();
         curEnemyDogamContText = monsterInfoRef.transform.Find("BottomInfo/MiddleRight").GetComponent<TMP_Text>();
+
+        //Total Enemy Count
+        Stage1Sprite = SpriteResource.inst.enemySprite(1);
+        Stage2Sprite = SpriteResource.inst.enemySprite(2);
+        Stage3Sprite = SpriteResource.inst.enemySprite(3);
+
+        int totalEnemyCount = Stage1Sprite.Length + Stage2Sprite.Length + Stage3Sprite.Length ;
+        mosterCollectionConut = new int[totalEnemyCount];
+
         //Test
         GetWeaponCheck(0); // 기본무기는 항상 컬렉션활성화
         
@@ -193,7 +204,7 @@ public class DogamManager : MonoBehaviour
 
     private void Start()
     {
-        EnemyDogam_TextAnd_Count_Init(); //최초 도감정보 최신화해줌
+        //EnemyDogam_TextAnd_Count_Init(); //최초 도감정보 최신화해줌
     }
     /// <summary>
     ///  도감창 Active 
@@ -350,7 +361,7 @@ public class DogamManager : MonoBehaviour
             monsterSlot[index].ResetIconBoxLayout(); //아이콘리셋 
         }
 
-        EnemyDogam_TextAnd_Count_Init(); // 몬스터 도감정보 초기화
+        //EnemyDogam_TextAnd_Count_Init(); // 몬스터 도감정보 초기화
         monsterInfoRef.SetActive(true);
     }
 
@@ -466,16 +477,17 @@ public class DogamManager : MonoBehaviour
     /// 몬스터 처치시 도감조각 얻는 함수
     /// </summary>
     /// <param name="dogamIndex"></param>
-    public void MosterDogamIndexValueUP(int dogamIndex)
+    public void MosterDogamIndexValueUP(int stage, int enemyIndex)
     {
         float randomValue = Random.Range(0,100f);
         if (randomValue > getChance) { return; };
-        Get_DogamIconPooling(); // 정수얻은 폰트연출
 
+        Get_DogamIconPooling(); // 정수얻은 폰트연출
         Sprite IMG = SpriteResource.inst.CoinIMG(3);
-        string text = $"{dogamIndex}번 도감정수";
+        string text = $"{stage}-{enemyIndex} 도감정수";
         WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(IMG, text);
-        mosterCollectionConut[dogamIndex]++; // 값 올림
+        int indexNumber = ((stage-1) * 5) + enemyIndex;
+        mosterCollectionConut[indexNumber]++; // 값 올림
 
     }
 
