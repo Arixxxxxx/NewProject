@@ -101,7 +101,9 @@ public class WorldUI_Manager : MonoBehaviour
     // 로우이미지 관리자
     GameObject rawCam;
     GameObject[] rawImageRef;
-    
+
+    // 이펙트 커튼(하얀색)
+    Image whiteCutton;
 
     //아이템획득 애니메이션
     VerticalLayoutGroup getItemLayOut;
@@ -117,6 +119,7 @@ public class WorldUI_Manager : MonoBehaviour
         }
 
         worldUI = GameManager.inst.WorldUiRef;
+        
         frontUICanvas = GameManager.inst.FrontUiRef;
 
         //로우이미지
@@ -200,6 +203,9 @@ public class WorldUI_Manager : MonoBehaviour
 
         // FrontUI
         frontUiCutton = frontUICanvas.transform.Find("Cutton").GetComponent<Image>();
+
+        // 화이트커튼 이펙트용
+        whiteCutton = frontUICanvas.transform.Find("Cutton(W)").GetComponent<Image>();
 
         Prefabs_Awake();
 
@@ -605,7 +611,35 @@ public class WorldUI_Manager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 화면 페이드 하얘졌다가 점점 내림
+    /// </summary>
+    public void Effect_WhiteCutton()
+    {
+        StartCoroutine(PlayWhiteEffect());
+    }
 
+    Color fadeStartColor = new Color(1, 1, 1, 0.9f);
+    float duration = 2f;
+    float fadeTimer = 0f;
+
+    IEnumerator PlayWhiteEffect()
+    {
+        fadeTimer = 0;
+        whiteCutton.color = fadeStartColor;
+        whiteCutton.gameObject.SetActive(true); 
+        
+        while(fadeTimer < duration)
+        {
+            float alpha = Mathf.Lerp(fadeStartColor.a, 0f, fadeTimer / duration);
+            whiteCutton.color = new Color(1, 1, 1, alpha);
+            fadeTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        whiteCutton.color = new Color(1,1,1,0);
+        whiteCutton.gameObject.SetActive(false);
+    }
 
     /// <summary>
     /// Load시 닉네임 초기화

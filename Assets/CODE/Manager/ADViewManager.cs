@@ -67,100 +67,7 @@ public class ADViewManager : MonoBehaviour
     {
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
-    /// <summary>
-    /// 광고보고 루비 혹은 돈
-    /// </summary>
-    /// <param name="itemType"> 0 루비 / 1 골드</param>
-    /// <param name="value"> 값 </param>
-    public void SampleAD_Get_Currency(int itemType, int value)
-    {
-        adXbtn.onClick.RemoveAllListeners();
-        adXbtn.onClick.AddListener(() =>
-        {
-            switch (itemType)
-            {
-                case 0:
-                    GameStatus.inst.Ruby += value;
-                    break;
-
-                case 1:
-                    GameStatus.inst.PlusGold($"{value}");
-                    break;
-            }
-
-            adXbtn.gameObject.SetActive(false);
-            adSample.SetActive(false);
-            buffSelectUIWindow.SetActive(false);
-        });
-
-        if (AdDelete.inst.IsAdDeleteBuy == false)
-        {
-            StopCoroutine(PlayAD());
-            StartCoroutine(PlayAD());
-        }
-    }
-
-    /// <summary>
-    /// 샘플 광고보고 피버타임 
-    /// </summary>
-    public void SampleAD_Ad_FeverTIme(int Time, int Type, bool isAd)
-    {
-        adXbtn.onClick.RemoveAllListeners();
-        adXbtn.onClick.AddListener(() =>
-        {
-            HwanSengSystem.inst.FeverTimeActive(Time, Type, isAd);
-
-            adXbtn.gameObject.SetActive(false);
-            adSample.SetActive(false);
-            buffSelectUIWindow.SetActive(false);
-        });
-
-        if (AdDelete.inst.IsAdDeleteBuy == false)
-        {
-            StopCoroutine(PlayAD());
-            StartCoroutine(PlayAD());
-        }
-
-    }
-    IEnumerator PlayAD()
-    {
-        adSample.SetActive(true);
-        yield return new WaitForSeconds(3);
-        adXbtn.gameObject.SetActive(true);
-    }
-
-    Color orijinColor;
-    /// <summary>
-    /// 텍스트 알림창 호출
-    /// </summary>
-    /// <param name="data">알림창에 띄울 메세지</param>
-    public void Set_TextAlrim(string data)
-    {
-        orijinColor = alrimText.color;
-
-        alrimText.text = data;
-        StopCoroutine(TextalrimStart());
-        StartCoroutine(TextalrimStart());
-    }
-
-    IEnumerator TextalrimStart()
-    {
-        textAlrim.gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(3f);
-        textAlrim.SetTrigger("Off");
-        yield return new WaitForSecondsRealtime(1.5f);
-        textAlrim.gameObject.SetActive(false);
-        alrimText.color = orijinColor;
-    }
-
+         
     /// <summary>
     /// 광고 실행 후 델리게이트 호출
     /// </summary>
@@ -234,5 +141,11 @@ public class ADViewManager : MonoBehaviour
         {
             QuestionWindowRef.SetActive(false);
         }
+    }
+        IEnumerator PlayAD()
+    {
+        adSample.SetActive(true);
+        yield return new WaitForSeconds(3);
+        adXbtn.gameObject.SetActive(true);
     }
 }

@@ -400,6 +400,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             accumlateFloor = value;
+            HwanSengSystem.inst.MainWindow_TextBox_Updater();
         }
     }
 
@@ -446,9 +447,6 @@ public class GameStatus : MonoBehaviour
             if (DataManager.inst.saveAble)
             {
                 AccumlateFloor++;
-                HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate();
-
-              
             }
 
             
@@ -864,7 +862,6 @@ public class GameStatus : MonoBehaviour
         floorLv = 1;
         AccumlateFloor = 0;
         HWansengCount++;
-        HwanSengSystem.inst.WorldUIHwansengIconReturnStarUpdate(); // 환생아이콘 수치 리셋
     }
 
 

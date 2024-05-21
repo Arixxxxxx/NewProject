@@ -9,6 +9,8 @@ public class RubyPrice : MonoBehaviour
 
     [SerializeField] int[] buffRubyPrice = new int[3];
     [SerializeField] int adDeletePrice;
+    [SerializeField] int hwansengPrice;
+    public int HwansengPrice { get { return hwansengPrice; } }
     
     public int AdDeletePrice { get { return adDeletePrice; } }
     private void Awake()
@@ -34,5 +36,6 @@ public class RubyPrice : MonoBehaviour
     /// <param name="value"> 0 ATK / 1 Speed / 2 Gold </param>
     /// <returns></returns>
     public int Get_buffRubyPrice(int value) => buffRubyPrice[value];
+
 
 }

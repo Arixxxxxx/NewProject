@@ -665,28 +665,34 @@ public class CalCulator : MonoBehaviour
     readonly BigInteger scale = new BigInteger(10000000000);  // 스케일링 팩터
 
 
+    BigInteger A = new BigInteger(65);  // 초기값
+    float B = 1.26f;  // 증가율, 이 값은 조정 가능합니다.
+
     /// <summary>
     /// 현재 스테이지 레벨비례하여 환생시 지급되는 포인트양을 계산하여 스트링으로 받음
     /// </summary>
     /// <returns> 알파벳부호처리 안한 string 정수형 타입 Data </returns>
-    public string CurHwansengPoint(int AddFloor)
+    public string CurHwansengPoint()
     {
         if(GameStatus.inst == null)
         {
             return null;
         }
+        string result = string.Empty;
 
-        int curStage = GameStatus.inst.StageLv + AddFloor;
+        int curStage = GameStatus.inst.AccumlateFloor;
 
-        // BigInteger를 사용한 3차, 2차, 1차 계산
-        BigInteger term1 = BigInteger.Multiply(BigInteger.Pow(curStage, 3), a);
-        BigInteger term2 = BigInteger.Multiply(BigInteger.Pow(curStage, 2), b);
-        BigInteger term3 = BigInteger.Multiply(curStage, c);
 
-        // 최종 환산 포인트 계산
-        string result = ((term1 + term2 + term3 + d) / scale).ToString();  // 마지막에 스케일 조정
+        // 상수 A와 B를 정의합니다.
 
-        return result;
+
+        // 지급되는 '별' 화폐의 양을 계산합니다.
+        BigInteger reward = A * new BigInteger(Mathf.Pow(B, curStage));
+
+        // 결과를 문자열로 반환합니다.
+        return reward.ToString();
+        // 현재 스테이지가 올라감에 있어 초반에는 조금씩 후반에는 급격하게 지급되는양이 증가되게
+
     }
 
 
