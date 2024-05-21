@@ -75,6 +75,7 @@ public class HwanSengSystem : MonoBehaviour
     Image feverFrontImg;
     float feverCountTimer;
     Material feverBG;
+    Material feverFrontBGMat;
 
     int goldkeyLv;
     public int GoldKeyLv_Hwanseng
@@ -176,7 +177,7 @@ public class HwanSengSystem : MonoBehaviour
         feverAnim = worldUI.transform.Find("Fever").GetComponent<Animator>();
         feverFrontImg = feverAnim.transform.Find("TimeBG/FRONT").GetComponent<Image>();
         feverBG = feverAnim.transform.Find("BG").GetComponent<Image>().material;
-
+        feverFrontBGMat = feverAnim.transform.Find("FrontBG").GetComponent<Image>().material;    
         BtnInIt();
     }
 
@@ -186,7 +187,9 @@ public class HwanSengSystem : MonoBehaviour
     }
 
     Vector3 tillingVec;
-    float tillingSpeedMultipleyr = 2.5f;
+    Vector3 tillingFrontVec;
+    float tillingSpeedMultipleyr = 2f;
+    float tillingFrontSpeedMultipleyr = 0.4f;
     private void Update()
     {
         if (hwansengRef.activeSelf) // 배경 마법진 회전
@@ -201,6 +204,10 @@ public class HwanSengSystem : MonoBehaviour
             tillingVec.x += Time.deltaTime * tillingSpeedMultipleyr;
             tillingVec.x = Mathf.Repeat(tillingVec.x,1);
             feverBG.mainTextureOffset = tillingVec;
+
+            tillingFrontVec.x += Time.deltaTime * tillingFrontSpeedMultipleyr;
+            tillingFrontVec.x = Mathf.Repeat(tillingVec.x, 1);
+            feverFrontBGMat.mainTextureOffset = tillingVec;
         }
     }
 
