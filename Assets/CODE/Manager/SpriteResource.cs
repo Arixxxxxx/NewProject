@@ -11,8 +11,30 @@ public class SpriteResource : MonoBehaviour
     [SerializeField] private Sprite[] map;
     public Sprite Map(int value) => map[value];
     [Space]
-    [SerializeField] private Sprite[] monster;
-    public Sprite[] MonsterSmall { get {  return monster; } }
+    [SerializeField] private Sprite[] stage1_Enemy;
+    [SerializeField] private Sprite[] stage2_Enemy;
+    [SerializeField] private Sprite[] stage3_Enemy;
+
+    /// <summary>
+    /// 에너미 스프라이트
+    /// </summary>
+    /// <param name="stage"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public Sprite[] enemySprite(int stage)
+    {
+        switch (stage)
+        {
+            case 1:
+                return stage1_Enemy;
+            case 2:
+                return stage2_Enemy;
+            case 3:
+                return stage3_Enemy;
+        }
+        return null;
+    }
+
     [Space]
     [SerializeField] private Sprite[] monsterLargeSize;
     public Sprite[] MonsterLargeSize { get { return monsterLargeSize; } }

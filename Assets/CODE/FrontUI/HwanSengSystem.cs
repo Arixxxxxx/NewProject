@@ -8,8 +8,9 @@ public class HwanSengSystem : MonoBehaviour
     public static HwanSengSystem inst;
 
     // Ref
-    GameObject frontUI, worldUI, hwansengRef, mainWindowRef;
+    GameObject frontUI, worldUI, hwansengRef, mainWindowRef, rawImage;
 
+ 
     // Title
     Button xBtn;
 
@@ -73,6 +74,7 @@ public class HwanSengSystem : MonoBehaviour
     Animator feverAnim;
     Image feverFrontImg;
     float feverCountTimer;
+    Material feverBG;
 
     int goldkeyLv;
     public int GoldKeyLv_Hwanseng
@@ -100,8 +102,11 @@ public class HwanSengSystem : MonoBehaviour
         }
 
         //Ref
-        frontUI = GameObject.Find("---[FrontUICanvas]").gameObject;
-        worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
+        frontUI = GameManager.inst.FrontUiRef;
+        worldUI = GameManager.inst.WorldUiRef;
+        rawImage = GameManager.inst.RawImgRef;
+
+      
 
         hwansengRef = frontUI.transform.Find("Hwnaseng").gameObject;
         mainWindowRef = hwansengRef.transform.Find("Window").gameObject;
@@ -170,7 +175,7 @@ public class HwanSengSystem : MonoBehaviour
         // 피버타임
         feverAnim = worldUI.transform.Find("Fever").GetComponent<Animator>();
         feverFrontImg = feverAnim.transform.Find("TimeBG/FRONT").GetComponent<Image>();
-
+        feverBG = feverAnim.transform.Find("BG").GetComponent<Image>().material;
 
         BtnInIt();
     }
@@ -179,6 +184,9 @@ public class HwanSengSystem : MonoBehaviour
     {
         WorldUIHwansengIconReturnStarUpdate();
     }
+
+    Vector3 tillingVec;
+    float tillingSpeedMultipleyr = 2.5f;
     private void Update()
     {
         if (hwansengRef.activeSelf) // 배경 마법진 회전
@@ -186,6 +194,13 @@ public class HwanSengSystem : MonoBehaviour
             rotZ += Time.deltaTime * 10;
             rotZ = Mathf.Repeat(rotZ, 360);
             charBg.transform.localRotation = Quaternion.Euler(0, 0, rotZ);
+        }
+        
+        if (feverAnim.gameObject.activeInHierarchy)
+        {
+            tillingVec.x += Time.deltaTime * tillingSpeedMultipleyr;
+            tillingVec.x = Mathf.Repeat(tillingVec.x,1);
+            feverBG.mainTextureOffset = tillingVec;
         }
     }
 
@@ -496,7 +511,7 @@ public class HwanSengSystem : MonoBehaviour
     public void FeverTimeActive(float InputTime, int hwansengType, bool isAd)
     {
         //초기화
-        feverCountTimer = InputTime;
+        feverCountTimer = InputTime; // 추가시간 더하기 유물
         feverFrontImg.fillAmount = 1;
 
         // 별 지급
@@ -533,6 +548,7 @@ public class HwanSengSystem : MonoBehaviour
         if (feverAnim.gameObject.activeSelf == false)
         {
             feverAnim.gameObject.SetActive(true);
+            WorldUI_Manager.inst.RawImagePlay(0, true);
             ActionManager.inst.IsFever = true;
         }
 
@@ -548,6 +564,8 @@ public class HwanSengSystem : MonoBehaviour
         feverAnim.SetTrigger("Hide");
         ActionManager.inst.IsFever = false;
         yield return new WaitForSeconds(1f);
+
+        WorldUI_Manager.inst.RawImagePlay(false);
         feverAnim.gameObject.SetActive(false);
 
         feverAnim.SetTrigger("Exit");

@@ -1497,7 +1497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8881726890332653229, guid: 9e9a3fa7d4d71e54b9f24da7f34330ff, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1608,10 +1608,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2992921042989095617, guid: 291c9d9fe2e7ec247ae517e9e684fcd5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5754991283927286067, guid: 291c9d9fe2e7ec247ae517e9e684fcd5, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1711,8 +1707,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4419585097905868713, guid: c018db7678bf27d4d84e6a11c3c215da, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8610553579013441196, guid: c018db7678bf27d4d84e6a11c3c215da, type: 3}
+      propertyPath: poolingObj.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8610553579013441196, guid: c018db7678bf27d4d84e6a11c3c215da, type: 3}
+      propertyPath: poolingObj.Array.data[2]
+      value: 
+      objectReference: {fileID: 7590727819067225288, guid: cf8fd12e99f015349a14132c5c82dc08, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

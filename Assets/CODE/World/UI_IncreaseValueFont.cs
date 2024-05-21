@@ -39,20 +39,23 @@ public class UI_IncreaseValueFont : MonoBehaviour
     }
 
     // √÷√  Init
-    public void Set_PosAndColorInit(int index, string value)
+    public void Set_PosAndColorInit(string value)
     {
-        if(valueFont == null)
+        valueFont.color = Color.white;
+
+        if (valueFont == null)
         {
             valueFont = GetComponent<TMP_Text>();
         }
 
-        valueFont.text = "+" + CalCulator.inst.StringFourDigitChanger(value);
-        valueFont.color = fontColor[index];
+        valueFont.text = "-" + CalCulator.inst.StringFourDigitAddFloatChanger(value);
+        
+        gameObject.SetActive(true);
     }
 
     private void returnObj()
     {
-        WorldUI_Manager.inst.Return_WorldUIObjPoolingObj(gameObject,1);
+        WorldUI_Manager.inst.Return_WorldUIObjPoolingObj(gameObject,2);
     }
 
     

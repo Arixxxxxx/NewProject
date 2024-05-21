@@ -43,6 +43,10 @@ public class GameManager : MonoBehaviour
     private bool miniGameMode;
     public bool MiniGameMode => miniGameMode;
 
+    // RawImage ±×·ì
+    GameObject rawImgRef;
+    public GameObject RawImgRef { get { return rawImgRef; } }
+
     private void Awake()
     {
         if(inst == null)
@@ -58,6 +62,7 @@ public class GameManager : MonoBehaviour
         frontUiRef = GameObject.Find("---[FrontUICanvas]").gameObject;
         uiCanvasRef = GameObject.Find("---[UI Canvas]").gameObject;
         worldSpaceRef = GameObject.Find("---[World Space]").gameObject;
+        rawImgRef = GameObject.Find("---[RowImageArea]").gameObject;
         camsRef = GameObject.Find("---[Cams]").gameObject;
         worldCam = camsRef.transform.Find("Cam_0").GetComponent<CinemachineVirtualCamera>();
         miniGameCam = camsRef.transform.Find("Minicam").GetComponent<CinemachineVirtualCamera>();

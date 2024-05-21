@@ -833,12 +833,14 @@ public class GameStatus : MonoBehaviour
     public void MinusStar(string getValue)
     {
         string result = CalCulator.inst.BigIntigerMinus(star, getValue);
+        WorldUI_Manager.inst.Use_GoldOrStarMetrialFontPooling(1,getValue);
         Star = result;
     }
 
     public void MinusGold(string getValue)
     {
         string result = CalCulator.inst.BigIntigerMinus(gold, getValue);
+        WorldUI_Manager.inst.Use_GoldOrStarMetrialFontPooling(0, getValue);
         Gold = result;
     }
 
