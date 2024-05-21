@@ -11,10 +11,10 @@ public class MissionData : MonoBehaviour
     public static MissionData Instance;
 
     Canvas UICanvas; //캔버스
-    Transform obj_MissionWindow; //미션창
-    Transform obj_DailyContents; //일일미션 컨텐츠
-    Transform obj_WeeklyContents; //주간미션 컨텐츠
-    Transform obj_SpecialContents; //스페셜미션 컨텐츠
+    Transform trs_MissionWindow; //미션창
+    Transform trs_DailyContents; //일일미션 컨텐츠
+    Transform trs_WeeklyContents; //주간미션 컨텐츠
+    Transform trs_SpecialContents; //스페셜미션 컨텐츠
     Transform trs_NowMissionParents; //현재진행중인 미션 부모
     Button MissionOpenBtn;//미션창 여는 버튼
     Button MissionCloseBtn;//미션창 닫는 버튼
@@ -42,7 +42,7 @@ public class MissionData : MonoBehaviour
         set
         {
             clearStack = value;
-            if (clearStack == 0)
+            if (clearStack <= 0)
             {
                 simball.SetActive(false);
             }
@@ -69,10 +69,10 @@ public class MissionData : MonoBehaviour
         bool IsClear
         {
             get => isClear;
-            set 
-            { 
+            set
+            {
                 isClear = value;
-                GameStatus.inst.SetDailyMIssionClear(index,value);
+                GameStatus.inst.SetDailyMIssionClear(index, value);
             }
         }
         Transform trs;
@@ -87,6 +87,7 @@ public class MissionData : MonoBehaviour
         GameObject ClearText;
         GameObject Mask;
         int count;
+        bool isMaxCount = false;
         public int Count
         {
             get => count;
@@ -96,8 +97,12 @@ public class MissionData : MonoBehaviour
 
                 if (IsClear == false && count >= maxCount)
                 {
+                    if (isMaxCount == false)
+                    {
+                        isMaxCount = true;
+                        Instance.ClearStack++;
+                    }
                     count = maxCount;
-                    Instance.ClearStack++;
                     moveBtn.gameObject.SetActive(false);
                     clearBtn.gameObject.SetActive(true);
 
@@ -117,7 +122,7 @@ public class MissionData : MonoBehaviour
         }
         public void InitStart()
         {
-            imageIcon = trs.Find("Icon_IMG").GetComponent<Image>();
+            imageIcon = trs.Find("IconBG/Icon_IMG").GetComponent<Image>();
             imageBar = trs.Find("Space/Playbar/PlayBar(Front)").GetComponent<Image>();
             moveBtn = trs.Find("MoveBtn").GetComponent<Button>();
             clearBtn = trs.Find("ClearBtn").GetComponent<Button>();
@@ -151,20 +156,20 @@ public class MissionData : MonoBehaviour
                     moveBtn.onClick.AddListener(() =>
                     {
                         ShopManager.Instance.OpenShop(0);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
                 case DailyMissionTag.UseRuby:
                     moveBtn.onClick.AddListener(() =>
                     {
                         ShopManager.Instance.OpenShop(0);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
                 case DailyMissionTag.KillMonster:
                     moveBtn.onClick.AddListener(() =>
                     {
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
             }
@@ -172,6 +177,10 @@ public class MissionData : MonoBehaviour
             BarText.text = $"{count} / {maxCount}";
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
+            if (rewardTag == ProductTag.Star)
+            {
+                imageIcon.rectTransform.sizeDelta = new Vector2(23, 23);
+            }
 
             clearBtn.onClick.AddListener(() => { ClickClearBtn(); });
         }
@@ -279,12 +288,13 @@ public class MissionData : MonoBehaviour
         TMP_Text BarText;
         GameObject ClearText;
         GameObject Mask;
+        bool isMaxCount = false;
         bool isClear;
         bool IsClear
         {
             get => isClear;
-            set 
-            { 
+            set
+            {
                 isClear = value;
                 GameStatus.inst.SetWeeklyMIssionClear(index, value);
             }
@@ -301,7 +311,11 @@ public class MissionData : MonoBehaviour
                 if (IsClear == false && count >= maxCount)
                 {
                     count = maxCount;
-                    Instance.ClearStack++;
+                    if (isMaxCount == false)
+                    {
+                        isMaxCount = true;
+                        Instance.ClearStack++;
+                    }
                     moveBtn.gameObject.SetActive(false);
                     clearBtn.gameObject.SetActive(true);
                 }
@@ -320,7 +334,7 @@ public class MissionData : MonoBehaviour
         }
         public void InitStart()
         {
-            imageIcon = trs.Find("Icon_IMG").GetComponent<Image>();
+            imageIcon = trs.Find("IconBG/Icon_IMG").GetComponent<Image>();
             imageBar = trs.Find("Space/Playbar/PlayBar(Front)").GetComponent<Image>();
             moveBtn = trs.Find("MoveBtn").GetComponent<Button>();
             clearBtn = trs.Find("ClearBtn").GetComponent<Button>();
@@ -359,27 +373,31 @@ public class MissionData : MonoBehaviour
                 case WeeklyMissionTag.Reincarnation:
                     moveBtn.onClick.AddListener(() =>
                     {
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
                 case WeeklyMissionTag.QuestLvUp:
                     moveBtn.onClick.AddListener(() =>
                     {
                         UIManager.Instance.ClickBotBtn(0);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
                 case WeeklyMissionTag.WeaponUpgrade:
                     moveBtn.onClick.AddListener(() =>
                     {
                         UIManager.Instance.ClickBotBtn(1);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
             }
             BarText.text = $"{count} / {maxCount}";
             imageBar.fillAmount = (float)Count / maxCount;
             imageIcon.sprite = UIManager.Instance.GetProdSprite((int)rewardTag);
+            if (rewardTag == ProductTag.Star)
+            {
+                imageIcon.rectTransform.sizeDelta = new Vector2(23, 23);
+            }
 
             clearBtn.onClick.AddListener(() => { ClickClearBtn(); });
         }
@@ -480,6 +498,7 @@ public class MissionData : MonoBehaviour
 
         int index;
         bool isActive = false;
+        bool isMaxCount = false;
 
         int count;
         public int Count
@@ -491,10 +510,14 @@ public class MissionData : MonoBehaviour
                 if (count >= maxCount)
                 {
                     count = maxCount;
-                    Instance.ClearStack++;
                     GameStatus.inst.SetSpecialMissionCount(index, count);
                     if (isActive)
                     {
+                        if (isMaxCount == false)
+                        {
+                            isMaxCount = true;
+                            Instance.ClearStack++;
+                        }
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
                     }
@@ -507,7 +530,7 @@ public class MissionData : MonoBehaviour
         public void initSpecialMission(Transform _trs)
         {
             trs = _trs;
-            imageIcon = _trs.Find("Icon_IMG").GetComponent<Image>();
+            imageIcon = _trs.Find("IconBG/Icon_IMG").GetComponent<Image>();
             moveBtn = _trs.Find("MoveBtn").GetComponent<Button>();
             clearBtn = _trs.Find("ClearBtn").GetComponent<Button>();
             NameText = _trs.Find("Space/Title_Text").GetComponent<TMP_Text>();
@@ -543,21 +566,21 @@ public class MissionData : MonoBehaviour
                     moveBtn.onClick.AddListener(() =>
                     {
                         UIManager.Instance.ClickBotBtn(0);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
                 case SpMissionTag.Weapon:
                     moveBtn.onClick.AddListener(() =>
                     {
                         UIManager.Instance.ClickBotBtn(1);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
                 case SpMissionTag.Relic:
                     moveBtn.onClick.AddListener(() =>
                     {
-                        UIManager.Instance.ClickBotBtn(2);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+                        UIManager.Instance.ClickBotBtn(3);
+                        Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
             }
@@ -659,17 +682,19 @@ public class MissionData : MonoBehaviour
                 {
                     case SpMissionTag.Quest:
                         UIManager.Instance.ClickBotBtn(0);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+
                         break;
                     case SpMissionTag.Weapon:
                         UIManager.Instance.ClickBotBtn(1);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+
                         break;
                     case SpMissionTag.Relic:
                         UIManager.Instance.ClickBotBtn(3);
-                        Instance.obj_MissionWindow.gameObject.SetActive(false);
+
                         break;
                 }
+                trs_MissionWindow.gameObject.SetActive(false);
+
             });
         }
     }
@@ -708,7 +733,7 @@ public class MissionData : MonoBehaviour
     // 스페셜 미션 부모 리턴
     public Transform GetSpecialParents()
     {
-        return obj_SpecialContents;
+        return trs_SpecialContents;
     }
 
     // 스페셜 미션 상단 고정 부모 리턴
@@ -740,15 +765,15 @@ public class MissionData : MonoBehaviour
         MissionCloseBtn = UICanvas.transform.Find("ScreenArea/Mission/Mission/Window/Title/X_Btn").GetComponent<Button>();
         MissionBGBtn = UICanvas.transform.Find("ScreenArea/Mission/BG(B)").GetComponent<Button>();
 
-        obj_MissionWindow = UICanvas.transform.Find("ScreenArea/Mission");
-        list_MissionWindow[0] = obj_MissionWindow.Find("Mission/Window/Daily(Scroll View)").gameObject;
-        list_MissionWindow[1] = obj_MissionWindow.Find("Mission/Window/Weekly(Scroll View)").gameObject;
-        list_MissionWindow[2] = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)").gameObject;
-        topTitleText = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/Title_Text").GetComponent<TMP_Text>();
-        topDetailText = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/Detail_Text").GetComponent<TMP_Text>();
-        topMoveBtn = obj_MissionWindow.Find("Mission/Window/TopBar_Mission/MoveBtn").GetComponent<Button>();
+        trs_MissionWindow = UICanvas.transform.Find("ScreenArea/Mission");
+        list_MissionWindow[0] = trs_MissionWindow.Find("Mission/Window/Daily(Scroll View)").gameObject;
+        list_MissionWindow[1] = trs_MissionWindow.Find("Mission/Window/Weekly(Scroll View)").gameObject;
+        list_MissionWindow[2] = trs_MissionWindow.Find("Mission/Window/Special(Scroll View)").gameObject;
+        topTitleText = trs_MissionWindow.Find("Mission/TopBar_Mission/Title_Text").GetComponent<TMP_Text>();
+        topDetailText = trs_MissionWindow.Find("Mission/TopBar_Mission/Detail_Text").GetComponent<TMP_Text>();
+        topMoveBtn = trs_MissionWindow.Find("Mission/TopBar_Mission/MoveBtn").GetComponent<Button>();
 
-        Transform trsTopBtn = obj_MissionWindow.Find("Mission/Window/Top_Btn");
+        Transform trsTopBtn = trs_MissionWindow.Find("Mission/Window/Top_Btn");
         int TopBtnCount = trsTopBtn.childCount;
         list_MissionTopBtnImage = new Image[TopBtnCount];
         for (int iNum = 0; iNum < TopBtnCount; iNum++)
@@ -756,17 +781,17 @@ public class MissionData : MonoBehaviour
             list_MissionTopBtnImage[iNum] = trsTopBtn.GetChild(iNum).GetComponent<Image>();
         }
 
-        obj_DailyContents = list_MissionWindow[0].GetComponent<ScrollRect>().content;
-        obj_WeeklyContents = list_MissionWindow[1].GetComponent<ScrollRect>().content;
-        obj_SpecialContents = list_MissionWindow[2].GetComponent<ScrollRect>().content;
-        trs_NowMissionParents = obj_MissionWindow.Find("Mission/Window/Special(Scroll View)/NowMission");
+        trs_DailyContents = list_MissionWindow[0].GetComponent<ScrollRect>().content;
+        trs_WeeklyContents = list_MissionWindow[1].GetComponent<ScrollRect>().content;
+        trs_SpecialContents = list_MissionWindow[2].GetComponent<ScrollRect>().content;
+        trs_NowMissionParents = trs_MissionWindow.Find("Mission/Window/Special(Scroll View)/NowMission");
 
 
         //일일 미션 초기화
         int DailyCount = list_DailyMission.Count;
         for (int iNum = 0; iNum < DailyCount; iNum++)
         {
-            list_DailyMission[iNum].Trs = Instantiate(obj_Mission, obj_DailyContents).transform;
+            list_DailyMission[iNum].Trs = Instantiate(obj_Mission, trs_DailyContents).transform;
             list_DailyMission[iNum].InitStart();
         }
         for (int iNum = 0; iNum < DailyCount; iNum++)
@@ -778,7 +803,7 @@ public class MissionData : MonoBehaviour
         int WeeklyCount = list_WeeklyMission.Count;
         for (int iNum = 0; iNum < WeeklyCount; iNum++)
         {
-            list_WeeklyMission[iNum].Trs = Instantiate(obj_Mission, obj_WeeklyContents).transform;
+            list_WeeklyMission[iNum].Trs = Instantiate(obj_Mission, trs_WeeklyContents).transform;
             list_WeeklyMission[iNum].InitStart();
         }
         for (int iNum = 0; iNum < WeeklyCount; iNum++)
@@ -790,7 +815,7 @@ public class MissionData : MonoBehaviour
         int SpecialCount = list_SpecialMIssion.Count;
         for (int iNum = 0; iNum < SpecialCount; iNum++)
         {
-            Transform trs = Instantiate(obj_SpecialMission, obj_SpecialContents).transform;
+            Transform trs = Instantiate(obj_SpecialMission, trs_SpecialContents).transform;
 
             if (list_SpecialMIssion[iNum].missionType == SpMissionTag.Quest)
             {
@@ -821,7 +846,7 @@ public class MissionData : MonoBehaviour
         UIManager.Instance.GetShopOpenBtn().onClick.AddListener(() => SetDailyMission("상점 방문", 1));
         MissionOpenBtn.onClick.AddListener(() =>
         {
-            obj_MissionWindow.gameObject.SetActive(true);
+            trs_MissionWindow.gameObject.SetActive(true);
             UICanvas.sortingOrder = 15;
         });
         MissionCloseBtn.onClick.AddListener(() => { UICanvas.sortingOrder = 12; });

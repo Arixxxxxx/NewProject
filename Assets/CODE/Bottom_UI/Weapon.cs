@@ -30,14 +30,7 @@ public class Weapon : MonoBehaviour
                 upBtnMask.SetActive(true);
                 UIManager.Instance.WeaponUpComplete(Number);
                 DogamManager.inst.GetWeaponCheck(Number + 1);
-                if (Lv >= 5)
-                {
-                    UIManager.Instance.SetTopWeaponNum(Number + 1);
-                }
-                else
-                {
-                    UIManager.Instance.SetTopWeaponNum(Number);
-                }
+                //UIManager.Instance.SetTopWeaponNum(Number + 1);
             }
         }
     }
@@ -83,7 +76,7 @@ public class Weapon : MonoBehaviour
 
     public void InitWeapon()
     {
-        
+
         weaponImage = transform.Find("imageBtn/IMG").GetComponent<Image>();
         initValue();
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
@@ -185,7 +178,7 @@ public class Weapon : MonoBehaviour
     {
         mask.SetActive(value);
     }
-    
+
 
     /// <summary>
     /// 무기이름 초기화
@@ -194,7 +187,7 @@ public class Weapon : MonoBehaviour
     /// <returns></returns>
     private string Set_WeaponName(int WeaponNumber)
     {
-        string[] weaponName = 
+        string[] weaponName =
             {
             "죽도", //1
             "목검", //2

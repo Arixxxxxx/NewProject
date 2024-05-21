@@ -36,11 +36,13 @@ public class UIManager : MonoBehaviour
     [HideInInspector] public UnityEvent OnBuyCountChanged;//퀘스트 구매갯수 바뀌는 이벤트
     List<Transform> m_list_Quest = new List<Transform>();//퀘스트 리스트
     Transform m_QuestParents;//퀘스트 컨텐츠 트래스폼
+    RectTransform m_QuestParentRect;
     List<Image> m_list_QuestBuyCountBtn = new List<Image>(); //퀘스트 구매갯수 조절 버튼
     TextMeshProUGUI m_totalGold;// 초당 골드 생산량 텍스트
 
     int questBuyCount = 1;//퀘스트 구매하려는 갯수
     int questBuyCountBtnNum = 0;//선택한 퀘스트 한번에 구매 버튼 번호
+    int TopQuestNum = 0;//해금한 퀘스트중 제일 높은 것 번호
     public int QuestBuyCountBtnNum
     {
         get => questBuyCountBtnNum;
@@ -61,6 +63,7 @@ public class UIManager : MonoBehaviour
         {
             m_list_Quest[index + 1].GetComponent<Quest>().SetMaskActive(false);
         }
+        TopQuestNum = index + 1;
     }
 
     ////////////////////////////////////////////무기///////////////////////////////////////
@@ -71,7 +74,7 @@ public class UIManager : MonoBehaviour
     TextMeshProUGUI m_totalAtk;
     Button WeaponBook;
 
-    int haveWeaponNum;//보유중인 무기중 제일 최상위 무기 번호
+    int TopHaveWeaponNum;//보유중인 무기중 제일 최상위 무기 번호
 
 
     public void WeaponUpComplete(int index)
@@ -81,6 +84,7 @@ public class UIManager : MonoBehaviour
         {
             m_list_Weapon[index + 1].GetComponent<Weapon>().SetMaskActive(false);
         }
+        TopHaveWeaponNum = index + 1;
     }
 
     public TextMeshProUGUI GettotalAtkText()
@@ -90,21 +94,21 @@ public class UIManager : MonoBehaviour
 
     public void SetTopWeaponNum(int _num)
     {
-        haveWeaponNum = _num;
+        TopHaveWeaponNum = _num;
     }
 
     public void MaxBuyWeapon()
     {
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
 
-        if (m_list_Weapon.Count > haveWeaponNum)
+        if (m_list_Weapon.Count > TopHaveWeaponNum)
         {
-            BigInteger nextcost = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>().GetNextCost();
+            BigInteger nextcost = m_list_Weapon[TopHaveWeaponNum].GetComponent<Weapon>().GetNextCost();
             while (haveGold >= nextcost)
             {
-                if (m_list_Weapon.Count > haveWeaponNum)
+                if (m_list_Weapon.Count > TopHaveWeaponNum)
                 {
-                    Weapon ScWeapon = m_list_Weapon[haveWeaponNum].GetComponent<Weapon>();
+                    Weapon ScWeapon = m_list_Weapon[TopHaveWeaponNum].GetComponent<Weapon>();
                     ScWeapon.ClickBuy();
                     haveGold -= nextcost;
                     nextcost = ScWeapon.GetNextCost();
@@ -199,6 +203,7 @@ public class UIManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            GameStatus.inst.PlusGold("99999999999999999999999999999999");
             GameStatus.inst.PlusRuby(1000);
             GameStatus.inst.PlusStar("100000000");
         }
@@ -246,10 +251,12 @@ public class UIManager : MonoBehaviour
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Pet").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Relic").gameObject);
         m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
+        m_list_BottomBtn[0].transform.GetComponent<Button>().onClick.AddListener(SetQuestScroll);
         ScreenArea = canvas.transform.Find("ScreenArea").GetComponent<RectTransform>();
 
         //퀘스트 초기화
         m_QuestParents = canvas.transform.Find("ScreenArea/BackGround/Quest/Scroll View").GetComponent<ScrollRect>().content;
+        m_QuestParentRect = m_QuestParents.GetComponent<RectTransform>();
         Transform trsQuestBuyCount = canvas.transform.Find("ScreenArea/BackGround/Quest/AllLvUpBtn");
         int QuestBuyCount = trsQuestBuyCount.childCount;
         for (int iNum = QuestBuyCount - 1; iNum >= 0; iNum--)
@@ -376,10 +383,17 @@ public class UIManager : MonoBehaviour
         GameStatus.inst.GetGold(GameStatus.inst.GetTotalGold());
     }
 
+    void SetQuestScroll()
+    {
+        m_QuestParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * TopQuestNum - 64);
+        Debug.Log(TopHaveWeaponNum);
+    }
+
     void SetWeaponScroll()
     {
-        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * haveWeaponNum - 64);
+        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * TopHaveWeaponNum - 64);
     }
+
 
     public void changeSortOder(int value)
     {
