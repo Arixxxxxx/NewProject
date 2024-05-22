@@ -191,7 +191,7 @@ public class Gacha : MonoBehaviour
 
     int compareRelic(GameObject A, GameObject B)
     {
-        if (A.GetComponent<Relic>().GetMyType().y < B.GetComponent<Relic>().GetMyType().y)
+        if (A.GetComponent<Relic>().GetMyType().x < B.GetComponent<Relic>().GetMyType().x)
         {
             return -1;
         }
