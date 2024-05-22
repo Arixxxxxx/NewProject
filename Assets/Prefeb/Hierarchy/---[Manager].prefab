@@ -224,12 +224,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354cf8484511d7e4dbc8f44a62ab8e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buyBtnBoxText:
-  - {fileID: 0}
-  - {fileID: 0}
-  bottomBoxText:
-  - {fileID: 0}
-  - {fileID: 0}
   buffTime: 0
   isAdDeleteBuy: 0
 --- !u!114 &6767617472122134259
@@ -695,6 +689,17 @@ MonoBehaviour:
   OnPercentageChanged:
     m_PersistentCalls:
       m_Calls: []
+  relicDefaultValue:
+  - 1
+  - 0.5
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0.15
+  - 1
+  - 1
   OnRouletteTicketChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -825,28 +830,28 @@ MonoBehaviour:
   - {fileID: -2065806326, guid: 3015a98ddfaaef949b7dab82d30aaa64, type: 3}
   - {fileID: 2048784362, guid: 031e097540eb98646b85e31442c57b72, type: 3}
   questIcon:
-  - {fileID: -2019810705, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: -1331024506, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: -1446033791, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1298143414, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: -983333864, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1046211586, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 374257516, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 8814785, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1743003287, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 29670226, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: -1699971602, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1980531376, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 878486967, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 268022198, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1125710380, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 993428481, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1473766716, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 464749792, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: -297462825, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1745744803, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: -1917961379, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
-  - {fileID: 1143338959, guid: 49243fd0b28cac142a4a644b44129f5b, type: 3}
+  - {fileID: 95158324, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1856796777, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 625244797, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -1925895745, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -885363097, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -127670680, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -579450457, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1521984693, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1783832949, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 588850474, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1823720521, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1738387494, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -1112291519, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -1702511831, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1124311417, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 112951424, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -1062776318, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -267453272, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1284574837, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: -476949622, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 1134278205, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
+  - {fileID: 118384431, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
 --- !u!114 &4419585097905868713
 MonoBehaviour:
   m_ObjectHideFlags: 0

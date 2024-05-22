@@ -17,9 +17,7 @@ public class AdDelete : MonoBehaviour
     Button buyBtn;
 
     // 구매전, 후 설정 변수들
-    [SerializeField]
     GameObject[] buyBtnBoxText = new GameObject[2];
-    [SerializeField]
     TMP_Text[] bottomBoxText = new TMP_Text[2];
 
     // 광고제거 카운트다운
@@ -92,7 +90,11 @@ public class AdDelete : MonoBehaviour
         buyBtn.onClick.AddListener(() =>
         {
             int Price = RubyPrice.inst.AdDeletePrice; // 루비가격 초기화
-            RubyPayment.inst.RubyPaymentUiActive(Price, () => Set_AdDeleteBuffTime(DateTime.Now.AddDays(30).ToString("O")));
+            RubyPayment.inst.RubyPaymentUiActive(Price, () =>
+            {
+                Set_AdDeleteBuffTime(DateTime.Now.AddDays(30).ToString("O"));
+             
+            });
         });
 
     }
@@ -111,8 +113,22 @@ public class AdDelete : MonoBehaviour
         if (buffEndDateValue == string.Empty) { return; }
 
         endBuffDate = DateTime.Parse(buffEndDateValue);
-        TimeSpan timeSpan = endBuffDate - DateTime.Now;
-        buffTime += timeSpan.TotalSeconds;
+
+        if (endBuffDate.Date < DateTime.Now)
+        {
+            //초기화
+            if(buyBtn.interactable == false)
+            {
+                buyBtn.interactable = true;
+            }
+
+        }
+        else
+        {
+            TimeSpan timeSpan = endBuffDate - DateTime.Now;
+            buffTime += timeSpan.TotalSeconds;
+        }
+        
     }
 
     //
@@ -184,6 +200,7 @@ public class AdDelete : MonoBehaviour
     private void Set_AdDeleteBought(bool value)
     {
         int select = value ? 1 : 0;
+        buyBtn.interactable = !value;
 
         for (int index = 0; index < buyBtnBoxText.Length; index++)
         {

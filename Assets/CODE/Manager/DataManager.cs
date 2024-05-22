@@ -1,12 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using System.IO;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
-using System;
-using UnityEditor;
+
 
 public class DataManager : MonoBehaviour
 {

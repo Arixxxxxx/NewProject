@@ -1,6 +1,6 @@
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,51 +25,63 @@ public class GameStatus : MonoBehaviour
         {
             DateTime LastLoginDate = value;
 
-            //접속시 1회
-            // 첫 접속시 (신규가입시)
-            if (LastLoginDate.Year == 1)
+            if (!checkStart) // 첫 접속시
             {
-                signUpDate = value;
-                DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+                // 첫 접속시 (신규가입시)
+                if (LastLoginDate.Year == 1)
+                {
+                    signUpDate = DateTime.Now;
+                    Debug.Log("신규유저");
+                    DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+                }
+                else if (LastLoginDate.Year >= 2000)
+                {
+                    //하루가 지남
+                    if (LastLoginDate.Date < DateTime.Now.Date)
+                    {
+                        Daily_init();
+
+                        //  주간 리셋 (월요일이 한번이라도 지났는지 확인)
+                        if (HasMondayPassed(LastLoginDate))
+                        {
+                            MissionData.Instance.initWeeklyMission();
+                        }
+
+                    }
+                    else if (LastLoginDate.Date == DateTime.Now.Date) // 오늘 재접
+                    {
+                        DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+                    }
+
+
+                }
+                lastLogindate = DateTime.Now;
+                checkStart = true;
             }
-            else if (LastLoginDate.Year >= 2000)
+            else // 런타임중
             {
-                //하루가 지남
-                if (LastLoginDate.Date < DateTime.Now.Date)
-                {
-                     
-                    //출석체크 부분
-                    if (TotayGotDaily_Reward == true)
-                    {
-                        TotayGotDaily_Reward = false;
-                        DailyADRuby = true;
-                    }
-                    if(DailyADRuby == true)
-                    {
-                        DailyADRuby = false;
-                    }
-                    // 슬롯머신 버튼들
-                    if(AdRulletActive == true)
-                    {
-                        AdRulletActive = false;
-                    }
-                    if(AdSlotMachineActive == true)
-                    {
-                        AdSlotMachineActive = false;
-                    }
-                }
-                else if(LastLoginDate.Date == DateTime.Now.Date) // 오늘 재접
-                {
-                    Debug.Log("다시만나서 반가워요");
-                }
-
-                DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
-                lastLogindate = LastLoginDate;
-
+                lastLogindate = value;
             }
         }
     }
 
+    private bool HasMondayPassed(DateTime lastLogin)
+    {
+        DateTime startDate = lastLogin.Date;
+        DateTime now = DateTime.Now.Date;
+
+        // 마지막 접속날짜부터 월요일이있었는지 다 확인
+        while (startDate <= now)
+        {
+            if (startDate.DayOfWeek == DayOfWeek.Monday)
+            {
+                return true;
+            }
+            startDate = startDate.AddDays(1);
+        }
+
+        return false;
+    }
 
     private string nickName;
     public string NickName { get { return nickName; } set { nickName = value; } }
@@ -264,7 +276,7 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-  
+
     [HideInInspector] public UnityEvent OnRubyChanged;
     // 3. 소지 루비
     int ruby = 0;
@@ -278,16 +290,16 @@ public class GameStatus : MonoBehaviour
         set
         {
             int UseRuby = ruby - value;
-            
+
             if (UseRuby > 0)
             {
                 MissionData.Instance.SetDailyMission("루비 사용", UseRuby);
             }
             ruby = value;
-            
+
             WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString("N0"));
 
- 
+
 
 
             OnRubyChanged?.Invoke();
@@ -346,22 +358,18 @@ public class GameStatus : MonoBehaviour
     {
         get
         {
+
+            if (GetAryRelicLv(1) != 0)
+            {
+                float addCritical = GetAryRelicLv(1) * relicDefaultValue[1];
+                return criticalChance + addPetCriChanceBuff + addCritical;
+            }
+
             return criticalChance + addPetCriChanceBuff;  // <= 펫 시전버프량
         }
         set { criticalChance = value; }
     }
 
-    // 3. 크리티컬 피해증가
-    float criticalPower = 0;
-    public float CriticalPower
-    {
-        get
-        { return criticalPower; } // <= 펫 시전버프량
-        set
-        {
-            criticalChance = value;
-        }
-    }
 
     // 4. 몬스터 누적 킬수
     int totalEnemyKill;
@@ -383,7 +391,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             hwansengCount = value;
-            //MissionData.Instance.SetWeeklyMission("환생하기",0);
+            HwanSengSystem.inst.Set_WorldHwansengCount_Text_Init(value + 1);
         }
     }
     /////////////////////[ 스테이지 현황 ]//////////////////////////////
@@ -438,18 +446,18 @@ public class GameStatus : MonoBehaviour
                 floorLv = 1;
                 StageLv++;
             }
-            else if(floorLv < 6)
+            else if (floorLv < 6)
             {
                 WorldUI_Manager.inst.Set_StageUiBar(floorLv);
             }
-            
+
 
             if (DataManager.inst.saveAble)
             {
                 AccumlateFloor++;
             }
 
-            
+
         }
     }
 
@@ -582,19 +590,45 @@ public class GameStatus : MonoBehaviour
     }
 
     // 작업해야함
-    [Tooltip("0 : 일반공격력\n1 : 퀘스트골드증가\n2 : 처치골드증가\n3 : 퀘스트구매가격인하\n4 : 무기구매가격인하\n5 : 크리대미지상승\n6 : 어택스피드\n7 : 피버타임증가\n8 : 별지급량증가")]
+    [Tooltip("0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 처치골드증가 %\n4 : 퀘스트구매가격인하 %\n5 : 무기구매가격인하 %\n6 : 크리대미지상승 %\n7 : 어택스피드 %\n8 : 피버타임증가 (초)\n9 : 별지급량증가 %")]
     List<int> aryRelicLv = new List<int>();
 
     public int GetAryRelicLv(int index)
     {
+        if (aryRelicLv.Count < 1)
+        {
+            Debug.Log("최초 초기화");
+            for (int indexs = 0; indexs < relicDefaultValue.Length; indexs++)
+            {
+                aryRelicLv.Add(0);
+            }
+        }
+
         return aryRelicLv[index];
     }
+
+    [SerializeField]
+    [Tooltip("0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 처치골드증가 %\n4 : 퀘스트구매가격인하 %\n5 : 무기구매가격인하 %\n6 : 크리대미지상승 %\n7 : 어택스피드 %\n8 : 피버타임증가 (초)\n9 : 별지급량증가 %")]
+    float[] relicDefaultValue;
+
+    /// <summary>
+    /// 유물 LV당 디폴트값 <br/>0 : 일반공격력 %<br/>1 : 크리티컬 증가 %<br/>2 : 퀘스트골드증가 %<br/>3 : 처치골드증가 %<br/>4 : 퀘스트구매가격인하 %\<br/>5 : 무기구매가격인하 %<br/>6 : 크리대미지상승 %<br/>7 : 어택스피드 %<br/>8 : 피버타임증가 (초)<br/>9 : 별지급량증가 % 
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public float RelicDefaultvalue(int value) => relicDefaultValue[value];
+
+    /// <summary>
+    /// 유물 LV당 디폴트값 <br/>0 : 일반공격력 %<br/>1 : 크리티컬 증가 %<br/>2 : 퀘스트골드증가 %<br/>3 : 처치골드증가 %<br/>4 : 퀘스트구매가격인하 %\<br/>5 : 무기구매가격인하 %<br/>6 : 크리대미지상승 %<br/>7 : 어택스피드 %<br/>8 : 피버타임증가 (초)<br/>9 : 별지급량증가 % 
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public List<int> GetAryRelicLv()
     {
         return aryRelicLv;
     }
 
-    public void SetAryRelicLv(int index,int Lv)
+    public void SetAryRelicLv(int index, int Lv)
     {
         aryRelicLv[index] = Lv;
     }
@@ -603,17 +637,21 @@ public class GameStatus : MonoBehaviour
 
     // 룰렛 광고 체크
     private bool adRulletActive;
-    public bool AdRulletActive { get { return adRulletActive; } 
+    public bool AdRulletActive
+    {
+        get { return adRulletActive; }
         set
         {
             adRulletActive = value;
-            EventShop_RulletManager.inst.AdPlayButtonInit(0, adRulletActive); 
+            EventShop_RulletManager.inst.AdPlayButtonInit(0, adRulletActive);
         }
     }
-    
+
     // 슬롯머신 광고 체크
     private bool adSlotMachineActive;
-      public bool AdSlotMachineActive { get { return adSlotMachineActive; } 
+    public bool AdSlotMachineActive
+    {
+        get { return adSlotMachineActive; }
         set
         {
             adSlotMachineActive = value;
@@ -622,11 +660,13 @@ public class GameStatus : MonoBehaviour
     }
 
     private int minigameTicket;
-    public int MinigameTicket { get { return minigameTicket; }
-        set 
+    public int MinigameTicket
+    {
+        get { return minigameTicket; }
+        set
         {
-            minigameTicket = value; 
-            EventShop_RulletManager.inst?.BotText_Updater(); 
+            minigameTicket = value;
+            EventShop_RulletManager.inst?.BotText_Updater();
         }
     }
 
@@ -729,14 +769,14 @@ public class GameStatus : MonoBehaviour
 
     [HideInInspector] public UnityEvent OnRouletteTicketChanged;
     int rouletteTicket;
-    public int RouletteTicket 
+    public int RouletteTicket
     {
         get => rouletteTicket;
-        set 
-        { 
+        set
+        {
             rouletteTicket = value;
             OnRouletteTicketChanged?.Invoke();
-        } 
+        }
     }
 
     int rouletteStack;
@@ -765,22 +805,88 @@ public class GameStatus : MonoBehaviour
     }
 
     int testInt;
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-          
-        }
-    }
+
     void Start()
-    {      
-       // 접속날짜 확인하여 뉴비컨텐츠 초기화
+    {
+        // 접속날짜 확인하여 뉴비컨텐츠 초기화
         Newbie_ContentInit();
 
         // 뉴비 불리언변수 초기화
         IsNewBie = true;
+
+        nextCheckTime = Time.time + timeCheckInterval;
     }
 
+    private void Update()
+    {
+        //시간체크
+        if (Time.time > nextCheckTime && checkStart)
+        {
+            RealTime_Check();
+            nextCheckTime = Time.time + timeCheckInterval;
+        }
+    }
+
+
+    float timeCheckInterval = 30f; // 30초에 한번씩 시간체크
+    float nextCheckTime = 0.0f;
+    bool checkStart = false;
+
+    // 실시간 초기화 시간체크
+    private void RealTime_Check()
+    {
+        if (LastLoginDate == DateTime.MinValue || LastLoginDate.Date == DateTime.Now.Date) { return; }
+
+        // 자정이 지남 일일퀘스트 리셋 항목들
+        if (LastLoginDate.Date <= DateTime.Now.Date)
+        {
+            //1. 출석체크
+            Daily_init();
+
+            //2. 뉴비
+
+            //3. 미션 일일퀘스트
+            MissionData.Instance.initDailyMission();
+
+
+            //  주간 리셋 (매주 월요일)
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && LastLoginDate.DayOfWeek != DayOfWeek.Monday)
+            {
+                MissionData.Instance.initWeeklyMission();
+            }
+
+            LastLoginDate = DateTime.Now;
+        }
+
+    }
+
+
+    // 일일이지나 초기화 해야되는 변수들
+    public void Daily_init()
+    {
+        //출석체크 부분
+        if (TotayGotDaily_Reward == true)
+        {
+            TotayGotDaily_Reward = false;
+            DailyADRuby = true;
+        }
+        if (DailyADRuby == true)
+        {
+            DailyADRuby = false;
+        }
+
+        // 슬롯머신 버튼들
+        if (AdRulletActive == true)
+        {
+            AdRulletActive = false;
+        }
+        if (AdSlotMachineActive == true)
+        {
+            AdSlotMachineActive = false;
+        }
+
+        DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+    }
 
 
     /// <summary>
@@ -791,16 +897,16 @@ public class GameStatus : MonoBehaviour
     {
         string result = CalCulator.inst.DigidPlus(gold, getValue); // 기본 골드
 
-        if(BuffAddGold != "0")
+        if (BuffAddGold != "0")
         {
             result = CalCulator.inst.DigidPlus(result, BuffAddGold); // 상점 버프로인한값 추가
         }
 
-        if(NewbieGoldBuffValue != "0")
+        if (NewbieGoldBuffValue != "0")
         {
             result = CalCulator.inst.DigidPlus(result, NewbieGoldBuffValue); // 뉴비 버프로인한값 추가
         }
-        
+
         Gold = result;
     }
 
@@ -831,7 +937,7 @@ public class GameStatus : MonoBehaviour
     public void MinusStar(string getValue)
     {
         string result = CalCulator.inst.BigIntigerMinus(star, getValue);
-        WorldUI_Manager.inst.Use_GoldOrStarMetrialFontPooling(1,getValue);
+        WorldUI_Manager.inst.Use_GoldOrStarMetrialFontPooling(1, getValue);
         Star = result;
     }
 
@@ -877,9 +983,8 @@ public class GameStatus : MonoBehaviour
             if (DateTime.Now.Date > LastLoginDate.Date)
             {
                 TodayGetNewbie_Reward = false;
-                Debug.Log($"현재{DateTime.Now.Date} > 마지막 : {LastLoginDate.Date}  상태 : {TodayGetNewbie_Reward}");
             }
-           
+
             // 보상 활성화 부분
             Newbie_Content.inst.NewbieWindow_Init(TodayGetNewbie_Reward);
 
@@ -939,7 +1044,7 @@ public class GameStatus : MonoBehaviour
         {
             NewbieBuffLastDay = DateTime.MinValue;
         }
-        
+
 
         // 6. 출석체크
         GotDaily_Reward = saveData.GetGiftCount;
@@ -973,27 +1078,31 @@ public class GameStatus : MonoBehaviour
         dailyMIssionClear = saveData.DailyMIssionClear;
         weeklyMIssionClear = saveData.WeeklyMissionClear;
         SpecialMIssionClearNum = saveData.SpecialMissionClearNum;
-        if (saveData.DailyMissionResetTime != string.Empty)
-        {
-            DailyMissionResetTime = DateTime.Parse(saveData.DailyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-        }
-        else
-        {
-            DailyMissionResetTime = DateTime.MinValue;
-        }
-        if (saveData.WeeklyMissionResetTime != string.Empty)
-        {
-            WeeklyMissionResetTime = DateTime.Parse(saveData.WeeklyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-        }
-        else
-        {
-            WeeklyMissionResetTime = DateTime.MinValue;
-        }
+
+        //필요없어짐
+        //if (saveData.DailyMissionResetTime != string.Empty)
+        //{
+        //    Debug.Log(saveData.DailyMissionResetTime);
+        //    DailyMissionResetTime = DateTime.Parse(saveData.DailyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        //}
+        //else
+        //{
+        //    DailyMissionResetTime = DateTime.MinValue;
+        //}
+        //if (saveData.WeeklyMissionResetTime != string.Empty)
+        //{
+        //    Debug.Log(saveData.WeeklyMissionResetTime);
+        //    WeeklyMissionResetTime = DateTime.Parse(saveData.WeeklyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+        //}
+        //else
+        //{
+        //    WeeklyMissionResetTime = DateTime.MinValue;
+        //}
 
         // 12. 빙고 현황
         RouletteTicket = saveData.RouletteTicket;
         bingoBoard = saveData.BingoBoard;
-        BingoStack = saveData.BingoStack; 
+        BingoStack = saveData.BingoStack;
 
         //우편
         LetterManager.inst.LeftLetterMake(saveData.LetterBox);
@@ -1011,7 +1120,7 @@ public class GameStatus : MonoBehaviour
             LastLoginDate = DateTime.MinValue;
         }
 
-        
+
         //세이브가능
         DataManager.inst.saveAble = true;
     }
@@ -1105,9 +1214,8 @@ public class GameStatus : MonoBehaviour
 
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");
-        
+
         save = JsonUtility.ToJson(saveData, true);
-        Debug.Log(save);
 
         return save;
     }

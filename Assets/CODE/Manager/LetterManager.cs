@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -309,12 +307,6 @@ public class LetterManager : MonoBehaviour
     }
 
 
-    //우편확인후 리스트에서 삭제
-    public void RemoveLetter(LetterPrefab letter)
-    {
-        saveLetterList.RemoveAll(saveLetter => saveLetter.letterPrefab == letter);
-    }
-
 
     //남은 편지 받아가
     public List<SaveLetter> GetLeftLetter => saveLetterList;
@@ -328,6 +320,8 @@ public class LetterManager : MonoBehaviour
         {
             MakeLetter(list[index].itemtype, list[index].letterFrom, list[index].letterText, list[index].letterItemCount);
         }
+
+        saveLetterList.Clear();
     }
 
    

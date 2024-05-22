@@ -127,17 +127,17 @@ public class CalCulator : MonoBehaviour
     {
         string result = string.Empty;
 
-        BigInteger enemyHP = BigInteger.Parse(a); 
+        BigInteger enemyHP = BigInteger.Parse(a);
         BigInteger DMG = BigInteger.Parse(b);
 
         BigInteger curHP = enemyHP - DMG;
 
-        
-        if(curHP <= 0) 
+
+        if (curHP <= 0)
         {
             result = "0";
         }
-        else if(curHP > 0) 
+        else if (curHP > 0)
         {
             result = curHP.ToString();
         }
@@ -151,7 +151,7 @@ public class CalCulator : MonoBehaviour
     /// <param name="a"> Ex : 555A </param>
     /// <param name="percent"> 5% => 5 </param>
     /// <returns></returns>
-    public string DigitPercentMultiply(string a, int percent)
+    public string DigitAndIntPercentMultiply(string a, int percent)
     {
         // 입력 문자열을 BigInteger로 파싱
         BigInteger original = BigInteger.Parse(a);
@@ -169,7 +169,27 @@ public class CalCulator : MonoBehaviour
         return result.ToString();
     }
 
+    public string DigitAndFloatPercentMultiply(string a, float percent)
+    {
+        // 입력 문자열을 BigInteger로 파싱
+        BigInteger original = BigInteger.Parse(a);
 
+        // percent를 사용하여 증가할 비율을 BigInteger로 계산
+        // 예: percent가 5.5라면, totalPercent는 105.5% 즉, 1.055가 되어야 함
+        // BigInteger는 소수점을 지원하지 않으므로, 분수로 처리
+        BigInteger numerator = (BigInteger)((100 + percent) * 1000); // 소수점 3자리까지 고려
+        BigInteger denominator = 100000; // 100 * 1000
+
+        // 결과 계산: (original * numerator) / denominator
+        // 분자에 original과 numerator를 곱하고, 분모로 denominator를 사용
+        BigInteger result = (original * numerator) / denominator;
+
+        return result.ToString();
+    }
+
+
+
+    string[] addBuffValue = new string[4];
 
     /// <summary>
     /// 모든공격력 합산하여 스트링으로 변환하여 리턴
@@ -179,35 +199,35 @@ public class CalCulator : MonoBehaviour
     {
         string result = GameStatus.inst.TotalAtk.ToString();
 
-        string[] addBuffValue = new string[4];
-        
+
+
         // 2배 버프 체크
         // { //result = DigidPlus(result, GameStatus.inst.BuffAddATK);}
 
         if (GameStatus.inst.BuffAddATK != "0")
         {
-            addBuffValue[0] = StringAndIntMultiPly(result, 2-1);
+            addBuffValue[0] = StringAndIntMultiPly(result, 2 - 1);
         }
 
         //// 3배 버프 체크
         //result = DigidPlus(result, GameStatus.inst.BuffAddAdATK);
         if (GameStatus.inst.BuffAddATK != "0")
         {
-            addBuffValue[1] = StringAndIntMultiPly(result, 3-1);
+            addBuffValue[1] = StringAndIntMultiPly(result, 3 - 1);
         }
 
         ////// 초심자 버프 2배
         //result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
         if (GameStatus.inst.NewbieATKBuffValue != "0")
         {
-            addBuffValue[2] = StringAndIntMultiPly(result, 2-1);
+            addBuffValue[2] = StringAndIntMultiPly(result, 2 - 1);
         }
 
         //// 펫 버프량 체크 { 레벨당 10% 증가}
         //result = DigidPlus(result, GameStatus.inst.AddPetAtkBuff);
         if (GameStatus.inst.AddPetAtkBuff != "0")
         {
-            addBuffValue[3] = DigitPercentMultiply(result, GameStatus.inst.Pet0_Lv * 10);
+            addBuffValue[3] = DigitAndIntPercentMultiply(result, GameStatus.inst.Pet0_Lv * 10);
         }
 
         ///// 무기도감 카운트만큼 % 합산
@@ -216,11 +236,18 @@ public class CalCulator : MonoBehaviour
 
         for (int index = 0; index < addBuffValue.Length; index++)
         {
-            
+
             if (addBuffValue[index] != null)
             {
                 result = DigidPlus(result, addBuffValue[index]);
             }
+        }
+
+        // 유물 일반공격력 계산
+        if (GameStatus.inst.GetAryRelicLv(0) != 0)
+        {
+            float percentValue = GameStatus.inst.RelicDefaultvalue(0) * GameStatus.inst.GetAryRelicLv(0);
+            result = DigitAndFloatPercentMultiply(result, percentValue);
         }
 
         return result;
@@ -407,7 +434,7 @@ public class CalCulator : MonoBehaviour
         }
         else
         {
-            _text = _text.Remove(pointindex,1);
+            _text = _text.Remove(pointindex, 1);
             char firalp = _text[_text.Length - 1];
             char secAlp = _text[_text.Length - 2];
             int firNum = firalp - 64;
@@ -589,13 +616,14 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string PlayerCriDMGCalculator(string playerDMG)
     {
-        sb.Clear();
-        forCalculatorA = BigInteger.Parse(playerDMG);
-        double critMultiplier = 2 + (GameStatus.inst.CriticalPower / 100.0);
-        forCalculatorA = BigInteger.Multiply(forCalculatorA, new BigInteger(critMultiplier));
-        sb.Append(forCalculatorA);
-
-        return sb.ToString();
+        //기본적으로 2배
+        float multipleValue = 2f;
+        //유물값 더해줌
+        if (GameStatus.inst.GetAryRelicLv(6) != 0)
+        {
+            multipleValue += GameStatus.inst.GetAryRelicLv(6) * GameStatus.inst.RelicDefaultvalue(6);
+        }
+        return DigitAndFloatPercentMultiply(playerDMG, multipleValue);
     }
 
 
@@ -665,6 +693,7 @@ public class CalCulator : MonoBehaviour
     readonly BigInteger scale = new BigInteger(10000000000);  // 스케일링 팩터
 
 
+    // 상수 A와 B를 정의
     BigInteger A = new BigInteger(65);  // 초기값
     float B = 1.26f;  // 증가율, 이 값은 조정 가능합니다.
 
@@ -674,21 +703,24 @@ public class CalCulator : MonoBehaviour
     /// <returns> 알파벳부호처리 안한 string 정수형 타입 Data </returns>
     public string CurHwansengPoint()
     {
-        if(GameStatus.inst == null)
+        if (GameStatus.inst == null)
         {
             return null;
         }
-        string result = string.Empty;
 
         int curStage = GameStatus.inst.AccumlateFloor;
-
-
-        // 상수 A와 B를 정의합니다.
-
 
         // 지급되는 '별' 화폐의 양을 계산합니다.
         BigInteger reward = A * new BigInteger(Mathf.Pow(B, curStage));
 
+        //유물 증가량잇다면
+        if (GameStatus.inst.GetAryRelicLv(9) != 0)
+        {
+            Debug.Log($"{GameStatus.inst.GetAryRelicLv(9)}");
+            Debug.Log($"{GameStatus.inst.RelicDefaultvalue(9)}");
+            //float addPercent = GameStatus.inst.GetAryRelicLv(9) * GameStatus.inst.RelicDefaultvalue(9);
+            //return DigitAndFloatPercentMultiply(reward.ToString(), addPercent);
+        }
         // 결과를 문자열로 반환합니다.
         return reward.ToString();
         // 현재 스테이지가 올라감에 있어 초반에는 조금씩 후반에는 급격하게 지급되는양이 증가되게
@@ -697,7 +729,7 @@ public class CalCulator : MonoBehaviour
 
 
     int ulongMaxCount = ulong.MaxValue.ToString().Count();
-    
+
     /// <summary>
     /// 사령술사 공격력계산 : 현재 몬스터체력의 3% + 레벨당1% 추가
     /// </summary>
@@ -706,17 +738,17 @@ public class CalCulator : MonoBehaviour
     public string CrewNumber2AtkCalculator(string curEnemyHP)
     {
         int wordCount = curEnemyHP.Count();
-       
+
         BigInteger hp = new BigInteger();
-     
+
         int multiPlyer = 3 + GameStatus.inst.Pet2_Lv - 1;
-        
+
         if (wordCount < ulongMaxCount)
         {
             ulong hpUlong = ulong.Parse(curEnemyHP);
             double CalcurHP = (hpUlong * (ulong)multiPlyer) / 100;
 
-        
+
             if (CalcurHP <= 0)
             {
                 return null;
@@ -737,7 +769,7 @@ public class CalCulator : MonoBehaviour
 
             return hp.ToString();
         }
-             
-    
+
+
     }
 }

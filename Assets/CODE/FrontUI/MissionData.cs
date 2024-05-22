@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using System;
 using TMPro;
-using System.Globalization;
 
 public class MissionData : MonoBehaviour
 {
@@ -871,8 +869,8 @@ public class MissionData : MonoBehaviour
 
     private void Update()
     {
-        checkDay();
-        checkWeek();
+        //checkDay();
+        //checkWeek();
 
         if (Input.GetKeyDown(KeyCode.J))
         {
@@ -929,7 +927,7 @@ public class MissionData : MonoBehaviour
         return date.AddDays(-daysSinceMonday).Date;//이번주 월요일 리턴
     }
 
-    void initDailyMission()//일일 미션 초기화
+    public void initDailyMission()//일일 미션 초기화
     {
         int count = list_DailyMission.Count;
 
@@ -939,7 +937,7 @@ public class MissionData : MonoBehaviour
             list_DailyMission[iNum].initMission();
         }
     }
-    void initWeeklyMission()//주간 미션 초기화
+    public void initWeeklyMission()//주간 미션 초기화
     {
         int count = list_WeeklyMission.Count;
 

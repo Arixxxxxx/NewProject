@@ -18,7 +18,7 @@ public class DogamMonsterSlot : MonoBehaviour
     // 좌측하단 번호숫자
     TMP_Text boxNum;
     // 하단 컬렉션 수집
-    int myCollectionCount;
+    int myCollectionCount = 0;
     public int MyCollectionCount
     {
         get { return myCollectionCount; }

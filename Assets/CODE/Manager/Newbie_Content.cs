@@ -43,9 +43,8 @@ public class Newbie_Content : MonoBehaviour
     GameObject[] checkIcon;
 
     // 뉴비 버프 아이콘 설명창
-    GameObject buffInfoWindow;
     TMP_Text buffLeftTimeText;
-    
+
 
     //알림 심볼
     GameObject simBall;
@@ -111,26 +110,6 @@ public class Newbie_Content : MonoBehaviour
         simBall = worldUiRef.transform.Find("StageUI/NewBie/SimBall").gameObject;
     }
 
-    /// <summary>
-    /// 뉴비 버프 아이콘 클릭시 정보창  초기화
-    /// </summary>
-    /// <param name="value"> On / Off </param>
-    public void NewBieBuffInfoWindowActive(bool value)
-    {
-        if (value == true)
-        {
-          
-
-            buffInfoWindow.SetActive(true);
-        }
-        else
-        {
-            buffInfoWindow.SetActive(false);
-        }
-    }
-
-
-
 
     /// <summary>
     /// 뉴비보상창 호출
@@ -183,9 +162,9 @@ public class Newbie_Content : MonoBehaviour
         int forCount = GameStatus.inst.GotNewbieGiftCount;
 
         // 아이콘 거멓게 배경
-        for(int index = 0; index < iconBG.Length; index++)
+        for (int index = 0; index < iconBG.Length; index++)
         {
-            if(index == forCount)
+            if (index == forCount)
             {
                 iconBG[index]?.SetActive(false);
             }
@@ -211,7 +190,7 @@ public class Newbie_Content : MonoBehaviour
         // 아이콘 박스 이미지
         for (int index = 0; index < forCount + 1; index++)
         {
-            if(forCount+1 > iconLayoutIMG.Length) { return; }
+            if (forCount + 1 > iconLayoutIMG.Length) { return; }
 
             iconLayoutIMG[index].sprite = imgBoxSideSprite[0];
         }

@@ -33,6 +33,7 @@ public class HwanSengSystem : MonoBehaviour
     Button[] alrimBtn;
     TMP_Text feverTimeTextSec;
     TMP_Text alrim_HwansengTypeText;
+    TMP_Text worldUICenterTopText;
 
     //알림안에 피버 초
     float defaultFeverTime = 30f;
@@ -69,6 +70,7 @@ public class HwanSengSystem : MonoBehaviour
         hwansengRef = frontUI.transform.Find("Hwnaseng").gameObject;
         mainWindowRef = hwansengRef.transform.Find("Window").gameObject;
 
+        worldUICenterTopText = worldUI.transform.Find("HwansengCount").GetComponent<TMP_Text>();
 
         //Btn
         xBtn = mainWindowRef.transform.Find("Title/X_Btn").GetComponent<Button>();
@@ -163,7 +165,7 @@ public class HwanSengSystem : MonoBehaviour
             Set_AlrimWindowActive(false);
         });
 
-        alrimBtn[1].onClick.AddListener(() => // 최종 환생하기
+        alrimBtn[1].onClick.AddListener(() => // 최종 실행 버튼
         {
             switch (selectType)
             {
@@ -246,6 +248,7 @@ public class HwanSengSystem : MonoBehaviour
         //초기화
         Set_HwansengUIActive(false);
         Set_AlrimWindowActive(false);
+        GameStatus.inst.HWansengCount++;
 
         feverCountTimer = InputTime; // 추가시간 더하기 유물
         feverFrontImg.fillAmount = 1;
@@ -256,7 +259,7 @@ public class HwanSengSystem : MonoBehaviour
         switch (hwansengType)
         {
             case 1: // 광고 증가율 50%
-                originalStarCount = CalCulator.inst.DigitPercentMultiply(originalStarCount, adStarIncrease);
+                originalStarCount = CalCulator.inst.DigitAndIntPercentMultiply(originalStarCount, adStarIncrease);
                 break;
 
             case 2: // 루비 구매율
@@ -327,6 +330,11 @@ public class HwanSengSystem : MonoBehaviour
         textBox_StarValueText.text = starValueInfo.ToString();
         // 월드아이콘 Value값
         hwansengIconReturnValueText.text = starValueInfo.ToString();
+    }
+
+    public void Set_WorldHwansengCount_Text_Init(int value)
+    {
+        worldUICenterTopText.text = $"{value}번째 설아의 출동 이야기";
     }
 
 }

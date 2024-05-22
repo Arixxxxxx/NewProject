@@ -97,7 +97,7 @@ public class LetterPrefab : MonoBehaviour
         {
             // 편지수락 알림창 초기화 및 켜주기
             LetterManager.inst.alrimWindowAcitveTrueAndInit(mainIMG.sprite, ItemType, ItemCount, gameObject);
-            LetterManager.inst.RemoveLetter(this);
+            
             switch (ItemType) // 최종 자원 넣어줌
             {
                 case 0:

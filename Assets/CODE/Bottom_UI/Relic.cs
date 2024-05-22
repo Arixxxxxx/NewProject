@@ -31,6 +31,7 @@ public class Relic : MonoBehaviour
                 PriceText.text = "";
                 priceImage.SetActive(false);
                 priceMask.SetActive(true);
+                upBtn.interactable = false;
             }
         }
     }
@@ -39,6 +40,7 @@ public class Relic : MonoBehaviour
     TextMeshProUGUI LvText;
     TextMeshProUGUI PercentText;
     TextMeshProUGUI PriceText;
+    TextMeshProUGUI maxLvInfo_Text;
     GameObject priceImage;
     GameObject priceMask;
     GameObject starImgRef;
@@ -59,6 +61,7 @@ public class Relic : MonoBehaviour
     }
     public void initRelic()
     {
+        maxLvInfo_Text = transform.Find("LvText").GetComponent<TextMeshProUGUI>();
         LvText = transform.Find("IMG_Layout/LvText").GetComponent<TextMeshProUGUI>();
         PercentText = transform.Find("TextBox/PercentageText").GetComponent<TextMeshProUGUI>();
         PriceText = transform.Find("Button/PriceText").GetComponent<TextMeshProUGUI>();
@@ -69,6 +72,13 @@ public class Relic : MonoBehaviour
         priceMask = transform.Find("Button/Mask").gameObject;
         UIManager.Instance.OnRelicBuyCountChanged.AddListener(() => _OnCountChanged());
         GameStatus.inst.OnStartChanged.AddListener(checkStar);
+
+        //프리펩 하나하나 수정하기 힘들어서 코드로해놈..
+        maxLvInfo_Text.text = $"</b>Lv당 {GameStatus.inst.RelicDefaultvalue((int)itemNum)}씩 증가 <color=#FFE100>( Max.{limitLv} )</color>";
+        maxLvInfo_Text.fontSize = 10;
+        priceMask.GetComponent<Image>().sprite = upBtn.GetComponent<Image>().sprite;
+        priceMask.GetComponent<Image>().pixelsPerUnitMultiplier = 4;
+
         setNextCost();
         setText();
 
@@ -109,21 +119,23 @@ public class Relic : MonoBehaviour
             case ItemTag.CriticalDmg:
             case ItemTag.FeverTime:
             case ItemTag.GetStar:
-                percentage = 100 * Mathf.Pow(1.05f, Lv);
-                break;
-            case ItemTag.AtkSpeed:
-                percentage = 100 + Lv;
-                GameStatus.inst.AtkSpeedLv = Lv;
-                break;
             case ItemTag.Critical:
-                percentage = 100 + Lv;
-                break;
             case ItemTag.QuestDiscount:
             case ItemTag.WeaponDiscount:
-                percentage = 100 + Lv;
+                if (itemNum == ItemTag.Critical)
+                {
+                    Debug.Log(GameStatus.inst.RelicDefaultvalue((int)itemNum));
+                    Debug.Log(Lv);
+                }
+                percentage = GameStatus.inst.RelicDefaultvalue((int)itemNum) * Lv;
+                break;
+
+            case ItemTag.AtkSpeed:
+                percentage = GameStatus.inst.RelicDefaultvalue((int)ItemTag.AtkSpeed) * Lv;
+                GameStatus.inst.AtkSpeedLv = Lv;
                 break;
         }
-        GameStatus.inst.SetAryPercent((int)itemNum, percentage - 100);
+        GameStatus.inst.SetAryPercent((int)itemNum, Lv);
     }
 
     void setNextCost(int count)
@@ -134,7 +146,16 @@ public class Relic : MonoBehaviour
     void setText()
     {
         LvText.text = $"Lv. {lv}";
-        PercentText.text = percentage.ToString("N0") + "%";
+      
+        if(itemNum == ItemTag.Critical)
+        {
+            PercentText.text = percentage.ToString("F1") + "%";
+        }
+        else
+        {
+            PercentText.text = percentage.ToString("N0") + "%";
+        }
+        
         PriceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
     }
 

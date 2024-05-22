@@ -16,10 +16,6 @@ public class ADViewManager : MonoBehaviour
     GameObject adSample;
     Button adXbtn;
 
-    //텍스트알림
-    Animator textAlrim;
-    TMP_Text alrimText;
-
     //광고 보고 할껀지말껀지 물어보는창 -> Reward 창 연결
     // 이미지 상자
     Image itemicon;
@@ -48,10 +44,7 @@ public class ADViewManager : MonoBehaviour
         //샘플광고
         adSample = frontUIRef.transform.Find("SampleAD").gameObject;
         adXbtn = adSample.transform.Find("X").GetComponent<Button>();
-
-        //텍스트 알림
-        textAlrim = worldUiRef.transform.Find("TextAlrim").GetComponent<Animator>();
-        alrimText = textAlrim.GetComponentInChildren<TMP_Text>();
+           
 
         //광고시청 전 질문창
         QuestionWindowRef = frontUIRef.transform.Find("QuestionWindow").gameObject;
