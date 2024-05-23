@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -358,7 +359,6 @@ public class GameStatus : MonoBehaviour
     {
         get
         {
-
             if (GetAryRelicLv(1) != 0)
             {
                 float addCritical = GetAryRelicLv(1) * relicDefaultValue[1];
@@ -590,14 +590,14 @@ public class GameStatus : MonoBehaviour
     }
 
     // 작업해야함
-    [Tooltip("0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 처치골드증가 %\n4 : 퀘스트구매가격인하 %\n5 : 무기구매가격인하 %\n6 : 크리대미지상승 %\n7 : 어택스피드 %\n8 : 피버타임증가 (초)\n9 : 별지급량증가 %")]
+    [Tooltip("0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 크리티컬 데미지 증가 %\n4 : 피버타임 시간 증가 %\n5 : 퀘스트 가격 감소 %\n6 : 무기 가격 감소 %\n7 : 어택스피드 %\n8 : 환생시 별 획득량 증가 (초)\n9 : 적 처치 획득 골드량 증가 %")]
+    [SerializeField]
     List<int> aryRelicLv = new List<int>();
 
     public int GetAryRelicLv(int index)
     {
         if (aryRelicLv.Count < 1)
         {
-            Debug.Log("최초 초기화");
             for (int indexs = 0; indexs < relicDefaultValue.Length; indexs++)
             {
                 aryRelicLv.Add(0);
@@ -608,7 +608,7 @@ public class GameStatus : MonoBehaviour
     }
 
     [SerializeField]
-    [Tooltip("0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 처치골드증가 %\n4 : 퀘스트구매가격인하 %\n5 : 무기구매가격인하 %\n6 : 크리대미지상승 %\n7 : 어택스피드 %\n8 : 피버타임증가 (초)\n9 : 별지급량증가 %")]
+    [Tooltip("0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 크리티컬 데미지 증가 %\n4 : 피버타임 시간 증가 %\n5 : 퀘스트 가격 감소 %\n6 : 무기 가격 감소 %\n7 : 어택스피드 %\n8 : 환생시 별 획득량 증가 (초)\n9 : 적 처치 획득 골드량 증가 %")]
     float[] relicDefaultValue;
 
     /// <summary>
@@ -1066,42 +1066,22 @@ public class GameStatus : MonoBehaviour
         Pet2_Lv = saveData.Crew2Lv;
 
         // 10. 메인 하단 UI 현황
-        aryQuestLv = saveData.QuestLv;
-        aryWeaponLv = saveData.WeaponLv;
-        aryRelicLv = saveData.RelicLv;
+        aryQuestLv = saveData.QuestLv.ToList();
+        aryWeaponLv = saveData.WeaponLv.ToList();
+        aryRelicLv = saveData.RelicLv.ToList();
         EquipWeaponNum = saveData.NowEquipWeaponNum;
 
         // 11. 미션 현황
-        dailyMissionisCount = saveData.DailyMissionCount;
-        weeklyMissionisCount = saveData.WeeklyMissionCount;
-        specialMissionisCount = saveData.SpecialMissionCount;
-        dailyMIssionClear = saveData.DailyMIssionClear;
-        weeklyMIssionClear = saveData.WeeklyMissionClear;
+        dailyMissionisCount = saveData.DailyMissionCount.ToList();
+        weeklyMissionisCount = saveData.WeeklyMissionCount.ToList();
+        specialMissionisCount = saveData.SpecialMissionCount.ToList();
+        dailyMIssionClear = saveData.DailyMIssionClear.ToList();
+        weeklyMIssionClear = saveData.WeeklyMissionClear.ToList();
         SpecialMIssionClearNum = saveData.SpecialMissionClearNum;
-
-        //필요없어짐
-        //if (saveData.DailyMissionResetTime != string.Empty)
-        //{
-        //    Debug.Log(saveData.DailyMissionResetTime);
-        //    DailyMissionResetTime = DateTime.Parse(saveData.DailyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-        //}
-        //else
-        //{
-        //    DailyMissionResetTime = DateTime.MinValue;
-        //}
-        //if (saveData.WeeklyMissionResetTime != string.Empty)
-        //{
-        //    Debug.Log(saveData.WeeklyMissionResetTime);
-        //    WeeklyMissionResetTime = DateTime.Parse(saveData.WeeklyMissionResetTime, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-        //}
-        //else
-        //{
-        //    WeeklyMissionResetTime = DateTime.MinValue;
-        //}
 
         // 12. 빙고 현황
         RouletteTicket = saveData.RouletteTicket;
-        bingoBoard = saveData.BingoBoard;
+        bingoBoard = saveData.BingoBoard.ToList();
         BingoStack = saveData.BingoStack;
 
         //우편
@@ -1185,7 +1165,7 @@ public class GameStatus : MonoBehaviour
 
         // 10. 메인 하단 UI 현황
         saveData.WeaponLv = aryWeaponLv;
-        saveData.RelicLv = aryRelicLv;
+        saveData.RelicLv = aryRelicLv.ToList();
         saveData.NowEquipWeaponNum = EquipWeaponNum;
 
         // 11. 미션 현황
@@ -1198,8 +1178,6 @@ public class GameStatus : MonoBehaviour
 
         saveData.SpecialMissionClearNum = SpecialMIssionClearNum;
 
-        saveData.DailyMissionResetTime = DailyMissionResetTime.ToString("o");
-        saveData.WeeklyMissionResetTime = WeeklyMissionResetTime.ToString("o");
 
         // 12. 빙고 현황
         saveData.RouletteTicket = RouletteTicket;

@@ -49,7 +49,7 @@ public class Relic : MonoBehaviour
     float rotateSpeedMultiPlyer = 15f;
     private void Update()
     {
-        if (rankNum != RankType.Rare)
+        if (rankNum != RankType.Rare && gameObject.activeInHierarchy)
         {
             if(effectRef == null)
             {
@@ -122,11 +122,6 @@ public class Relic : MonoBehaviour
             case ItemTag.Critical:
             case ItemTag.QuestDiscount:
             case ItemTag.WeaponDiscount:
-                if (itemNum == ItemTag.Critical)
-                {
-                    Debug.Log(GameStatus.inst.RelicDefaultvalue((int)itemNum));
-                    Debug.Log(Lv);
-                }
                 percentage = GameStatus.inst.RelicDefaultvalue((int)itemNum) * Lv;
                 break;
 

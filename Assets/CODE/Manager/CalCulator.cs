@@ -7,10 +7,6 @@ public class CalCulator : MonoBehaviour
 {
     public static CalCulator inst;
     StringBuilder sb = new StringBuilder();
-    BigInteger forCalculatorA = new BigInteger();
-
-
-
 
     private void Awake()
     {
@@ -710,20 +706,10 @@ public class CalCulator : MonoBehaviour
 
         int curStage = GameStatus.inst.AccumlateFloor;
 
-        // 지급되는 '별' 화폐의 양을 계산합니다.
+        // 지급되는 '별' 화폐의 양을 계산
         BigInteger reward = A * new BigInteger(Mathf.Pow(B, curStage));
 
-        //유물 증가량잇다면
-        if (GameStatus.inst.GetAryRelicLv(9) != 0)
-        {
-            Debug.Log($"{GameStatus.inst.GetAryRelicLv(9)}");
-            Debug.Log($"{GameStatus.inst.RelicDefaultvalue(9)}");
-            //float addPercent = GameStatus.inst.GetAryRelicLv(9) * GameStatus.inst.RelicDefaultvalue(9);
-            //return DigitAndFloatPercentMultiply(reward.ToString(), addPercent);
-        }
-        // 결과를 문자열로 반환합니다.
         return reward.ToString();
-        // 현재 스테이지가 올라감에 있어 초반에는 조금씩 후반에는 급격하게 지급되는양이 증가되게
 
     }
 

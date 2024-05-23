@@ -79,10 +79,9 @@ public class DataManager : MonoBehaviour
         public int Crew2Lv = 0;
 
         // 9. 메인 하단 UI 현황
-        //public int[] QuestLv = new int[30];
         public List<int> QuestLv = new List<int>(100);
         public List<int> WeaponLv = new List<int>(100);
-        public List<int> RelicLv = new List<int>(20);        
+        public List<int> RelicLv;        
         public int NowEquipWeaponNum;
 
         // 10. 미션 현황
@@ -92,8 +91,6 @@ public class DataManager : MonoBehaviour
         public List<int> DailyMissionCount = new List<int>(10);
         public List<int> WeeklyMissionCount = new List<int>(10);
         public List<int> SpecialMissionCount = new List<int>(100);
-        public string DailyMissionResetTime;
-        public string WeeklyMissionResetTime;
 
         //11. 빙고 현황
         public List<bool> BingoBoard = new List<bool>();

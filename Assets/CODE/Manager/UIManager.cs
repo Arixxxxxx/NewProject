@@ -139,6 +139,8 @@ public class UIManager : MonoBehaviour
 
     List<Image> m_list_RelicBuyCountBtn = new List<Image>();
     List<GameObject> list_haveRelic = new List<GameObject>();
+
+    Button relicDogamInfoBtn;
     public List<GameObject> GetHaveRelic()
     {
         return list_haveRelic;
@@ -287,6 +289,8 @@ public class UIManager : MonoBehaviour
         //유물 초기화
 
         relicParents = canvas.transform.Find("ScreenArea/BackGround/Relic/NormalScroll View/Viewport/Content");
+        relicDogamInfoBtn = canvas.transform.Find("ScreenArea/BackGround/Relic/TopArray/Button").GetComponent<Button>();
+        relicDogamInfoBtn.onClick.AddListener(() => RelicInfoManager.inst.Set_RelicDogamActive(true));
         GotoRelicShopBtn = canvas.transform.Find("ScreenArea/BackGround/Relic/GotoRelicShopBtn").GetComponent<Button>();
         GotoRelicShopBtn.onClick.AddListener(() =>
         {
@@ -386,7 +390,6 @@ public class UIManager : MonoBehaviour
     void SetQuestScroll()
     {
         m_QuestParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * TopQuestNum - 64);
-        Debug.Log(TopHaveWeaponNum);
     }
 
     void SetWeaponScroll()

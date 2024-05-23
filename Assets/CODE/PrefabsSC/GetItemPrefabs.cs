@@ -44,6 +44,7 @@ public class GetItemPrefabs : MonoBehaviour
         itemIMG.sprite = img;
         itemText.text = Text;
 
+        counter = 0;
         canvasGroup.alpha = 0;
         transform.SetAsLastSibling();
 
@@ -51,8 +52,8 @@ public class GetItemPrefabs : MonoBehaviour
         {
             gameObject.SetActive(true);
         }
-        
 
+        StopCoroutine(Play());
         StartCoroutine(Play());
     }
 

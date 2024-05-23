@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 3980596178529644447}
   - component: {fileID: 1002357639231264430}
   - component: {fileID: 4873485944268843623}
+  - component: {fileID: 5612809998451945743}
   m_Layer: 0
   m_Name: FrontUI
   m_TagString: Untagged
@@ -288,6 +289,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rulletArrowAnim: {fileID: 0}
   spinSpeedDownMulyfly: 400
+--- !u!114 &5612809998451945743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2214145803004256810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 349fae2a4e732b04cacfd0c1a3fcf6d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  haveCount: 000000000000000000000000
+  relicicon_Outline:
+  - {fileID: 2130900758, guid: 4665e08f947682740967d903e909fdc7, type: 3}
+  - {fileID: -280067768, guid: 4665e08f947682740967d903e909fdc7, type: 3}
+  - {fileID: -2032256956, guid: 4665e08f947682740967d903e909fdc7, type: 3}
+  typeGradient:
+  - {fileID: 11400000, guid: 3834b3168a306f143ac34aa831a3b2ba, type: 2}
+  - {fileID: 11400000, guid: 7f4ea2840bac1eb43aaf15219da1d261, type: 2}
+  - {fileID: 11400000, guid: 7b09859c604576f4d8b4729cef0e52a9, type: 2}
 --- !u!1 &2562581402446063995
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,17 +711,18 @@ MonoBehaviour:
   OnPercentageChanged:
     m_PersistentCalls:
       m_Calls: []
+  aryRelicLv: 
   relicDefaultValue:
   - 1
   - 0.5
+  - 0.5
   - 1
   - 1
-  - 1
-  - 1
-  - 1
+  - 0.5
+  - 0.5
   - 0.15
-  - 1
-  - 1
+  - 0.5
+  - 0.5
   OnRouletteTicketChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -756,9 +779,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   map:
-  - {fileID: 21300000, guid: 50b080c0f7473f945b140d29f6baa4cd, type: 3}
-  - {fileID: 21300000, guid: d4fc8d6698b263f439c09faf41f401b3, type: 3}
-  - {fileID: 21300000, guid: efc947be1ea3eb64fa6840a979e13463, type: 3}
+  - {fileID: 21300000, guid: 447018d76dfece34e868755b72c023b2, type: 3}
+  - {fileID: 21300000, guid: 927c52fae8d511e4e8694fb9260438ac, type: 3}
+  - {fileID: 21300000, guid: bec6e17dae0554f46b4908a1ffb02dbd, type: 3}
   stage1_Enemy:
   - {fileID: 21300000, guid: a19a24c1cbc81194c9946d7949342b20, type: 3}
   - {fileID: 21300000, guid: 34baf0ad2846a7b49a8ad129cdf2433f, type: 3}
@@ -777,6 +800,19 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cea8d788a24a9564e8b89be82a4521a6, type: 3}
   - {fileID: 21300000, guid: 58908fffca4f252459f54c43f9ae6475, type: 3}
   - {fileID: 21300000, guid: 2c7d955e26897164890bc5bdd47efc89, type: 3}
+  normal_relic_IMG:
+  - {fileID: -1588914403, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  - {fileID: -1439937197, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  - {fileID: 385945917, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  epic_relic_IMG:
+  - {fileID: -568767143, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  - {fileID: 243693589, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  - {fileID: 2072798933, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  - {fileID: -1043911213, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  legend_relic_IMG:
+  - {fileID: 1309289997, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  - {fileID: 35675618, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
+  - {fileID: -1234710459, guid: 2cb463dce722ad44cba061786400d4d4, type: 3}
   monsterLargeSize:
   - {fileID: 21300000, guid: c81de227b1515c541805407fe5e90b58, type: 3}
   - {fileID: 21300000, guid: ce0c136321fea3049bc65c9c705e5f52, type: 3}

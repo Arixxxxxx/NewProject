@@ -11,13 +11,13 @@ public enum ItemTag
     Atk,
     Critical,
     QuestGold,
-    KillGold,
+    CriticalDmg,
+    FeverTime,
     QuestDiscount,
     WeaponDiscount,
-    CriticalDmg,
     AtkSpeed,
-    FeverTime,
-    GetStar
+    GetStar,
+    KillGold,
 }
 
 public enum NormalRelicTag

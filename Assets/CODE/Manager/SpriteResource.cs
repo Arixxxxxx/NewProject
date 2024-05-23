@@ -14,7 +14,37 @@ public class SpriteResource : MonoBehaviour
     [SerializeField] private Sprite[] stage1_Enemy;
     [SerializeField] private Sprite[] stage2_Enemy;
     [SerializeField] private Sprite[] stage3_Enemy;
+    [Space]
+    [SerializeField] private Sprite[] normal_relic_IMG;
+    public Sprite[] Normal_Relic => normal_relic_IMG;
 
+    [SerializeField] private Sprite[] epic_relic_IMG;
+    public Sprite[] Epic_relic_IMG => epic_relic_IMG;
+
+    [SerializeField] private Sprite[] legend_relic_IMG;
+    public Sprite[] Legend_relic_IMG => legend_relic_IMG;
+
+
+
+    /// <summary>
+    /// 유물 스프라이트
+    /// </summary>
+    /// <param name="type"> 0 = Normal<br/> 1 = Epic <br/> 2 = Legend</param>
+    /// <param name="number"></param>
+    /// <returns></returns>
+    public Sprite Relic_Sprite_TypeAndNumber(int type, int number)
+    {
+        switch (type)
+        {
+            case 0:
+                return normal_relic_IMG[number];
+            case 1:
+                return epic_relic_IMG[number];
+            case 2:
+                return legend_relic_IMG[number];
+        }
+        return null;
+    }
     /// <summary>
     /// 에너미 스프라이트
     /// </summary>
@@ -76,7 +106,7 @@ public class SpriteResource : MonoBehaviour
     public Sprite CrewMaterialIMG(int value) => crewMaterialIMG[value];
     private void Awake()
     {
-        if(inst == null)
+        if (inst == null)
         {
             inst = this;
         }
@@ -87,7 +117,7 @@ public class SpriteResource : MonoBehaviour
     }
     void Start()
     {
-        
+
     }
 
 }
