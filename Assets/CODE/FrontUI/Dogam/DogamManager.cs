@@ -128,13 +128,19 @@ public class DogamManager : MonoBehaviour
     /// <param name="value"></param>
     public void Active_DogamUI(bool value)
     {
-        dogamMainRef.SetActive(value);
-        Acitve_Bottom_Viewr(0); // 기본으로 초기화
-        initBtn(); // 기본초기화
         if (value == false)
         {
             WorldUI_Manager.inst.RawImagePlayAcitve(false);
         }
+        else
+        {
+
+        }
+
+        dogamMainRef.SetActive(value);
+        Acitve_Bottom_Viewr(0); // 기본으로 초기화
+        WeaponInitBtn(); // 기본초기화
+        
     }
 
 
@@ -167,7 +173,7 @@ public class DogamManager : MonoBehaviour
         }
     }
 
-    public void initBtn()
+    public void WeaponInitBtn()
     {
         viewrBox_WeaponIMG.sprite = WeaponSprite[0];
         string temp = weaponNameAndInfo[0];
