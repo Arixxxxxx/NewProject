@@ -120,11 +120,12 @@ public class Relic : MonoBehaviour
             case ItemTag.FeverTime:
             case ItemTag.GetStar:
             case ItemTag.Critical:
-            case ItemTag.QuestDiscount:
-            case ItemTag.WeaponDiscount:
                 percentage = GameStatus.inst.RelicDefaultvalue((int)itemNum) * Lv;
                 break;
-
+            case ItemTag.QuestDiscount:
+            case ItemTag.WeaponDiscount:
+                break;
+                percentage = GameStatus.inst.RelicDefaultvalue((int)itemNum) * Lv;
             case ItemTag.AtkSpeed:
                 percentage = Lv;
                 ActionManager.inst.PlayerAttackSpeedLvUp();
