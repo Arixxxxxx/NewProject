@@ -754,6 +754,9 @@ public class MissionData : MonoBehaviour
         }
     }
 
+    TMP_Text[] topBtnText;
+    Image[] topBtnIMG;
+
     void Start()
     {
         UICanvas = GameObject.Find("---[UI Canvas]").GetComponent<Canvas>();
@@ -774,6 +777,14 @@ public class MissionData : MonoBehaviour
         topMoveBtn = trs_MissionWindow.Find("Mission/TopBar_Mission/MoveBtn").GetComponent<Button>();
 
         Transform trsTopBtn = trs_MissionWindow.Find("Mission/Window/Top_Btn");
+        topBtnText = trs_MissionWindow.Find("Mission/Window/Top_Btn").GetComponentsInChildren<TMP_Text>(true);
+        topBtnIMG = new Image[topBtnText.Length];
+        int childCount = trs_MissionWindow.Find("Mission/Window/Top_Btn").childCount;
+        for (int index = 0; index < childCount; index++)
+        {
+            topBtnIMG[index] = trs_MissionWindow.Find("Mission/Window/Top_Btn").GetChild(index).GetComponent<Image>();
+        }
+
         int TopBtnCount = trsTopBtn.childCount;
         list_MissionTopBtnImage = new Image[TopBtnCount];
         for (int iNum = 0; iNum < TopBtnCount; iNum++)
@@ -860,11 +871,34 @@ public class MissionData : MonoBehaviour
     /// <param name="value"></param>
     public void ClickMissionType(int value)
     {
-        list_MissionWindow[missionTypeIndex].SetActive(false);
-        list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnNonSelectSprite[missionTypeIndex];
+        list_MissionWindow[missionTypeIndex].SetActive(false); // 아래 뷰
+        
+        //list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnNonSelectSprite[missionTypeIndex]; // 안눌렀을때
+        
         missionTypeIndex = value;
         list_MissionWindow[missionTypeIndex].SetActive(true);
-        list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnSelectSprite[missionTypeIndex];
+        Set_Nonclick_Color(value); // 이미지 변경에서 색상변경으로 변경 => 동은 '24.05.24
+        
+        //list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnSelectSprite[missionTypeIndex]; //눌럿을때
+    }
+
+    Color nonClick = new Color(0.3f, 0.3f, 0.3f, 1);
+    private void Set_Nonclick_Color(int indexNum)
+    {
+        for (int index = 0; index < topBtnIMG.Length; index++)
+        {
+            if(index == indexNum)
+            {
+                topBtnIMG[index].color = Color.white;
+                topBtnText[index].color = Color.white;
+            }
+            else
+            {
+                topBtnIMG[index].color = nonClick;
+                topBtnText[index].color = nonClick;
+
+            }
+        }
     }
 
     private void Update()

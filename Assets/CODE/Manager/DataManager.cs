@@ -65,7 +65,6 @@ public class DataManager : MonoBehaviour
         public bool DailyADRuby;
 
         // 6. 캐릭터 관련
-        public int AtkSpeedLv;
         public int HwanSeangCount;
 
         // 7. 게임현황 (스테이지)

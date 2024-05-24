@@ -339,21 +339,21 @@ public class GameStatus : MonoBehaviour
     }
 
 
-    // 2. 공격속도
-    int atkSpeedLv;
+    //// 2. 공격속도 유물만잇으면됨
+    //int atkSpeedLv;
 
-    public int AtkSpeedLv
-    {
-        get { return atkSpeedLv; }
-        set
-        {
-            atkSpeedLv = value;
-            ActionManager.inst.PlayerAttackSpeedLvUp();
-        }
-    }
+    //public int AtkSpeedLv
+    //{
+    //    get { return atkSpeedLv; }
+    //    set
+    //    {
+    //        atkSpeedLv = value;
+    //        ActionManager.inst.PlayerAttackSpeedLvUp();
+    //    }
+    //}
 
     // 2. 크리티컬 확률
-    float criticalChance = 20;  // 기본값 20
+    float criticalChance = 10;  // 기본값 10
 
     public float CriticalChance
     {
@@ -594,6 +594,7 @@ public class GameStatus : MonoBehaviour
     [SerializeField]
     List<int> aryRelicLv = new List<int>();
 
+    [Tooltip("0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 크리티컬 데미지 증가 %\n4 : 피버타임 시간 증가 %\n5 : 퀘스트 가격 감소 %\n6 : 무기 가격 감소 %\n7 : 어택스피드 %\n8 : 환생시 별 획득량 증가 (초)\n9 : 적 처치 획득 골드량 증가 %")]
     public int GetAryRelicLv(int index)
     {
         if (aryRelicLv.Count < 1)
@@ -612,14 +613,14 @@ public class GameStatus : MonoBehaviour
     float[] relicDefaultValue;
 
     /// <summary>
-    /// 유물 LV당 디폴트값 <br/>0 : 일반공격력 %<br/>1 : 크리티컬 증가 %<br/>2 : 퀘스트골드증가 %<br/>3 : 처치골드증가 %<br/>4 : 퀘스트구매가격인하 %\<br/>5 : 무기구매가격인하 %<br/>6 : 크리대미지상승 %<br/>7 : 어택스피드 %<br/>8 : 피버타임증가 (초)<br/>9 : 별지급량증가 % 
+    /// 유물 LV당 디폴트값 <br/>0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 크리티컬 데미지 증가 %\n4 : 피버타임 시간 증가 %\n5 : 퀘스트 가격 감소 %\n6 : 무기 가격 감소 %\n7 : 어택스피드 %\n8 : 환생시 별 획득량 증가 (초)\n9 : 적 처치 획득 골드량 증가 %% 
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
     public float RelicDefaultvalue(int value) => relicDefaultValue[value];
 
     /// <summary>
-    /// 유물 LV당 디폴트값 <br/>0 : 일반공격력 %<br/>1 : 크리티컬 증가 %<br/>2 : 퀘스트골드증가 %<br/>3 : 처치골드증가 %<br/>4 : 퀘스트구매가격인하 %\<br/>5 : 무기구매가격인하 %<br/>6 : 크리대미지상승 %<br/>7 : 어택스피드 %<br/>8 : 피버타임증가 (초)<br/>9 : 별지급량증가 % 
+    /// 유물 LV당 디폴트값 <br/>0 : 일반공격력\n1 : 크리티컬 증가 %\n2 : 퀘스트골드증가 %\n3 : 크리티컬 데미지 증가 %\n4 : 피버타임 시간 증가 %\n5 : 퀘스트 가격 감소 %\n6 : 무기 가격 감소 %\n7 : 어택스피드 %\n8 : 환생시 별 획득량 증가 (초)\n9 : 적 처치 획득 골드량 증가 % 
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
@@ -1052,7 +1053,6 @@ public class GameStatus : MonoBehaviour
         DailyADRuby = saveData.DailyADRuby;
 
         // 7. 캐릭터 관련
-        AtkSpeedLv = saveData.AtkSpeedLv;
         HWansengCount = saveData.HwanSeangCount;
 
         // 8. 게임현황 (스테이지)
@@ -1150,7 +1150,6 @@ public class GameStatus : MonoBehaviour
         saveData.DailyADRuby = DailyADRuby;
 
         // 7. 캐릭터 관련
-        saveData.AtkSpeedLv = AtkSpeedLv;
         saveData.HwanSeangCount = HWansengCount;
 
         // 8. 게임현황 (스테이지)

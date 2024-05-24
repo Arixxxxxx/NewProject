@@ -45,7 +45,6 @@ public class ActionManager : MonoBehaviour
     Animator playerAnim;
     GameObject playerRef;
     int attackSpeedLv;
-    float attackSpeed;
     string atkPower;
     SpriteRenderer palyerWeapenSr;
     Sprite[] weaponSprite;
@@ -364,7 +363,6 @@ public class ActionManager : MonoBehaviour
     IEnumerator PlayerOnHitDMG() // < =
     {
         enemyAnim.SetTrigger("Hit");
-        PlayerInit();
 
         // 뉴비버프 어택카운트 및 버프 
         GameStatus.inst.NewbieAttackCountUp(true);
@@ -692,16 +690,6 @@ public class ActionManager : MonoBehaviour
     }
 
 
-    // 플레이어 초기화
-    private void PlayerInit()
-    {
-        //atkPower = CalCulator.inst.Get_CurPlayerATK();
-        attackSpeedLv = GameStatus.inst.AtkSpeedLv;
-        float attackTempSpeed = 0.6f;
-
-        //어택레벨당 0.15초씩 감소
-        attackSpeed = attackTempSpeed - (attackSpeedLv * 0.15f);
-    }
 
 
 
@@ -729,14 +717,23 @@ public class ActionManager : MonoBehaviour
     ////////////////////////////// [ 플레이어 속도증가 관련 ] /////////////////////////////////////////
 
 
+
     //플레이어 공격속도 증가 함수
     public void PlayerAttackSpeedLvUp()
     {
-        if (GameStatus.inst.AtkSpeedLv >= 10) { return; }
+
+        int multypleValue = GameStatus.inst.GetAryRelicLv(7); // 유물 레벨
+        float defaultSpeed = GameStatus.inst.RelicDefaultvalue(7); // 1%
+        float newbieBuffSpeed = GameStatus.inst.NewbieAttackSpeed; // 20%
 
         if (playerAnim != null)
         {
-            playerAnim.SetFloat("AttackSpeed", 1 + ((0.15f * GameStatus.inst.AtkSpeedLv)) + GameStatus.inst.NewbieAttackSpeed);
+            if(multypleValue > 350)
+            {
+                multypleValue = 350;
+            }
+
+            playerAnim.SetFloat("AttackSpeed", 1 + ((defaultSpeed * multypleValue)) + newbieBuffSpeed);
         }
 
     }

@@ -22,6 +22,6 @@ public class DogamPrefabs : MonoBehaviour
 
     private void A_ReturnObj()
     {
-        DogamManager.inst.Return_DogamIcon(gameObject);
+        //DogamManager.inst.Return_DogamIcon(gameObject);
     }
 }

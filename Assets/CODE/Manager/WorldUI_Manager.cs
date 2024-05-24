@@ -99,7 +99,7 @@ public class WorldUI_Manager : MonoBehaviour
     Image fakeScreen;
 
     // 로우이미지 관리자
-    GameObject rawCam;
+    GameObject[] rawCam;
     GameObject[] rawImageRef;
 
     // 이펙트 커튼(하얀색)
@@ -119,16 +119,22 @@ public class WorldUI_Manager : MonoBehaviour
         }
 
         worldUI = GameManager.inst.WorldUiRef;
-        
+
         frontUICanvas = GameManager.inst.FrontUiRef;
 
         //로우이미지
-        rawCam = GameManager.inst.CamsRef.transform.Find("RenderCam").gameObject;
+        int rawcamcount = GameManager.inst.CamsRef.transform.Find("RanderCams").childCount;
+        rawCam = new GameObject[rawcamcount];
+        for(int i = 0; i < rawcamcount; i++)
+        {
+            rawCam[i] = GameManager.inst.CamsRef.transform.Find("RanderCams").GetChild(i).gameObject;
+        }
+
         int rawIMGCount = GameManager.inst.RawImgRef.transform.childCount;
         rawImageRef = new GameObject[rawIMGCount];
-        for(int index=0; index<rawIMGCount; index++)
+        for (int index = 0; index < rawIMGCount; index++)
         {
-            rawImageRef[index] = GameManager.inst.RawImgRef.transform.GetChild(index).gameObject; 
+            rawImageRef[index] = GameManager.inst.RawImgRef.transform.GetChild(index).gameObject;
         }
 
         //로드시 페이크 스크린
@@ -300,7 +306,7 @@ public class WorldUI_Manager : MonoBehaviour
 
         weaponShopBtn.onClick.AddListener(() =>
         {
-            DogamManager.inst.Set_DogamListAcitve(0, true);
+            DogamManager.inst.Active_DogamUI(true);
         });
 
         eventShopBtn.onClick.AddListener(() =>
@@ -423,7 +429,7 @@ public class WorldUI_Manager : MonoBehaviour
         {
             InstantiatePrefabs(2);
         }
-       
+
         obj = poolingQue[2].Dequeue();
         obj.transform.localPosition = fontPoint[type].localPosition;
         obj.GetComponent<UI_IncreaseValueFont>().Set_PosAndColorInit(Matrielvalue);
@@ -437,7 +443,7 @@ public class WorldUI_Manager : MonoBehaviour
     /// <returns></returns>
     public void Get_ItemInfomation_UI_Active(Sprite img, string Value)
     {
-        if(!worldUI.gameObject.activeInHierarchy) { return; }
+        if (!worldUI.gameObject.activeInHierarchy) { return; }
 
         GameObject obj;
 
@@ -591,22 +597,33 @@ public class WorldUI_Manager : MonoBehaviour
     /// <summary>
     /// 로우이미지 키고 켜기
     /// </summary>
-    /// <param name="indexNum"></param>
+    /// <param name="indexNum"> 0 피버용 용 / 1 배경용 파티클</param>
     /// <param name="Active"></param>
-    public void RawImagePlay(int indexNum, bool Active)
+    public void RawImagePlayAcitve(int indexNum, bool Active)
     {
-       rawCam.SetActive(Active);
-       rawImageRef[indexNum].SetActive(Active);
+        for (int index = 0; index < rawImageRef.Length; index++)
+        {
+             if(index == indexNum)
+            {
+                rawImageRef[indexNum].SetActive(true);
+                rawCam[indexNum].SetActive(true);
+            }
+            else
+            {
+                rawImageRef[index].SetActive(false);
+                rawCam[indexNum].SetActive(false);
+            }
+        }
     }
 
-    public void RawImagePlay(bool Active)
+    public void RawImagePlayAcitve(bool Active)
     {
-        rawCam.SetActive(Active);
-        for(int index=0; index < rawImageRef.Length; index++)
+        for (int index = 0; index < rawCam.Length; index++)
         {
             if (rawImageRef[index].activeSelf)
             {
-                rawImageRef[index].SetActive(Active);
+                rawImageRef[index].SetActive(false);
+                rawCam[index].SetActive(false);
             }
         }
     }
@@ -627,9 +644,9 @@ public class WorldUI_Manager : MonoBehaviour
     {
         fadeTimer = 0;
         whiteCutton.color = fadeStartColor;
-        whiteCutton.gameObject.SetActive(true); 
-        
-        while(fadeTimer < duration)
+        whiteCutton.gameObject.SetActive(true);
+
+        while (fadeTimer < duration)
         {
             float alpha = Mathf.Lerp(fadeStartColor.a, 0f, fadeTimer / duration);
             whiteCutton.color = new Color(1, 1, 1, alpha);
@@ -637,7 +654,7 @@ public class WorldUI_Manager : MonoBehaviour
             yield return null;
         }
 
-        whiteCutton.color = new Color(1,1,1,0);
+        whiteCutton.color = new Color(1, 1, 1, 0);
         whiteCutton.gameObject.SetActive(false);
     }
 

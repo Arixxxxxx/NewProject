@@ -366,7 +366,7 @@ public class UIManager : MonoBehaviour
 
     void initButton()
     {
-        WeaponBook.onClick.AddListener(() => DogamManager.inst.Set_DogamListAcitve(0, true));
+        WeaponBook.onClick.AddListener(() => DogamManager.inst.Active_DogamUI(true));
     }
 
     public void SettotalGoldText(string _text)

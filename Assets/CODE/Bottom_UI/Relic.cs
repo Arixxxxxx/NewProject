@@ -126,8 +126,8 @@ public class Relic : MonoBehaviour
                 break;
 
             case ItemTag.AtkSpeed:
-                percentage = GameStatus.inst.RelicDefaultvalue((int)ItemTag.AtkSpeed) * Lv;
-                GameStatus.inst.AtkSpeedLv = Lv;
+                percentage = Lv;
+                ActionManager.inst.PlayerAttackSpeedLvUp();
                 break;
         }
         GameStatus.inst.SetAryPercent((int)itemNum, Lv);

@@ -196,7 +196,6 @@ public class CalCulator : MonoBehaviour
         string result = GameStatus.inst.TotalAtk.ToString();
 
 
-
         // 2배 버프 체크
         // { //result = DigidPlus(result, GameStatus.inst.BuffAddATK);}
 
@@ -226,19 +225,6 @@ public class CalCulator : MonoBehaviour
             addBuffValue[3] = DigitAndIntPercentMultiply(result, GameStatus.inst.Pet0_Lv * 10);
         }
 
-        ///// 무기도감 카운트만큼 % 합산
-        //result = DigitPercentMultiply(result, DogamManager.inst.weaponDogamGetCount);
-
-
-        for (int index = 0; index < addBuffValue.Length; index++)
-        {
-
-            if (addBuffValue[index] != null)
-            {
-                result = DigidPlus(result, addBuffValue[index]);
-            }
-        }
-
         // 유물 일반공격력 계산
         if (GameStatus.inst.GetAryRelicLv(0) != 0)
         {
@@ -254,33 +240,42 @@ public class CalCulator : MonoBehaviour
         return value.ToString();
     }
 
-    // 선형구조
-    //public BigInteger baseHP = new BigInteger(100);  // 기본 체력
-    //public BigInteger hpIncreaseFactor = new BigInteger(15);  // 층당 체력 증가 계수 (밸런스 변수)
 
-    //public string EnemyHpSetup()
-    //{
-    //    int floor = GameStatus.inst.AccumlateFloor+1;
-    //    BigInteger health = baseHP + hpIncreaseFactor * floor * floor; // 층수의 제곱을 이용한 체력 계산
 
-    //    //Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
-    //    return health.ToString();
-    //}
-    public BigInteger baseHP = new BigInteger(160);  // 기본 체력
-    public double hpIncreaseFactor = 1.05;  // 체력 증가 계수 (밸런스 변수)
+    public BigInteger baseHP = new BigInteger(70);  // 기본 체력
+    public double hpIncreaseFactor = 1.01f;  // 체력 증가 계수 (밸런스 변수)
 
+    public BigInteger upBaseHP = new BigInteger(180);  // 기본 체력
+    public double higherHpIncreaseFactor = 1.20f;  // 스테이지 150 이후의 체력 증가 계수
+  
+
+    // 몬스터 체력 초기화
     public string EnemyHpSetup()
     {
-        // 현재 층수를 가져옴 (0부터 시작한다고 가정)
-        int floor = GameStatus.inst.AccumlateFloor + 1;
 
-        // 체력 계산: 기본 체력 + (체력 증가 계수 * 층수의 세제곱)
-        BigInteger health = baseHP + new BigInteger(hpIncreaseFactor * Mathf.Pow(floor, 3));
+        if (GameStatus.inst == null)
+        {
+            return null;
+        }
 
-        // 체력 로그 출력 (디버그 용도)
-        // Debug.Log($"누적층수: {floor}, 초기화된 체력: {health}");
+        int stage = GameStatus.inst.AccumlateFloor + 1;
 
-        // 체력을 문자열로 반환
+        BigInteger health;
+        if (stage < 150)
+        {
+            // 150 이전까지는 기존 체력 증가 공식
+            BigInteger factor = new BigInteger(hpIncreaseFactor * 1000);
+            BigInteger stageCubed = new BigInteger(stage) * stage * stage;
+            health = baseHP + (factor * stageCubed / 1000);
+        }
+        else
+        {
+            // 150 이후부터는 더 큰 체력 증가 공식
+            BigInteger factor = new BigInteger(higherHpIncreaseFactor * 1000);
+            BigInteger stageCubed = new BigInteger(stage) * stage * stage;
+            health = upBaseHP + (factor * stageCubed / 1000);
+        }
+
         return health.ToString();
     }
 
@@ -615,10 +610,14 @@ public class CalCulator : MonoBehaviour
         //기본적으로 2배
         float multipleValue = 2f;
         //유물값 더해줌
-        if (GameStatus.inst.GetAryRelicLv(6) != 0)
+        if (GameStatus.inst.GetAryRelicLv(3) != 0)
         {
-            multipleValue += GameStatus.inst.GetAryRelicLv(6) * GameStatus.inst.RelicDefaultvalue(6);
+            multipleValue += GameStatus.inst.GetAryRelicLv(3) * GameStatus.inst.RelicDefaultvalue(3);
         }
+
+        // 소수점 첫번째 자리 제외 다 버림
+        multipleValue = Mathf.Floor(multipleValue * 10) / 10f;
+
         return DigitAndFloatPercentMultiply(playerDMG, multipleValue);
     }
 
@@ -691,7 +690,7 @@ public class CalCulator : MonoBehaviour
 
     // 상수 A와 B를 정의
     BigInteger A = new BigInteger(65);  // 초기값
-    float B = 1.26f;  // 증가율, 이 값은 조정 가능합니다.
+    float B = 1.05f;  // 증가율, 이 값은 조정 가능합니다.
 
     /// <summary>
     /// 현재 스테이지 레벨비례하여 환생시 지급되는 포인트양을 계산하여 스트링으로 받음
@@ -706,8 +705,26 @@ public class CalCulator : MonoBehaviour
 
         int curStage = GameStatus.inst.AccumlateFloor;
 
-        // 지급되는 '별' 화폐의 양을 계산
-        BigInteger reward = A * new BigInteger(Mathf.Pow(B, curStage));
+        // B를 BigInteger로 변환하여 사용
+        BigInteger bigB = new BigInteger(B * 1000); // 스케일링
+        BigInteger multiplier = BigInteger.One;
+        BigInteger baseValue = bigB;
+        int exponent = curStage;
+
+        // 이진 지수법을 사용하여 계산
+        while (exponent > 0)
+        {
+            if ((exponent & 1) == 1)
+            {
+                multiplier *= baseValue;
+            }
+            baseValue *= baseValue;
+            exponent >>= 1;
+        }
+
+        // 스케일링 조정
+        BigInteger divisor = BigInteger.Pow(1000, curStage);
+        BigInteger reward = (A * multiplier) / divisor;
 
         return reward.ToString();
 

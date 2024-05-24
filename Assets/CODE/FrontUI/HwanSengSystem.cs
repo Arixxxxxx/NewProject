@@ -226,7 +226,7 @@ public class HwanSengSystem : MonoBehaviour
     {
         if (active)
         {
-            relicAddTime = GameStatus.inst.GetAryRelicLv(7);
+            relicAddTime = GameStatus.inst.GetAryRelicLv(4);
             totalFeverTime = defaultFeverTime + relicAddTime;
             feverTimeTextSec.text = $"{totalFeverTime}√ ";
             alrim_HwansengTypeText.text = alrimTypeText[selectType];
@@ -284,7 +284,7 @@ public class HwanSengSystem : MonoBehaviour
         {
             WorldUI_Manager.inst.Effect_WhiteCutton(); // »≠∏È «œæÈ∞‘ ¿Ã∆Â∆Æ
             feverAnim.gameObject.SetActive(true);
-            WorldUI_Manager.inst.RawImagePlay(0, true);
+            WorldUI_Manager.inst.RawImagePlayAcitve(0, true);
             ActionManager.inst.IsFever = true;
         }
 
@@ -301,7 +301,7 @@ public class HwanSengSystem : MonoBehaviour
         ActionManager.inst.IsFever = false;
         yield return new WaitForSeconds(1f);
 
-        WorldUI_Manager.inst.RawImagePlay(false);
+        WorldUI_Manager.inst.RawImagePlayAcitve(false);
         feverAnim.gameObject.SetActive(false);
 
         feverAnim.SetTrigger("Exit");

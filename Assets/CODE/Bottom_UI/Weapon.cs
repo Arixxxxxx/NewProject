@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour
                 upBtnImage.SetActive(false);
                 upBtnMask.SetActive(true);
                 UIManager.Instance.WeaponUpComplete(Number);
-                DogamManager.inst.GetWeaponCheck(Number + 1);
+                //DogamManager.inst.GetWeaponCheck(Number + 1);
                 //UIManager.Instance.SetTopWeaponNum(Number + 1);
             }
         }

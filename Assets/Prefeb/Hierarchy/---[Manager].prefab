@@ -190,17 +190,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54da0eb49b7777449b6bf11d2c10e698, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  get_jungsuPrefabs: {fileID: 3290758534054700849, guid: daea2fd63d8c3df419ce8d494eee7ded, type: 3}
-  topArrayBtnSpirte:
-  - {fileID: -879613496, guid: e22e35c0dd8d539488b7869bfc03145b, type: 3}
-  - {fileID: 981013372, guid: e22e35c0dd8d539488b7869bfc03145b, type: 3}
-  weaponIcon:
-  - {fileID: 632978690, guid: e22e35c0dd8d539488b7869bfc03145b, type: 3}
-  - {fileID: -555381635, guid: e22e35c0dd8d539488b7869bfc03145b, type: 3}
-  - {fileID: -1712889879, guid: e22e35c0dd8d539488b7869bfc03145b, type: 3}
-  weaponColor:
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  slotPrefabs:
+  - {fileID: 2078712206363973248, guid: 407d2353ae4909847a0d6f83ecb3f0de, type: 3}
 --- !u!114 &2968815664667207561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,6 +301,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3834b3168a306f143ac34aa831a3b2ba, type: 2}
   - {fileID: 11400000, guid: 7f4ea2840bac1eb43aaf15219da1d261, type: 2}
   - {fileID: 11400000, guid: 7b09859c604576f4d8b4729cef0e52a9, type: 2}
+  relicTrsCount: 000000000000000000000000
 --- !u!1 &2562581402446063995
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpIncreaseFactor: 1.03
+  higherHpIncreaseFactor: 1.2000000476837158
 --- !u!1 &5151449497917825089
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,13 +707,13 @@ MonoBehaviour:
   aryRelicLv: 
   relicDefaultValue:
   - 1
+  - 0.1
   - 0.5
   - 0.5
   - 1
-  - 1
   - 0.5
   - 0.5
-  - 0.15
+  - 0.01
   - 0.5
   - 0.5
   OnRouletteTicketChanged:
