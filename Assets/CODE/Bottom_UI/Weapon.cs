@@ -19,23 +19,17 @@ public class Weapon : MonoBehaviour
 
             if (lv >= 5)
             {
-                //if (objBtn == null)
-                //{
-                //    objBtn = transform.Find("Button").GetComponent<Button>();
-                //}
-                //objBtn.gameObject.SetActive(false);
                 SetbtnActive();
                 priceText.text = "";
                 upBtnImage.SetActive(false);
                 upBtnMask.SetActive(true);
                 UIManager.Instance.WeaponUpComplete(Number);
-                //DogamManager.inst.GetWeaponCheck(Number + 1);
-                //UIManager.Instance.SetTopWeaponNum(Number + 1);
             }
         }
     }
     [SerializeField] float costGrowthRate;//비용 성장률
-    [SerializeField] float atkpowNumRate;//초기공격력지수
+    [SerializeField] float atkpowNumRate;//단계별 가격 상승률
+    [SerializeField] float atkRate;//단계별 공격력 상승률
 
     Image weaponImage;
 
@@ -81,7 +75,6 @@ public class Weapon : MonoBehaviour
         initValue();
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
         nameText.text = $"{Number + 1}. {Set_WeaponName(Number)}";
-        //nameText.text = $"{Number + 1}. " + Name;
         SetbtnActive();
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
@@ -96,7 +89,7 @@ public class Weapon : MonoBehaviour
 
         if (Lv != 0)
         {
-            Atk = BigInteger.Multiply(resultPowNum, Lv + Number * 5);
+            Atk = getAtk(Number);
             UIManager.Instance.SetTopWeaponNum(Number);
             clickWeaponImage();
         }
@@ -109,7 +102,7 @@ public class Weapon : MonoBehaviour
     private void setText()
     {
         LvText.text = $"Lv. {Lv} / 5";
-        upAtkText.text = $"LV 증가치 +{CalCulator.inst.StringFourDigitAddFloatChanger((BigInteger.Multiply(resultPowNum, Lv + 1) - BigInteger.Multiply(resultPowNum, Lv)).ToString())}";
+        upAtkText.text = $"LV 증가치 +{CalCulator.inst.StringFourDigitAddFloatChanger((getNextAtk(Number) - getAtk(Number)).ToString())}";
         totalAtkText.text = $"종합 대미지 : {CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString())} / 타격";
         if (Lv < 5)
         {
@@ -125,7 +118,7 @@ public class Weapon : MonoBehaviour
         {
             Lv++;
             MissionData.Instance.SetWeeklyMission("무기 강화", 1);
-            Atk = BigInteger.Multiply(resultPowNum, Lv);
+            Atk = getAtk(Number);
             GameStatus.inst.MinusGold(nextCost.ToString());
             clickWeaponImage();
             setNextCost();
@@ -145,6 +138,18 @@ public class Weapon : MonoBehaviour
             float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.WeaponDiscount);
             nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
         }
+    }
+
+    private BigInteger getAtk(int num)
+    {
+        //return (BigInteger)(Lv * Mathf.Pow(5, num * atkRate));
+        return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate));
+    }
+
+    private BigInteger getNextAtk(int num)
+    {
+        //return (BigInteger)((Lv + 1) * Mathf.Pow(5, num * atkRate));
+        return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate));
     }
 
     private void SetbtnActive()
