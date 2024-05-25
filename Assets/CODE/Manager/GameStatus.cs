@@ -560,6 +560,11 @@ public class GameStatus : MonoBehaviour
         return aryWeaponLv[Num];
     }
 
+    public List<int> GetAryWeaponLv()
+    {
+        return aryWeaponLv;
+    }
+
     int equipWeaponNum;//장착중인 무기 이미지 번호
     public int EquipWeaponNum
     {
@@ -575,6 +580,7 @@ public class GameStatus : MonoBehaviour
     {
         aryWeaponLv[Num] = Value;
         MissionData.Instance.SetSpecialMission(Num, Value, SpMissionTag.Weapon);
+        DogamManager.inst.MasterWeaponCheker();
     }
 
     [HideInInspector] public UnityEvent OnPercentageChanged;

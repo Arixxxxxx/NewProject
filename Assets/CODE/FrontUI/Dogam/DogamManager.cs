@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,9 @@ public class DogamManager : MonoBehaviour
     // 무기 변수
     Image viewrBox_WeaponIMG;
     TMP_Text[] weaponInfoText = new TMP_Text[2];
+
+    GameObject maskObj;
+    TMP_Text bottomText;
 
     Image weaponeSelectCutton;
 
@@ -84,6 +88,8 @@ public class DogamManager : MonoBehaviour
         weaponInfoText[1] = bottomViewr[0].transform.Find("WeaponMainInfo/Box/WeaponInfoText").GetComponent<TMP_Text>();
 
         weaponeSelectCutton = bottomViewr[0].transform.Find("WeaponMainInfo/BG/Cutton").GetComponent<Image>();
+
+        bottomText = bottomViewr[0].transform.Find("BottomInfo/BottomBox/BottomText").GetComponent<TMP_Text>();
     }
 
     private void Start()
@@ -121,6 +127,7 @@ public class DogamManager : MonoBehaviour
 
 
 
+    int[] curWeaponLv;
 
     /// <summary>
     /// 메인 도감창 활성화
@@ -128,20 +135,45 @@ public class DogamManager : MonoBehaviour
     /// <param name="value"></param>
     public void Active_DogamUI(bool value)
     {
-        if (value == false)
+        if (value == true)
         {
-            WorldUI_Manager.inst.RawImagePlayAcitve(false);
+            //켜질때 도감 하단에 마스터된 무기의 횟수를 적어줌
+            //MasterWeaponCheker();
         }
         else
         {
-
+            WorldUI_Manager.inst.RawImagePlayAcitve(false);
         }
 
         dogamMainRef.SetActive(value);
         Acitve_Bottom_Viewr(0); // 기본으로 초기화
         WeaponInitBtn(); // 기본초기화
-        
+
     }
+
+    // 무기 마스터 횟수 체커
+    int masterWeaponCount = 0;
+    public void MasterWeaponCheker()
+    {
+        curWeaponLv = GameStatus.inst.GetAryWeaponLv().ToArray();
+        int weaponMasterCount = 0;
+        for (int index = 0; index < curWeaponLv.Length; index++)
+        {
+            if (curWeaponLv[index] == 5)
+            {
+                weaponMasterCount++;
+                weaponSlotsSc[index].MaskActiveFalse();
+            }
+            else if (curWeaponLv[index] < 5)
+            {
+                break;
+            }
+        }
+
+        masterWeaponCount = weaponMasterCount;
+        bottomText.text = $"< 추가 공격력 {weaponMasterCount}%만큼 상승 >   현재 수집 갯수 ( {weaponMasterCount} / {curWeaponLv.Length} )";
+    }
+
 
 
     Color fadeColor = new Color(0.3f, 0.3f, 0.3f, 1);
@@ -177,8 +209,17 @@ public class DogamManager : MonoBehaviour
     {
         viewrBox_WeaponIMG.sprite = WeaponSprite[0];
         string temp = weaponNameAndInfo[0];
-        weaponInfoText[0].text = temp.Split('-')[0];
-        weaponInfoText[1].text = temp.Split('-')[1];
+        curWeaponNumber = 0;
+        if (weaponSlotsSc[0].master)
+        {
+            weaponInfoText[0].text = temp.Split('-')[0];
+            weaponInfoText[1].text = temp.Split('-')[1];
+        }
+        else
+        {
+            weaponInfoText[0].text = "? ? ?";
+            weaponInfoText[1].text = " 획득해보지않아서.. \n뭔지몰랑..";
+        }
     }
 
 
@@ -213,8 +254,18 @@ public class DogamManager : MonoBehaviour
         weaponeSelectCutton.color = Color.black;
         viewrBox_WeaponIMG.sprite = WeaponSprite[chidrenNumber];
         string temp = weaponNameAndInfo[chidrenNumber];
-        weaponInfoText[0].text = temp.Split('-')[0];
-        weaponInfoText[1].text = temp.Split('-')[1];
+
+        // 획득해봤어야 알지!
+        if (weaponSlotsSc[chidrenNumber].master)
+        {
+            weaponInfoText[0].text = temp.Split('-')[0];
+            weaponInfoText[1].text = temp.Split('-')[1];
+        }
+        else
+        {
+            weaponInfoText[0].text = "? ? ?";
+            weaponInfoText[1].text = " 획득해보지않아서.. \n뭔지몰랑..";
+        }
 
         yield return changeWaitTime;
 
