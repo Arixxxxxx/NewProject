@@ -593,7 +593,7 @@ public class MissionData : MonoBehaviour
                 needClearText.text = "Å¬¸®¾î!";
                 mask.SetActive(true);
                 trs.SetParent(Instance.GetSpecialParents());
-                trs.GetComponent<RectTransform>().sizeDelta = new Vector2(278, 60);
+                trs.GetComponent<RectTransform>().sizeDelta = new Vector2(235, 60);
                 trs.SetAsLastSibling();
                 GameStatus.inst.SetWeeklyMIssionClear(index, true);
                 Instance.nowSpecialIndex = index + 1;

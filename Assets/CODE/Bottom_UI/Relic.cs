@@ -124,7 +124,6 @@ public class Relic : MonoBehaviour
             case ItemTag.WeaponDiscount:
                 percentage = GameStatus.inst.RelicDefaultvalue((int)itemNum) * Lv;
                 break;
-
             case ItemTag.AtkSpeed:
                 percentage = Lv;
                 ActionManager.inst.PlayerAttackSpeedLvUp();
