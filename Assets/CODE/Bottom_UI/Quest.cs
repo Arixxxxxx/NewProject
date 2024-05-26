@@ -172,7 +172,7 @@ public class Quest : MonoBehaviour
     private void setNextCost(int count)
     {
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
-        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * CalCulator.inst.DevideBigIntegerAndfloat(CalCulator.inst.CalculatePow(growthRate, count) - 1, growthRate - 1));
+        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * CalCulator.inst.DevideBigIntegerAndfloat((BigInteger)(Mathf.Pow(growthRate, count) - 1), growthRate - 1));
     }
 
     private void _OnCountChanged()
