@@ -1,9 +1,9 @@
 {
-    "LastSignDate": "2024-05-25T07:12:39.9386902+09:00",
+    "LastSignDate": "2024-05-27T07:02:46.9810239+09:00",
     "Name": "",
-    "Gold": "10000000000000000000000000000000000000000000000000000000000000000000000002594999999999999999999999999999999999999999999999999",
-    "Star": "0",
-    "Ruby": 0,
+    "Gold": "1349884165",
+    "Star": "200",
+    "Ruby": 1210,
     "Soul": 0,
     "book": 0,
     "born": 0,
@@ -13,27 +13,27 @@
     "buffAtkTime": 0,
     "buffGoldTime": 0,
     "buffMoveSpeedTime": 0,
-    "buffBigAtkTime": 0,
-    "getNewbieRewardCount": 0,
-    "todayGetRaward": false,
-    "newbieBuffLastDay": "2024-06-01T07:09:48.5526505+09:00",
-    "GetGiftCount": 0,
-    "todayGetDailyReward": false,
+    "buffBigAtkTime": 1,
+    "getNewbieRewardCount": 1,
+    "todayGetRaward": true,
+    "newbieBuffLastDay": "2024-06-03T06:31:02.6352059+09:00",
+    "GetGiftCount": 1,
+    "todayGetDailyReward": true,
     "DailyADRuby": false,
     "HwanSeangCount": 0,
-    "TotalFloor": 1,
-    "Stage": 1,
-    "NowFloor": 1,
+    "TotalFloor": 39,
+    "Stage": 8,
+    "NowFloor": 4,
     "Crew0Lv": 0,
     "Crew1Lv": 0,
     "Crew2Lv": 0,
     "QuestLv": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        10,
+        14,
+        15,
+        13,
+        10,
+        1,
         0,
         0,
         0,
@@ -61,11 +61,11 @@
     ],
     "WeaponLv": [
         5,
-        0,
-        0,
-        0,
-        0,
-        0,
+        5,
+        5,
+        5,
+        5,
+        1,
         0,
         0,
         0,
@@ -104,40 +104,40 @@
         0,
         0
     ],
-    "NowEquipWeaponNum": 0,
+    "NowEquipWeaponNum": 5,
     "DailyMIssionClear": [
         false,
         false,
-        false,
+        true,
         false
     ],
     "WeeklyMissionClear": [
+        true,
         false,
-        false,
-        false,
-        false
+        true,
+        true
     ],
-    "SpecialMissionClearNum": 0,
+    "SpecialMissionClearNum": 1,
     "DailyMissionCount": [
         0,
         0,
-        0,
-        0
+        11,
+        1
     ],
     "WeeklyMissionCount": [
         0,
         0,
-        0,
-        5
+        10,
+        10
     ],
     "SpecialMissionCount": [
+        10,
         0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
+        1,
+        10,
+        1,
+        10,
+        1
     ],
     "BingoBoard": [
         false,
@@ -149,8 +149,63 @@
         false,
         false
     ],
-    "RouletteTicket": 100,
+    "RouletteTicket": 110,
     "BingoStack": 0,
-    "LetterBox": [],
+    "LetterBox": [
+        {
+            "itemtype": 0,
+            "letterFrom": "게임GM",
+            "letterText": "신규유저 1일차 보상",
+            "letterItemCount": 1000,
+            "letterPrefab": {
+                "instanceID": -1050092
+            }
+        },
+        {
+            "itemtype": 0,
+            "letterFrom": "게임GM",
+            "letterText": "출석체크 1일차 보상",
+            "letterItemCount": 10,
+            "letterPrefab": {
+                "instanceID": -1050166
+            }
+        },
+        {
+            "itemtype": 2,
+            "letterFrom": "미션",
+            "letterText": "일일미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -1050240
+            }
+        },
+        {
+            "itemtype": 1,
+            "letterFrom": "미션",
+            "letterText": "주간미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -1050314
+            }
+        },
+        {
+            "itemtype": 1,
+            "letterFrom": "미션",
+            "letterText": "주간미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -1050388
+            }
+        },
+        {
+            "itemtype": 0,
+            "letterFrom": "미션",
+            "letterText": "특별미션 클리어!",
+            "letterItemCount": 100,
+            "letterPrefab": {
+                "instanceID": -1050462
+            }
+        }
+    ],
     "adDeleteBuffTime": "0001-01-01T00:00:00.0000000"
 }

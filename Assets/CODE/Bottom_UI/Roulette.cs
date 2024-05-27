@@ -123,7 +123,7 @@ public class Roulette : MonoBehaviour
         openBtn = GameObject.Find("---[World UI Canvas]").transform.Find("StageUI/MenuBox/Btns/Bingo").GetComponent<Button>();
         StartBtn = transform.Find("BackGround/StartBtn").GetComponent<Button>();
         StopBtn = transform.Find("BackGround/StopBtn").GetComponent<Button>();
-        closeBtn = transform.Find("BackGround/CloseBtn").GetComponent<Button>();
+        closeBtn = transform.Find("TopScroll/CloseBtn").GetComponent<Button>();
         showBingoCloseBtn = transform.Find("BackGround/ShowBingo/Button").GetComponent<Button>();
 
         goldText2[0] = transform.Find("BackGround/Roulette/Gold2/Text (TMP)").GetComponent<TMP_Text>();
