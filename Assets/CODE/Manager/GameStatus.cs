@@ -1096,6 +1096,9 @@ public class GameStatus : MonoBehaviour
         // 광고제거
         AdDelete.inst.Set_AdDeleteBuffTime(saveData.adDeleteBuffTime);
 
+        // 도감
+        DogamManager.inst.GameLoad_MousterList_Init(saveData.monsterDogamList);
+
         // 0. 마지막 접속기록
         if (saveData.LastSignDate != string.Empty)
         {
@@ -1105,7 +1108,7 @@ public class GameStatus : MonoBehaviour
         {
             LastLoginDate = DateTime.MinValue;
         }
-
+        
 
         //세이브가능
         DataManager.inst.saveAble = true;
@@ -1194,6 +1197,11 @@ public class GameStatus : MonoBehaviour
 
         // 광고제거
         saveData.adDeleteBuffTime = AdDelete.inst.Get_AdDeleteBuffTime();
+
+        // 도감
+        int[] dogamArr = DogamManager.inst.Get_monster_Soul();
+        saveData.monsterDogamList = new int[dogamArr.Length];
+        Array.Copy(dogamArr, saveData.monsterDogamList, dogamArr.Length);
 
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");

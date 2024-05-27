@@ -185,7 +185,7 @@ public class CalCulator : MonoBehaviour
 
 
 
-    string[] addBuffValue = new string[4];
+    string[] addBuffValue = new string[5];
 
     /// <summary>
     /// 모든공격력 합산하여 스트링으로 변환하여 리턴
@@ -226,6 +226,13 @@ public class CalCulator : MonoBehaviour
         }
 
         // 유물 일반공격력 계산
+        if (DogamManager.inst.Get_DogamATKBonus() != 0)
+        {
+            float percentValue = DogamManager.inst.Get_DogamATKBonus();
+            result = DigitAndFloatPercentMultiply(result, percentValue);
+        }
+
+        // 유물 일반공격력 계산
         if (GameStatus.inst.GetAryRelicLv(0) != 0)
         {
             float percentValue = GameStatus.inst.RelicDefaultvalue(0) * GameStatus.inst.GetAryRelicLv(0);
@@ -242,10 +249,10 @@ public class CalCulator : MonoBehaviour
 
 
 
-    public BigInteger baseHP = new BigInteger(250);  // 기본 체력
-    public double hpIncreaseFactor = 1.05f;  // 체력 증가 계수 (밸런스 변수)
+    public BigInteger baseHP = new BigInteger(400);  // 기본 체력
+    public double hpIncreaseFactor = 1.08f;  // 체력 증가 계수 (밸런스 변수)
 
-    public BigInteger upBaseHP = new BigInteger(600);  // 기본 체력
+    public BigInteger upBaseHP = new BigInteger(800);  // 기본 체력
     public double higherHpIncreaseFactor = 1.4f;  // 스테이지 150 이후의 체력 증가 계수
   
 

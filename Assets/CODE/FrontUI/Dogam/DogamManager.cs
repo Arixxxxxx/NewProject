@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
+
 
 
 public class DogamManager : MonoBehaviour
@@ -19,9 +19,57 @@ public class DogamManager : MonoBehaviour
     Sprite[] WeaponSprite;
     DogamWeaponSlot[] weaponSlotsSc;
     int curWeaponNumber;
+
     // 몬스터 프리펩 스크립트
+    Sprite[] enemySprite;
+    [SerializeField]
+    DogamMonsterSlot[] dogamMonsterSlots;
+    int curMonsterNumber;
+    int totalMonsterCount;
+
+    // 맥스정수 
+    [SerializeField]
+    int maxSoulCount = 50;
+    public int MaxSoulCount { get { return maxSoulCount; } }
+    int[] monster_Soul_List;
+
+    // 도감 정수 획득시 공격력 증가 변수
+    int enemyMasterCount;
+    int weaponMasterCount;
+    public int Get_DogamATKBonus()
+    {
+        return enemyMasterCount + weaponMasterCount;
+    }
+    // 게임로드시 도감 초기화 (Load Data)
+    public void GameLoad_MousterList_Init(int[] list)
+    {
+        if (list.Length < monster_Soul_List.Length) { Debug.Log("첫 시작"); return; }
+        for (int index = 0; index < monster_Soul_List.Length; index++)
+        {
+            monster_Soul_List[index] = list[index];
+            dogamMonsterSlots[index].Set_current_Soulcount_Update();
+            
+            if(index == monster_Soul_List.Length - 1)
+            {
+                MonsterSoulMasterCheker();
+            }
+        }
+    }
 
 
+    //소울 획득시 
+    public void Set_Monster_Soul(int value)
+    {
+        if (monster_Soul_List[value] < maxSoulCount)
+        {
+            monster_Soul_List[value]++;
+            dogamMonsterSlots[value].Set_current_Soulcount_Update();
+            MonsterSoulMasterCheker();
+        }
+
+        // 여기에 설치
+    }
+    public int[] Get_monster_Soul() => monster_Soul_List;
 
     //공용 변수
     GameObject worldUIRef, frontUiRef, dogamMainRef, windowRef;
@@ -32,13 +80,16 @@ public class DogamManager : MonoBehaviour
     TMP_Text[] topBtnText;
 
     // 무기 변수
-    Image viewrBox_WeaponIMG;
+    Image[] viewrBox_WeaponIMG = new Image[2];
     TMP_Text[] weaponInfoText = new TMP_Text[2];
-
+    //몬스터 변수
+    Image viewrBG;
+    TMP_Text[] enemyInfoText = new TMP_Text[2];
     GameObject maskObj;
-    TMP_Text bottomText;
+    TMP_Text[] bottomText = new TMP_Text[2];
 
-    Image weaponeSelectCutton;
+    Image[] weaponeSelectCutton = new Image[2];
+
 
 
     private void Awake()
@@ -54,6 +105,7 @@ public class DogamManager : MonoBehaviour
 
         AwakeInit();
         BtnInit();
+        Slot_Prefabs_Init();
     }
 
     private void AwakeInit()
@@ -83,18 +135,28 @@ public class DogamManager : MonoBehaviour
 
 
         // 무기
-        viewrBox_WeaponIMG = bottomViewr[0].transform.Find("WeaponMainInfo/BG/Weapon").GetComponent<Image>();
+        viewrBox_WeaponIMG[0] = bottomViewr[0].transform.Find("WeaponMainInfo/BG/Weapon").GetComponent<Image>();
+        viewrBox_WeaponIMG[1] = bottomViewr[1].transform.Find("MainInfo/BG(Mask)/Char").GetComponent<Image>();
+
         weaponInfoText[0] = bottomViewr[0].transform.Find("WeaponMainInfo/Box/WeaponText").GetComponent<TMP_Text>();
         weaponInfoText[1] = bottomViewr[0].transform.Find("WeaponMainInfo/Box/WeaponInfoText").GetComponent<TMP_Text>();
 
-        weaponeSelectCutton = bottomViewr[0].transform.Find("WeaponMainInfo/BG/Cutton").GetComponent<Image>();
+        weaponeSelectCutton[0] = bottomViewr[0].transform.Find("WeaponMainInfo/BG/Cutton").GetComponent<Image>();
+        weaponeSelectCutton[1] = bottomViewr[1].transform.Find("MainInfo/BG(Mask)/Cutton").GetComponent<Image>();
 
-        bottomText = bottomViewr[0].transform.Find("BottomInfo/BottomBox/BottomText").GetComponent<TMP_Text>();
+        bottomText[0] = bottomViewr[0].transform.Find("BottomInfo/BottomBox/BottomText").GetComponent<TMP_Text>();
+        bottomText[1] = bottomViewr[1].transform.Find("BottomInfo/BottomBox/BottomText").GetComponent<TMP_Text>();
+
+        //몬스터
+        enemyInfoText[0] = bottomViewr[1].transform.Find("MainInfo/Box/EnemyName").GetComponent<TMP_Text>();
+        enemyInfoText[1] = bottomViewr[1].transform.Find("MainInfo/Box/EnemyInfo").GetComponent<TMP_Text>();
+        viewrBG = bottomViewr[1].transform.Find("MainInfo/BG(Mask)/BackGround").GetComponent<Image>();
+
     }
 
     private void Start()
     {
-        Slot_Prefabs_Init();
+
     }
     private void BtnInit()
     {
@@ -105,7 +167,6 @@ public class DogamManager : MonoBehaviour
 
     private void Slot_Prefabs_Init()
     {
-        // Awake에서 무기 저장정보 받아와야됨 (겸희한테 물어봐)
 
         // 무기 슬롯 초기화
         WeaponSprite = SpriteResource.inst.Weapons;
@@ -122,8 +183,53 @@ public class DogamManager : MonoBehaviour
         }
 
         // 몬스터 슬롯 초기화
+        Sprite[] stage1MonsterSprite = SpriteResource.inst.enemySprite(1);
+        Sprite[] stage2MonsterSprite = SpriteResource.inst.enemySprite(2);
+        Sprite[] stage3MonsterSprite = SpriteResource.inst.enemySprite(3);
+
+        totalMonsterCount = stage1MonsterSprite.Length + stage2MonsterSprite.Length + stage3MonsterSprite.Length;
+        enemySprite = new Sprite[totalMonsterCount];
+        monster_Soul_List = new int[totalMonsterCount];
+        dogamMonsterSlots = new DogamMonsterSlot[totalMonsterCount];
+        int forcount = 0;
+
+
+        for (int index = 0; index < stage1MonsterSprite.Length; index++)
+        {
+            obj = Instantiate(slotPrefabs[1], slotParentTrs[1].transform);
+            enemySprite[forcount] = stage1MonsterSprite[index];
+            dogamMonsterSlots[forcount] = obj.GetComponent<DogamMonsterSlot>();
+            dogamMonsterSlots[forcount].Init_Prefabs(enemySprite[forcount], forcount);
+            forcount++;
+        }
+
+        for (int index = 0; index < stage2MonsterSprite.Length; index++)
+        {
+            obj = Instantiate(slotPrefabs[1], slotParentTrs[1].transform);
+            enemySprite[forcount] = stage2MonsterSprite[index];
+            dogamMonsterSlots[forcount] = obj.GetComponent<DogamMonsterSlot>();
+            dogamMonsterSlots[forcount].Init_Prefabs(enemySprite[forcount], forcount);
+            forcount++;
+        }
+
+        for (int index = 0; index < stage3MonsterSprite.Length; index++)
+        {
+            obj = Instantiate(slotPrefabs[1], slotParentTrs[1].transform);
+            enemySprite[forcount] = stage3MonsterSprite[index];
+            dogamMonsterSlots[forcount] = obj.GetComponent<DogamMonsterSlot>();
+            dogamMonsterSlots[forcount].Init_Prefabs(enemySprite[forcount], forcount);
+            forcount++;
+        }
+
     }
 
+    private void Monster_Soul_textInit()
+    {
+        for (int index = 0; index < dogamMonsterSlots.Length; index++)
+        {
+            dogamMonsterSlots[index].Set_current_Soulcount_Update();
+        }
+    }
 
 
 
@@ -147,16 +253,16 @@ public class DogamManager : MonoBehaviour
 
         dogamMainRef.SetActive(value);
         Acitve_Bottom_Viewr(0); // 기본으로 초기화
-        WeaponInitBtn(); // 기본초기화
+        InitBottomBtns(); // 기본초기화
 
     }
 
     // 무기 마스터 횟수 체커
-    int masterWeaponCount = 0;
+    
     public void MasterWeaponCheker()
     {
         curWeaponLv = GameStatus.inst.GetAryWeaponLv().ToArray();
-        int weaponMasterCount = 0;
+        int masterWeaponCount = 0;
         for (int index = 0; index < curWeaponLv.Length; index++)
         {
             if (curWeaponLv[index] == 5)
@@ -170,11 +276,25 @@ public class DogamManager : MonoBehaviour
             }
         }
 
-        masterWeaponCount = weaponMasterCount;
-        bottomText.text = $"< 추가 공격력 {weaponMasterCount}%만큼 상승 >   현재 수집 갯수 ( {weaponMasterCount} / {curWeaponLv.Length} )";
+        weaponMasterCount = masterWeaponCount;
+        bottomText[0].text = $"< 추가 공격력 {weaponMasterCount}%만큼 상승 >   현재 수집 갯수 ( {weaponMasterCount} / {curWeaponLv.Length} )";
     }
 
+    public void MonsterSoulMasterCheker()
+    {
+        int masterCount = 0;
+        for (int index = 0; index < monster_Soul_List.Length; index++)
+        {
+            if (monster_Soul_List[index] >= MaxSoulCount)
+            {
+                masterCount++;
+            }
+        }
 
+        enemyMasterCount = masterCount;
+
+        bottomText[1].text = $"< 추가 공격력 {enemyMasterCount}%만큼 상승 >   현재 수집 갯수 ( {enemyMasterCount} / {monster_Soul_List.Length} )";
+    }
 
     Color fadeColor = new Color(0.3f, 0.3f, 0.3f, 1);
     private void Acitve_Bottom_Viewr(int value)
@@ -201,13 +321,15 @@ public class DogamManager : MonoBehaviour
         }
         else
         {
+            MonsterSoulMasterCheker();
             WorldUI_Manager.inst.RawImagePlayAcitve(false);
         }
     }
 
-    public void WeaponInitBtn()
+    public void InitBottomBtns()
     {
-        viewrBox_WeaponIMG.sprite = WeaponSprite[0];
+        //무기 초기화
+        viewrBox_WeaponIMG[0].sprite = WeaponSprite[0];
         string temp = weaponNameAndInfo[0];
         curWeaponNumber = 0;
         if (weaponSlotsSc[0].master)
@@ -220,6 +342,24 @@ public class DogamManager : MonoBehaviour
             weaponInfoText[0].text = "? ? ?";
             weaponInfoText[1].text = " 획득해보지않아서.. \n뭔지몰랑..";
         }
+
+        //몬스터 초기화
+        viewrBox_WeaponIMG[1].sprite = enemySprite[0];
+        viewrBG.sprite = SpriteResource.inst.Map(1);
+        temp = monsterNameAndInfo[0];
+        curMonsterNumber = 0;
+
+        if (dogamMonsterSlots[0].complete)
+        {
+            enemyInfoText[0].text = temp.Split('-')[0];
+            enemyInfoText[1].text = temp.Split('-')[1];
+        }
+        else
+        {
+            enemyInfoText[0].text = "? ? ?";
+            enemyInfoText[1].text = "정수를 전부 모아야.. 알것같다";
+        }
+
     }
 
 
@@ -231,41 +371,91 @@ public class DogamManager : MonoBehaviour
         once = true;
 
         curWeaponNumber = childrenNumber;
-        StartCoroutine(Change(childrenNumber));
+        StartCoroutine(Change(childrenNumber, "Weapon"));
+    }
 
+    public void Set_MonsterMainViewr(int childrenNumber)
+    {
+        if (once || curMonsterNumber == childrenNumber) { return; } // 바뀌고있는중이거나 같은 번호이면 Return
+        once = true;
+
+        curMonsterNumber = childrenNumber;
+        StartCoroutine(Change(childrenNumber, "Monster"));
     }
 
     float duration = 0.25f;
     float cuttonTimer = 0f;
     WaitForSeconds changeWaitTime = new WaitForSeconds(0.1f);
     Color zeroColor = new Color(0, 0, 0, 0);
-    IEnumerator Change(int chidrenNumber)
+    IEnumerator Change(int chidrenNumber, string type)
     {
         cuttonTimer = 0;
+        int currentType = 0;
 
+        if (type == "Monster")
+        {
+            currentType = 1;
+        }
         while (cuttonTimer < duration)
         {
             float alphaZ = Mathf.Lerp(0f, 1f, cuttonTimer / duration);
-            weaponeSelectCutton.color = new Color(weaponeSelectCutton.color.r, weaponeSelectCutton.color.g, weaponeSelectCutton.color.b, alphaZ);
+            weaponeSelectCutton[currentType].color = new Color(weaponeSelectCutton[currentType].color.r, weaponeSelectCutton[currentType].color.g, weaponeSelectCutton[currentType].color.b, alphaZ);
             cuttonTimer += Time.deltaTime;
             yield return null;
         }
 
-        weaponeSelectCutton.color = Color.black;
-        viewrBox_WeaponIMG.sprite = WeaponSprite[chidrenNumber];
-        string temp = weaponNameAndInfo[chidrenNumber];
+        weaponeSelectCutton[currentType].color = Color.black;
 
-        // 획득해봤어야 알지!
-        if (weaponSlotsSc[chidrenNumber].master)
+        //페이드 아웃 후 변경되야할 부분
+        switch (currentType)
         {
-            weaponInfoText[0].text = temp.Split('-')[0];
-            weaponInfoText[1].text = temp.Split('-')[1];
+            case 0: // 무기 
+
+                viewrBox_WeaponIMG[currentType].sprite = WeaponSprite[chidrenNumber];
+                string temp = weaponNameAndInfo[chidrenNumber];
+
+                // 획득해봤어야 알지!
+                if (weaponSlotsSc[chidrenNumber].master)
+                {
+                    weaponInfoText[0].text = temp.Split('-')[0];
+                    weaponInfoText[1].text = temp.Split('-')[1];
+                }
+                else
+                {
+                    weaponInfoText[0].text = "? ? ?";
+                    weaponInfoText[1].text = " 획득해보지않아서.. \n뭔지몰랑..";
+                }
+                break;
+
+            case 1: // 몬스터
+                viewrBox_WeaponIMG[currentType].sprite = enemySprite[chidrenNumber];
+                string enemyName = monsterNameAndInfo[chidrenNumber];
+                if (chidrenNumber < SpriteResource.inst.enemySprite(1).Length)
+                {
+                    viewrBG.sprite = SpriteResource.inst.Map(0);
+                }
+                else if (chidrenNumber >= SpriteResource.inst.enemySprite(1).Length && chidrenNumber < SpriteResource.inst.enemySprite(1).Length + SpriteResource.inst.enemySprite(2).Length)
+                {
+                    viewrBG.sprite = SpriteResource.inst.Map(1);
+                }
+                else
+                {
+                    viewrBG.sprite = SpriteResource.inst.Map(2);
+                }
+                // 획득해봤어야 알지!
+                if (dogamMonsterSlots[0].complete)
+                {
+                    enemyInfoText[0].text = enemyName.Split('-')[0];
+                    enemyInfoText[1].text = enemyName.Split('-')[1];
+                }
+                else
+                {
+                    enemyInfoText[0].text = "? ? ?";
+                    enemyInfoText[1].text = "정수를 전부 모아야.. 알것같다";
+                }
+                break;
         }
-        else
-        {
-            weaponInfoText[0].text = "? ? ?";
-            weaponInfoText[1].text = " 획득해보지않아서.. \n뭔지몰랑..";
-        }
+
 
         yield return changeWaitTime;
 
@@ -274,32 +464,32 @@ public class DogamManager : MonoBehaviour
         while (cuttonTimer < duration)
         {
             float alphaZ = Mathf.Lerp(1f, 0f, cuttonTimer / duration);
-            weaponeSelectCutton.color = new Color(weaponeSelectCutton.color.r, weaponeSelectCutton.color.g, weaponeSelectCutton.color.b, alphaZ);
+            weaponeSelectCutton[currentType].color = new Color(weaponeSelectCutton[currentType].color.r, weaponeSelectCutton[currentType].color.g, weaponeSelectCutton[currentType].color.b, alphaZ);
             cuttonTimer += Time.deltaTime;
             yield return null;
         }
-        weaponeSelectCutton.color = zeroColor;
+        weaponeSelectCutton[currentType].color = zeroColor;
         once = false;
     }
 
 
-    //float getChance = 5f; // <ㅡ 몬스터 처치시 도감조각 얻을 확률
-
-    /// <summary>
-    /// 몬스터 처치시 도감조각 얻는 함수
-    /// </summary>
-    /// <param name="dogamIndex"></param>
+    float getChance = 10f; // <ㅡ 몬스터 처치시 도감조각 얻을 확률
     public void MosterDogamIndexValueUP(int stage, int enemyIndex)
     {
-        //float randomValue = Random.Range(0,100f);
-        //if (randomValue > getChance) { return; };
+        int monsterIndex = (stage - 1) * 5 + enemyIndex;
+        if (monster_Soul_List[monsterIndex] >= maxSoulCount) { return; }
 
-        //Sprite IMG = SpriteResource.inst.CoinIMG(3);
-        //string text = $"{stage}-{enemyIndex} 도감정수";
-        //WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(IMG, text);
-        //int indexNumber = ((stage-1) * 5) + enemyIndex;
-        //mosterCollectionConut[indexNumber]++; // 값 올림
+        float randomValue = UnityEngine.Random.Range(0, 100f);
+        if (randomValue > getChance) { return; };
 
+        Sprite IMG = SpriteResource.inst.CoinIMG(3);
+
+        string monsterName = monsterNameAndInfo[monsterIndex].Split('-')[0];
+        string text = $"'{monsterName}'의 정수";
+        WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(IMG, text);
+
+        // 정수 반영
+        Set_Monster_Soul(monsterIndex);
     }
 
     string[] weaponNameAndInfo =
@@ -336,5 +526,23 @@ public class DogamManager : MonoBehaviour
             "똥막대기-똥이 더러워서 피하나?\r\n무서워서 피하지",         //29
         };
 
+    string[] monsterNameAndInfo =
+       {
+            "얼음 정령-갓 태어난 냉기정령",    //0
+             "냉기 돌정령-냉기의 오라가 몸을\r\n감싸고 있다",     //1
+             "돌격 냉기정령-벌크업한 냉기돌정령",    //2 
+             "아이스디어-얼음군주의 아이스드래곤",         //3 
+             "냉기의 군주-신의 모습을한 냉기계의 군주\r\n닿는 모든것을 얼려버린다",       //4 
+             "돌 정령-갓 태어난 화염계의 정령",        //5 
+             "불 정령-1차 진화에 성공한 정령\\n등에서 이제 막 화산이\r\n불출되고 있다.",       //6 
+             "용암 정령-등에서 무지막한 용암이\r\n흘러내린다. 닿으면 모든지\r\n녹아내릴것만 같다.",         //7
+            "돌격 용암정령-불의군주의 오른팔 하수인\r\n강력한 힘으로 적을 누른다.",       //8 
+            "불의군주-몸서리처라, 필멸자들아\r\n불의정령계의 군주",         //9
+            "라바몬-오커로 진화하기전의 형태\r\n나름 귀엽게 생겼다",         // 10
+            "그린 오커-언제든지 꿀밤을 때릴수있게\r\n항상 준비된 손동작을\r\n하고있다",        //11
+            "핑크 오커-오커계의 일등신부감",        //12
+            "복싱 오커-오커복싱계의 세계챔피언\r\n한대맞으면 정신을 못차린다\r\n조심하자",         //13
+            "블루 오커-길쭉한 혀로 굉장한 위화감을\r\n형성한다. 이 친구 그래도 \r\n볼매다",     //14
+        };
 
 }

@@ -100,8 +100,10 @@ public class DataManager : MonoBehaviour
         public List<SaveLetter> LetterBox = new List<SaveLetter>();
 
         // 광고제거
-
         public string adDeleteBuffTime = string.Empty;
+
+        // 도감
+        public int[] monsterDogamList;
     }
 
     string path = string.Empty;

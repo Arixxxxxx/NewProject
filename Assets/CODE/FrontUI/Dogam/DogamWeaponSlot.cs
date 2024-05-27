@@ -37,6 +37,7 @@ public class DogamWeaponSlot : MonoBehaviour
         MaskIMG = transform.Find("Mask").gameObject;
     }
 
+
     public bool master = false;
     public void MaskActiveFalse()
     {

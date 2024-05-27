@@ -164,7 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imgBoxSideSprite:
   - {fileID: -1192569112, guid: 2397ef282023b464d915484a57d753fe, type: 3}
-  - {fileID: -882721078, guid: 2397ef282023b464d915484a57d753fe, type: 3}
+  - {fileID: -1192569112, guid: 2397ef282023b464d915484a57d753fe, type: 3}
   gotItemColor: {r: 0.30980393, g: 0.92549026, b: 0.9803922, a: 1}
 --- !u!114 &5040793008239040397
 MonoBehaviour:
@@ -192,6 +192,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotPrefabs:
   - {fileID: 2078712206363973248, guid: 407d2353ae4909847a0d6f83ecb3f0de, type: 3}
+  - {fileID: 2078712206363973248, guid: d80bac3838cd76f4d81c818fafc123c8, type: 3}
+  dogamMonsterSlots: []
+  monster_Soul_List: 
 --- !u!114 &2968815664667207561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,6 +436,7 @@ MonoBehaviour:
   poolingObj:
   - {fileID: 5653821492268183441, guid: 91f1c198bbc08f447b1e76b1804801b0, type: 3}
   - {fileID: 8335622449627231134, guid: e7a94963dd424e44285ae7568a01aa74, type: 3}
+  - {fileID: 7590727819067225288, guid: cf8fd12e99f015349a14132c5c82dc08, type: 3}
 --- !u!114 &5293482492015374371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -776,11 +780,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 927c52fae8d511e4e8694fb9260438ac, type: 3}
   - {fileID: 21300000, guid: bec6e17dae0554f46b4908a1ffb02dbd, type: 3}
   stage1_Enemy:
-  - {fileID: 21300000, guid: a19a24c1cbc81194c9946d7949342b20, type: 3}
   - {fileID: 21300000, guid: 34baf0ad2846a7b49a8ad129cdf2433f, type: 3}
   - {fileID: 21300000, guid: d1c7371ca9f940542930ca15e543b78b, type: 3}
   - {fileID: 21300000, guid: 33a072c9b6edc394cb3b39b3b5b1b7cb, type: 3}
   - {fileID: 21300000, guid: 6875242788c7c824abb56c45ed5ee55f, type: 3}
+  - {fileID: 21300000, guid: 09e19ed0e917ab14b808edf7ea65861c, type: 3}
   stage2_Enemy:
   - {fileID: 21300000, guid: a19a24c1cbc81194c9946d7949342b20, type: 3}
   - {fileID: 21300000, guid: ec997f9546964e44e815345e76477b9b, type: 3}
