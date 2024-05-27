@@ -99,6 +99,7 @@ public class WorldUI_Manager : MonoBehaviour
     Image fakeScreen;
 
     // 로우이미지 관리자
+    [SerializeField]
     GameObject[] rawCam;
     GameObject[] rawImageRef;
 
@@ -125,7 +126,7 @@ public class WorldUI_Manager : MonoBehaviour
         //로우이미지
         int rawcamcount = GameManager.inst.CamsRef.transform.Find("RanderCams").childCount;
         rawCam = new GameObject[rawcamcount];
-        for(int i = 0; i < rawcamcount; i++)
+        for (int i = 0; i < rawcamcount; i++)
         {
             rawCam[i] = GameManager.inst.CamsRef.transform.Find("RanderCams").GetChild(i).gameObject;
         }
@@ -603,28 +604,25 @@ public class WorldUI_Manager : MonoBehaviour
     {
         for (int index = 0; index < rawImageRef.Length; index++)
         {
-             if(index == indexNum)
+            if (index == indexNum)
             {
-                rawImageRef[indexNum].SetActive(true);
-                rawCam[indexNum].SetActive(true);
+                rawImageRef[index].SetActive(true);
+                rawCam[index].SetActive(true);
             }
             else
             {
                 rawImageRef[index].SetActive(false);
-                rawCam[indexNum].SetActive(false);
+                rawCam[index].SetActive(false);
             }
         }
     }
 
     public void RawImagePlayAcitve(bool Active)
     {
-        for (int index = 0; index < rawCam.Length; index++)
+        for (int index = 0; index < rawImageRef.Length; index++)
         {
-            if (rawImageRef[index].activeSelf)
-            {
-                rawImageRef[index].SetActive(false);
-                rawCam[index].SetActive(false);
-            }
+            rawImageRef[index].SetActive(false);
+            rawCam[index].SetActive(false);
         }
     }
 

@@ -243,8 +243,8 @@ public class DogamManager : MonoBehaviour
     {
         if (value == true)
         {
-            //켜질때 도감 하단에 마스터된 무기의 횟수를 적어줌
-            //MasterWeaponCheker();
+            Acitve_Bottom_Viewr(0); // 기본으로 초기화
+            InitBottomBtns(); // 기본초기화
         }
         else
         {
@@ -252,9 +252,6 @@ public class DogamManager : MonoBehaviour
         }
 
         dogamMainRef.SetActive(value);
-        Acitve_Bottom_Viewr(0); // 기본으로 초기화
-        InitBottomBtns(); // 기본초기화
-
     }
 
     // 무기 마스터 횟수 체커
@@ -267,7 +264,7 @@ public class DogamManager : MonoBehaviour
         {
             if (curWeaponLv[index] == 5)
             {
-                weaponMasterCount++;
+                masterWeaponCount++;
                 weaponSlotsSc[index].MaskActiveFalse();
             }
             else if (curWeaponLv[index] < 5)

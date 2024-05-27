@@ -28,7 +28,12 @@ public class BuffContoller : MonoBehaviour
     [Tooltip("0 공격력, 1 이속, 2골드, 3강한공격력, 4뉴비")]
     double[] buffTimer;
     public double[] BuffTimer {  get { return buffTimer; } }
-    
+    [SerializeField]
+    public bool[] buffActiveCheck = new bool[4];
+
+    //버프체크
+    public bool BuffActiveCheck(int value) => buffActiveCheck[value];
+
 
     ParticleSystem[] buffIconPs;
 
@@ -45,7 +50,7 @@ public class BuffContoller : MonoBehaviour
             Destroy(inst);
         }
 
-        worldUI = GameObject.Find("---[World UI Canvas]").gameObject;
+        worldUI = GameManager.inst.WorldUiRef;
         buffParent = worldUI.transform.Find("StageUI/Buff").gameObject;
 
         int buffChild = buffParent.transform.childCount;
@@ -71,13 +76,7 @@ public class BuffContoller : MonoBehaviour
     private void Start()
     {
 
-        // 뉴비 버프 시간 넣어줌 (나중에 데이터매니저 신규유저일시넣어줌으로 옮겨야함)
-        if (GameStatus.inst.IsNewBie && buffTimer[4] == 0)
-        {
-
-        }
     }
-
 
     private void Update()
     {
@@ -144,6 +143,10 @@ public class BuffContoller : MonoBehaviour
             buffIconBg[index].gameObject.SetActive(true);
             BuffValueActiver(index, false);
 
+            if (buffActiveCheck[index] == true)
+            {
+                buffActiveCheck[index] = false;
+            }
             switch (index)
             {
                 case 0: // 공격력 버프
@@ -164,6 +167,11 @@ public class BuffContoller : MonoBehaviour
             if (buffIconBg[index].gameObject.activeSelf == true)
             {
                 buffIconBg[index].gameObject.SetActive(false);
+            }
+
+            if (buffActiveCheck[index] == false)
+            {
+                buffActiveCheck[index] = true;
             }
 
             buffTimer[index] -= Time.deltaTime;
@@ -190,12 +198,17 @@ public class BuffContoller : MonoBehaviour
         }
     }
 
-
+    public bool newbieBuffActiveCheck;
     //뉴비 전용 타임체커
     private void NewBieBuffTimeCheck()
     {
         if (buffTimer[4] > 0)
         {
+            if (!newbieBuffActiveCheck)
+            {
+                newbieBuffActiveCheck = true;
+            }
+
             buffTimer[4] -= Time.deltaTime;
 
             if (buffIconBg[4].gameObject.activeSelf == true && buffTimer[4] <= 0)
@@ -203,6 +216,7 @@ public class BuffContoller : MonoBehaviour
                 buffTimer[4] = 0;
                 BuffValueActiver(4, false);
                 buffIconBg[4].gameObject.SetActive(false);
+                newbieBuffActiveCheck = false;
             }
         }
     }

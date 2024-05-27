@@ -580,7 +580,12 @@ public class GameStatus : MonoBehaviour
     {
         aryWeaponLv[Num] = Value;
         MissionData.Instance.SetSpecialMission(Num, Value, SpMissionTag.Weapon);
-        DogamManager.inst.MasterWeaponCheker();
+        
+        if(aryWeaponLv[Num] == 5)
+        {
+            DogamManager.inst.MasterWeaponCheker();
+        }
+        
     }
 
     [HideInInspector] public UnityEvent OnPercentageChanged;

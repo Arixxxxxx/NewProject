@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -185,61 +186,76 @@ public class CalCulator : MonoBehaviour
 
 
 
-    string[] addBuffValue = new string[5];
 
+    int dmgMultiplyer = 0;
+    float percent = 0;
+    
     /// <summary>
     /// 모든공격력 합산하여 스트링으로 변환하여 리턴
     /// </summary>
     /// <returns></returns>
     public string Get_CurPlayerATK()
     {
-        string result = GameStatus.inst.TotalAtk.ToString();
-
+        string originATK = GameStatus.inst.TotalAtk.ToString();
+        dmgMultiplyer = 0;
 
         // 2배 버프 체크
-        // { //result = DigidPlus(result, GameStatus.inst.BuffAddATK);}
-
-        if (GameStatus.inst.BuffAddATK != "0")
+        if (BuffContoller.inst.BuffActiveCheck(0) == true)
         {
-            addBuffValue[0] = StringAndIntMultiPly(result, 2 - 1);
+            dmgMultiplyer += 2;
         }
 
         //// 3배 버프 체크
         //result = DigidPlus(result, GameStatus.inst.BuffAddAdATK);
-        if (GameStatus.inst.BuffAddATK != "0")
+        if (BuffContoller.inst.BuffActiveCheck(3) == true)
         {
-            addBuffValue[1] = StringAndIntMultiPly(result, 3 - 1);
+            dmgMultiplyer += 3;
         }
 
         ////// 초심자 버프 2배
-        //result = DigidPlus(result, GameStatus.inst.NewbieATKBuffValue);
-        if (GameStatus.inst.NewbieATKBuffValue != "0")
+        if (BuffContoller.inst.newbieBuffActiveCheck == true)
         {
-            addBuffValue[2] = StringAndIntMultiPly(result, 2 - 1);
+            dmgMultiplyer += 2;
         }
 
+        string buffDMG = string.Empty;
+
+        if (dmgMultiplyer != 0)
+        {
+            buffDMG = StringAndIntMultiPly(originATK, dmgMultiplyer);
+        }
+        else
+        {
+            buffDMG = originATK;
+        }
+
+
+        percent = 0;
+
         //// 펫 버프량 체크 { 레벨당 10% 증가}
-        //result = DigidPlus(result, GameStatus.inst.AddPetAtkBuff);
         if (GameStatus.inst.AddPetAtkBuff != "0")
         {
-            addBuffValue[3] = DigitAndIntPercentMultiply(result, GameStatus.inst.Pet0_Lv * 10);
+            percent += GameStatus.inst.Pet0_Lv * 10;
         }
 
         // 유물 일반공격력 계산
         if (DogamManager.inst.Get_DogamATKBonus() != 0)
         {
-            float percentValue = DogamManager.inst.Get_DogamATKBonus();
-            result = DigitAndFloatPercentMultiply(result, percentValue);
+            percent += DogamManager.inst.Get_DogamATKBonus();
         }
 
         // 유물 일반공격력 계산
         if (GameStatus.inst.GetAryRelicLv(0) != 0)
         {
-            float percentValue = GameStatus.inst.RelicDefaultvalue(0) * GameStatus.inst.GetAryRelicLv(0);
-            result = DigitAndFloatPercentMultiply(result, percentValue);
+            percent = GameStatus.inst.RelicDefaultvalue(0) * GameStatus.inst.GetAryRelicLv(0);
         }
 
-        return result;
+        if(percent != 0)
+        {
+            buffDMG = DigitAndFloatPercentMultiply(buffDMG, percent);
+        }
+
+        return buffDMG;
     }
 
     public string ToBigIntigerFromString(BigInteger value)
@@ -254,7 +270,7 @@ public class CalCulator : MonoBehaviour
 
     public BigInteger upBaseHP = new BigInteger(800);  // 기본 체력
     public double higherHpIncreaseFactor = 1.4f;  // 스테이지 150 이후의 체력 증가 계수
-  
+
 
     // 몬스터 체력 초기화
     public string EnemyHpSetup()
