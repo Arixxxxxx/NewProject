@@ -207,17 +207,19 @@ public class BuffManager : MonoBehaviour
     /// <param name="value"></param>
     public void Buff_UI_Active(bool value)
     {
-        if (value)
-        {
-            mainWindow.SetActive(true);
+        mainWindow.SetActive(value);
+        //if (value)
+        //{
+        //    mainWindow.SetActive(true);
 
-        }
-        else 
-        {
-            buffLayOutRef.SetActive(false);
-            exitBtn.gameObject.SetActive(false);
-            mainWindowAnim.SetTrigger("Exit");
-        }
+        //}
+        //else 
+        //{
+        //    mainWindow.SetActive(true);
+        //    buffLayOutRef.SetActive(false);
+        //    exitBtn.gameObject.SetActive(false);
+        //    //mainWindowAnim.SetTrigger("Exit");
+        //}
     }
 
     // 애니메이션 적용

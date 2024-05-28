@@ -13,7 +13,7 @@ public class CrewGatchaContent : MonoBehaviour
     //Ref 아이템이미지
     [Header("# Input Material <Color=yellow>( Sprite File )</Color>")]
     [Space]
-    [SerializeField] Sprite[] crewMaterialItemIMG;
+    Sprite[] crewMaterialItemIMG = new Sprite[3];
 
     //Ref
     GameObject frontUi, crewGatchaRef, window;
@@ -114,7 +114,13 @@ public class CrewGatchaContent : MonoBehaviour
         noCoolBtnRef = buyBtn[3].transform.Find("noCoolTime").gameObject;
         coolBtnRef = buyBtn[3].transform.Find("CoolTime").gameObject;
         adCoolTImeText = coolBtnRef.transform.GetChild(1).GetComponent<TMP_Text>();
-
+        
+        // 스프라이트 초기화
+        for(int index = 0; index < crewMaterialItemIMG.Length; index++)
+        {
+            crewMaterialItemIMG[index] = SpriteResource.inst.CrewMaterialIMG(index);
+        }
+    
         BtnInit();
         MaterialTextBarUpdate(); // 최초 받아온값 초기화
     }

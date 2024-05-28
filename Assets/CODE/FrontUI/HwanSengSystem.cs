@@ -288,6 +288,7 @@ public class HwanSengSystem : MonoBehaviour
             feverAnim.gameObject.SetActive(true);
             WorldUI_Manager.inst.RawImagePlayAcitve(0, true);
             ActionManager.inst.IsFever = true;
+            
         }
 
         // 환생시간 피버바
@@ -301,6 +302,7 @@ public class HwanSengSystem : MonoBehaviour
         feverCountTimer = 0;
         feverAnim.SetTrigger("Hide");
         ActionManager.inst.IsFever = false;
+        ActionManager.inst.FeverTime_End();
         yield return new WaitForSeconds(1f);
 
         WorldUI_Manager.inst.RawImagePlayAcitve(false);
@@ -336,7 +338,7 @@ public class HwanSengSystem : MonoBehaviour
 
     public void Set_WorldHwansengCount_Text_Init(int value)
     {
-        worldUICenterTopText.text = $"{value}번째 설아의 출동 이야기";
+        worldUICenterTopText.text = $"{value+1}번째 설아의 출동 이야기";
     }
 
 }

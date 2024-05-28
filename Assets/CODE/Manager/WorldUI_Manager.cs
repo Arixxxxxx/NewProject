@@ -233,9 +233,12 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="curFloorLv"></param>
     public void Set_StageUiBar(int curFloorLv)
     {
+        
         int setupCount = curFloorLv - 1;
         stageSlot[setupCount].sprite = stageSprite[2];
         stageText.text = $"스테이지 {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv}";
+        
+        // 보스 얼굴 출력
         uiBossHead.gameObject.SetActive(setupCount == 4 ? true : false);
         for (int index = 0; index < setupCount; index++)
         {

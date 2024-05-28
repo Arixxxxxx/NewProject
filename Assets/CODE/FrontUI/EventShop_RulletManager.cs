@@ -738,7 +738,7 @@ public class EventShop_RulletManager : MonoBehaviour
                 float checkvalue = rulletPan.transform.eulerAngles.z;
                 Debug.Log(checkvalue);
 
-                if (330 < checkvalue && checkvalue < 30)
+                if ((checkvalue < 30 && checkvalue >= 0) || (330 <= checkvalue))
                 {
                     rulletParticle.gameObject.SetActive(true);
                     GameStatus.inst.PlusRuby(10); //실행
@@ -822,13 +822,20 @@ public class EventShop_RulletManager : MonoBehaviour
 
 
 
+    Coroutine ps;
     /// <summary>
     /// Rullet 1회 플레이 (배경 Fade + Particle Effect)
     /// </summary>
     /// <param name="value"></param>
     private void RulletAction(bool value)
     {
-        StartCoroutine(RulletActionCoru(value));
+        if(ps != null)
+        {
+            StopCoroutine(ps);
+            ps = null;
+        }
+
+        ps = StartCoroutine(RulletActionCoru(value));
     }
 
     Color fadeColor = new Color(0, 0, 0, 0.15f);

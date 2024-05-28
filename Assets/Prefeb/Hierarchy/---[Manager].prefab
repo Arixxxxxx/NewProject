@@ -194,7 +194,7 @@ MonoBehaviour:
   - {fileID: 2078712206363973248, guid: 407d2353ae4909847a0d6f83ecb3f0de, type: 3}
   - {fileID: 2078712206363973248, guid: d80bac3838cd76f4d81c818fafc123c8, type: 3}
   dogamMonsterSlots: []
-  monster_Soul_List: 
+  maxSoulCount: 50
 --- !u!114 &2968815664667207561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,10 +233,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d4987742cad4024e8b82d9e61414438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crewMaterialItemIMG:
-  - {fileID: -480492995, guid: 031e097540eb98646b85e31442c57b72, type: 3}
-  - {fileID: 394849108, guid: 031e097540eb98646b85e31442c57b72, type: 3}
-  - {fileID: 838485112, guid: 031e097540eb98646b85e31442c57b72, type: 3}
 --- !u!114 &3980596178529644447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,6 +433,7 @@ MonoBehaviour:
   - {fileID: 5653821492268183441, guid: 91f1c198bbc08f447b1e76b1804801b0, type: 3}
   - {fileID: 8335622449627231134, guid: e7a94963dd424e44285ae7568a01aa74, type: 3}
   - {fileID: 7590727819067225288, guid: cf8fd12e99f015349a14132c5c82dc08, type: 3}
+  rawCam: []
 --- !u!114 &5293482492015374371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,6 +468,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffTimer: []
+  buffActiveCheck: 00000000
+  newbieBuffActiveCheck: 0
 --- !u!1 &3933535206417726122
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,6 +698,7 @@ MonoBehaviour:
   OnRubyChanged:
     m_PersistentCalls:
       m_Calls: []
+  accumlateFloor: 0
   OnStageChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -784,7 +784,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d1c7371ca9f940542930ca15e543b78b, type: 3}
   - {fileID: 21300000, guid: 33a072c9b6edc394cb3b39b3b5b1b7cb, type: 3}
   - {fileID: 21300000, guid: 6875242788c7c824abb56c45ed5ee55f, type: 3}
-  - {fileID: 21300000, guid: 09e19ed0e917ab14b808edf7ea65861c, type: 3}
+  - {fileID: 21300000, guid: df6cd6570fd0ac246b3c1dbb3a7fa421, type: 3}
   stage2_Enemy:
   - {fileID: 21300000, guid: a19a24c1cbc81194c9946d7949342b20, type: 3}
   - {fileID: 21300000, guid: ec997f9546964e44e815345e76477b9b, type: 3}
@@ -858,9 +858,9 @@ MonoBehaviour:
   - {fileID: -1763204715, guid: 3015a98ddfaaef949b7dab82d30aaa64, type: 3}
   - {fileID: 21300000, guid: e68996545d72e8c4ebb06f5378981a9a, type: 3}
   crewMaterialIMG:
-  - {fileID: -1806432227, guid: 3015a98ddfaaef949b7dab82d30aaa64, type: 3}
-  - {fileID: -790790913, guid: 3015a98ddfaaef949b7dab82d30aaa64, type: 3}
-  - {fileID: -2065806326, guid: 3015a98ddfaaef949b7dab82d30aaa64, type: 3}
+  - {fileID: -1444238164, guid: 33ed170abbe8ffe4b9f3408431e7f531, type: 3}
+  - {fileID: -1093023860, guid: 33ed170abbe8ffe4b9f3408431e7f531, type: 3}
+  - {fileID: 58420052, guid: 33ed170abbe8ffe4b9f3408431e7f531, type: 3}
   - {fileID: 2048784362, guid: 031e097540eb98646b85e31442c57b72, type: 3}
   questIcon:
   - {fileID: 95158324, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}

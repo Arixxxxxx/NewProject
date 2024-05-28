@@ -191,12 +191,8 @@ public class ActionManager : MonoBehaviour
 
     void Start()
     {
-
         //최초 init
         Enemyinit();
-        UI_Init();
-
-
     }
 
     Vector2 matVec;
@@ -214,12 +210,10 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-    int index = 1;
-
+   
     float feverCountTimer = 0.8f;
-    float feverNextTimer;
-
-    int testday;
+    float feverNextTimer = 0f;
+       
 
     void Update()
     {
@@ -231,11 +225,10 @@ public class ActionManager : MonoBehaviour
         if (IsFever == true) // 피버일시 스테이지 올려줌
         {
             feverNextTimer += Time.deltaTime;
+            
             if (feverNextTimer > feverCountTimer)
             {
                 feverNextTimer = 0;
-                attackReady = false;
-                doEnemyMove = true;
                 FeverFloorUp();
             }
         }
@@ -262,11 +255,10 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-
-    // UI Bar 초기화
-    private void UI_Init()
+    public void FeverTime_End()
     {
-
+        attackReady = false;
+        doEnemyMove = true;
     }
 
     // 움직이기전 초기화
@@ -344,6 +336,7 @@ public class ActionManager : MonoBehaviour
     // 메인캐릭터 애니메이션 공격 
     public void A_PlayerAttackToEnemy()
     {
+        if (IsFever) { StopCoroutine(PlayerOnHitDMG()); return; }
         StopCoroutine(PlayerOnHitDMG());
         StartCoroutine(PlayerOnHitDMG());
     }
@@ -355,6 +348,7 @@ public class ActionManager : MonoBehaviour
     /// <param name="CrewTypeIndex"> 0 폭탄마/ 1 사령술사 </param>
     public void A_CrewAttackToEnemy(int CrewTypeIndex)
     {
+        if(IsFever) { StopCoroutine(CrewAttackToEnemyDMG(CrewTypeIndex)); return; }
         StopCoroutine(CrewAttackToEnemyDMG(CrewTypeIndex));
         StartCoroutine(CrewAttackToEnemyDMG(CrewTypeIndex));
     }
@@ -539,16 +533,10 @@ public class ActionManager : MonoBehaviour
         string getGold = Get_EnemyDeadGold();
         GameStatus.inst.PlusGold(getGold); // 골드 얻기
 
-        if (GameStatus.inst.FloorLv < 4)
+        if (GameStatus.inst.FloorLv < 5)
         {
             GameStatus.inst.FloorLv++;
             Enemyinit();
-        }
-        else if (GameStatus.inst.FloorLv == 4)
-        {
-            GameStatus.inst.FloorLv++;
-            Enemyinit();
-            //보스피통 늘려주는 ~
         }
         else if (GameStatus.inst.FloorLv == 5)
         {
@@ -865,20 +853,6 @@ public class ActionManager : MonoBehaviour
     public void Set_WeaponSprite_Changer(int index)
     {
         palyerWeapenSr.sprite = weaponSprite[index];
-    }
-
-
-    public void TestBtnWeaponChange()
-    {
-        index++;
-
-        if (index >= weaponSprite.Length)
-        {
-            index = 0;
-        }
-
-        palyerWeapenSr.sprite = weaponSprite[index];
-
     }
 
 

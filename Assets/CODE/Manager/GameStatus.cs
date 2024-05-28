@@ -338,20 +338,6 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-
-    //// 2. 공격속도 유물만잇으면됨
-    //int atkSpeedLv;
-
-    //public int AtkSpeedLv
-    //{
-    //    get { return atkSpeedLv; }
-    //    set
-    //    {
-    //        atkSpeedLv = value;
-    //        ActionManager.inst.PlayerAttackSpeedLvUp();
-    //    }
-    //}
-
     // 2. 크리티컬 확률
     float criticalChance = 10;  // 기본값 10
 
@@ -371,7 +357,7 @@ public class GameStatus : MonoBehaviour
     }
 
 
-    // 4. 몬스터 누적 킬수
+    // 3. 몬스터 누적 킬수
     int totalEnemyKill;
     public int TotalEnemyKill
     {
@@ -391,12 +377,15 @@ public class GameStatus : MonoBehaviour
         set
         {
             hwansengCount = value;
-            HwanSengSystem.inst.Set_WorldHwansengCount_Text_Init(value + 1);
+
+            // 상단 '설아의 출동이야기 텍스트 초기화'
+            HwanSengSystem.inst.Set_WorldHwansengCount_Text_Init(hwansengCount);
         }
     }
     /////////////////////[ 스테이지 현황 ]//////////////////////////////
 
     // 1. 총 누적층수
+    [SerializeField]
     int accumlateFloor = 0;
     public int AccumlateFloor
     {
@@ -408,6 +397,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             accumlateFloor = value;
+            //월드 환생아이콘 지급별수 초기화
             HwanSengSystem.inst.MainWindow_TextBox_Updater();
         }
     }
@@ -451,12 +441,10 @@ public class GameStatus : MonoBehaviour
                 WorldUI_Manager.inst.Set_StageUiBar(floorLv);
             }
 
-
             if (DataManager.inst.saveAble)
             {
                 AccumlateFloor++;
             }
-
 
         }
     }
@@ -979,7 +967,7 @@ public class GameStatus : MonoBehaviour
         stageLv = 1;
         floorLv = 1;
         AccumlateFloor = 0;
-        HWansengCount++;
+        WorldUI_Manager.inst.Reset_StageUiBar();
     }
 
 
