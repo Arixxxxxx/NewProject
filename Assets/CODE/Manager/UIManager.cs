@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     ////////////////////////////////////////////Äù½ºÆ®///////////////////////////////////////
 
     [HideInInspector] public UnityEvent OnBuyCountChanged;//Äù½ºÆ® ±¸¸Å°¹¼ö ¹Ù²î´Â ÀÌº¥Æ®
+    public UnityEvent QuestReset;
     List<Transform> m_list_Quest = new List<Transform>();//Äù½ºÆ® ¸®½ºÆ®
     Transform m_QuestParents;//Äù½ºÆ® ÄÁÅÙÃ÷ Æ®·¡½ºÆû
     RectTransform m_QuestParentRect;
@@ -68,6 +69,7 @@ public class UIManager : MonoBehaviour
 
     ////////////////////////////////////////////¹«±â///////////////////////////////////////
 
+    public UnityEvent WeaponReset;
     List<Transform> m_list_Weapon = new List<Transform>();
     Transform m_WeaponParents;
     RectTransform m_WeaponParentRect;
@@ -100,7 +102,7 @@ public class UIManager : MonoBehaviour
     public void MaxBuyWeapon()
     {
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
-
+        AudioManager.inst.PlaySFX(4);
         if (m_list_Weapon.Count > TopHaveWeaponNum)
         {
             BigInteger nextcost = m_list_Weapon[TopHaveWeaponNum].GetComponent<Weapon>().GetNextCost();
@@ -151,7 +153,7 @@ public class UIManager : MonoBehaviour
         list_haveRelic = list;
 
         // ¼³¸íÃ¢ Á¾·á
-        if(list_haveRelic.Count > 0 && infoRef.activeInHierarchy)
+        if (list_haveRelic.Count > 0 && infoRef.activeInHierarchy)
         {
             infoRef.SetActive(false);
         }
@@ -210,6 +212,12 @@ public class UIManager : MonoBehaviour
             GameStatus.inst.PlusStar("100000000");
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            QuestReset?.Invoke();
+            WeaponReset?.Invoke();
+        }
+
         if (petRef.activeInHierarchy)
         {
             int[] petmat = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
@@ -218,7 +226,7 @@ public class UIManager : MonoBehaviour
             bornText.text = string.Format("{0:#,0}", petmat[1]);
             bookText.text = string.Format("{0:#,0}", petmat[2]);
         }
-        
+
     }
     private void Awake()
     {
@@ -252,6 +260,7 @@ public class UIManager : MonoBehaviour
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Weapon").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Pet").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Relic").gameObject);
+        m_listMainUI.Add(canvas.transform.Find("ScreenArea/Shop").gameObject);
         m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
         m_list_BottomBtn[0].transform.GetComponent<Button>().onClick.AddListener(SetQuestScroll);
         ScreenArea = canvas.transform.Find("ScreenArea").GetComponent<RectTransform>();
@@ -325,6 +334,10 @@ public class UIManager : MonoBehaviour
         {
             m_QuestParents.GetChild(iNum).GetComponent<Quest>().initQuest();
         }
+        list_BotBtnAnim[0].SetTrigger("select");
+        list_BotBtnAnim[0].SetBool("isSelect", true);
+
+        QuestReset.AddListener(() => { TopQuestNum = 0; });
 
         //¹«±â ÃÊ±âÈ­
         int weaponCount = m_WeaponParents.childCount;
@@ -332,6 +345,7 @@ public class UIManager : MonoBehaviour
         {
             m_WeaponParents.GetChild(iNum).GetComponent<Weapon>().InitWeapon();
         }
+        WeaponReset.AddListener(() => { TopHaveWeaponNum = 0; });
 
         //Æê ÃÊ±âÈ­
         int petCount = petParents.childCount;
@@ -429,6 +443,7 @@ public class UIManager : MonoBehaviour
         {
             m_list_BottomBtn[bottomBtnNum].sprite = BotBtnSprite[4];
         }
+        AudioManager.inst.PlaySFX(4);
     }
 
     public void ClickOpenThisTab(GameObject _obj)
@@ -443,6 +458,7 @@ public class UIManager : MonoBehaviour
 
     public void ClickBuyCountBtn(int count)
     {
+        AudioManager.inst.PlaySFX(4);
         m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = TopBtnSprite[0];
         questBuyCountBtnNum = count;
         switch (count)
@@ -465,6 +481,7 @@ public class UIManager : MonoBehaviour
 
     public void ClickRelicBuyCountBtn(int count)
     {
+        AudioManager.inst.PlaySFX(4);
         m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = TopBtnSprite[0];
         relicBuyCountBtnNum = count;
         switch (count)

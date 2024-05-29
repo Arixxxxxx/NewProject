@@ -82,7 +82,8 @@ public class Relic : MonoBehaviour
         setNextCost();
         setText();
 
-        upBtn.onClick.AddListener(ClickUp);
+        upBtn.onClick.AddListener(() => {  AudioManager.inst.PlaySFX(1); ClickUp(); });
+
     }
 
     void setNextCost()
@@ -102,6 +103,10 @@ public class Relic : MonoBehaviour
             {
                 buyCount++;
                 setNextCost(buyCount);
+                if (buyCount >= 100)
+                {
+                    break;
+                }
             }
             buyCount--;
             nextCost = CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1));
@@ -158,8 +163,8 @@ public class Relic : MonoBehaviour
         BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
         if (haveStar >= nextCost)
         {
-            GameStatus.inst.MinusStar(nextCost.ToString());
             Lv += buyCount;
+            GameStatus.inst.MinusStar(nextCost.ToString());
             MissionData.Instance.SetSpecialMission((int)itemNum, Lv, SpMissionTag.Relic);
         }
     }
@@ -172,7 +177,7 @@ public class Relic : MonoBehaviour
         {
             upBtn.interactable = false;
         }
-        else if (upBtn.interactable == false)
+        else if (upBtn.interactable == false && haveStar >= nextCost)
         {
             upBtn.interactable = true;
         }
@@ -183,6 +188,7 @@ public class Relic : MonoBehaviour
         buyCount = UIManager.Instance.RelicBuyCount;
         setNextCost();
         setText();
+        checkStar();
     }
 
     public Sprite GetSprite()

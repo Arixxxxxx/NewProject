@@ -26,6 +26,7 @@ public class Quest : MonoBehaviour
         {
             lv = value;
             GameStatus.inst.SetAryQuestLv(Number, value);
+            TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
             if (nextRelease == false && lv >= 1)
             {
                 UIManager.Instance.QeustUpComplete(Number);
@@ -79,6 +80,7 @@ public class Quest : MonoBehaviour
 
         UIManager.Instance.OnBuyCountChanged.AddListener(_OnCountChanged);
         UIManager.Instance.OnBuyCountChanged.AddListener(SetbtnActive);
+        UIManager.Instance.QuestReset.AddListener(resetQuest);
         GameStatus.inst.OnGoldChanged.AddListener(() =>
         {
             if (UIManager.Instance.QuestBuyCountBtnNum == 3)//max일 때
@@ -90,6 +92,7 @@ public class Quest : MonoBehaviour
         });
         GameStatus.inst.OnPercentageChanged.AddListener(_OnItemPercentChanged);
         GameStatus.inst.OnPercentageChanged.AddListener(setItemCur);
+        UpBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1); });
     }
 
     void initValue()//초기값 설정
@@ -125,7 +128,7 @@ public class Quest : MonoBehaviour
             {
                 LvCur *= 2;
             }
-            TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+            //TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
             GameStatus.inst.MinusGold(nextCost.ToString());
             UIManager.Instance.OnBuyCountChanged?.Invoke();
         }
@@ -192,14 +195,32 @@ public class Quest : MonoBehaviour
     private void SetbtnActive()
     {
         BigInteger havegold = BigInteger.Parse(GameStatus.inst.Gold);
-        if (havegold < nextCost || nextCost == 0)
+        if (havegold < nextCost && UpBtn.interactable == true || nextCost == 0)
         {
             UpBtn.interactable = false;
         }
-        else if (objMask.activeSelf == false)
+        else if (objMask.activeSelf == false && UpBtn.interactable == false && havegold >= nextCost)
         {
             UpBtn.interactable = true;
         }
+        else if (objMask.activeSelf && UpBtn.interactable == true)
+        {
+            UpBtn.interactable = false;
+        }
+    }
+
+    void resetQuest()
+    {
+        Lv = 0;
+        nextRelease = false;
+
+        if (Number != 0)
+        {
+            SetMaskActive(true);
+        }
+        setNextCost();
+        setText();
+        SetbtnActive();
     }
 
     public int GetLv()

@@ -47,23 +47,19 @@ public class Pet : MonoBehaviour
     }
     bool ishave = false;
     bool isRelease = false;
-    int nextSoul;
-    int nextBorn;
-    int nextBook;
+    int nextCost;
 
     GameObject buyBtnTextBox, mask;
     Button upBtn;
     Button DetailBtn;
     Button BuyBtn;
     TMP_Text BuyPriceText;
-    TMP_Text SoulText;
-    TMP_Text BornText;
-    TMP_Text BookText;
+    TMP_Text CostText;
     TMP_Text lvText;
-    
+
     void Start()
     {
-        
+
     }
 
     public void initPet()
@@ -72,14 +68,12 @@ public class Pet : MonoBehaviour
         DetailBtn = transform.Find("imageBtn").GetComponent<Button>();
         BuyBtn = transform.Find("BuyBtn").GetComponent<Button>();
         BuyPriceText = transform.Find("BuyBtn/TextBox/PriceText").GetComponent<TMP_Text>();
-        SoulText = transform.Find("LvUpBtn/Soul/PriceText").GetComponent<TMP_Text>();
-        BornText = transform.Find("LvUpBtn/Born/PriceText").GetComponent<TMP_Text>();
-        BookText = transform.Find("LvUpBtn/Book/PriceText").GetComponent<TMP_Text>();
+        CostText = transform.Find("LvUpBtn/Soul/PriceText").GetComponent<TMP_Text>();
         lvText = transform.Find("LvText").GetComponent<TMP_Text>();
 
         buyBtnTextBox = transform.Find("BuyBtn/TextBox").gameObject;
         mask = transform.Find("BuyBtn/BtnMask").gameObject;
-        
+
         switch (type)
         {
             case PetType.Bomb:
@@ -109,6 +103,7 @@ public class Pet : MonoBehaviour
         upBtn.onClick.AddListener(ClickUp);
         BuyBtn.onClick.AddListener(() =>
         {
+            BuyBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1); });
             RubyPayment.inst.RubyPaymentUiActive(baseCost, () =>
             {
                 Lv++;
@@ -116,7 +111,7 @@ public class Pet : MonoBehaviour
                 PetContollerManager.inst.CrewUnlock_Action((int)type, true);
             });
         });
-        DetailBtn.onClick.AddListener(() => PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()));
+        DetailBtn.onClick.AddListener(() => { PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()); AudioManager.inst.PlaySFX(1); });
     }
 
     void checkHaveRuby()
@@ -135,29 +130,38 @@ public class Pet : MonoBehaviour
         }
     }
 
+    void checkHavePetMat()
+    {
+        int[] petMoney = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+        if (upBtn.gameObject.activeSelf && petMoney[(int)type] >= nextCost && upBtn.interactable == false)
+        {
+            upBtn.interactable = true;
+        }
+        else if (upBtn.gameObject.activeSelf && petMoney[(int)type] >= nextCost && upBtn.interactable == true)
+        {
+            upBtn.interactable = false;
+        }
+    }
+
     void ClickUp()
     {
         int[] petMoney = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
 
-        if (petMoney[0] >= nextSoul && petMoney[1] >= nextBorn && petMoney[2] >= nextBook)
+        if (petMoney[(int)type] >= nextCost)
         {
-            CrewGatchaContent.inst.Use_Crew_Material(0, nextSoul);
-            CrewGatchaContent.inst.Use_Crew_Material(1, nextBorn);
-            CrewGatchaContent.inst.Use_Crew_Material(2, nextBook);
+            CrewGatchaContent.inst.Use_Crew_Material((int)type, nextCost);
             Lv++;
         }
+
+        upBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1); });
     }
 
     void setNextCost()
     {
-        nextSoul = baseCost + Lv * 100;
-        nextBorn = baseCost + Lv * 100;
-        nextBook = baseCost + Lv * 100;
+        nextCost = baseCost + Lv * 100;
 
         lvText.text = $"ÇöÀç Lv.{Lv}";
-        SoulText.text = $"{nextSoul.ToString("N0")}";
-        BornText.text = $"{nextBorn.ToString("N0")}";
-        BookText.text = $"{nextBook.ToString("N0")}";
+        CostText.text = $"{nextCost.ToString("N0")}";
     }
 
     void releasePet()
@@ -165,7 +169,7 @@ public class Pet : MonoBehaviour
         if (GameStatus.inst.StageLv >= releaseStage)
         {
             isRelease = true;
-            
+
             mask.SetActive(false);
             buyBtnTextBox.SetActive(true);
             BuyBtn.interactable = true;

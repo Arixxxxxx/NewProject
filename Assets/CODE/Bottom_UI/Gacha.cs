@@ -9,16 +9,16 @@ public class Gacha : MonoBehaviour
     [SerializeField] GachaRank[] aryRankClass;
     [SerializeField] Transform RelicParents;
 
-    [SerializeField] GameObject gachaResultObj;
     [SerializeField] Transform ResultImageParents;
-    [SerializeField] Button allOpenBtn;
-    [SerializeField] Button OkBtn;
-    List<GaChaEffect> list_resultImage = new List<GaChaEffect>();
+    //[SerializeField] GameObject gachaResultObj;
+    //[SerializeField] Button allOpenBtn;
+    //[SerializeField] Button OkBtn;
+    //List<GaChaEffect> list_resultImage = new List<GaChaEffect>();
 
 
     int openCount = 0;
     int maxOpenCount = 10;
-    Button adRelicBtn;
+    //Button adRelicBtn;
 
     [Serializable]
     class GachaRank
@@ -49,26 +49,26 @@ public class Gacha : MonoBehaviour
 
     private void Start()
     {
-        int count = ResultImageParents.childCount;
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            GaChaEffect sc = ResultImageParents.GetChild(iNum).GetComponent<GaChaEffect>();
-            list_resultImage.Add(sc);
-            sc.GetOpenBtn().onClick.AddListener(() => SetOpenCount());
+        //int count = ResultImageParents.childCount;
+        //for (int iNum = 0; iNum < count; iNum++)
+        //{
+        //    GaChaEffect sc = ResultImageParents.GetChild(iNum).GetComponent<GaChaEffect>();
+        //    list_resultImage.Add(sc);
+        //    sc.GetOpenBtn().onClick.AddListener(() => SetOpenCount());
 
-        }
-        allOpenBtn.onClick.AddListener(() => ClickAllOpen());
-        OkBtn.onClick.AddListener(() =>
-        {
-            OkBtn.gameObject.SetActive(false);
-            gachaResultObj.SetActive(false);
-        });
+        //}
+        //allOpenBtn.onClick.AddListener(() => ClickAllOpen());
+        //OkBtn.onClick.AddListener(() =>
+        //{
+        //    OkBtn.gameObject.SetActive(false);
+        //    gachaResultObj.SetActive(false);
+        //});
 
-        adRelicBtn = transform.Find("Btns/RelicGachaBtn (2)").GetComponent<Button>();
-        adRelicBtn.onClick.AddListener(() =>
-        {
-            ADViewManager.inst.SampleAD_Active_Funtion(() => { StartCoroutine(gachaEffect(10)); });
-        });
+        //adRelicBtn = transform.Find("Btns/RelicGachaBtn (2)").GetComponent<Button>();
+        //adRelicBtn.onClick.AddListener(() =>
+        //{
+        //    ADViewManager.inst.SampleAD_Active_Funtion(() => { StartCoroutine(gachaEffect(10)); });
+        //});
     }
 
     IEnumerator gachaEffect(int GachaCount)
@@ -78,11 +78,11 @@ public class Gacha : MonoBehaviour
         {
             UIManager.Instance.SetGotoGachaBtn(false);
         }
-        int imagecount = list_resultImage.Count;
-        for (int iNum = 0; iNum < imagecount; iNum++)
-        {
-            list_resultImage[iNum].gameObject.SetActive(false); ;
-        }
+        //int imagecount = list_resultImage.Count;
+        //for (int iNum = 0; iNum < imagecount; iNum++)
+        //{
+        //    list_resultImage[iNum].gameObject.SetActive(false); ;
+        //}
 
         List<Sprite> ListResultSprite = new List<Sprite>();//연차 결과이미지 저장
         List<int> ListRank = new List<int>();
@@ -149,15 +149,16 @@ public class Gacha : MonoBehaviour
         UIManager.Instance.SetHaveRelic(list_haveRelic);
 
         //이미지 변경 및 표시
-        int spriteCount = ListResultSprite.Count;
-        gachaResultObj.SetActive(true);
-        for (int iNum = 0; iNum < spriteCount; iNum++)
-        {
-            yield return new WaitForSecondsRealtime(0.2f);
-            list_resultImage[iNum].Setsprite(ListResultSprite[iNum], (RankType)ListRank[iNum]);
-            list_resultImage[iNum].gameObject.SetActive(true);
-        }
-        Invoke("allOpenBtnActive", 1f);
+        yield return null;
+        //int spriteCount = ListResultSprite.Count;
+        //gachaResultObj.SetActive(true);
+        //for (int iNum = 0; iNum < spriteCount; iNum++)
+        //{
+        //    yield return new WaitForSecondsRealtime(0.2f);
+        //    list_resultImage[iNum].Setsprite(ListResultSprite[iNum], (RankType)ListRank[iNum]);
+        //    list_resultImage[iNum].gameObject.SetActive(true);
+        //}
+        //Invoke("allOpenBtnActive", 1f);
     }
 
     public void clickGacha(int GachaCount)
@@ -178,16 +179,16 @@ public class Gacha : MonoBehaviour
         });
     }
 
-    public void ClickAllOpen()
-    {
-        allOpenBtn.gameObject.SetActive(false);
-        int count = list_resultImage.Count;
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            list_resultImage[iNum].GetOpenBtn().onClick?.Invoke();
-        }
+    //public void ClickAllOpen()
+    //{
+    //    allOpenBtn.gameObject.SetActive(false);
+    //    int count = list_resultImage.Count;
+    //    for (int iNum = 0; iNum < count; iNum++)
+    //    {
+    //        list_resultImage[iNum].GetOpenBtn().onClick?.Invoke();
+    //    }
 
-    }
+    //}
 
     int compareRelic(GameObject A, GameObject B)
     {
@@ -202,24 +203,24 @@ public class Gacha : MonoBehaviour
 
     }
 
-    void allOpenBtnActive()
-    {
-        allOpenBtn.gameObject.SetActive(true);
-    }
+    //void allOpenBtnActive()
+    //{
+    //    allOpenBtn.gameObject.SetActive(true);
+    //}
 
-    public void OkBtnActive()
-    {
-        OkBtn.gameObject.SetActive(true);
-    }
+    //public void OkBtnActive()
+    //{
+    //    OkBtn.gameObject.SetActive(true);
+    //}
 
-    void SetOpenCount()
-    {
-        openCount++;
-        if (openCount >= maxOpenCount)
-        {
-            openCount = 0;
-            allOpenBtn.gameObject.SetActive(false);
-            Invoke("OkBtnActive", 1f);
-        }
-    }
+    //void SetOpenCount()
+    //{
+    //    openCount++;
+    //    if (openCount >= maxOpenCount)
+    //    {
+    //        openCount = 0;
+    //        allOpenBtn.gameObject.SetActive(false);
+    //        Invoke("OkBtnActive", 1f);
+    //    }
+    //}
 }

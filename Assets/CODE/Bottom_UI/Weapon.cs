@@ -15,6 +15,7 @@ public class Weapon : MonoBehaviour
         set
         {
             lv = value;
+            Atk = getAtk(Number);
             GameStatus.inst.SetAryWeaponLv(Number, value);
 
             if (lv >= 5)
@@ -78,6 +79,8 @@ public class Weapon : MonoBehaviour
         SetbtnActive();
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
+        UIManager.Instance.WeaponReset.AddListener(resetWeapon);
+        objBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1); });
     }
 
     void initValue() //초기값 설정
@@ -89,7 +92,6 @@ public class Weapon : MonoBehaviour
 
         if (Lv != 0)
         {
-            Atk = getAtk(Number);
             UIManager.Instance.SetTopWeaponNum(Number);
             clickWeaponImage();
         }
@@ -118,7 +120,7 @@ public class Weapon : MonoBehaviour
         {
             Lv++;
             MissionData.Instance.SetWeeklyMission("무기 강화", 1);
-            Atk = getAtk(Number);
+
             GameStatus.inst.MinusGold(nextCost.ToString());
             clickWeaponImage();
             setNextCost();
@@ -155,14 +157,40 @@ public class Weapon : MonoBehaviour
     private void SetbtnActive()
     {
         BigInteger havegold = BigInteger.Parse(GameStatus.inst.Gold);
-        if (havegold < nextCost || Lv >= 5)
+        if (Lv >= 5)
         {
             objBtn.interactable = false;
         }
-        else if (mask.activeSelf == false)
+        else if (havegold < nextCost && objBtn.interactable == true || nextCost == 0)
+        {
+            objBtn.interactable = false;
+        }
+        else if (mask.activeSelf == false && objBtn.interactable == false && havegold >= nextCost)
         {
             objBtn.interactable = true;
         }
+        else if (mask.activeSelf && objBtn.interactable == true)
+        {
+            objBtn.interactable = false;
+        }
+    }
+
+    private void resetWeapon()
+    {
+        Lv = 0;
+        if (Number != 0)
+        {
+            SetMaskActive(true);
+        }
+        else
+        {
+            GameStatus.inst.EquipWeaponNum = Number;
+        }
+        upBtnImage.SetActive(true);
+        upBtnMask.SetActive(false);
+        setNextCost();
+        setText();
+        SetbtnActive();
     }
 
     public BigInteger GetNextCost()
