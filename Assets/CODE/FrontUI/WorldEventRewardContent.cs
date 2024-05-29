@@ -55,6 +55,10 @@ public class WorldEventRewardContent : MonoBehaviour
         reSpawnCheker();
     }
 
+    /// <summary>
+    /// 0공격력증가, 1이속증가, 2골드획득증가, 3루비100개, 4 골드10배
+    /// </summary>
+    /// <param name="type"></param>
     public void EventActive(int type)
     {
         switch (type)
@@ -88,15 +92,16 @@ public class WorldEventRewardContent : MonoBehaviour
             //루비 (광고 시청후)
             case 4:
 
-                string curgold = ActionManager.inst.Get_EnemyDeadGold();
+                string curgold = GameStatus.inst.CurrentGold();
+                curgold = CalCulator.inst.StringAndIntMultiPly(curgold, 10); // 10배
 
                 //물어보는창 오픈
                 ADViewManager.inst.ActiveQuestionWindow(true, 1, 1, $"골드 +{CalCulator.inst.StringFourDigitAddFloatChanger(curgold)}", () => {
+
                     //광고보고
                     ADViewManager.inst.SampleAD_Active_Funtion(() =>
                     {
                         GameStatus.inst.PlusGold(curgold);
-                        curgold = CalCulator.inst.StringFourDigitAddFloatChanger(curgold);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(1), $"골드 +{CalCulator.inst.StringFourDigitAddFloatChanger(curgold)}");
                     });
                 });

@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
         return TopBtnSprite[index];
     }
     Canvas canvas;
+    [SerializeField]
     List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
     List<Image> m_list_BottomBtn = new List<Image>();//메인UI 하단 버튼
     List<Animator> list_BotBtnAnim = new List<Animator>();//메인UI 하단 버튼 애니메이터
@@ -251,16 +252,20 @@ public class UIManager : MonoBehaviour
             list_BotBtnAnim.Add(trsBotBtn.GetChild(iNum).GetComponent<Animator>());
         }
         ShopOpenBtn = trsBotBtn.Find("Shop").GetComponent<Button>();
-        ShopOpenBtn.onClick.AddListener(() => { canvas.sortingOrder = 15; });
-        ShopCloseBtn = canvas.transform.Find("ScreenArea/Shop/MainShopClosdBtn").GetComponent<Button>();
-        ShopCloseBtn.onClick.AddListener(() => { canvas.sortingOrder = 12; });
+        ShopOpenBtn.onClick.AddListener(() => 
+        {
+            ShopManager.inst.Active_Shop(0, true);
+            //canvas.sortingOrder = 15; 
+        });
+
+
 
 
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Quest").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Weapon").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Pet").gameObject);
         m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Relic").gameObject);
-        m_listMainUI.Add(canvas.transform.Find("ScreenArea/Shop").gameObject);
+        m_listMainUI.Add(canvas.transform.Find("ScreenArea/BackGround/Shop").gameObject);
         m_list_BottomBtn[1].transform.GetComponent<Button>().onClick.AddListener(SetWeaponScroll);
         m_list_BottomBtn[0].transform.GetComponent<Button>().onClick.AddListener(SetQuestScroll);
         ScreenArea = canvas.transform.Find("ScreenArea").GetComponent<RectTransform>();
@@ -303,7 +308,7 @@ public class UIManager : MonoBehaviour
         GotoRelicShopBtn = canvas.transform.Find("ScreenArea/BackGround/Relic/GotoRelicShopBtn").GetComponent<Button>();
         GotoRelicShopBtn.onClick.AddListener(() =>
         {
-            ShopManager.Instance.OpenShop(1);
+            ShopManager.inst.Active_Shop(0, true);
         });
         Transform RelicAllUpBtnParents = canvas.transform.Find("ScreenArea/BackGround/Relic/AllLvUpBtn");
         int RelicAllCount = RelicAllUpBtnParents.childCount;
@@ -419,6 +424,11 @@ public class UIManager : MonoBehaviour
 
     public void ClickBotBtn(int _num)
     {
+        if (_num != 4)
+        {
+            ShopManager.inst.Active_Shop(0,false);
+        }
+
         m_listMainUI[bottomBtnNum].SetActive(false);
         list_BotBtnAnim[bottomBtnNum].SetTrigger("nonSelect");
         list_BotBtnAnim[bottomBtnNum].SetBool("isSelect", false);
@@ -513,5 +523,13 @@ public class UIManager : MonoBehaviour
     public void SetAtkText(string _atk)
     {
         m_totalAtk.text = $"현재 타격 대미지 : {CalCulator.inst.StringFourDigitAddFloatChanger(_atk)} / 타";
+    }
+
+
+    // 환생후 퀘스트 및 무기리셋
+    public void Reset_QuestAndWeapon()
+    {
+        QuestReset?.Invoke();
+        WeaponReset?.Invoke();
     }
 }

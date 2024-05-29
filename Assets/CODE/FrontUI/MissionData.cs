@@ -155,14 +155,14 @@ public class MissionData : MonoBehaviour
                 case DailyMissionTag.VisitShop:
                     moveBtn.onClick.AddListener(() =>
                     {
-                        ShopManager.Instance.OpenShop(0);
+                        ShopManager.inst.Active_Shop(0,true);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;
                 case DailyMissionTag.UseRuby:
                     moveBtn.onClick.AddListener(() =>
                     {
-                        ShopManager.Instance.OpenShop(0);
+                        ShopManager.inst.Active_Shop(0,true);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
                     });
                     break;

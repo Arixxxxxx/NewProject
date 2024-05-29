@@ -28,10 +28,11 @@ public class LetterManager : MonoBehaviour
     //모두수락용
     Button everyAcceptBtn;
     List<LetterPrefab> letterList = new List<LetterPrefab>();
-    int[] saveLetterItemDic = new int[3]; // 현재 아이템종류 3가지
+    int[] saveLetterItemArr = new int[3]; // 현재 아이템종류 3가지
 
     GameObject EveryGetAlrimRef, EveryGetAlrimFreamlayOut;
     Button everyAcceptBackBtn;
+
     LetterBoxIcon[] letterbox;
 
     // 심볼
@@ -197,11 +198,8 @@ public class LetterManager : MonoBehaviour
     {
         //초기화
         letterList.Clear();
-
-        for (int index = 0; index < saveLetterItemDic.Length; index++)
-        {
-            saveLetterItemDic[index] = 0;
-        }
+        Array.Fill(saveLetterItemArr, 0);
+                
 
         int childCount = letterBox.transform.childCount;
         if (childCount == 0) { return; }
@@ -211,30 +209,33 @@ public class LetterManager : MonoBehaviour
         for (int index = 0; index < childCount; index++)
         {
             letterList.Add(letterBox.transform.GetChild(index).GetComponent<LetterPrefab>());
-            int[] check = letterList[index].ReturnThisLetterItemTypeAndCount();
-            saveLetterItemDic[check[0]] += check[1]; // 각 아이템타입 인덱스를 찾아 값을올려줌
+            int[] check = letterList[index].ReturnThisLetterItemTypeAndCount(); // 타입 갯수가져옴
+            saveLetterItemArr[check[0]] += check[1]; // 각 아이템타입 인덱스를 찾아 값을올려줌
         }
 
 
         // 자원 획득
-        for (int index = 0; index < saveLetterItemDic.Length; index++)
+        for (int index = 0; index < saveLetterItemArr.Length; index++)
         {
+            if (saveLetterItemArr[index] <= 0) { continue; }
+
             switch (index)
             {
                 case 0: //루비
-                    GameStatus.inst.PlusRuby(saveLetterItemDic[index]);
+                    GameStatus.inst.PlusRuby(saveLetterItemArr[index]);
                     break;
 
                 case 1: //골드
-                    GameStatus.inst.PlusGold(saveLetterItemDic[index].ToString());
+                    GameStatus.inst.PlusGold(saveLetterItemArr[index].ToString());
                     break;
 
                 case 2: //별
-                    GameStatus.inst.PlusStar(saveLetterItemDic[index].ToString());
+                    GameStatus.inst.PlusStar(saveLetterItemArr[index].ToString());
                     break;
             }
 
-            letterbox[index].SetIconAndValue(saveLetterItemDic[index]);
+            // 모두수락한후 뜨는창 몇개받았는지 텍스트 초기화
+            letterbox[index].SetIconAndValue(saveLetterItemArr[index]);
         }
 
 

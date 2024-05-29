@@ -252,6 +252,9 @@ public class HwanSengSystem : MonoBehaviour
         Set_AlrimWindowActive(false);
         GameStatus.inst.HWansengCount++;
 
+        // 퀘스트 및 무기리스트 리셋
+        UIManager.Instance.Reset_QuestAndWeapon();
+
         feverCountTimer = InputTime; // 추가시간 더하기 유물
         feverFrontImg.fillAmount = 1;
 

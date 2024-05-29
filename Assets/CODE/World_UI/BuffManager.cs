@@ -208,18 +208,6 @@ public class BuffManager : MonoBehaviour
     public void Buff_UI_Active(bool value)
     {
         mainWindow.SetActive(value);
-        //if (value)
-        //{
-        //    mainWindow.SetActive(true);
-
-        //}
-        //else 
-        //{
-        //    mainWindow.SetActive(true);
-        //    buffLayOutRef.SetActive(false);
-        //    exitBtn.gameObject.SetActive(false);
-        //    //mainWindowAnim.SetTrigger("Exit");
-        //}
     }
 
     // 애니메이션 적용
@@ -285,17 +273,18 @@ public class BuffManager : MonoBehaviour
             viewAdCoolTimer[index] -= Time.deltaTime;
             int min = (int)viewAdCoolTimer[index] / 60;
             int sec = (int)viewAdCoolTimer[index] % 60;
-            adCoolTimeText[index].text = $"{min} : {sec}";
-            buffIconBottomTime[index].text = $"남은 시간: {min}분 {sec}초";
+            adCoolTimeText[index].text = $"{min} : {sec:D2}";
+            buffIconBottomTime[index].text = $"남은 시간: {min}분 {sec:D2}초";
         }
-
+        
         else if (viewAdCoolTimer[index] <= 0)
         {
             if (viewAdCoolTimer[index] != 0)
             {
                 viewAdCoolTimer[index] = 0;
             }
-            if (btnAdActiveIMG[index].gameObject.activeSelf == false && adCoolTimeText[0].gameObject.activeSelf == true)
+
+            if (viewAdBtn[index].interactable == false)
             {
                 viewAdBtn[index].interactable = true;
                 btnAdActiveIMG[index].gameObject.SetActive(true);

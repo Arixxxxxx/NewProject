@@ -1,281 +1,160 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System;
-using System.Numerics;
+
 
 public class ShopManager : MonoBehaviour
 {
-    public static ShopManager Instance;
+    public static ShopManager inst;
 
-    [Header("상점")]
-    [SerializeField] GameObject obj_Product;
-    [SerializeField] GameObject obj_EmptyImage;
-    GameObject[] list_ShopUi;// 상점 리스트
-    GameObject obj_shop;// 상점 오브젝트
-    Button mainShopCloseBtn;// 상점 닫기버튼
-    Image[] list_BottomBtn;//상점 하단 버튼 리스트
-    TMP_Text GoldText;
-    TMP_Text StarText;
-    TMP_Text RubyText;
-    int botBtnNum = 0;// 상점 하단버튼 번호
+    //////////////////// < 인스펙터 참조 > ////////////////////////
 
-    [Header("상품 구매")]
-    GameObject obj_BuyCheck;
-    Button BuyYesBtn;
-    Transform productImageParents;//상품 이미지 부모
-    List<Image> list_productImage = new List<Image>();//상품 이미지 리스트
-    List<TMP_Text> list_productCountText = new List<TMP_Text>();//상품 갯수 텍스트
+    [Header("# BotArrayBtn Image <color=yellow>(Sprite)</color>")]
+    [Space]
+    [SerializeField]
+    Sprite[] botArr_NonClickImage;
+    [SerializeField]
+    Sprite[] botArr_ClickImage;
 
-    [Header("상품 목록")]
-    Transform GoldShopParnets;
-    Transform RubyShopParnets;
+    //////////////////////////////////////////////////////////////
+
+
+    GameObject shopRef;
+    // 동은 작업용
+    public GameObject ShopRef => shopRef;
+
+    Button[] botArrBtn; // 상점 하단 버튼
+    Image[] botArrImage; // 상점 하단 이동 버튼 이미지
+    TMP_Text[] botArrText;
+
+
+    [Tooltip("0갓챠/1골드상점/2루비상점/3광고상점")] GameObject[] shopListRef;
+
+    // 현재 눌려있는 번호
+    int curSelectMenu = -1;
 
     private void Awake()
     {
-        if (Instance == null)
+        //싱글톤
+        #region
+        if (inst == null)
         {
-            Instance = this;
+            inst = this;
         }
         else
         {
             Destroy(this);
         }
+        #endregion 
+
+        shopRef = transform.parent.Find("ScreenArea/BackGround/Shop").gameObject;
+
+
+        // 상점 리스트 초기화
+        shopListRef = new GameObject[shopRef.transform.Find("Shop_List").childCount];
+        for (int index = 0; index < shopListRef.Length; index++)
+        {
+            shopListRef[index] = shopRef.transform.Find("Shop_List").GetChild(index).gameObject;
+        }
+
+
+        //상점 하단 버튼초기화
+        botArrBtn = shopRef.transform.Find("ShopBottomBtn").GetComponentsInChildren<Button>();
+        botArrImage = new Image[botArrBtn.Length];
+        botArrText = new TMP_Text[botArrBtn.Length];
+        for (int index = 0; index < botArrBtn.Length; index++)
+        {
+            botArrImage[index] = botArrBtn[index].GetComponent<Image>();
+            botArrText[index] = botArrImage[index].GetComponentInChildren<TMP_Text>();
+        }
+
+
+        Btn_Init();
     }
 
-    void Start()
+    private void Start()
     {
-        obj_shop = GameObject.Find("---[UI Canvas]").transform.Find("ScreenArea/Shop").gameObject;
-        mainShopCloseBtn = obj_shop.transform.Find("MainShopClosdBtn").GetComponent<Button>();
-        GoldText = obj_shop.transform.Find("TopUi/MoneyText/Gold/Text").GetComponent<TMP_Text>();
-        StarText = obj_shop.transform.Find("TopUi/MoneyText/Star/Text").GetComponent<TMP_Text>();
-        RubyText = obj_shop.transform.Find("TopUi/MoneyText/Ruby/Text").GetComponent<TMP_Text>();
+
+    }
+
+    private void Btn_Init()
+    {
+        // 하단 상점이동 버튼부 초기화
+        for (int index = 0;index < botArrBtn.Length; index++)
+        {
+            int curIndex = index;
+            botArrBtn[curIndex].onClick.AddListener(() => Active_Shop(curIndex, true));
+        }
+
+        // 
+    }
+
+
+
+    /// <summary>
+    /// 상점호출
+    /// </summary>
+    /// <param name="ShopTypeNumber">0뽑기/1골드/2루비/3광고 </param>
+    public void Active_Shop(int ShopTypeNumber, bool active)
+    {
+        if (active) // 해당 상점 호출
+        {
+            
+            // 최초 넘어온게 아니라면 버튼음 재생
+            if(curSelectMenu != -1 && curSelectMenu != ShopTypeNumber)
+            {
+                AudioManager.inst.PlaySFX(4);
+            }
+
+            //동일 버튼 또 클릭시 리턴
+            if(curSelectMenu == ShopTypeNumber) { return; }
+
+            //현재 선택되어있는 상점 추적
+            curSelectMenu = ShopTypeNumber;
+
+            // 창 열어주기
+            for (int index = 0; index < shopListRef.Length; index++)
+            {
+                if (index == ShopTypeNumber)
+                {
+                    shopListRef[index].SetActive(true);
+                }
+                else
+                {
+                    shopListRef[index].SetActive(false);
+                }
+            }
+
+            // 이미지 변경
+            BotArrBtn_ImageChanger(ShopTypeNumber);
+        }
+        else // 상점 종료
+        {
+            curSelectMenu = -1;
+            shopRef.SetActive(false);
+        }
+    }
+
+
         
 
-        //상점 리스트 초기화
-        Transform trsShopParent = obj_shop.transform.Find("ShopList");
-        int shopCount = trsShopParent.childCount;
-        list_ShopUi = new GameObject[shopCount];
-        for (int iNum = 0; iNum < shopCount; iNum++)
+    float clickFontsize = 11.5f;
+    float nonclickFontsize = 10f;
+    // 하단버튼 이미지 변경
+    private void BotArrBtn_ImageChanger(int selectBtn)
+    {
+        for(int index=0; index < botArrImage.Length; index++)
         {
-            list_ShopUi[iNum] = trsShopParent.GetChild(iNum).gameObject;
-        }
-
-        //상점 하단버튼 초기화
-        Transform trsBotBtn = obj_shop.transform.Find("BotBtn");
-        int BotBtnCount = trsBotBtn.childCount;
-        list_BottomBtn = new Image[BotBtnCount];
-        for (int iNum = 0; iNum < BotBtnCount; iNum++)
-        {
-            list_BottomBtn[iNum] = trsBotBtn.GetChild(iNum).GetComponent<Image>();
-        }
-
-        GoldShopParnets = obj_shop.transform.Find("ShopList/Gold/Scroll View").GetComponent<ScrollRect>().content;
-        RubyShopParnets = obj_shop.transform.Find("ShopList/Ruby/Scroll View").GetComponent<ScrollRect>().content;
-
-        //구매확인창 초기화
-        obj_BuyCheck = obj_shop.transform.Find("CheckBuy").gameObject;
-        productImageParents = obj_BuyCheck.transform.Find("BackGround/ProductImage");
-        BuyYesBtn = obj_BuyCheck.transform.Find("BackGround/YesBtn").GetComponent<Button>();
-
-        //상점닫기버튼 초기화
-        mainShopCloseBtn.onClick.AddListener(() => 
-        { 
-            AdMarket.inst.ActiveAdMarket(false);
-        });
-
-        GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}";
-        GameStatus.inst.OnGoldChanged.AddListener(() => { GoldText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Gold)}"; });//상점 골드 텍스트 갱신
-        StarText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star)}";
-        GameStatus.inst.OnStartChanged.AddListener(() => { StarText.text = $"{CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Star)}"; });//상점 별 텍스트 갱신
-        RubyText.text = $"{GameStatus.inst.Ruby}";
-        GameStatus.inst.OnRubyChanged.AddListener(() => { RubyText.text =string.Format("{0:#,0}",GameStatus.inst.Ruby); });//상점 루비 텍스트 갱신
-
-        int productImageCount = productImageParents.childCount;
-        for (int iNum = 0; iNum < productImageCount; iNum++)
-        {
-            list_productImage.Add(productImageParents.GetChild(iNum).Find("Image").GetComponent<Image>());
-        }
-
-        int productImageTextCount = list_productImage.Count;
-        for (int iNum = 0; iNum < productImageTextCount; iNum++)
-        {
-            list_productCountText.Add(productImageParents.GetChild(iNum).Find("RewordText").GetComponent<TMP_Text>());
-        }
-
-        //상점 오픈버튼 초기화
-        UIManager.Instance.GetShopOpenBtn().onClick.AddListener(() => 
-        {
-            if (botBtnNum == 2)
+            if(index == selectBtn)
             {
-                CrewGatchaContent.inst.CrewMaterialGatchaActive(true);
+                botArrImage[index].sprite = botArr_ClickImage[index];
+                botArrText[index].fontSize = clickFontsize;
             }
-            else if (botBtnNum == 3)
+            else
             {
-                AdMarket.inst.ActiveAdMarket(true);
+                botArrImage[index].sprite = botArr_NonClickImage[index];
+                botArrText[index].fontSize = nonclickFontsize;
             }
-        });
-    }
-
-    public GameObject GetEmptyImage()
-    {
-        return obj_EmptyImage;
-    }
-
-    public GameObject GetProduct()
-    {
-        return obj_Product;
-    }
-    public void OpenRubyShop()
-    {
-        obj_shop.SetActive(true);
-        ClickShopBtn(4);
-    }
-    /// <summary>
-    /// 0 = 골드상점, 1 = 유물상점, 2 = 펫재료 상점, 3 = 광고 상점, 4 = 루비상점
-    /// </summary>
-    /// <param name="num"></param>
-    public void OpenShop(int num)
-    {
-        obj_shop.SetActive(true);
-        ClickShopBtn(num);
-    }
-
-    public void SetShopActive(bool value)
-    {
-        obj_shop.SetActive(value);
-    }
-
-    public void ClickShopBtn(int _num)
-    {
-        if (_num == 2)
-        {
-            CrewGatchaContent.inst.CrewMaterialGatchaActive(true);
-            AdMarket.inst.ActiveAdMarket(false);
-            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
-            list_ShopUi[botBtnNum].SetActive(false);
-            botBtnNum = _num;
-            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
-        }
-        else if (_num == 3)
-        {
-            AdMarket.inst.ActiveAdMarket(true);
-            CrewGatchaContent.inst.CrewMaterialGatchaActive(false);
-            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
-            list_ShopUi[botBtnNum].SetActive(false);
-            botBtnNum = _num;
-            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
-        }
-        else
-        {
-            CrewGatchaContent.inst.CrewMaterialGatchaActive(false);
-            AdMarket.inst.ActiveAdMarket(false);
-            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(0);
-            list_ShopUi[botBtnNum].SetActive(false);
-
-            botBtnNum = _num;
-            list_BottomBtn[botBtnNum].sprite = UIManager.Instance.GetSelectUISprite(1);
-            list_ShopUi[botBtnNum].SetActive(true);
-        }
-    }
-
-
-    public void SetCheckBuy(List<Product.ProductList> _list, string _price, ProductTag _priceType)
-    {
-        int count;
-        switch (_priceType)
-        {
-            case ProductTag.Gold:
-                string convertGold = CalCulator.inst.ConvertChartoIndex(_price);//문자로 표기돼있는 숫자를 풀어서 반환
-                BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
-                if (haveGold >= BigInteger.Parse(convertGold))
-                {
-                    BuyYesBtn.onClick.AddListener(() =>
-                    {
-                        GameStatus.inst.MinusGold(convertGold);
-                        count = _list.Count;
-                        for (int iNum = 0; iNum < count; iNum++)// 구매
-                        {
-                            _list[iNum].buyProduct();
-                        }
-                        obj_BuyCheck.SetActive(false);
-                        BuyYesBtn.onClick.RemoveAllListeners();
-                    });
-
-                }
-                else
-                {
-                    Debug.Log("골드가 부족합니다");
-                    return;
-                }
-                break;
-            case ProductTag.Ruby:
-                int haveRuby = GameStatus.inst.Ruby;
-                int iPrice = int.Parse(_price);
-                if (haveRuby >= iPrice)
-                {
-                    BuyYesBtn.onClick.AddListener(() =>
-                    {
-                        GameStatus.inst.Ruby -= iPrice;
-                        count = _list.Count;
-                        for (int iNum = 0; iNum < count; iNum++)//구매
-                        {
-                            _list[iNum].buyProduct();
-                        }
-                        obj_BuyCheck.SetActive(false);
-                        BuyYesBtn.onClick.RemoveAllListeners();
-                    });
-                }
-                else
-                {
-                    Debug.Log("루비가 부족합니다");
-                    return;
-                }
-                break;
-            case ProductTag.Star:
-                string convertStar = CalCulator.inst.ConvertChartoIndex(_price);//문자로 표기돼있는 숫자를 풀어서 반환
-                BigInteger haveStar = BigInteger.Parse(GameStatus.inst.Star);
-                if (haveStar >= BigInteger.Parse(convertStar))
-                {
-                    BuyYesBtn.onClick.AddListener(() =>
-                    {
-                        //GameStatus.inst.star(convertStar);
-                        count = _list.Count;// 구매
-                        for (int iNum = 0; iNum < count; iNum++)
-                        {
-                            _list[iNum].buyProduct();
-                        }
-                        obj_BuyCheck.SetActive(false);
-                        BuyYesBtn.onClick.RemoveAllListeners();
-                    });
-                }
-                else
-                {
-                    Debug.Log("별이 부족합니다");
-                    return;
-                }
-                break;
-        }
-
-        obj_BuyCheck.SetActive(true);
-
-        count = list_productImage.Count;// 이미지 다 꺼주기
-        for (int iNum = 0; iNum < count; iNum++)
-        {
-            if (list_productImage[iNum].gameObject.activeSelf)
-            {
-                list_productImage[iNum].transform.parent.gameObject.SetActive(false);
-            }
-        }
-
-        count = _list.Count;
-        for (int iNum = 0; iNum < count; iNum++)// 이미지 갯수에 맞게 켜주고 이미지 변경
-        {
-            list_productImage[iNum].transform.parent.gameObject.SetActive(true);
-            list_productImage[iNum].sprite = _list[iNum].GetSprite();
-            list_productCountText[iNum].text = _list[iNum].count;
         }
     }
 }

@@ -52,10 +52,7 @@ public class PetContollerManager : MonoBehaviour
         {
             Destroy(this);
         }
-    }
 
-    void Start()
-    {
         playerObj = ActionManager.inst.ReturnPlayerObjInHierachy();
         effectRef = GameManager.inst.WorldSpaceRef.transform.Find("Effect").gameObject;
         frontUiRef = GameManager.inst.FrontUiRef;
@@ -103,6 +100,9 @@ public class PetContollerManager : MonoBehaviour
         charNameText = petUnlockRef.transform.Find("Detail/CharName").GetComponent<TMP_Text>();
         charInfoText = petUnlockRef.transform.Find("Detail/InfoText").GetComponent<TMP_Text>();
     }
+
+   
+
 
     /// <summary>
     /// 동료 구매시 첫 구매연출 
@@ -335,13 +335,29 @@ public class PetContollerManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 펫 On/Off 활성화 함수
+    /// </summary>
+    /// <param name="petNum">0 = 공격펫 / 1 = 버프펫 / 2 =골드펫 </param>
+    public void PetActive(int petNum, int PetLv)
+    {
+        if(PetLv <= 0) { return; }
+        
+        if (petAnim[petNum].gameObject.activeSelf == false)
+        {
+            petWind[petNum].SetActive(true);
+            petAnim[petNum].gameObject.SetActive(true);
+            petShadow[petNum].SetActive(true);
+            StartCoroutine(PlayAnim(petNum));
+        }
+    }
+
+
     //시작시 애니메이션 작동
     IEnumerator PlayAnim(int petNum)
     {
         yield return null;
-        Debug.Log($"{petNum} , {ActionManager.inst.IsMove}");
         petAnim[petNum].SetBool("Move", ActionManager.inst.IsMove);
-
     }
 
 }

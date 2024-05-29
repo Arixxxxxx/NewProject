@@ -84,7 +84,7 @@ public class RubyPayment : MonoBehaviour
         {
             nohaveRubyRef.SetActive(false);
             AllFrontUIClose();
-            ShopManager.Instance.OpenRubyShop();
+            ShopManager.inst.Active_Shop(2,true);
         });
     }
 

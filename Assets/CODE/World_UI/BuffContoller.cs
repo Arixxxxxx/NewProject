@@ -22,12 +22,12 @@ public class BuffContoller : MonoBehaviour
 
     GameObject[] buffActive;
     TMP_Text[] buffTime;
-    Image[] buffIconBg;
+    Image[] buffIconMask;
 
     [SerializeField]
     [Tooltip("0 공격력, 1 이속, 2골드, 3강한공격력, 4뉴비")]
     double[] buffTimer;
-    public double[] BuffTimer {  get { return buffTimer; } }
+    public double[] BuffTimer { get { return buffTimer; } }
     [SerializeField]
     public bool[] buffActiveCheck = new bool[4];
 
@@ -59,13 +59,13 @@ public class BuffContoller : MonoBehaviour
         buffTime = new TMP_Text[buffChild];
         buffTimer = new double[buffChild];
         buffIconPs = new ParticleSystem[buffChild];
-        buffIconBg = new Image[buffChild];
+        buffIconMask = new Image[buffChild];
 
 
         for (int index = 0; index < buffBtns.Length; index++)
         {
             buffBtns[index] = buffParent.transform.GetChild(index).GetComponent<Button>();
-            buffIconBg[index] = buffBtns[index].transform.GetChild(0).GetComponent<Image>();
+            buffIconMask[index] = buffBtns[index].transform.GetChild(0).GetComponent<Image>();
             buffActive[index] = buffBtns[index].transform.GetChild(1).gameObject;
             buffTime[index] = buffActive[index].GetComponentInChildren<TMP_Text>();
             buffIconPs[index] = buffActive[index].GetComponentInChildren<ParticleSystem>();
@@ -97,7 +97,7 @@ public class BuffContoller : MonoBehaviour
     {
 
         buffTimer[Num] += Time * 60;
-        buffIconBg[Num].gameObject.SetActive(false);
+        buffIconMask[Num].gameObject.SetActive(false);
         BuffValueActiver(Num, true);
 
         switch (Num)
@@ -138,9 +138,12 @@ public class BuffContoller : MonoBehaviour
     /// </summary>
     private void BuffTimeCheck(int index)
     {
+        //버프 시간종료
         if (buffTimer[index] <= 0 && buffActive[index].activeSelf)
         {
-            buffIconBg[index].gameObject.SetActive(true);
+            // 버프 아이콘 Mask
+            buffIconMask[index].gameObject.SetActive(true);
+
             BuffValueActiver(index, false);
 
             if (buffActiveCheck[index] == true)
@@ -152,7 +155,6 @@ public class BuffContoller : MonoBehaviour
                 case 0: // 공격력 버프
                 case 1:  // 이속 버프
                 case 2: // 골드 버프
-                    buffTimer[index] = 0;
                     buffActive[index].gameObject.SetActive(false);
                     break;
 
@@ -161,14 +163,20 @@ public class BuffContoller : MonoBehaviour
 
                     break;
             }
+
+            buffTimer[index] = 0;
         }
+
+        // 버프 활성화
         else if (buffTimer[index] > 0 && buffActive[index].activeSelf)
         {
-            if (buffIconBg[index].gameObject.activeSelf == true)
+            // Mask 종료
+            if (buffIconMask[index].gameObject.activeSelf == true)
             {
-                buffIconBg[index].gameObject.SetActive(false);
+                buffIconMask[index].gameObject.SetActive(false);
             }
 
+            // 파티클 및 남은시간 텍스트 켜줌 
             if (buffActiveCheck[index] == false)
             {
                 buffActiveCheck[index] = true;
@@ -211,11 +219,11 @@ public class BuffContoller : MonoBehaviour
 
             buffTimer[4] -= Time.deltaTime;
 
-            if (buffIconBg[4].gameObject.activeSelf == true && buffTimer[4] <= 0)
+            if (buffIconMask[4].gameObject.activeSelf == true && buffTimer[4] <= 0)
             {
                 buffTimer[4] = 0;
                 BuffValueActiver(4, false);
-                buffIconBg[4].gameObject.SetActive(false);
+                buffIconMask[4].gameObject.SetActive(false);
                 newbieBuffActiveCheck = false;
             }
         }

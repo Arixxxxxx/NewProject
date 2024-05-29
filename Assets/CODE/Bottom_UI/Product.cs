@@ -70,6 +70,6 @@ public class Product : MonoBehaviour
 
     public void ClickBuy()
     {
-        ShopManager.Instance.SetCheckBuy(list_product, price, priceType);
+        //ShopManager.Instance.SetCheckBuy(list_product, price, priceType);
     }
 }

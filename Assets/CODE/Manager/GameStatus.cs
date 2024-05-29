@@ -486,19 +486,36 @@ public class GameStatus : MonoBehaviour
     /////////////////////////////// 펫 버프 증가량 관련 //////////////////////////////////
 
     // 1. 공격펫
-    int pet0_Lv = 1;
+    int pet0_Lv = 0;
     public int Pet0_Lv
     {
         get { return pet0_Lv; }
-        set { pet0_Lv = value; }
+        set
+        {
+            pet0_Lv = value;
+            
+            // 첫 로드시에만 작동
+            if (DataManager.inst.saveAble == false)
+            {
+                PetContollerManager.inst.PetActive(0, pet0_Lv);
+            }
+        }
     }
 
     // 2. 버프펫
-    int pet1_Lv = 1;
+    int pet1_Lv = 0;
     public int Pet1_Lv
     {
         get { return pet1_Lv; }
-        set { pet1_Lv = value; }
+        set {
+            
+            pet1_Lv = value;
+            // 첫 로드시에만 작동
+            if (DataManager.inst.saveAble == false)
+            {
+                PetContollerManager.inst.PetActive(1, pet1_Lv);
+            }
+        }
     }
 
     // 2-1 펫의 공격력 버프
@@ -518,11 +535,19 @@ public class GameStatus : MonoBehaviour
     }
 
     // 3. 사령술사
-    int pet2_Lv = 1;
+    int pet2_Lv = 0;
     public int Pet2_Lv
     {
         get { return pet2_Lv; }
-        set { pet2_Lv = value; }
+        set 
+        {
+            pet2_Lv = value;
+
+            if (DataManager.inst.saveAble == false)
+            {
+                PetContollerManager.inst.PetActive(2, pet2_Lv);
+            }
+        }
     }
 
     /////////////////////////////// 하단 UI 데이터 //////////////////////////////////
@@ -568,12 +593,12 @@ public class GameStatus : MonoBehaviour
     {
         aryWeaponLv[Num] = Value;
         MissionData.Instance.SetSpecialMission(Num, Value, SpMissionTag.Weapon);
-        
-        if(aryWeaponLv[Num] == 5)
+
+        if (aryWeaponLv[Num] == 5)
         {
             DogamManager.inst.MasterWeaponCheker();
         }
-        
+
     }
 
     [HideInInspector] public UnityEvent OnPercentageChanged;
@@ -889,6 +914,11 @@ public class GameStatus : MonoBehaviour
     }
 
 
+
+
+
+    public string CurrentGold() => TotalProdGold.ToString();
+
     /// <summary>
     ///  UI창에 골드증가량 안뜨는 함수 ( 초당 골드 자동증가 )
     /// </summary>
@@ -1101,7 +1131,7 @@ public class GameStatus : MonoBehaviour
         {
             LastLoginDate = DateTime.MinValue;
         }
-        
+
 
         //세이브가능
         DataManager.inst.saveAble = true;

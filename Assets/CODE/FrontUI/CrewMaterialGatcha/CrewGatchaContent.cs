@@ -147,7 +147,7 @@ public class CrewGatchaContent : MonoBehaviour
     {
         xBtn.onClick.AddListener(() =>
         {
-            ShopManager.Instance.SetShopActive(false);
+            ShopManager.inst.Active_Shop(0,false);
             CrewMaterialGatchaActive(false);
         });
 

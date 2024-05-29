@@ -46,7 +46,6 @@ public class LetterBoxIcon : MonoBehaviour
 
             case ItemType.Gold:
             case ItemType.Star:
-                Debug.Log(value);
                 valueText.text = $"+ {CalCulator.inst.StringFourDigitAddFloatChanger(value.ToString())}";
                 break;
 
