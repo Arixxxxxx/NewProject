@@ -20,15 +20,16 @@ public class ShopManager : MonoBehaviour
 
 
     GameObject shopRef;
-    // 동은 작업용
-    public GameObject ShopRef => shopRef;
+    Transform shopListRef;
+    
+    public GameObject ShopRef => shopRef; // 동은 작업 연결용
 
     Button[] botArrBtn; // 상점 하단 버튼
     Image[] botArrImage; // 상점 하단 이동 버튼 이미지
     TMP_Text[] botArrText;
+    TMP_Text curRubyText;
 
-
-    [Tooltip("0갓챠/1골드상점/2루비상점/3광고상점")] GameObject[] shopListRef;
+    [Tooltip("0갓챠/1골드상점/2루비상점/3광고상점")] GameObject[] shopListChildRef;
 
     // 현재 눌려있는 번호
     int curSelectMenu = -1;
@@ -48,15 +49,17 @@ public class ShopManager : MonoBehaviour
         #endregion 
 
         shopRef = transform.parent.Find("ScreenArea/BackGround/Shop").gameObject;
-
+        shopListRef = shopRef.transform.Find("Shop_List");
 
         // 상점 리스트 초기화
-        shopListRef = new GameObject[shopRef.transform.Find("Shop_List").childCount];
-        for (int index = 0; index < shopListRef.Length; index++)
+        shopListChildRef = new GameObject[shopListRef.childCount-1]; // CurRuby는 제외
+        for (int index = 0; index < shopListChildRef.Length; index++)
         {
-            shopListRef[index] = shopRef.transform.Find("Shop_List").GetChild(index).gameObject;
+            shopListChildRef[index] = shopListRef.GetChild(index).gameObject;
         }
 
+        // 상점 좌측상단 소지 루비현황 텍스트
+        curRubyText = shopListRef.Find("CurRuby/Box/Text (TMP)").GetComponent<TMP_Text>();
 
         //상점 하단 버튼초기화
         botArrBtn = shopRef.transform.Find("ShopBottomBtn").GetComponentsInChildren<Button>();
@@ -121,16 +124,19 @@ public class ShopManager : MonoBehaviour
                     break;
             }
 
+            // 소비루비 초기화
+            curRubyText.text = CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Ruby.ToString());
+
             // 창 열어주기
-            for (int index = 0; index < shopListRef.Length; index++)
+            for (int index = 0; index < shopListChildRef.Length; index++)
             {
                 if (index == ShopTypeNumber)
                 {
-                    shopListRef[index].SetActive(true);
+                    shopListChildRef[index].SetActive(true);
                 }
                 else
                 {
-                    shopListRef[index].SetActive(false);
+                    shopListChildRef[index].SetActive(false);
                 }
             }
 

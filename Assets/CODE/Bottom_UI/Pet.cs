@@ -132,7 +132,7 @@ public class Pet : MonoBehaviour
 
     void checkHavePetMat()
     {
-        int[] petMoney = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+        int[] petMoney = GameStatus.inst.CrewMaterial;
         if (upBtn.gameObject.activeSelf && petMoney[(int)type] >= nextCost && upBtn.interactable == false)
         {
             upBtn.interactable = true;
@@ -145,11 +145,12 @@ public class Pet : MonoBehaviour
 
     void ClickUp()
     {
-        int[] petMoney = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+        int[] petMoney = GameStatus.inst.CrewMaterial;
 
         if (petMoney[(int)type] >= nextCost)
         {
-            CrewGatchaContent.inst.Use_Crew_Material((int)type, nextCost);
+            //CrewGatchaContent.inst.Use_Crew_Material((int)type, nextCost);
+            GameStatus.inst.Use_crewMaterial((int)type, nextCost);
             Lv++;
         }
 

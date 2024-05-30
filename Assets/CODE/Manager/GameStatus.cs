@@ -324,6 +324,45 @@ public class GameStatus : MonoBehaviour
         return TotalProdGold.ToString();
     }
 
+
+    // 동료 강화재료
+    int[] crewMaterial = new int[3];
+    public int[] CrewMaterial 
+    {
+        get { return (int[])crewMaterial.Clone(); } // 배열의 복사본 반환
+        set
+        {
+            if (value.Length == crewMaterial.Length)
+            {
+                crewMaterial = (int[])value.Clone(); // 배열의 복사본 할당
+            }
+            else
+            {
+                throw new ArgumentException("Array size mismatch");
+            }
+        }
+    }
+
+    /// <summary>
+    ///  증가 => 순서 : 부적 / 화약 / 굴소스 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="count"></param>
+    public void Set_crewMaterial(int index, int count) 
+    {
+        crewMaterial[index] += count;
+    }
+
+    /// <summary>
+    ///  사용 => 순서 : 부적 / 화약 / 굴소스 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="count"></param>
+    public void Use_crewMaterial(int index, int count)
+    {
+        crewMaterial[index] -= count;
+    }
+
     /////////////////////[ 플레이어 관련 변수 ]//////////////////////////////
 
     // 1. 공격력
@@ -1047,7 +1086,7 @@ public class GameStatus : MonoBehaviour
         Ruby = saveData.Ruby;
 
         // 2.펫재료
-        CrewGatchaContent.inst.Set_CrewMeterialData(saveData.Soul, saveData.born, saveData.book);
+        CrewMaterial = saveData.CrewUpgradeMaterial;
 
         // 3.미니게임
         AdRulletActive = saveData.adRulletPlay;
@@ -1152,10 +1191,8 @@ public class GameStatus : MonoBehaviour
         saveData.Ruby = Ruby;
 
         // 2.펫재료
-        int[] material = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
-        saveData.Soul = material[0];
-        saveData.born = material[1];
-        saveData.book = material[2];
+        saveData.CrewUpgradeMaterial = CrewMaterial;
+        
 
 
         // 3.미니게임

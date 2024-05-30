@@ -39,9 +39,7 @@ public class DataManager : MonoBehaviour
         public int Ruby;
 
         // 2. 동료 강화 재료
-        public int Soul;
-        public int book;
-        public int born;
+        public int[] CrewUpgradeMaterial = new int[3];
 
         // 3. 미니게임
         public bool adRulletPlay;

@@ -145,21 +145,24 @@ public class AdMarket : MonoBehaviour
                 case 3:
                     WorldUI_Manager.inst.Set_Reward_InclueAction(SpriteResource.inst.CrewMaterialIMG(0), "¿µÈ¥ +150", () =>
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(0, 150);
+                        //CrewGatchaContent.inst.MaterialCountEditor(0, 150);
+                        GameStatus.inst.Set_crewMaterial(0, 150);
                     });
                     break;
 
                 case 4:
                     WorldUI_Manager.inst.Set_Reward_InclueAction(SpriteResource.inst.CrewMaterialIMG(1), "»À +150", () =>
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(1, 150);
+                        //CrewGatchaContent.inst.MaterialCountEditor(1, 150);
+                        GameStatus.inst.Set_crewMaterial(1, 150);
                     });
                     break;
 
                 case 5:
                     WorldUI_Manager.inst.Set_Reward_InclueAction(SpriteResource.inst.CrewMaterialIMG(2), "°í¼­ +150", () =>
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(2, 150);
+                        //CrewGatchaContent.inst.MaterialCountEditor(2, 150);
+                        GameStatus.inst.Set_crewMaterial(2, 150);
                     });
                     break;
             }

@@ -314,6 +314,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1f127c634ed1ef42937054a47d18df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gachaPrefbas:
+  - {fileID: 2740509288565987315, guid: cdb63f4a060591248b64ebb6c3c013b8, type: 3}
+  isChange: 0
 --- !u!1 &2562581402446063995
 GameObject:
   m_ObjectHideFlags: 0
@@ -751,6 +754,8 @@ MonoBehaviour:
   buffRubyPrice: 64000000fa00000064000000
   adDeletePrice: 10
   hwansengPrice: 500
+  crewMaterialGachaPrice: 2c01000020030000
+  relicGachaPrice: 2c01000020030000
 --- !u!114 &4904963902540086993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,7 +879,6 @@ MonoBehaviour:
   - {fileID: -1444238164, guid: 33ed170abbe8ffe4b9f3408431e7f531, type: 3}
   - {fileID: -1093023860, guid: 33ed170abbe8ffe4b9f3408431e7f531, type: 3}
   - {fileID: 58420052, guid: 33ed170abbe8ffe4b9f3408431e7f531, type: 3}
-  - {fileID: 2048784362, guid: 031e097540eb98646b85e31442c57b72, type: 3}
   questIcon:
   - {fileID: 95158324, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}
   - {fileID: 1856796777, guid: 464ca82a8572c6945af17a5fdc7c4116, type: 3}

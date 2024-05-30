@@ -632,18 +632,25 @@ public class WorldUI_Manager : MonoBehaviour
     /// <summary>
     /// 화면 페이드 하얘졌다가 점점 내림
     /// </summary>
-    public void Effect_WhiteCutton()
+    /// 
+    Coroutine fadeCr;
+    public void Effect_WhiteCutton(float Duration)
     {
-        StartCoroutine(PlayWhiteEffect());
+        if(fadeCr != null)
+        {
+            StopCoroutine(fadeCr);
+        }
+        fadeCr = StartCoroutine(PlayWhiteEffect(Duration));
     }
 
     Color fadeStartColor = new Color(1, 1, 1, 0.9f);
     float duration = 2f;
     float fadeTimer = 0f;
 
-    IEnumerator PlayWhiteEffect()
+    IEnumerator PlayWhiteEffect(float Duration)
     {
         fadeTimer = 0;
+        duration = Duration;
         whiteCutton.color = fadeStartColor;
         whiteCutton.gameObject.SetActive(true);
 

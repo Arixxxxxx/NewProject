@@ -479,12 +479,14 @@ public class EventShop_RulletManager : MonoBehaviour
                     }
                     else if (pair.Key == 1) // (화약) 뼈 2개 당첨
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(1, 200);
+                        //CrewGatchaContent.inst.MaterialCountEditor(1, 200);
+                        GameStatus.inst.Set_crewMaterial(1, 200);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " 스파크의 화약 +200");
                     }
                     else if (pair.Key == 2) // 부적(구 영혼) 2개 당첨
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(0, 200);
+                        //CrewGatchaContent.inst.MaterialCountEditor(0, 200);
+                        GameStatus.inst.Set_crewMaterial(0, 200);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " 령화의 부적 +200");
                     }
                     else if (pair.Key == 3) //별 2개 당첨
@@ -494,7 +496,8 @@ public class EventShop_RulletManager : MonoBehaviour
                     }
                     else if (pair.Key == 5) //굴소스(구 책) 2개 당첨
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(2, 200);
+                        //CrewGatchaContent.inst.MaterialCountEditor(2, 200);
+                        GameStatus.inst.Set_crewMaterial(2, 200);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " 호두의 굴소스 +200");
                     }
 
@@ -513,12 +516,14 @@ public class EventShop_RulletManager : MonoBehaviour
                     }
                     else if (pair.Key == 1) // 화약 뼈 3개 당첨
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(1, 500);
+                        //CrewGatchaContent.inst.MaterialCountEditor(1, 500);
+                        GameStatus.inst.Set_crewMaterial(1, 500);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(1), " 스파크의 화약 +500");
                     }
                     else if (pair.Key == 2) //영혼 3개 당첨
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(0, 500);
+                        //CrewGatchaContent.inst.MaterialCountEditor(0, 500);
+                        GameStatus.inst.Set_crewMaterial(0, 500);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(0), " 령화의 부적  +500");
                     }
                     else if (pair.Key == 3) //별 3개 당첨
@@ -528,7 +533,8 @@ public class EventShop_RulletManager : MonoBehaviour
                     }
                     else if (pair.Key == 5) //책 3개 당첨
                     {
-                        CrewGatchaContent.inst.MaterialCountEditor(2, 500);
+                        //CrewGatchaContent.inst.MaterialCountEditor(2, 500);
+                        GameStatus.inst.Set_crewMaterial(5, 500);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CrewMaterialIMG(2), " 호두의 굴소스 +500");
                     }
                     break;
@@ -810,7 +816,7 @@ public class EventShop_RulletManager : MonoBehaviour
     /// </summary>
     private void MaterialTextUpdater()
     {
-        int[] material = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+        int[] material = GameStatus.inst.CrewMaterial;
         soulText.text = material[0].ToString("N0");
         boneText.text = material[1].ToString("N0");
         bookText.text = material[2].ToString("N0");

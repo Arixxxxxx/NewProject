@@ -220,7 +220,7 @@ public class UIManager : MonoBehaviour
 
         if (petRef.activeInHierarchy)
         {
-            int[] petmat = CrewGatchaContent.inst.Get_CurCrewUpgreadMaterial();
+            int[] petmat = GameStatus.inst.CrewMaterial;
 
             soulText.text = string.Format("{0:#,0}", petmat[0]);
             bornText.text = string.Format("{0:#,0}", petmat[1]);

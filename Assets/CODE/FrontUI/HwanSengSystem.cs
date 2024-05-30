@@ -287,7 +287,7 @@ public class HwanSengSystem : MonoBehaviour
         //ÄÑÁÜ
         if (feverAnim.gameObject.activeSelf == false)
         {
-            WorldUI_Manager.inst.Effect_WhiteCutton(); // È­¸é ÇÏ¾é°Ô ÀÌÆåÆ®
+            WorldUI_Manager.inst.Effect_WhiteCutton(2f); // È­¸é ÇÏ¾é°Ô ÀÌÆåÆ®
             feverAnim.gameObject.SetActive(true);
             WorldUI_Manager.inst.RawImagePlayAcitve(0, true);
             ActionManager.inst.IsFever = true;
