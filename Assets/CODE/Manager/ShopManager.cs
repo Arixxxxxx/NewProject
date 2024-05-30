@@ -112,6 +112,15 @@ public class ShopManager : MonoBehaviour
             //현재 선택되어있는 상점 추적
             curSelectMenu = ShopTypeNumber;
 
+            //상점마다 startInit
+            switch (curSelectMenu)
+            {
+                //뽑기상점이라면
+                case 0:
+                    Shop_Gacha.inst.Init(true);
+                    break;
+            }
+
             // 창 열어주기
             for (int index = 0; index < shopListRef.Length; index++)
             {
@@ -130,6 +139,14 @@ public class ShopManager : MonoBehaviour
         }
         else // 상점 종료
         {
+            switch (curSelectMenu) 
+            {
+                //뽑기상점이라면
+                case 0:
+                    Shop_Gacha.inst.Init(false);
+                    break;
+            }
+
             curSelectMenu = -1;
             shopRef.SetActive(false);
         }

@@ -76,4 +76,5 @@ public class DogamMonsterSlot : MonoBehaviour
         master = true;
     }
 
+
 }
