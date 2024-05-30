@@ -24,7 +24,6 @@ public class UIManager : MonoBehaviour
         return TopBtnSprite[index];
     }
     Canvas canvas;
-    [SerializeField]
     List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
     List<Image> m_list_BottomBtn = new List<Image>();//메인UI 하단 버튼
     List<Animator> list_BotBtnAnim = new List<Animator>();//메인UI 하단 버튼 애니메이터
@@ -35,7 +34,7 @@ public class UIManager : MonoBehaviour
     ////////////////////////////////////////////퀘스트///////////////////////////////////////
 
     [HideInInspector] public UnityEvent OnBuyCountChanged;//퀘스트 구매갯수 바뀌는 이벤트
-    public UnityEvent QuestReset;
+    [HideInInspector] public UnityEvent QuestReset;
     List<Transform> m_list_Quest = new List<Transform>();//퀘스트 리스트
     Transform m_QuestParents;//퀘스트 컨텐츠 트래스폼
     RectTransform m_QuestParentRect;
@@ -70,7 +69,7 @@ public class UIManager : MonoBehaviour
 
     ////////////////////////////////////////////무기///////////////////////////////////////
 
-    public UnityEvent WeaponReset;
+    [HideInInspector] public UnityEvent WeaponReset;
     List<Transform> m_list_Weapon = new List<Transform>();
     Transform m_WeaponParents;
     RectTransform m_WeaponParentRect;

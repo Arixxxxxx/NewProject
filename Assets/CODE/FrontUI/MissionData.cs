@@ -479,7 +479,7 @@ public class MissionData : MonoBehaviour
         [SerializeField] public string Name;
         [SerializeField] int maxCount;
         [SerializeField] public SpMissionTag missionType;
-        [SerializeField] int typeindex;
+        //[SerializeField] int typeindex;
         [SerializeField] string rewardCount;
         [SerializeField] ProductTag rewardTag;
         [HideInInspector] Transform trs;
@@ -595,7 +595,6 @@ public class MissionData : MonoBehaviour
                 trs.SetParent(Instance.GetSpecialParents());
                 trs.GetComponent<RectTransform>().sizeDelta = new Vector2(235, 60);
                 trs.SetAsLastSibling();
-                GameStatus.inst.SetWeeklyMIssionClear(index, true);
                 Instance.nowSpecialIndex = index + 1;
                 GameStatus.inst.SpecialMIssionClearNum = Instance.nowSpecialIndex;
                 Instance.SetSpecialMissionRectPosition();
