@@ -45,6 +45,42 @@ public class SpriteResource : MonoBehaviour
         }
         return null;
     }
+
+    int itemtype = 0;
+    public Sprite Relic_SpriteNumber(int relicNum)
+    {
+        int itemtype = 0;
+
+        // 정상적인 경우에 대한 relicNum 범위 확인
+        if (relicNum >= 0 && relicNum < normal_relic_IMG.Length)
+        {
+            itemtype = 0;
+        }
+        else if (relicNum >= normal_relic_IMG.Length && relicNum < normal_relic_IMG.Length + epic_relic_IMG.Length)
+        {
+            itemtype = 1;
+        }
+        else if (relicNum >= normal_relic_IMG.Length + epic_relic_IMG.Length && relicNum < normal_relic_IMG.Length + epic_relic_IMG.Length + legend_relic_IMG.Length)
+        {
+            itemtype = 2;
+        }
+        else
+        {
+            // 범위를 벗어난 경우 null 반환
+            return null;
+        }
+
+        switch (itemtype)
+        {
+            case 0:
+                return normal_relic_IMG[relicNum];
+            case 1:
+                return epic_relic_IMG[relicNum - normal_relic_IMG.Length];
+            case 2:
+                return legend_relic_IMG[relicNum - normal_relic_IMG.Length - epic_relic_IMG.Length];
+        }
+        return null;
+    }
     /// <summary>
     /// 에너미 스프라이트
     /// </summary>

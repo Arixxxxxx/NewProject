@@ -125,7 +125,11 @@ public class CrewMaterial_GachaPrefabs : MonoBehaviour
                 break;
         }
 
+        // ¡© «œ¿ß∑Œ
+        transform.SetAsLastSibling();
+
         gameObject.SetActive(true);
+        AudioManager.inst.PlaySFX(7, 0.6f);
         StartCoroutine(PlayAction());
     }
     float duration = 0.2f;

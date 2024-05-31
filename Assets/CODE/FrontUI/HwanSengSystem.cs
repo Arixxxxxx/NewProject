@@ -308,7 +308,7 @@ public class HwanSengSystem : MonoBehaviour
         ActionManager.inst.FeverTime_End();
         yield return new WaitForSeconds(1f);
 
-        WorldUI_Manager.inst.RawImagePlayAcitve(false);
+        WorldUI_Manager.inst.RawImagePlayAcitve(1, false);
         feverAnim.gameObject.SetActive(false);
 
         feverAnim.SetTrigger("Exit");

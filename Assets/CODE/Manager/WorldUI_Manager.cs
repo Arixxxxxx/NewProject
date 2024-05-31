@@ -233,11 +233,11 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="curFloorLv"></param>
     public void Set_StageUiBar(int curFloorLv)
     {
-        
+
         int setupCount = curFloorLv - 1;
         stageSlot[setupCount].sprite = stageSprite[2];
         stageText.text = $"스테이지 {GameStatus.inst.StageLv} - {GameStatus.inst.FloorLv}";
-        
+
         // 보스 얼굴 출력
         uiBossHead.gameObject.SetActive(setupCount == 4 ? true : false);
         for (int index = 0; index < setupCount; index++)
@@ -530,16 +530,7 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="EA"> 현재 자원량 </param>
     public void CurMaterialUpdate(int index, string EA)
     {
-        if (index != 3) // 루비가 아니면 (골드,별,키)
-        {
-            curMaterial[index].text = CalCulator.inst.StringFourDigitAddFloatChanger(EA);
-        }
-        else if (index == 3)
-        {
-            curMaterial[index].text = EA;
-        }
-
-
+        curMaterial[index].text = CalCulator.inst.StringFourDigitAddFloatChanger(EA);
     }
 
 
@@ -601,33 +592,22 @@ public class WorldUI_Manager : MonoBehaviour
     /// <summary>
     /// 로우이미지 키고 켜기
     /// </summary>
-    /// <param name="indexNum"> 0 피버용 용 / 1 배경용 파티클</param>
+    /// <param name="indexNum"> 0 피버용 용 / 1 배경용 파티클 // 유물뽑기</param>
     /// <param name="Active"></param>
     public void RawImagePlayAcitve(int indexNum, bool Active)
     {
-        for (int index = 0; index < rawImageRef.Length; index++)
-        {
-            if (index == indexNum)
-            {
-                rawImageRef[index].SetActive(true);
-                rawCam[index].SetActive(true);
-            }
-            else
-            {
-                rawImageRef[index].SetActive(false);
-                rawCam[index].SetActive(false);
-            }
-        }
+        rawImageRef[indexNum].SetActive(Active);
+        rawCam[indexNum].SetActive(Active);
     }
 
-    public void RawImagePlayAcitve(bool Active)
-    {
-        for (int index = 0; index < rawImageRef.Length; index++)
-        {
-            rawImageRef[index].SetActive(false);
-            rawCam[index].SetActive(false);
-        }
-    }
+    //public void RawImagePlayAcitve(bool Active)
+    //{
+    //    for (int index = 0; index < rawImageRef.Length; index++)
+    //    {
+    //        rawImageRef[index].SetActive(false);
+    //        rawCam[index].SetActive(false);
+    //    }
+    //}
 
     /// <summary>
     /// 화면 페이드 하얘졌다가 점점 내림
@@ -636,7 +616,7 @@ public class WorldUI_Manager : MonoBehaviour
     Coroutine fadeCr;
     public void Effect_WhiteCutton(float Duration)
     {
-        if(fadeCr != null)
+        if (fadeCr != null)
         {
             StopCoroutine(fadeCr);
         }

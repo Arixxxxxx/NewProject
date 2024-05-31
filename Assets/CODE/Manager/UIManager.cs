@@ -102,7 +102,7 @@ public class UIManager : MonoBehaviour
     public void MaxBuyWeapon()
     {
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
-        AudioManager.inst.PlaySFX(4);
+        AudioManager.inst.PlaySFX(4, 0.8f);
         if (m_list_Weapon.Count > TopHaveWeaponNum)
         {
             BigInteger nextcost = m_list_Weapon[TopHaveWeaponNum].GetComponent<Weapon>().GetNextCost();
@@ -452,7 +452,7 @@ public class UIManager : MonoBehaviour
         {
             m_list_BottomBtn[bottomBtnNum].sprite = BotBtnSprite[4];
         }
-        AudioManager.inst.PlaySFX(4);
+        AudioManager.inst.PlaySFX(4, 0.8f);
     }
 
     public void ClickOpenThisTab(GameObject _obj)
@@ -467,7 +467,7 @@ public class UIManager : MonoBehaviour
 
     public void ClickBuyCountBtn(int count)
     {
-        AudioManager.inst.PlaySFX(4);
+        AudioManager.inst.PlaySFX(4, 0.8f);
         m_list_QuestBuyCountBtn[questBuyCountBtnNum].sprite = TopBtnSprite[0];
         questBuyCountBtnNum = count;
         switch (count)
@@ -490,7 +490,7 @@ public class UIManager : MonoBehaviour
 
     public void ClickRelicBuyCountBtn(int count)
     {
-        AudioManager.inst.PlaySFX(4);
+        AudioManager.inst.PlaySFX(4, 0.8f);
         m_list_RelicBuyCountBtn[relicBuyCountBtnNum].sprite = TopBtnSprite[0];
         relicBuyCountBtnNum = count;
         switch (count)

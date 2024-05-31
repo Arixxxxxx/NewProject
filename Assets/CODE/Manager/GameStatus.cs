@@ -298,8 +298,8 @@ public class GameStatus : MonoBehaviour
             }
             ruby = value;
 
-            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString("N0"));
-
+            WorldUI_Manager.inst.CurMaterialUpdate(3, ruby.ToString());
+            ShopManager.inst.ShopRubyTextInit(); // 상점 보석 변화
 
 
 
@@ -588,6 +588,27 @@ public class GameStatus : MonoBehaviour
             }
         }
     }
+
+    /////////////////////////////// 상점 //////////////////////////////////
+    string[] shop_adView_GachaDate = new string[2];
+    public string[] Shop_adView_GachaDate
+    {
+        get { return (string[])shop_adView_GachaDate.Clone(); } // 배열의 복사본 반환
+        set
+        {
+            if (value.Length == shop_adView_GachaDate.Length)
+            {
+                shop_adView_GachaDate = (string[])value.Clone(); // 배열의 복사본 할당
+                Shop_Gacha.inst.ResetAdBtn(shop_adView_GachaDate);
+            }
+            else
+            {
+                throw new ArgumentException("Array size mismatch");
+            }
+        }
+    }
+
+    public void Shop_adView_GachaDateValue(int index, DateTime date) => shop_adView_GachaDate[index] = date.ToString("O");
 
     /////////////////////////////// 하단 UI 데이터 //////////////////////////////////
     [HideInInspector] public UnityEvent OnQuestLvChanged;
@@ -1171,7 +1192,9 @@ public class GameStatus : MonoBehaviour
             LastLoginDate = DateTime.MinValue;
         }
 
-
+        //광고
+        Shop_adView_GachaDate = saveData.adViewrGachaDate;
+       
         //세이브가능
         DataManager.inst.saveAble = true;
     }
@@ -1262,6 +1285,10 @@ public class GameStatus : MonoBehaviour
         int[] dogamArr = DogamManager.inst.Get_monster_Soul();
         saveData.monsterDogamList = new int[dogamArr.Length];
         Array.Copy(dogamArr, saveData.monsterDogamList, dogamArr.Length);
+
+
+        //광고
+        saveData.adViewrGachaDate = Shop_adView_GachaDate;
 
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");

@@ -61,19 +61,20 @@ public class AudioManager : MonoBehaviour
     /// SFX 재생기 (UI 효과음)
     /// </summary>
     /// <param name="index"> 0:로그인씬 탭투스크린<br/>1:</param>
-    public void PlaySFX(int index)
+    public void PlaySFX(int index, float Volume)
     {
         if(audioQue.Count <= 0)
         {
             MakeSoundClip();
         }
 
-        StartCoroutine(SFX_SoundPlay(index)); 
+        StartCoroutine(SFX_SoundPlay(index, Volume)); 
     }
 
-    IEnumerator SFX_SoundPlay(int index)
+    IEnumerator SFX_SoundPlay(int index, float Volume)
     {
         AudioSource obj = audioQue.Dequeue();
+        obj.volume = Volume;
         obj.clip = Ui_SFX[index];
         obj.gameObject.SetActive(true);
         obj.Play();

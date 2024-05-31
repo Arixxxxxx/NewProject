@@ -248,7 +248,7 @@ public class DogamManager : MonoBehaviour
         }
         else
         {
-            WorldUI_Manager.inst.RawImagePlayAcitve(false);
+            WorldUI_Manager.inst.RawImagePlayAcitve(1, false);
         }
 
         dogamMainRef.SetActive(value);
@@ -319,7 +319,7 @@ public class DogamManager : MonoBehaviour
         else
         {
             MonsterSoulMasterCheker();
-            WorldUI_Manager.inst.RawImagePlayAcitve(false);
+            WorldUI_Manager.inst.RawImagePlayAcitve(1, false);
         }
     }
 

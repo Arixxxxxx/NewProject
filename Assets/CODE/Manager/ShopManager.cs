@@ -106,7 +106,7 @@ public class ShopManager : MonoBehaviour
             // 최초 넘어온게 아니라면 버튼음 재생
             if(curSelectMenu != -1 && curSelectMenu != ShopTypeNumber)
             {
-                AudioManager.inst.PlaySFX(4);
+                AudioManager.inst.PlaySFX(4, 0.8f);
             }
 
             //동일 버튼 또 클릭시 리턴
@@ -179,6 +179,11 @@ public class ShopManager : MonoBehaviour
                 botArrText[index].fontSize = nonclickFontsize;
             }
         }
+    }
+
+    public void ShopRubyTextInit()
+    {
+        curRubyText.text = CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Ruby.ToString());
     }
 }
 

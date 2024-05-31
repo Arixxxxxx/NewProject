@@ -82,7 +82,7 @@ public class Relic : MonoBehaviour
         setNextCost();
         setText();
 
-        upBtn.onClick.AddListener(() => {  AudioManager.inst.PlaySFX(1); ClickUp(); });
+        upBtn.onClick.AddListener(() => {  AudioManager.inst.PlaySFX(1, 0.8f); ClickUp(); });
 
     }
 
@@ -202,5 +202,10 @@ public class Relic : MonoBehaviour
     public UnityEngine.Vector2 GetMyType()
     {
         return new UnityEngine.Vector2((int)rankNum, (int)itemNum);
+    }
+
+    public int Get_MyNum()
+    {
+        return (int)itemNum;
     }
 }

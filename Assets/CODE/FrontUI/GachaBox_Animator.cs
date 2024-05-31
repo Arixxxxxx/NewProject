@@ -34,7 +34,7 @@ public class GachaBox_Animator : MonoBehaviour
 
     public void A_StartSound()
     {
-        AudioManager.inst.PlaySFX(5);
+        AudioManager.inst.PlaySFX(5, 1f);
     }
     public void A_PlayDustPS()
     {
@@ -52,7 +52,7 @@ public class GachaBox_Animator : MonoBehaviour
     {
         ParticleSystem dustPsObj = dustQUE.Dequeue();
         dustPsObj.gameObject.SetActive(true);
-        AudioManager.inst.PlaySFX(6);
+        AudioManager.inst.PlaySFX(6, 1f);
         yield return times;
         dustPsObj.gameObject.SetActive(false);
         dustQUE.Enqueue(dustPsObj);

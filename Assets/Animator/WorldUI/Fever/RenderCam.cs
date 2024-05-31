@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RenderCam : MonoBehaviour
 {
+    public enum camType { dragon, leaf, Gacha};
+    public camType type;
     [SerializeField]  RenderTexture renderTexture;
     void Start()
     {
@@ -15,6 +17,11 @@ public class RenderCam : MonoBehaviour
             // Render Camera 설정 (필요에 따라 조정)
             renderCamera.orthographic = true;
             renderCamera.orthographicSize = 5;
+
+            if (type == camType.Gacha)
+            {
+                renderCamera.orthographicSize = 4.25f;
+            }
             renderCamera.clearFlags = CameraClearFlags.SolidColor;
             renderCamera.backgroundColor = Color.clear;
         }

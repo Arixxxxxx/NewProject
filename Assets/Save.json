@@ -1,13 +1,13 @@
 {
-    "LastSignDate": "2024-05-31T02:59:04.5992541+09:00",
+    "LastSignDate": "2024-05-31T16:54:32.4481853+09:00",
     "Name": "",
-    "Gold": "400000000000000000000000000000916",
+    "Gold": "400000000000000000000000000001306",
     "Star": "400000000",
-    "Ruby": 2400,
+    "Ruby": 3100,
     "CrewUpgradeMaterial": [
-        146,
-        174,
-        258
+        98,
+        102,
+        165
     ],
     "adRulletPlay": false,
     "adSlotMachinePlay": false,
@@ -16,11 +16,11 @@
     "buffGoldTime": 0,
     "buffMoveSpeedTime": 0,
     "buffBigAtkTime": 0,
-    "getNewbieRewardCount": 0,
-    "todayGetRaward": false,
-    "newbieBuffLastDay": "2024-06-07T02:58:35.7771173+09:00",
-    "GetGiftCount": 0,
-    "todayGetDailyReward": false,
+    "getNewbieRewardCount": 1,
+    "todayGetRaward": true,
+    "newbieBuffLastDay": "2024-06-07T16:53:48.8580772+09:00",
+    "GetGiftCount": 1,
+    "todayGetDailyReward": true,
     "DailyADRuby": false,
     "HwanSeangCount": 0,
     "TotalFloor": 2,
@@ -208,7 +208,26 @@
     ],
     "RouletteTicket": 100,
     "BingoStack": 0,
-    "LetterBox": [],
+    "LetterBox": [
+        {
+            "itemtype": 0,
+            "letterFrom": "게임GM",
+            "letterText": "출석체크 1일차 보상",
+            "letterItemCount": 10,
+            "letterPrefab": {
+                "instanceID": -10675068
+            }
+        },
+        {
+            "itemtype": 0,
+            "letterFrom": "게임GM",
+            "letterText": "신규유저 1일차 보상",
+            "letterItemCount": 1000,
+            "letterPrefab": {
+                "instanceID": -10675142
+            }
+        }
+    ],
     "adDeleteBuffTime": "0001-01-01T00:00:00.0000000",
     "monsterDogamList": [
         0,
@@ -226,5 +245,9 @@
         0,
         0,
         0
+    ],
+    "adViewrGachaDate": [
+        "",
+        ""
     ]
 }

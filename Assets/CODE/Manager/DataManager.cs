@@ -102,6 +102,11 @@ public class DataManager : MonoBehaviour
 
         // 도감
         public int[] monsterDogamList;
+
+        // 상점
+        //하루에 한번 뽑기 재료,유물
+        public string[] adViewrGachaDate = new string[2];
+
     }
 
     string path = string.Empty;

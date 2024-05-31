@@ -92,7 +92,7 @@ public class Quest : MonoBehaviour
         });
         GameStatus.inst.OnPercentageChanged.AddListener(_OnItemPercentChanged);
         GameStatus.inst.OnPercentageChanged.AddListener(setItemCur);
-        UpBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1); });
+        UpBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1, 0.8f); });
     }
 
     void initValue()//초기값 설정
