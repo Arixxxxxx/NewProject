@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Pet : MonoBehaviour
+public class Pet : MonoBehaviour, IClickLvUpAble
 {
 
     [SerializeField] int baseCost;
@@ -143,13 +143,12 @@ public class Pet : MonoBehaviour
         }
     }
 
-    void ClickUp()
+    public void ClickUp()
     {
         int[] petMoney = GameStatus.inst.CrewMaterial;
 
         if (petMoney[(int)type] >= nextCost)
         {
-            //CrewGatchaContent.inst.Use_Crew_Material((int)type, nextCost);
             GameStatus.inst.Use_crewMaterial((int)type, nextCost);
             Lv++;
         }

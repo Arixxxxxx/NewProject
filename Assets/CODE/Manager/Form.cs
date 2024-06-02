@@ -65,3 +65,11 @@ public enum WeeklyMissionTag
     QuestLvUp,
     WeaponUpgrade
 }
+
+public interface IClickLvUpAble
+{
+    void ClickUp()
+    {
+        Debug.Log("Å¬¸¯Áß~");
+    }
+}

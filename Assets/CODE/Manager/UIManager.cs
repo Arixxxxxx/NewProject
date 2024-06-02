@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [Header("버튼 선택, 비선택 스프라이트")]
     [SerializeField] List<Sprite> TopBtnSprite = new List<Sprite>();//상단 버튼 선택, 비선택 스프라이트
     [SerializeField] List<Sprite> BotBtnSprite = new List<Sprite>();//하단 버튼 선택, 비선택 스프라이트
+    [SerializeField] List<Sprite> GreenYellowBtnSprite = new List<Sprite>();//노랑, 초록 버튼 스프라이트
     /// <summary>
     /// 0 = 비선택 이미지, 1 = 선택 이미지
     /// </summary>
@@ -22,6 +23,11 @@ public class UIManager : MonoBehaviour
     public Sprite GetBtnSprite(int index)
     {
         return TopBtnSprite[index];
+    }
+
+    public Sprite GetGYBtnSprite(int index)
+    {
+        return GreenYellowBtnSprite[index];
     }
     Canvas canvas;
     List<GameObject> m_listMainUI = new List<GameObject>();//하단 Ui 리스트
@@ -111,7 +117,7 @@ public class UIManager : MonoBehaviour
                 if (m_list_Weapon.Count > TopHaveWeaponNum)
                 {
                     Weapon ScWeapon = m_list_Weapon[TopHaveWeaponNum].GetComponent<Weapon>();
-                    ScWeapon.ClickBuy();
+                    ScWeapon.ClickUp();
                     haveGold -= nextcost;
                     nextcost = ScWeapon.GetNextCost();
                 }
@@ -130,6 +136,15 @@ public class UIManager : MonoBehaviour
     TMP_Text soulText;
     TMP_Text bornText;
     TMP_Text bookText;
+
+    void setCrewMatText()
+    {
+        int[] petmat = GameStatus.inst.CrewMaterial;
+
+        soulText.text = string.Format("{0:#,0}", petmat[0]);
+        bornText.text = string.Format("{0:#,0}", petmat[1]);
+        bookText.text = string.Format("{0:#,0}", petmat[2]);
+    }
 
     ////////////////////////////////////////////유물///////////////////////////////////////
 
@@ -179,6 +194,8 @@ public class UIManager : MonoBehaviour
 
     [Header("상품 스프라이트")]
     [SerializeField] Sprite[] list_prodSprite;
+
+    [HideInInspector] public UnityEvent onOpenShop;
     /// <summary>
     /// 
     /// </summary>
@@ -217,17 +234,9 @@ public class UIManager : MonoBehaviour
             QuestReset?.Invoke();
             WeaponReset?.Invoke();
         }
-
-        if (petRef.activeInHierarchy)
-        {
-            int[] petmat = GameStatus.inst.CrewMaterial;
-
-            soulText.text = string.Format("{0:#,0}", petmat[0]);
-            bornText.text = string.Format("{0:#,0}", petmat[1]);
-            bookText.text = string.Format("{0:#,0}", petmat[2]);
-        }
-
     }
+
+
     private void Awake()
     {
         if (Instance == null)
@@ -254,6 +263,7 @@ public class UIManager : MonoBehaviour
         ShopOpenBtn.onClick.AddListener(() => 
         {
             ShopManager.inst.Active_Shop(0, true);
+            onOpenShop?.Invoke();
             //canvas.sortingOrder = 15; 
         });
 
@@ -307,6 +317,7 @@ public class UIManager : MonoBehaviour
         GotoRelicShopBtn = canvas.transform.Find("ScreenArea/BackGround/Relic/GotoRelicShopBtn").GetComponent<Button>();
         GotoRelicShopBtn.onClick.AddListener(() =>
         {
+            ClickBotBtn(4);
             ShopManager.inst.Active_Shop(0, true);
         });
         Transform RelicAllUpBtnParents = canvas.transform.Find("ScreenArea/BackGround/Relic/AllLvUpBtn");
@@ -357,6 +368,8 @@ public class UIManager : MonoBehaviour
         {
             petParents.GetChild(iNum).GetComponent<Pet>().initPet();
         }
+        GameStatus.inst.onCrewMatChanged.AddListener(setCrewMatText);
+        GameStatus.inst.onCrewMatChanged?.Invoke();
 
         //유물 초기화
 

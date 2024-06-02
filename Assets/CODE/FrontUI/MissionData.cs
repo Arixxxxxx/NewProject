@@ -23,6 +23,7 @@ public class MissionData : MonoBehaviour
     TMP_Text topDetailText;//미션창 상단 세부텍스트
     TMP_Text worldTitleText;//메인화면 미션 타이틀 텍스트
     TMP_Text worldDetailText;//메인화면 미션 세부 텍스트
+    Image missionIconBG;
 
     [SerializeField] GameObject obj_Mission;//일일,주간 미션 바
     [SerializeField] GameObject obj_SpecialMission;//스페셜 미션 바
@@ -246,8 +247,6 @@ public class MissionData : MonoBehaviour
             }
         }
     }
-
-
 
     public void SetDailyMission(string Name, int count)
     {
@@ -510,13 +509,13 @@ public class MissionData : MonoBehaviour
                 if (count >= maxCount)
                 {
                     count = maxCount;
-                    GameStatus.inst.SetSpecialMissionCount(index, count);
                     if (isActive)
                     {
                         if (isMaxCount == false)
                         {
                             isMaxCount = true;
                             Instance.ClearStack++;
+                            Instance.SetIconBGColor(true);
                         }
                         moveBtn.gameObject.SetActive(false);
                         clearBtn.gameObject.SetActive(true);
@@ -599,6 +598,7 @@ public class MissionData : MonoBehaviour
                 GameStatus.inst.SpecialMIssionClearNum = Instance.nowSpecialIndex;
                 Instance.SetSpecialMissionRectPosition();
                 Instance.ClearStack--;
+                Instance.SetIconBGColor(false);
 
                 switch (rewardTag)
                 {
@@ -637,12 +637,13 @@ public class MissionData : MonoBehaviour
             isActive = true;
             if (count >= maxCount)
             {
-                clearBtn.gameObject.SetActive(true);
+                Count = Count;
             }
             else
             {
                 moveBtn.gameObject.SetActive(true);
             }
+            
             needClearText.gameObject.SetActive(false);
             mask.SetActive(false);
         }
@@ -650,7 +651,10 @@ public class MissionData : MonoBehaviour
     [Header("스페셜 미션 목록")]
     [SerializeField] List<SpecialMIssion> list_SpecialMIssion = new List<SpecialMIssion>();
 
-    List<SpecialMIssion> list_SpecialQuest = new List<SpecialMIssion>();//스페셜 미션 퀘스트
+    Color clearColor = new Vector4(0,0.7f,0,1);
+    Color defaultColor = new Vector4(0,0,0,1);
+
+    List <SpecialMIssion> list_SpecialQuest = new List<SpecialMIssion>();//스페셜 미션 퀘스트
     List<SpecialMIssion> list_SpecialWeapon = new List<SpecialMIssion>();//스페셜 미션 무기
     List<SpecialMIssion> list_SpecialRelic = new List<SpecialMIssion>();//스페셜 미션 유물
 
@@ -698,6 +702,18 @@ public class MissionData : MonoBehaviour
         }
     }
 
+    public void SetIconBGColor(bool isClear)
+    {
+        if (isClear)
+        {
+            missionIconBG.color = clearColor;
+        }
+        else
+        {
+            missionIconBG.color = defaultColor;
+        }
+    }
+
     /// <summary>
     /// 스페셜 미션 값 설정
     /// </summary>
@@ -715,9 +731,9 @@ public class MissionData : MonoBehaviour
                 }
                 break;
             case SpMissionTag.Weapon:
-                if (list_SpecialWeapon.Count >= Num && Num > 0)
+                if (list_SpecialWeapon.Count - 1 >= Num)
                 {
-                    list_SpecialWeapon[Num - 1].Count = count;
+                    list_SpecialWeapon[Num].Count = count;
                 }
                 break;
             case SpMissionTag.Relic:
@@ -761,6 +777,7 @@ public class MissionData : MonoBehaviour
         UICanvas = GameObject.Find("---[UI Canvas]").GetComponent<Canvas>();
         Transform worldUiCanvas = GameObject.Find("---[World UI Canvas]").transform;
         MissionOpenBtn = worldUiCanvas.Find("StageUI/QeustList/Button").GetComponent<Button>();
+        missionIconBG = worldUiCanvas.Find("StageUI/QeustList/BG").GetComponent<Image>();
         simball = worldUiCanvas.Find("StageUI/QeustList/Button/Simball").gameObject;
         worldTitleText = worldUiCanvas.Find("StageUI/QeustList/BG/Step").GetComponent<TMP_Text>();
         worldDetailText = worldUiCanvas.Find("StageUI/QeustList/BG/Text").GetComponent<TMP_Text>();

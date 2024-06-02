@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 4378691685164061801}
   - component: {fileID: 5396823618870299659}
   - component: {fileID: 2565196167510580949}
+  - component: {fileID: 5915866419300859342}
   m_Layer: 5
   m_Name: LvUpBtn
   m_TagString: Untagged
@@ -241,8 +242,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1374292823168218556}
-        m_TargetAssemblyTypeName: UIStatus, Assembly-CSharp
-        m_MethodName: ClickBuy
+        m_TargetAssemblyTypeName: Quest, Assembly-CSharp
+        m_MethodName: ClickUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -252,6 +253,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &5915866419300859342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3387889175274180604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd1cd938e7b412d4fae58fed2bf94ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObj: {fileID: 794001626053470671}
 --- !u!1 &4169141196078657465
 GameObject:
   m_ObjectHideFlags: 0

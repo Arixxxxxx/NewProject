@@ -326,6 +326,7 @@ public class GameStatus : MonoBehaviour
 
 
     // 동료 강화재료
+    [HideInInspector] public UnityEvent onCrewMatChanged;
     int[] crewMaterial = new int[3];
     public int[] CrewMaterial 
     {
@@ -340,6 +341,7 @@ public class GameStatus : MonoBehaviour
             {
                 throw new ArgumentException("Array size mismatch");
             }
+            onCrewMatChanged?.Invoke();
         }
     }
 
@@ -351,6 +353,7 @@ public class GameStatus : MonoBehaviour
     public void Set_crewMaterial(int index, int count) 
     {
         crewMaterial[index] += count;
+        onCrewMatChanged?.Invoke();
     }
 
     /// <summary>
@@ -970,6 +973,7 @@ public class GameStatus : MonoBehaviour
             AdSlotMachineActive = false;
         }
 
+        ShopManager.inst.onDailyReset?.Invoke();
         DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
     }
 

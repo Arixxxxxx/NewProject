@@ -5,7 +5,7 @@ using System.Numerics;
 using UnityEngine.UI;
 using TMPro;
 
-public class Weapon : MonoBehaviour
+public class Weapon : MonoBehaviour, IClickLvUpAble
 {
     int Number;//무기 단계
     int lv;//무기 업그레이드 레벨
@@ -92,7 +92,7 @@ public class Weapon : MonoBehaviour
 
         if (Lv != 0)
         {
-            UIManager.Instance.SetTopWeaponNum(Number);
+            //UIManager.Instance.SetTopWeaponNum(Number);
             clickWeaponImage();
         }
 
@@ -112,8 +112,14 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public void ClickBuy()
+    public void ClickUp()
     {
+        //if (Lv >= 5)
+        //{
+        //    Debug.Log("이미 최대 레벨입니다");
+        //    return;
+        //}
+
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
 
         if (haveGold >= nextCost)

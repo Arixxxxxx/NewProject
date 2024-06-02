@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Numerics;
 
-public class Relic : MonoBehaviour
+public class Relic : MonoBehaviour, IClickLvUpAble
 {
     [SerializeField] RankType rankNum;
     [SerializeField] ItemTag itemNum;
@@ -158,7 +158,7 @@ public class Relic : MonoBehaviour
         PriceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
     }
 
-    void ClickUp()
+    public void ClickUp()
     {
         BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
         if (haveStar >= nextCost)

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Numerics;
 
-public class Quest : MonoBehaviour
+public class Quest : MonoBehaviour,IClickLvUpAble
 {
     [Header("Äù½ºÆ®´Ü°è")]
     int Number;//Äù½ºÆ® ´Ü°è
@@ -117,7 +117,7 @@ public class Quest : MonoBehaviour
         totalGoldText.text = $"Äù½ºÆ® °ñµå Áõ°¡·® : {CalCulator.inst.StringFourDigitAddFloatChanger($"{totalProd}")} / ÃÊ";
     }
 
-    public void ClickBuy()
+    public void ClickUp()
     {
         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
         if (haveGold >= nextCost)

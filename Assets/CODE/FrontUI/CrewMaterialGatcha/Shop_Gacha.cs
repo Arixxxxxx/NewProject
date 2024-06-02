@@ -266,7 +266,7 @@ public class Shop_Gacha : MonoBehaviour
         {
             AudioManager.inst.PlaySFX(4, 0.8f);
             relicBuyBtn[2].interactable = false;
-            GameStatus.inst.Shop_adView_GachaDateValue(1,DateTime.Now);     // 일자기록       
+            GameStatus.inst.Shop_adView_GachaDateValue(1,DateTime.Now);     // 일자기록
             ADViewManager.inst.SampleAD_Active_Funtion(() => Play_RelicGacha(5, true));
 
         });

@@ -229,7 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rankNum: 0
   itemNum: 1
-  costGrowthRate: 1.1
+  costGrowthRate: 1.5
   limitLv: 500
 --- !u!1 &563958238502530100
 GameObject:
@@ -933,6 +933,7 @@ GameObject:
   - component: {fileID: 3934779278148611170}
   - component: {fileID: 8046667960951920669}
   - component: {fileID: 8168943853663528914}
+  - component: {fileID: 3837501824138032409}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1044,6 +1045,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3837501824138032409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3156259065400635679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd1cd938e7b412d4fae58fed2bf94ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObj: {fileID: 284277028275596853}
 --- !u!1 &4369043721333400567
 GameObject:
   m_ObjectHideFlags: 0

@@ -583,7 +583,7 @@ public class Roulette : MonoBehaviour
         for (int iNum = 0; iNum < clearBingoListCount; iNum++)
         {
             showBingoMask[bingoList[iNum]].GetComponent<Animator>().Play("BingoGetEffect", -1, 0);
-            yield return new WaitForSeconds(0.33f);
+            yield return new WaitForSeconds(0.2f);
         }
         showBingoCloseBtn.interactable = true;
 
@@ -699,9 +699,9 @@ public class Roulette : MonoBehaviour
 
     public void ClickUseCount(int index)
     {
-        list_countBtnImage[countBtnNum].sprite = UIManager.Instance.GetBtnSprite(0);
+        list_countBtnImage[countBtnNum].sprite = UIManager.Instance.GetGYBtnSprite(0);
         countBtnNum = index;
-        list_countBtnImage[countBtnNum].sprite = UIManager.Instance.GetBtnSprite(1);
+        list_countBtnImage[countBtnNum].sprite = UIManager.Instance.GetGYBtnSprite(1);
 
         switch (index)
         {
