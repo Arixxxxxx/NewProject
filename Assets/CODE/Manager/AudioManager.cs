@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Rendering;
 
 public class AudioManager : MonoBehaviour
@@ -26,7 +27,7 @@ public class AudioManager : MonoBehaviour
     float[] worldSoundDealyTimer;
     float[] worldSoundDealy = { 0.25f, 0.25f };
 
-
+    [SerializeField] AudioMixerGroup SFXGroup;
     public bool noSound; 
     Queue<AudioSource> audioQue = new Queue<AudioSource>();
     int channel = 32;
@@ -89,6 +90,7 @@ public class AudioManager : MonoBehaviour
     {
         AudioSource audioObj = new GameObject("SFX").AddComponent<AudioSource>();
         audioObj.playOnAwake = false;
+        audioObj.outputAudioMixerGroup = SFXGroup;
         audioObj.transform.SetParent(sfxTrs);
         audioObj.gameObject.SetActive(false);
         audioQue.Enqueue(audioObj);

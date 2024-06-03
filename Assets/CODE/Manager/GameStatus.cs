@@ -613,6 +613,18 @@ public class GameStatus : MonoBehaviour
 
     public void Shop_adView_GachaDateValue(int index, DateTime date) => shop_adView_GachaDate[index] = date.ToString("O");
 
+    string[] adViewrAdShopData = new string[4];
+    public string[] AdViewrAdShopData
+    {
+        get => adViewrAdShopData;
+        set 
+        {
+            adViewrAdShopData = value;
+        }
+    }
+
+    public void Ad_Viewr_AdShopDataDateValue(int index, DateTime date) => adViewrAdShopData[index] = date.ToString("O");
+
     /////////////////////////////// 하단 UI 데이터 //////////////////////////////////
     [HideInInspector] public UnityEvent OnQuestLvChanged;
     //private int[] aryQuestLv = new int[30];
@@ -1198,7 +1210,8 @@ public class GameStatus : MonoBehaviour
 
         //광고
         Shop_adView_GachaDate = saveData.adViewrGachaDate;
-       
+        adViewrAdShopData = saveData.adViewrAdShopData;
+
         //세이브가능
         DataManager.inst.saveAble = true;
     }
@@ -1293,6 +1306,7 @@ public class GameStatus : MonoBehaviour
 
         //광고
         saveData.adViewrGachaDate = Shop_adView_GachaDate;
+        saveData.adViewrAdShopData = adViewrAdShopData;
 
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");

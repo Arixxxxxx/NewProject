@@ -35,6 +35,10 @@ public class MissionData : MonoBehaviour
     int nowSpecialIndex { get; set; } = 0;//현재 진행중인 스페셜 미션 인덱스
 
     GameObject simball;
+    GameObject dialySimball;
+    GameObject weeklySimball;
+    GameObject specialSimball;
+
     int clearStack = 0;
     int ClearStack
     {
@@ -49,6 +53,58 @@ public class MissionData : MonoBehaviour
             else
             {
                 simball.SetActive(true);
+            }
+        }
+    }
+    int dailyClearStack;
+    int DailyClearStack
+    {
+        get => dailyClearStack;
+        set
+        {
+            dailyClearStack = value;
+            if (dailyClearStack <= 0)
+            {
+                dialySimball.SetActive(false);
+            }
+            else
+            {
+                dialySimball.SetActive(true);
+            }
+        }
+    }
+    int weeklyClearStack;
+    int WeeklyClearStack
+    {
+        get => weeklyClearStack;
+        set
+        {
+            weeklyClearStack = value;
+            if (weeklyClearStack <= 0)
+            {
+                weeklySimball.SetActive(false);
+            }
+            else
+            {
+                weeklySimball.SetActive(true);
+            }
+        }
+    }
+
+    int specialClearStack;
+    int SpecialClearStack
+    {
+        get => specialClearStack;
+        set
+        {
+            specialClearStack = value;
+            if (specialClearStack <= 0)
+            {
+                specialSimball.SetActive(false);
+            }
+            else
+            {
+                specialSimball.SetActive(true);
             }
         }
     }
@@ -101,6 +157,7 @@ public class MissionData : MonoBehaviour
                     {
                         isMaxCount = true;
                         Instance.ClearStack++;
+                        Instance.DailyClearStack++;
                     }
                     count = maxCount;
                     moveBtn.gameObject.SetActive(false);
@@ -158,6 +215,7 @@ public class MissionData : MonoBehaviour
                     {
                         ShopManager.inst.Active_Shop(0,true);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
                 case DailyMissionTag.UseRuby:
@@ -165,12 +223,14 @@ public class MissionData : MonoBehaviour
                     {
                         ShopManager.inst.Active_Shop(0,true);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
                 case DailyMissionTag.KillMonster:
                     moveBtn.onClick.AddListener(() =>
                     {
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
             }
@@ -219,6 +279,8 @@ public class MissionData : MonoBehaviour
             Mask.SetActive(true);
             ClearText.SetActive(true);
             Instance.ClearStack--;
+            Instance.DailyClearStack--;
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
         }
 
         public int GetIndex()
@@ -314,6 +376,7 @@ public class MissionData : MonoBehaviour
                     {
                         isMaxCount = true;
                         Instance.ClearStack++;
+                        Instance.WeeklyClearStack++;
                     }
                     moveBtn.gameObject.SetActive(false);
                     clearBtn.gameObject.SetActive(true);
@@ -367,12 +430,14 @@ public class MissionData : MonoBehaviour
                     moveBtn.onClick.AddListener(() =>
                     {
                         Instance.ClickMissionType(0);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
                 case WeeklyMissionTag.Reincarnation:
                     moveBtn.onClick.AddListener(() =>
                     {
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
                 case WeeklyMissionTag.QuestLvUp:
@@ -380,6 +445,7 @@ public class MissionData : MonoBehaviour
                     {
                         UIManager.Instance.ClickBotBtn(0);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
                 case WeeklyMissionTag.WeaponUpgrade:
@@ -387,6 +453,7 @@ public class MissionData : MonoBehaviour
                     {
                         UIManager.Instance.ClickBotBtn(1);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
             }
@@ -425,6 +492,8 @@ public class MissionData : MonoBehaviour
             Mask.SetActive(true);
             ClearText.SetActive(true);
             Instance.ClearStack--;
+            Instance.WeeklyClearStack--;
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
         }
 
         public int GetIndex()
@@ -515,6 +584,7 @@ public class MissionData : MonoBehaviour
                         {
                             isMaxCount = true;
                             Instance.ClearStack++;
+                            Instance.SpecialClearStack++;
                             Instance.SetIconBGColor(true);
                         }
                         moveBtn.gameObject.SetActive(false);
@@ -566,6 +636,7 @@ public class MissionData : MonoBehaviour
                     {
                         UIManager.Instance.ClickBotBtn(0);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
                 case SpMissionTag.Weapon:
@@ -573,6 +644,7 @@ public class MissionData : MonoBehaviour
                     {
                         UIManager.Instance.ClickBotBtn(1);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
                 case SpMissionTag.Relic:
@@ -580,6 +652,7 @@ public class MissionData : MonoBehaviour
                     {
                         UIManager.Instance.ClickBotBtn(3);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
+                        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
                     break;
             }
@@ -598,6 +671,7 @@ public class MissionData : MonoBehaviour
                 GameStatus.inst.SpecialMIssionClearNum = Instance.nowSpecialIndex;
                 Instance.SetSpecialMissionRectPosition();
                 Instance.ClearStack--;
+                Instance.SpecialClearStack--;
                 Instance.SetIconBGColor(false);
 
                 switch (rewardTag)
@@ -615,6 +689,8 @@ public class MissionData : MonoBehaviour
                         GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
                         break;
                 }
+
+                AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             });
         }
         public void SetClearState()
@@ -781,6 +857,10 @@ public class MissionData : MonoBehaviour
         simball = worldUiCanvas.Find("StageUI/QeustList/Button/Simball").gameObject;
         worldTitleText = worldUiCanvas.Find("StageUI/QeustList/BG/Step").GetComponent<TMP_Text>();
         worldDetailText = worldUiCanvas.Find("StageUI/QeustList/BG/Text").GetComponent<TMP_Text>();
+
+        dialySimball = UICanvas.transform.Find("ScreenArea/Mission/Mission/Window/Top_Btn/Dilay/simball").gameObject;
+        weeklySimball = UICanvas.transform.Find("ScreenArea/Mission/Mission/Window/Top_Btn/Week/simball").gameObject;
+        specialSimball = UICanvas.transform.Find("ScreenArea/Mission/Mission/Window/Top_Btn/Special/simball").gameObject;
         MissionCloseBtn = UICanvas.transform.Find("ScreenArea/Mission/Mission/Window/Title/X_Btn").GetComponent<Button>();
         MissionBGBtn = UICanvas.transform.Find("ScreenArea/Mission/BG(B)").GetComponent<Button>();
 
@@ -875,6 +955,7 @@ public class MissionData : MonoBehaviour
         {
             trs_MissionWindow.gameObject.SetActive(true);
             UICanvas.sortingOrder = 15;
+            AudioManager.inst.Play_Ui_SFX(1, 0.8f);
         });
         MissionCloseBtn.onClick.AddListener(() => { UICanvas.sortingOrder = 12; });
         MissionBGBtn.onClick.AddListener(() => { UICanvas.sortingOrder = 12; });
@@ -894,7 +975,8 @@ public class MissionData : MonoBehaviour
         missionTypeIndex = value;
         list_MissionWindow[missionTypeIndex].SetActive(true);
         Set_Nonclick_Color(value); // 이미지 변경에서 색상변경으로 변경 => 동은 '24.05.24
-        
+        AudioManager.inst.Play_Ui_SFX(4, 0.8f);
+
         //list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnSelectSprite[missionTypeIndex]; //눌럿을때
     }
 

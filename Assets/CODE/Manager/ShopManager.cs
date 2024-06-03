@@ -28,6 +28,7 @@ public class ShopManager : MonoBehaviour
         TMP_Text ProductText;
         Button BuyBtn;
         Image ProdImage;
+        
 
         public void initProduct(Transform _trs)
         {
@@ -119,8 +120,8 @@ public class ShopManager : MonoBehaviour
             ProductText = trs.Find("RewardText").GetComponent<TMP_Text>();
             BuyBtnText = trs.Find("Button/PriceText").GetComponent<TMP_Text>();
 
-            inst.onDailyReset.AddListener(DailyResetAd);
-
+            inst.onDailyReset.AddListener(() => { ResetAdBtn(GameStatus.inst.AdViewrAdShopData); });
+            
 
             UIManager.Instance.onOpenShop.AddListener(() =>
             {
@@ -159,16 +160,37 @@ public class ShopManager : MonoBehaviour
 
                         break;
                 }
+
+                GameStatus.inst.Ad_Viewr_AdShopDataDateValue(_trs.GetSiblingIndex(),DateTime.Now);
             });
         }
-
-        void DailyResetAd()
+        
+        public void ResetAdBtn(string[] dateValue)
         {
-            BuyBtn.interactable = true;
-            BuyBtnText.text = "광고 시청";
+            int index = trs.GetSiblingIndex();
+            if (dateValue[index] != string.Empty)
+            {
+                DateTime adShopDate = DateTime.Parse(dateValue[index]);
+
+                if (adShopDate.Date < DateTime.Now.Date)
+                {
+                    BuyBtn.interactable = true;
+                    BuyBtnText.text = "광고 시청";
+                }
+                else if (adShopDate.Date <= DateTime.Now.Date)
+                {
+                    BuyBtn.interactable = false;
+                    BuyBtnText.text = "재고 부족";
+                }
+            }
+            else
+            {
+                BuyBtn.interactable = true;
+                BuyBtnText.text = "광고 시청";
+            }
+
         }
     }
-
     //////////////////// < 인스펙터 참조 > ////////////////////////
 
     [Header("# BotArrayBtn Image <color=yellow>(Sprite)</color>")]
@@ -276,7 +298,7 @@ public class ShopManager : MonoBehaviour
 
     private void Start()
     {
-
+        onDailyReset?.Invoke();
     }
 
     private void Btn_Init()
@@ -290,7 +312,13 @@ public class ShopManager : MonoBehaviour
 
         // 
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            onDailyReset?.Invoke();
+        }
+    }
 
 
     /// <summary>

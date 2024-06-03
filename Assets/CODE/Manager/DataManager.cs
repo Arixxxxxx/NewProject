@@ -106,7 +106,8 @@ public class DataManager : MonoBehaviour
         // 상점
         //하루에 한번 뽑기 재료,유물
         public string[] adViewrGachaDate = new string[2];
-
+        //하루에 한번 광고상점 구매
+        public string[] adViewrAdShopData = new string[4];
     }
 
     string path = string.Empty;
