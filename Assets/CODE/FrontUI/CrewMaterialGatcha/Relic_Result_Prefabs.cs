@@ -103,7 +103,7 @@ public class Relic_Result_Prefabs : MonoBehaviour
         number_text.text = $"No.{relicNum+1:D2}";
         transform.SetAsLastSibling();
         gameObject.SetActive(true);
-        AudioManager.inst.PlaySFX(7,0.6f);
+        AudioManager.inst.Play_Ui_SFX(7,0.6f);
         StartCoroutine(PlayAction());
     }
 

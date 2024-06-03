@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     GameObject rawImgRef;
     public GameObject RawImgRef { get { return rawImgRef; } }
 
+    public GameObject touchScreenParticle;
     private void Awake()
     {
         if(inst == null)
@@ -68,6 +69,7 @@ public class GameManager : MonoBehaviour
         miniGameCam = camsRef.transform.Find("Minicam").GetComponent<CinemachineVirtualCamera>();
         miniGameParentRef = GameObject.Find("---[MiniGame]").gameObject;
         miniGameRef = miniGameParentRef.transform.Find("MiniGame").gameObject;
+        //touchScreenParticle = GameObject.Find("TouchScreenParticle").gameObject;
     }
     void Start()
     {
@@ -84,8 +86,10 @@ public class GameManager : MonoBehaviour
     {
         if (value)
         {
+            TouchScrrenParticle_Actve(false);
+            AudioManager.inst.PlayBGM(1);
             miniGameMode = true;
-
+            AudioManager.inst.noSound = true;
             miniGameRef.SetActive(true);
             miniGameCam.gameObject.SetActive(true);
             MinigameManager.inst.minigameReset();
@@ -98,8 +102,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            TouchScrrenParticle_Actve(true);
+            AudioManager.inst.PlayBGM(0);
             miniGameMode = false;
-
+            AudioManager.inst.noSound = false;
             worldCam.gameObject.SetActive(true);
             frontUiRef.SetActive(true);
             uiCanvasRef.SetActive(true);
@@ -109,4 +115,10 @@ public class GameManager : MonoBehaviour
             miniGameCam.gameObject.SetActive(false);
         }
     }
+
+    public void TouchScrrenParticle_Actve(bool value)
+    {
+        touchScreenParticle.SetActive(value);
+    }
+
 }

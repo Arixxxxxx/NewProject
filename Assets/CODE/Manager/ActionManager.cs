@@ -357,6 +357,7 @@ public class ActionManager : MonoBehaviour
     IEnumerator PlayerOnHitDMG() // < =
     {
         enemyAnim.SetTrigger("Hit");
+        
 
         // 뉴비버프 어택카운트 및 버프 
         GameStatus.inst.NewbieAttackCountUp(true);
@@ -374,11 +375,13 @@ public class ActionManager : MonoBehaviour
             DMG = CalCulator.inst.PlayerCriDMGCalculator(DMG); // 치명타 피해량 계산
             cri = true;
         }
+        AudioManager.inst.Play_HitOnly(0, 0.4f, cri); // 사운드플레이
 
         string checkDMG = CalCulator.inst.BigIntigerMinus(enemyCurHP, DMG);/* DigidMinus(enemyCurHP, DMG, true);*/
 
         if (checkDMG != "0" && attackReady == true)
         {
+            AudioManager.inst.MonsterHitOnly(true,1f);
             // 대미지폰트
             GameObject obj = Get_Pooling_Prefabs(0);
             obj.transform.position = enemySr.bounds.center;
@@ -392,6 +395,8 @@ public class ActionManager : MonoBehaviour
         }
         else if (checkDMG == "0")//에너미 사망 및 초기화
         {
+            AudioManager.inst.MonsterHitOnly(false, 1f); //
+
             DogamManager.inst.MosterDogamIndexValueUP(curEnemyNumber[0], curEnemyNumber[1]); // 몬스터 도감조각 얻기
             StartCoroutine(GetGoldActionParticle()); // 골드 획득하는 파티클 재생
 

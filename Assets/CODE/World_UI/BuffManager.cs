@@ -157,12 +157,12 @@ public class BuffManager : MonoBehaviour
 
     private void BtnInIt()
     {
-        exitBtn.onClick.AddListener(() => { Buff_UI_Active(false); });
+        exitBtn.onClick.AddListener(() => {  Buff_UI_Active(false); });
 
         // 1. 광고 버프 
-        viewAdBtn[0].onClick.AddListener(() => AdBuffActive(0));
-        viewAdBtn[1].onClick.AddListener(() => AdBuffActive(1));
-        viewAdBtn[2].onClick.AddListener(() => AdBuffActive(2));
+        viewAdBtn[0].onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(4, 0.8f); AdBuffActive(0); });
+        viewAdBtn[1].onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(4, 0.8f); AdBuffActive(1); });
+        viewAdBtn[2].onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(4, 0.8f); AdBuffActive(2); });
 
         // 2. 루비 구매
 
@@ -170,6 +170,7 @@ public class BuffManager : MonoBehaviour
         {
             RubyPayment.inst.RubyPaymentUiActive(100, () =>
             {
+                AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                 RubyPayBtnInit(0);
             });
         });
@@ -178,6 +179,7 @@ public class BuffManager : MonoBehaviour
 
             RubyPayment.inst.RubyPaymentUiActive(100, () =>
             {
+                AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                 RubyPayBtnInit(1);
             });
         });
@@ -185,6 +187,7 @@ public class BuffManager : MonoBehaviour
         useRubyBtn[2].onClick.AddListener(() => {
             RubyPayment.inst.RubyPaymentUiActive(100, () =>
             {
+                AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                 RubyPayBtnInit(2);
             });
         });
@@ -207,6 +210,15 @@ public class BuffManager : MonoBehaviour
     /// <param name="value"></param>
     public void Buff_UI_Active(bool value)
     {
+        if (value)
+        {
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
+        }
+        else
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 0.8f);
+        }
+        
         mainWindow.SetActive(value);
     }
 

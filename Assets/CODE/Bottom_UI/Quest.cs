@@ -92,7 +92,7 @@ public class Quest : MonoBehaviour,IClickLvUpAble
         });
         GameStatus.inst.OnPercentageChanged.AddListener(_OnItemPercentChanged);
         GameStatus.inst.OnPercentageChanged.AddListener(setItemCur);
-        UpBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1, 0.8f); });
+        UpBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     void initValue()//초기값 설정

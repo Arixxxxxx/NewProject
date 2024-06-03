@@ -82,7 +82,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         setNextCost();
         setText();
 
-        upBtn.onClick.AddListener(() => {  AudioManager.inst.PlaySFX(1, 0.8f); ClickUp(); });
+        upBtn.onClick.AddListener(() => {  AudioManager.inst.Play_Ui_SFX(1, 0.8f); ClickUp(); });
 
     }
 

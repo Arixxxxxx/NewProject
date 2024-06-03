@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class AdDelete : MonoBehaviour
 {
     public static AdDelete inst;
@@ -84,7 +85,7 @@ public class AdDelete : MonoBehaviour
 
     private void BtnInIt()
     {
-        xBtn.onClick.AddListener(() => AdDeleteUiRef.SetActive(false));
+        xBtn.onClick.AddListener(() => ActiveAdDeleteWindow(false));
 
         //구매 버튼
         buyBtn.onClick.AddListener(() =>
@@ -99,9 +100,18 @@ public class AdDelete : MonoBehaviour
 
     }
 
-    public void ActiveAdDeleteWindow()
+    public void ActiveAdDeleteWindow(bool value)
     {
-        AdDeleteUiRef.SetActive(true);
+        if (value)
+        {
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
+        }
+        else
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 0.8f);
+        }
+
+        AdDeleteUiRef.SetActive(value);
     }
 
 

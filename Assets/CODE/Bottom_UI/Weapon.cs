@@ -80,7 +80,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
         GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
         UIManager.Instance.WeaponReset.AddListener(resetWeapon);
-        objBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1, 0.8f); });
+        objBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     void initValue() //초기값 설정

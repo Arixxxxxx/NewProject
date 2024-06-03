@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class CrewMaterial_GachaPrefabs : MonoBehaviour
 {
@@ -129,7 +128,7 @@ public class CrewMaterial_GachaPrefabs : MonoBehaviour
         transform.SetAsLastSibling();
 
         gameObject.SetActive(true);
-        AudioManager.inst.PlaySFX(7, 0.6f);
+        AudioManager.inst.Play_Ui_SFX(7, 0.6f);
         StartCoroutine(PlayAction());
     }
     float duration = 0.2f;

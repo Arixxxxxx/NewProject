@@ -186,7 +186,7 @@ public class WorldUI_Manager : MonoBehaviour
 
         questListBtn = worldUI.transform.Find("StageUI/QeustList/Button").GetComponent<Button>();
         mainMenuBtn = worldUI.transform.Find("StageUI/MainMenu").GetComponent<Button>();
-        mainMenuBtn.onClick.AddListener(() => MainMenuManager.inst.Set_MainMenuActive(true));
+        mainMenuBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(4, 0.8f); MainMenuManager.inst.Set_MainMenuActive(true); });
 
         hwanSengBtn = worldUI.transform.Find("StageUI/HwanSeng").GetComponent<Button>();
 
@@ -296,12 +296,11 @@ public class WorldUI_Manager : MonoBehaviour
     {
 
         // 월드 버튼 초기화
-        hwanSengBtn.onClick.AddListener(() => HwanSengSystem.inst.Set_HwansengUIActive(true)); //환생버튼
-        getLetterBtn.onClick.AddListener(() => { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
+        hwanSengBtn.onClick.AddListener(() => { HwanSengSystem.inst.Set_HwansengUIActive(true); }); //환생버튼
+        getLetterBtn.onClick.AddListener(() => {LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
         newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
-        //mosterDogamBtn.onClick.AddListener(() => { DogamManager.inst.Set_DogamListAcitve(1, true); });
-        adDeleteBtn.onClick.AddListener(() => AdDelete.inst.ActiveAdDeleteWindow());
+        adDeleteBtn.onClick.AddListener(() => { AdDelete.inst.ActiveAdDeleteWindow(true); });
         buffShopBtn.onClick.AddListener(() => { BuffManager.inst.Buff_UI_Active(true); });
         crewViewrBtn.onClick.AddListener(() =>
         {
@@ -333,10 +332,12 @@ public class WorldUI_Manager : MonoBehaviour
         {
             if (checkArrowScaleX.localScale.x == 1)
             {
+                AudioManager.inst.Play_Ui_SFX(2, 0.8f);
                 menuAnim.SetTrigger("Open");
             }
             else if (checkArrowScaleX.localScale.x == -1)
             {
+                AudioManager.inst.Play_Ui_SFX(3, 0.8f);
                 menuAnim.SetTrigger("Close");
             }
         });
@@ -458,6 +459,7 @@ public class WorldUI_Manager : MonoBehaviour
 
         obj = poolingQue[1].Dequeue();
         obj.gameObject.SetActive(true);
+        AudioManager.inst.Play_World_SFX(0,0.4f);
         obj.GetComponent<GetItemPrefabs>().Set_GetItemSpriteAndText(img, Value);
 
     }
@@ -542,7 +544,7 @@ public class WorldUI_Manager : MonoBehaviour
     public void Set_RewardUI_Invoke(Sprite sprite, string text)
     {
         if (!worldUI.gameObject.activeInHierarchy) { return; }
-
+        AudioManager.inst.Play_Ui_SFX(8, 0.5f);
         GameObject obj = Get_WorldUIPooling_Prefabs_Object(0);
         obj.GetComponent<Reward_Parts>().Set_Reward(sprite, text);
     }
@@ -555,7 +557,7 @@ public class WorldUI_Manager : MonoBehaviour
     public void Set_Reward_InclueAction(Sprite sprite, string text, Action funtion)
     {
         if (!worldUI.gameObject.activeInHierarchy) { return; }
-
+        AudioManager.inst.Play_Ui_SFX(8, 0.5f);
         GameObject obj = Get_WorldUIPooling_Prefabs_Object(0);
         obj.GetComponent<Reward_Parts>().Set_RewardIncludeAction(sprite, text, funtion);
     }
@@ -661,6 +663,6 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="value"></param>
     public void GetTrs_VerticalLayOutActive(bool value) => getItemLayOut.enabled = value;
 
-
+    
 
 }

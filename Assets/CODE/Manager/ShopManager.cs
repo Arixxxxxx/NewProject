@@ -301,11 +301,11 @@ public class ShopManager : MonoBehaviour
     {
         if (active) // 해당 상점 호출
         {
-
+            AudioManager.inst.noSound = true;
             // 최초 넘어온게 아니라면 버튼음 재생
             if (curSelectMenu != -1 && curSelectMenu != ShopTypeNumber)
             {
-                AudioManager.inst.PlaySFX(4, 0.8f);
+                AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             }
 
             //동일 버튼 또 클릭시 리턴
@@ -353,6 +353,7 @@ public class ShopManager : MonoBehaviour
             }
 
             curSelectMenu = -1;
+            AudioManager.inst.noSound = false;
             shopRef.SetActive(false);
         }
     }

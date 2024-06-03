@@ -103,7 +103,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
         upBtn.onClick.AddListener(ClickUp);
         BuyBtn.onClick.AddListener(() =>
         {
-            BuyBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1, 0.8f); });
+            BuyBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
             RubyPayment.inst.RubyPaymentUiActive(baseCost, () =>
             {
                 Lv++;
@@ -111,7 +111,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
                 PetContollerManager.inst.CrewUnlock_Action((int)type, true);
             });
         });
-        DetailBtn.onClick.AddListener(() => { PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()); AudioManager.inst.PlaySFX(1, 0.8f); });
+        DetailBtn.onClick.AddListener(() => { PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()); AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     void checkHaveRuby()
@@ -153,7 +153,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
             Lv++;
         }
 
-        upBtn.onClick.AddListener(() => { AudioManager.inst.PlaySFX(1, 0.8f); });
+        upBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     void setNextCost()

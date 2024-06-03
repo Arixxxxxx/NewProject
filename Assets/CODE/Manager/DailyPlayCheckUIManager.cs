@@ -92,7 +92,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     }
     private void BtnInIt()
     {
-        xBtn.onClick.AddListener(() => dailyCheckObjRef.SetActive(false));
+        xBtn.onClick.AddListener(() => MainWindow_Acitve(false));
 
 
         adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
@@ -114,6 +114,15 @@ public class DailyPlayCheckUIManager : MonoBehaviour
     /// <param name="value"></param>
     public void MainWindow_Acitve(bool value)
     {
+        if (value)
+        {
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
+        }
+        else
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 0.8f);
+        }
+
         dailyCheckObjRef.SetActive(value);
     }
 
@@ -141,6 +150,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
             GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.RemoveAllListeners();
             GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.AddListener(() =>
             {
+                AudioManager.inst.Play_Ui_SFX(4, 1);
                 LetterManager.inst.MakeLetter(0, "게임GM", $"출석체크 {GameStatus.inst.GotDaily_Reward + 1}일차 보상", value); // 보상 우편 획득
 
                 GameStatus.inst.TotayGotDaily_Reward = true;

@@ -71,7 +71,7 @@ public class Newbie_Content : MonoBehaviour
         gameWindow = newbieWindow.transform.Find("Window").gameObject;
         layoutRef = gameWindow.transform.Find("RubyList").gameObject;
         xBtn = gameWindow.transform.Find("Title/X_Btn").GetComponent<Button>();
-        xBtn.onClick.AddListener(() => Set_NewbieWindowActive(false));
+        xBtn.onClick.AddListener(() => { Set_NewbieWindowActive(false); });
 
 
         iconLayoutCount = layoutRef.transform.childCount;
@@ -101,7 +101,7 @@ public class Newbie_Content : MonoBehaviour
         alrimWindow = newbieWindow.transform.Find("Alrim").gameObject;
         alrimWindowItemIMG = alrimWindow.transform.Find("Window/Frame_LayOut/IMG_Frame/IMG").GetComponent<Image>();
         alrimBtn = alrimWindow.transform.Find("Window/Button").GetComponent<Button>();
-        alrimBtn.onClick.AddListener(() => { alrimWindow.SetActive(false); });
+        alrimBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(3, 1); alrimWindow.SetActive(false); });
 
 
         buffLeftTimeText = gameWindow.transform.Find("TextLayOut/LeftTime/TimeText").GetComponent<TMP_Text>();
@@ -117,6 +117,15 @@ public class Newbie_Content : MonoBehaviour
     /// <param name="value"> true / false </param>
     public void Set_NewbieWindowActive(bool value)
     {
+        if (value)
+        {
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
+        }
+        else
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 0.8f);
+        }
+
         newbieWindow.SetActive(value);
         buffLeftTimeText.text = $"신규유저 혜택 남은시간 : " +
               $"<color=green>{(BuffContoller.inst.GetBuffTime(4) / 60) / 24}일 {(BuffContoller.inst.GetBuffTime(4) / 60) % 24}시간 {BuffContoller.inst.GetBuffTime(4) % 60}분</color>";
@@ -143,6 +152,7 @@ public class Newbie_Content : MonoBehaviour
         GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.RemoveAllListeners();
         GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.AddListener(() => // 수락버튼부
         {
+            AudioManager.inst.Play_Ui_SFX(4, 1);
             LetterManager.inst.MakeLetter(0, "게임GM", $"신규유저 {GameStatus.inst.GotNewbieGiftCount + 1}일차 보상", rubyCount); // 보상 우편 획득
                                                                                                                         //GetIconChanger(GameStatus.inst.GotNewbieGiftCount); // 아이콘 받음처리
             GameStatus.inst.GotNewbieGiftCount++; // 받은 카운트 올려줌

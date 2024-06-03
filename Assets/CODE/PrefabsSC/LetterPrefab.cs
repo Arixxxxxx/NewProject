@@ -95,6 +95,7 @@ public class LetterPrefab : MonoBehaviour
         getBtn.onClick.RemoveAllListeners();
         getBtn.onClick.AddListener(() =>
         {
+            AudioManager.inst.Play_Ui_SFX(9,1);           
             // 편지수락 알림창 초기화 및 켜주기
             LetterManager.inst.alrimWindowAcitveTrueAndInit(mainIMG.sprite, ItemType, ItemCount, gameObject);
             

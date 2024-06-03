@@ -46,7 +46,7 @@ public class SpriteResource : MonoBehaviour
         return null;
     }
 
-    int itemtype = 0;
+    
     public Sprite Relic_SpriteNumber(int relicNum)
     {
         int itemtype = 0;

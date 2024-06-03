@@ -203,18 +203,24 @@ public class HwanSengSystem : MonoBehaviour
     {
         if (active)
         {
-            if(GameStatus.inst.AccumlateFloor <= openFloor)
+            AudioManager.inst.Play_Ui_SFX(4, 1);
+
+            if (GameStatus.inst.AccumlateFloor <= openFloor)
             {
                 activeHwanseng[0].SetActive(false);
                 activeHwanseng[1].SetActive(true);
                 btnMask.SetActive(true);
             }
-            else if(GameStatus.inst.AccumlateFloor > openFloor)
+            else if (GameStatus.inst.AccumlateFloor > openFloor)
             {
                 activeHwanseng[0].SetActive(true);
                 activeHwanseng[1].SetActive(false);
                 btnMask.SetActive(false);
             }
+        }
+        else
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 1);
         }
         hwansengRef.SetActive(active);
     }
@@ -228,10 +234,15 @@ public class HwanSengSystem : MonoBehaviour
     {
         if (active)
         {
+            AudioManager.inst.Play_Ui_SFX(4, 1);
             relicAddTime = GameStatus.inst.GetAryRelicLv(4);
             totalFeverTime = defaultFeverTime + relicAddTime;
             feverTimeTextSec.text = $"{totalFeverTime}√ ";
             alrim_HwansengTypeText.text = alrimTypeText[selectType];
+        }
+        else
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 1);
         }
         alrimWindowRef.SetActive(active);
     }

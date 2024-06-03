@@ -16,8 +16,8 @@ public class Gacha : MonoBehaviour
     //List<GaChaEffect> list_resultImage = new List<GaChaEffect>();
 
 
-    int openCount = 0;
-    int maxOpenCount = 10;
+    //int openCount = 0;
+    //int maxOpenCount = 10;
     //Button adRelicBtn;
 
     [Serializable]
@@ -161,23 +161,23 @@ public class Gacha : MonoBehaviour
         //Invoke("allOpenBtnActive", 1f);
     }
 
-    public void clickGacha(int GachaCount)
-    {
-        int price;
-        if (GachaCount == 1)
-        {
-            price = 100;
-        }
-        else
-        {
-            price = 900;
-        }
-        RubyPayment.inst.RubyPaymentUiActive(price, () =>
-        {
-            StartCoroutine(gachaEffect(GachaCount));
-            maxOpenCount = GachaCount;
-        });
-    }
+    //public void clickGacha(int GachaCount)
+    //{
+    //    int price;
+    //    if (GachaCount == 1)
+    //    {
+    //        price = 100;
+    //    }
+    //    else
+    //    {
+    //        price = 900;
+    //    }
+    //    RubyPayment.inst.RubyPaymentUiActive(price, () =>
+    //    {
+    //        StartCoroutine(gachaEffect(GachaCount));
+    //        maxOpenCount = GachaCount;
+    //    });
+    //}
 
 
     int compareRelic(GameObject A, GameObject B)

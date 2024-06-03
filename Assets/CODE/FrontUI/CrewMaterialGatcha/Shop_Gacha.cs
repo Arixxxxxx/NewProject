@@ -188,7 +188,7 @@ public class Shop_Gacha : MonoBehaviour
         // 3회
         crewMaterialBuyBtn[0].onClick.AddListener(() =>
         {
-            AudioManager.inst.PlaySFX(4,0.8f);
+            AudioManager.inst.Play_Ui_SFX(4,0.8f);
             int price = RubyPrice.inst.CrewMaterialGachaPrice(0);
             RubyPayment.inst.RubyPaymentUiActive(price, () => Play_CrewMaterialGacha(10, false));
         });
@@ -196,14 +196,14 @@ public class Shop_Gacha : MonoBehaviour
         // 9회
         crewMaterialBuyBtn[1].onClick.AddListener(() =>
         {
-            AudioManager.inst.PlaySFX(4, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             int price = RubyPrice.inst.CrewMaterialGachaPrice(1);
             RubyPayment.inst.RubyPaymentUiActive(price, () => Play_CrewMaterialGacha(20, false));
         });
         // 광고
         crewMaterialBuyBtn[2].onClick.AddListener(() =>
         {
-            AudioManager.inst.PlaySFX(4, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             crewMaterialBuyBtn[2].interactable = false;
             GameStatus.inst.Shop_adView_GachaDateValue(0, DateTime.Now);     // 일자기록
             
@@ -248,7 +248,7 @@ public class Shop_Gacha : MonoBehaviour
         // 10회
         relicBuyBtn[0].onClick.AddListener(() =>
         {
-            AudioManager.inst.PlaySFX(4, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             int price = RubyPrice.inst.RelicGachaPrice(0);
             RubyPayment.inst.RubyPaymentUiActive(price, () => Play_RelicGacha(10, false));
         });
@@ -256,7 +256,7 @@ public class Shop_Gacha : MonoBehaviour
         // 20회
         relicBuyBtn[1].onClick.AddListener(() =>
         {
-            AudioManager.inst.PlaySFX(4, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             int price = RubyPrice.inst.RelicGachaPrice(1);
             RubyPayment.inst.RubyPaymentUiActive(price, () => Play_RelicGacha(20, false));
         });
@@ -264,7 +264,7 @@ public class Shop_Gacha : MonoBehaviour
         // 광고
         relicBuyBtn[2].onClick.AddListener(() =>
         {
-            AudioManager.inst.PlaySFX(4, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             relicBuyBtn[2].interactable = false;
             GameStatus.inst.Shop_adView_GachaDateValue(1,DateTime.Now);     // 일자기록
             ADViewManager.inst.SampleAD_Active_Funtion(() => Play_RelicGacha(5, true));

@@ -85,12 +85,12 @@ public class LetterManager : MonoBehaviour
     }
     private void BtnInIt()
     {
-        xBtn.onClick.AddListener(() => postOfficeRef.SetActive(false));
+        xBtn.onClick.AddListener(() => OpenPostOnOfficeAndInit(false));
         everyAcceptBtn.onClick.AddListener(() =>
         {
             GetEveryLetter();
         });
-        everyAcceptBackBtn.onClick.AddListener(() => EveryGetAlrimRef.SetActive(false));
+        everyAcceptBackBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(3, 1);  EveryGetAlrimRef.SetActive(false); });
     }
 
     //최초 빈 편지 생성
@@ -202,8 +202,9 @@ public class LetterManager : MonoBehaviour
                 
 
         int childCount = letterBox.transform.childCount;
-        if (childCount == 0) { return; }
-
+        if (childCount == 0) { AudioManager.inst.Play_Ui_SFX(4, 1); return; }
+        
+        AudioManager.inst.Play_Ui_SFX(9, 1);
 
         //모든 편지 내용물확인
         for (int index = 0; index < childCount; index++)
@@ -273,6 +274,7 @@ public class LetterManager : MonoBehaviour
     {
         if (value == true)
         {
+            AudioManager.inst.Play_Ui_SFX(4, 1);
             int childCount = letterBox.transform.childCount;
 
             if (childCount > 0) // 수신된 우편이 있을때 뷰어 켜줌
@@ -284,10 +286,13 @@ public class LetterManager : MonoBehaviour
             {
                 letterViewr.gameObject.SetActive(false);
                 notthingLetter.gameObject.SetActive(true);
-                
+
             }
         }
-
+        else
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 1);
+        }
         postOfficeRef.SetActive(value);
     }
 

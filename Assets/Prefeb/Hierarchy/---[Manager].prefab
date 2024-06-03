@@ -86,9 +86,7 @@ GameObject:
   - component: {fileID: 6540071124928371434}
   - component: {fileID: 2968815664667207561}
   - component: {fileID: 8750440378185091202}
-  - component: {fileID: 6767617472122134259}
   - component: {fileID: 3980596178529644447}
-  - component: {fileID: 1002357639231264430}
   - component: {fileID: 4873485944268843623}
   - component: {fileID: 5612809998451945743}
   - component: {fileID: 7209837891259950}
@@ -222,18 +220,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffTime: 0
   isAdDeleteBuy: 0
---- !u!114 &6767617472122134259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2214145803004256810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d4987742cad4024e8b82d9e61414438, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3980596178529644447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,23 +235,6 @@ MonoBehaviour:
   reSpawnTimer: 0
   startTimeRange: {x: 60, y: 120}
   clickTimeRange: {x: 120, y: 180}
---- !u!114 &1002357639231264430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2214145803004256810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39ec026b60160ba46aafb8ae89800080, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxItemCount: 030000000300000001000000010000000100000001000000
-  ItemRewardCount: e8030000c8000000e8030000960000009600000096000000
-  curItemCount: 
-  coolTimeTimer: []
-  coolTime: 300
 --- !u!114 &4873485944268843623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,6 +684,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   OnRubyChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onCrewMatChanged:
     m_PersistentCalls:
       m_Calls: []
   accumlateFloor: 0

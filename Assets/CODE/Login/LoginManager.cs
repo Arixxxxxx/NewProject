@@ -215,7 +215,7 @@ public class LoginManager : MonoBehaviour
     {
         if (taptoScrrenRef.gameObject.activeSelf)
         {
-            AudioManager.inst.PlaySFX(0, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(0, 0.8f);
 
             if (DataManager.inst.IshaveJsonFile == false)
             {
