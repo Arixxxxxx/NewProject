@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Raw_Prefabs : MonoBehaviour
 {
+    [Header("# 등급별 보따리 색깔 Sprite")]
+    [Space]
     [SerializeField] Sprite[] itemIMG;
     ParticleSystemRenderer[] psEffect = new ParticleSystemRenderer[2];
     
@@ -59,11 +61,12 @@ public class Raw_Prefabs : MonoBehaviour
         
         sr.sprite = itemIMG[itemtype];
         sr.sortingOrder = MakeCount;
-        float randomX = Random.Range(-1.8f, 1.8f);
+        float randomX = Random.Range(-1f, 1f);
         float randomY = 1f;
         transform.localPosition = new Vector2(randomX, randomY);
 
         gameObject.SetActive(true);
+        AudioManager.inst.Play_Ui_SFX(10, 0.8f);
     }
 
     public void ReturnPrefabs()

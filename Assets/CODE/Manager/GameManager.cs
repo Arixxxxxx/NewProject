@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
         miniGameCam = camsRef.transform.Find("Minicam").GetComponent<CinemachineVirtualCamera>();
         miniGameParentRef = GameObject.Find("---[MiniGame]").gameObject;
         miniGameRef = miniGameParentRef.transform.Find("MiniGame").gameObject;
-        //touchScreenParticle = GameObject.Find("TouchScreenParticle").gameObject;
+        touchScreenParticle = GameObject.Find("TouchScreenParticle").gameObject;
     }
     void Start()
     {
@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
     {
         if (value)
         {
-            //TouchScrrenParticle_Actve(false);
+            TouchScrrenParticle_Actve(false);
             AudioManager.inst.PlayBGM(1);
             miniGameMode = true;
             AudioManager.inst.noSound = true;
@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            //TouchScrrenParticle_Actve(true);
+            TouchScrrenParticle_Actve(true);
             AudioManager.inst.PlayBGM(0);
             miniGameMode = false;
             AudioManager.inst.noSound = false;

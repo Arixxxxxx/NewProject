@@ -26,7 +26,8 @@ public class AudioManager : MonoBehaviour
     bool[] isSoundPlay;
     float[] worldSoundDealyTimer;
     float[] worldSoundDealy = { 0.25f, 0.25f };
-
+    [Header("#Audio Mixer")]
+    [SerializeField] AudioMixer audioMixer;
     [SerializeField] AudioMixerGroup SFXGroup;
     public bool noSound; 
     Queue<AudioSource> audioQue = new Queue<AudioSource>();
@@ -61,6 +62,8 @@ public class AudioManager : MonoBehaviour
         bgmPlayer.volume = 0.8f;
         bgmPlayer.clip = BGM[0];
         bgmPlayer.Play();
+
+        
     }
 
     // Update is called once per frame
@@ -295,5 +298,43 @@ public class AudioManager : MonoBehaviour
         obj.volume = 1;
         obj.gameObject.SetActive(false);
         audioQue.Enqueue(obj);
+    }
+
+
+    float muteValue = -80f;
+    float defaultVolumeValue = 0f;
+
+    /// <summary>
+    /// 오디오믹서 BGM / SFX Mute 기능 (for 환경설정)
+    /// </summary>
+    /// <param name="parameterName"> BGM  / SFX </param>
+    /// <param name="value">true, false</param>
+    public void Set_VoulemMute(string parameterName, bool value)
+    {
+        switch (parameterName) 
+        {
+            case "BGM":
+                if (value)
+                {
+                    audioMixer.SetFloat("BGM", defaultVolumeValue);
+                }
+                else
+                {
+                    audioMixer.SetFloat("BGM", muteValue);
+                }
+                break;
+
+            case "SFX":
+                if (value)
+                {
+                    audioMixer.SetFloat("SFX", defaultVolumeValue);
+                }
+                else
+                {
+                    audioMixer.SetFloat("SFX", muteValue);
+                }
+                break;
+        }
+
     }
 }

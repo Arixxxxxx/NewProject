@@ -186,7 +186,7 @@ public class WorldUI_Manager : MonoBehaviour
 
         questListBtn = worldUI.transform.Find("StageUI/QeustList/Button").GetComponent<Button>();
         mainMenuBtn = worldUI.transform.Find("StageUI/MainMenu").GetComponent<Button>();
-        mainMenuBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(4, 0.8f); MainMenuManager.inst.Set_MainMenuActive(true); });
+        mainMenuBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(4, 0.8f); MainMenuManager.inst.Active_MainMenu(true); });
 
         hwanSengBtn = worldUI.transform.Find("StageUI/HwanSeng").GetComponent<Button>();
 

@@ -38,7 +38,7 @@ public class Shop_Gacha : MonoBehaviour
     Button[] reStartBtn = new Button[2];
     TMP_Text[] priceTextInRestarBtn = new TMP_Text[2];
 
-    GameObject shopRef, gachaShopRef;
+    GameObject shopRef, gachaShopRef, completePsRef;
     Gacha relicGachaSc;
     GachaBox_Animator boxSc;
 
@@ -114,7 +114,7 @@ public class Shop_Gacha : MonoBehaviour
 
         //유물뽑기관련
         rawPrefbas_SpawnTrs = GameManager.inst.RawImgRef.transform.Find("Gacha/startPos");
-
+        completePsRef = GameManager.inst.RawImgRef.transform.Find("Gacha/Ps").gameObject;
 
         // 프리펩 초기화
         for (int index = 0; index < maxMakeCount; index++)
@@ -275,6 +275,7 @@ public class Shop_Gacha : MonoBehaviour
         xBtn[1].onClick.AddListener(() =>
         {
             xBtn[1].gameObject.SetActive(false);
+            completePsRef.SetActive(false);
             gachaResultRef[1].SetActive(false);
             gachaPlayGroundRef.SetActive(false);
             rellicRowIMG.SetActive(false);
@@ -318,6 +319,7 @@ public class Shop_Gacha : MonoBehaviour
                 }
             }
 
+            completePsRef.SetActive(false);
             GameStatus.inst.Ruby -= arr.Count == 10 ? RubyPrice.inst.RelicGachaPrice(0) : RubyPrice.inst.RelicGachaPrice(1);
             Play_RelicGacha(arr.Count, false);
         });
@@ -400,23 +402,24 @@ public class Shop_Gacha : MonoBehaviour
             type = UnityEngine.Random.Range(0, 3);
 
             //2. 갯수
-            count = UnityEngine.Random.Range(5, 20);
+            
 
             //3. 크리타입 생성 80% = 일반 / 15% 에픽 / 5% 전설
             float Cri = UnityEngine.Random.Range(0f, 100f);
             if (Cri > 0 && Cri < 80f)
             {
                 criType = 0;
+                count = UnityEngine.Random.Range(5, 20);
             }
             else if (Cri >= 80 && Cri < 95)
             {
                 criType = 1;
-                count *= 2; // 2배
+                count = UnityEngine.Random.Range(25, 40);
             }
             else
             {
                 criType = 2;
-                count *= 3;// 3배
+                count = UnityEngine.Random.Range(41, 80);
             }
 
             GameStatus.inst.Set_crewMaterial(type, count); // 실제 재료 넣어줌
@@ -460,7 +463,8 @@ public class Shop_Gacha : MonoBehaviour
     }
 
     WaitForSeconds relic_RawImg_intervalTime = new WaitForSeconds(0.22f);
-    WaitForSeconds relic_RawImg_NextWaitTime = new WaitForSeconds(4f);
+    WaitForSeconds relic_RawImg_NextWaitTime = new WaitForSeconds(3f);
+    WaitForSeconds relic_RawImg_FirstNextWaitTime = new WaitForSeconds(1f);
     IEnumerator PlayRelicAction(bool isAd)
     {
         WorldUI_Manager.inst.Effect_WhiteCutton(1.5f); // 하얀화면 이펙트
@@ -475,6 +479,10 @@ public class Shop_Gacha : MonoBehaviour
             obj.Set_Prefabs(arr[index], index);
             yield return relic_RawImg_intervalTime;
         }
+
+        yield return relic_RawImg_FirstNextWaitTime;
+
+        completePsRef.SetActive(true); // 폭죽 파티클 재생
 
         yield return relic_RawImg_NextWaitTime;
 
@@ -502,7 +510,7 @@ public class Shop_Gacha : MonoBehaviour
                 reStartBtn[1].gameObject.SetActive(true);
             }
         }
-
+        
         xBtn[1].gameObject.SetActive(true);
     }
 

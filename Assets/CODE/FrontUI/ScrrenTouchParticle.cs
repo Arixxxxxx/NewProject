@@ -5,87 +5,96 @@ using UnityEngine.EventSystems;
 
 
 
-public class ScrrenTouchParticle : MonoBehaviour, IPointerDownHandler
+public class ScrrenTouchParticle : MonoBehaviour
 {
     [SerializeField] GameObject screenParticle;
-    private Canvas touchParticleCanvas;
-    Transform objTrs;
+    private RectTransform canvasRectTransform;
+    private Canvas canvas;
+    private Camera uiCamera;
     Queue<ParticleSystem> Ps = new Queue<ParticleSystem>();
+
     private void Awake()
     {
-        //DontDestroyOnLoad(gameObject);
-        touchParticleCanvas = GetComponentInParent<Canvas>();
-        objTrs = transform.GetChild(0);
+        canvasRectTransform = transform.parent.GetComponent<RectTransform>();
+        canvas = transform.parent.GetComponent<Canvas>();
+        uiCamera = canvas.worldCamera;
+
         for (int i = 0; i < 10; i++)
         {
             prefabs_Maker();
         }
     }
 
+    //프리펩 생성
     private void prefabs_Maker()
     {
-        ParticleSystem PsObj = Instantiate(screenParticle, objTrs).GetComponent<ParticleSystem>();
+        ParticleSystem PsObj = Instantiate(screenParticle, transform).GetComponent<ParticleSystem>();
+        ParticleSystemRenderer renderer = PsObj.GetComponent<ParticleSystemRenderer>();
+        renderer.enabled = true;
+        renderer.sortingOrder = 100;
         PsObj.gameObject.SetActive(false);
         Ps.Enqueue(PsObj);
     }
 
-    private void PlayPs(Vector2 pos)
+    //재생 프리펩
+    private void PlayPs(Vector2 localPosition)
     {
         if (Ps.Count <= 0)
         {
             prefabs_Maker();
         }
+        AudioManager.inst.Play_Ui_SFX(1, 0.1f);
         ParticleSystem PsObj = Ps.Dequeue();
-        PsObj.transform.position = pos;
+        PsObj.transform.localPosition = localPosition;
         PsObj.gameObject.SetActive(true);
-        StartCoroutine(PlayRetur(PsObj));
+        StartCoroutine(PlayReturn(PsObj));
     }
 
     WaitForSeconds waittime = new WaitForSeconds(0.5f);
-    IEnumerator PlayRetur(ParticleSystem obj)
+    IEnumerator PlayReturn(ParticleSystem PsObj)
     {
-        obj.Play();
+        PsObj.Play();
 
         yield return waittime;
 
-        obj.gameObject.SetActive(false);
-        obj.transform.localPosition = Vector3.zero;
-        Ps.Enqueue(obj);
-
-    }
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0)) 
-        {
-            Vector2 pos = Input.mousePosition;
-        }
-    }
-
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        //PlayPs(eventData.position);
-        //HandleAllRaycasts(eventData);
+        PsObj.gameObject.SetActive(false);
+        PsObj.transform.localPosition = Vector3.zero;
+        Ps.Enqueue(PsObj);
     }
 
     List<RaycastResult> raycastResults = new List<RaycastResult>();
-    private void HandleAllRaycasts(PointerEventData eventData)
+    private void Update()
     {
-
-        AudioManager.inst.Play_Ui_SFX(1, 0.1f);
-        raycastResults.Clear();
-
-        EventSystem.current.RaycastAll(eventData, raycastResults);
-
-        if (raycastResults.Count > 0)
+        if (Input.GetMouseButtonDown(0))
         {
-            for (int index = 0; index < raycastResults.Count; index++)
+            if (EventSystem.current.isActiveAndEnabled)
             {
-                RaycastResult firstResult = raycastResults[index];
-                if (firstResult.gameObject.name == "BG") { return; }
+                raycastResults.Clear();
+                // 클릭을 감지한 이벤트시스템 가져오기
+                PointerEventData pointerData = new PointerEventData(EventSystem.current)
+                {
+                    position = Input.mousePosition
+                };
 
-                ExecuteEvents.Execute(firstResult.gameObject, eventData, ExecuteEvents.pointerClickHandler);
-  
+                EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+                if (raycastResults.Count > 0)
+                {
+                    for (int index = 0; index < raycastResults.Count; index++)
+                    {
+                        if (raycastResults[index].gameObject.name == "Area")
+                        {
+                            Vector2 localPoint;
+                            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                                canvasRectTransform,
+                                pointerData.position,
+                                uiCamera,
+                                out localPoint);
+
+                            PlayPs(localPoint);
+                        }
+                    }
+                }
             }
         }
     }
