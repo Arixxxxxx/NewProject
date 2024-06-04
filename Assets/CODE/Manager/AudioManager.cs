@@ -314,7 +314,7 @@ public class AudioManager : MonoBehaviour
         switch (parameterName) 
         {
             case "BGM":
-                if (value)
+                if (!value)
                 {
                     audioMixer.SetFloat("BGM", defaultVolumeValue);
                 }
@@ -325,7 +325,7 @@ public class AudioManager : MonoBehaviour
                 break;
 
             case "SFX":
-                if (value)
+                if (!value)
                 {
                     audioMixer.SetFloat("SFX", defaultVolumeValue);
                 }

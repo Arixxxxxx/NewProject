@@ -11,6 +11,41 @@ public class GameStatus : MonoBehaviour
     public static GameStatus inst;
 
 
+    // 쿠폰북
+
+    List<string> couponBook = new List<string>();
+    public string CheckMyCoupon(string coupon)
+    {
+        if (couponBook.Contains(coupon))
+        {
+            int index = couponBook.IndexOf(coupon);
+            couponBook.Remove(coupon);
+            switch (index) 
+            {
+                case 1:
+                    LetterManager.inst.MakeLetter(0, "동은", "친구선물", 100000);
+                    break;
+            }
+
+            return "보상이 지급되었습니다.\n우편함을 확인하세요.";
+        }
+
+        return "등록되지 않은\n쿠폰번호 입니다.";
+    }
+
+    public void Set_couponBook(List<string> inputCouponBook)
+    {
+        if(inputCouponBook.Count <= 0) // 신규유저 쿠폰넣어줌
+        {
+            couponBook.Add("checkInput");
+            couponBook.Add("난동은이친구");
+        }
+        else
+        {
+            couponBook.AddRange(inputCouponBook);
+        }
+    }
+
     ///////////////////////////////////////////////////
     // 신규 접속 기록
     private DateTime signUpDate;
@@ -1212,6 +1247,9 @@ public class GameStatus : MonoBehaviour
         Shop_adView_GachaDate = saveData.adViewrGachaDate;
         adViewrAdShopData = saveData.adViewrAdShopData;
 
+        // 쿠폰 확인 및 등록
+        Set_couponBook(saveData.couponBook);
+
         //세이브가능
         DataManager.inst.saveAble = true;
     }
@@ -1308,9 +1346,14 @@ public class GameStatus : MonoBehaviour
         saveData.adViewrGachaDate = Shop_adView_GachaDate;
         saveData.adViewrAdShopData = adViewrAdShopData;
 
+     
+     
+
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");
 
+
+        
         save = JsonUtility.ToJson(saveData, true);
 
         return save;

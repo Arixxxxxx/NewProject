@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +13,7 @@ public class MainMenuManager : MonoBehaviour
     GameObject frontUI, mainMenuRef, boxRef;
     Button xBtn;
 
-    
+
     Button[] bgmMuteBtn;
     GameObject[] bgmMuteCheckIMG = new GameObject[2];
 
@@ -19,13 +21,27 @@ public class MainMenuManager : MonoBehaviour
     Button[] sfxMuteBtn;
     GameObject[] sfxMuteCheckIMG = new GameObject[2];
 
+    TMP_InputField couponInput;
     /// Mute 변수 세터
+
+
+    // 게임 종료 버튼
+    Button gameExitBtn;
+
+    GameObject gameExitAlrimRef;// 최종창
+    Button exitReturnBtn, endGameBtn; // 최종창 버튼
+
+    // 쿠폰관련
+    GameObject couponCompleteRef;
+    Button couponReturnBtn;
+    TMP_Text completeBoxText;
+
 
     [SerializeField]
     bool bgmMute, sfxMute;
     public bool SfxMute
     {
-        get  { return sfxMute; }
+        get { return sfxMute; }
 
         set
         {
@@ -73,10 +89,27 @@ public class MainMenuManager : MonoBehaviour
         sfxMuteCheckIMG[0] = sfxMuteBtn[0].transform.Find("Select_IMG").gameObject;
         sfxMuteCheckIMG[1] = sfxMuteBtn[1].transform.Find("Select_IMG").gameObject;
 
-        BgmMute = true;
-        SfxMute = true;
 
-        xBtn.onClick.AddListener(() => Active_MainMenu(false));
+
+        //인풋필드
+        couponInput = boxRef.transform.Find("Coupon/InputField (TMP)").GetComponent<TMP_InputField>();
+
+
+        //게임종료
+        gameExitBtn = boxRef.transform.Find("GameExit").GetComponent<Button>();
+        gameExitAlrimRef = mainMenuRef.transform.Find("ExitAlrim").gameObject;
+        exitReturnBtn = gameExitAlrimRef.transform.Find("Window/NoBtn").GetComponent<Button>();
+        endGameBtn = gameExitAlrimRef.transform.Find("Window/YesBtn").GetComponent<Button>();
+
+        //쿠폰
+        couponCompleteRef = mainMenuRef.transform.Find("CouponComplete").gameObject;
+        couponReturnBtn = couponCompleteRef.transform.Find("Window/YesBtn").GetComponent<Button>();
+        completeBoxText = couponCompleteRef.transform.Find("Window/InfoText").GetComponent<TMP_Text>();
+
+
+
+
+
     }
 
     void Start()
@@ -86,31 +119,56 @@ public class MainMenuManager : MonoBehaviour
 
     private void btn_init()
     {
-        bgmMuteBtn[0].onClick.AddListener(() =>
-        {
-            if (BgmMute) { return; }
-            MuteBtn_Init("BGM", true);
-        });
+        couponReturnBtn.onClick.AddListener(() => couponCompleteRef.SetActive(false));
 
-        bgmMuteBtn[1].onClick.AddListener(() =>
+        xBtn.onClick.AddListener(() => Active_MainMenu(false));
+
+        bgmMuteBtn[0].onClick.AddListener(() =>
         {
             if (!BgmMute) { return; }
             MuteBtn_Init("BGM", false);
         });
 
+        bgmMuteBtn[1].onClick.AddListener(() =>
+        {
+            if (BgmMute) { return; }
+            MuteBtn_Init("BGM", true);
+        });
+
         sfxMuteBtn[0].onClick.AddListener(() =>
         {
-            if (SfxMute) { return; }
-            MuteBtn_Init("Sfx", true);
+            if (!SfxMute) { return; }
+            MuteBtn_Init("SFX", false);
         });
 
         sfxMuteBtn[1].onClick.AddListener(() =>
         {
-            if (!SfxMute) { return; }
-            MuteBtn_Init("Sfx", false);
+            if (SfxMute) { return; }
+            MuteBtn_Init("SFX", true);
         });
 
 
+        //인풋필드
+
+        couponInput.onSubmit.AddListener((text) =>
+        {
+            completeBoxText.text = GameStatus.inst.CheckMyCoupon(text);
+            couponCompleteRef.SetActive(true);
+        });
+
+        //게임 종료 버튼관련
+
+        gameExitBtn.onClick.AddListener(() => gameExitAlrimRef.SetActive(true));
+        exitReturnBtn.onClick.AddListener(() => gameExitAlrimRef.SetActive(false));
+
+        endGameBtn.onClick.AddListener(() =>  //정말 종료
+        {
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#else
+            Application.Quit(); 
+#endif
+        } );
     }
 
 
@@ -121,7 +179,7 @@ public class MainMenuManager : MonoBehaviour
     public void Active_MainMenu(bool value)
     {
         mainMenuRef.SetActive(value);
-        
+
         MuteBtn_Init(); // 오디오 뮤트버튼 
 
     }
@@ -134,7 +192,7 @@ public class MainMenuManager : MonoBehaviour
     // 창 열고 닫을때 초기화
     private void MuteBtn_Init()
     {
-        if (BgmMute)
+        if (!BgmMute)
         {
             bgmMuteCheckIMG[0].SetActive(true);
             bgmMuteCheckIMG[1].SetActive(false);
@@ -146,7 +204,7 @@ public class MainMenuManager : MonoBehaviour
             bgmMuteCheckIMG[1].SetActive(true);
         }
 
-        if (SfxMute)
+        if (!SfxMute)
         {
             sfxMuteCheckIMG[0].SetActive(true);
             sfxMuteCheckIMG[1].SetActive(false);
@@ -159,7 +217,7 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-   
+
     // 버튼용
     private void MuteBtn_Init(string type, bool value)
     {
@@ -169,7 +227,7 @@ public class MainMenuManager : MonoBehaviour
 
                 BgmMute = value;
 
-                if (BgmMute)
+                if (!BgmMute)
                 {
                     bgmMuteCheckIMG[0].SetActive(true);
                     bgmMuteCheckIMG[1].SetActive(false);
@@ -187,7 +245,7 @@ public class MainMenuManager : MonoBehaviour
 
                 SfxMute = value;
 
-                if (SfxMute)
+                if (!SfxMute)
                 {
                     sfxMuteCheckIMG[0].SetActive(true);
                     sfxMuteCheckIMG[1].SetActive(false);
@@ -204,4 +262,6 @@ public class MainMenuManager : MonoBehaviour
         }
 
     }
+
+
 }

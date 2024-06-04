@@ -108,6 +108,12 @@ public class DataManager : MonoBehaviour
         public string[] adViewrGachaDate = new string[2];
         //하루에 한번 광고상점 구매
         public string[] adViewrAdShopData = new string[4];
+
+
+        // 쿠폰북
+        public  List<string> couponBook = new List<string>();
+
+      
     }
 
     string path = string.Empty;

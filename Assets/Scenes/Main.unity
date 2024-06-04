@@ -340,6 +340,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 115142989626168096, guid: fc25a2596ff4a6a4d8e850e5e63bd566, type: 3}
+      propertyPath: Ui_SFX.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 115142989626168096, guid: fc25a2596ff4a6a4d8e850e5e63bd566, type: 3}
+      propertyPath: Ui_SFX.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: 74da771bb84eec44780f089d7363980d, type: 3}
     - target: {fileID: 8652498933328618126, guid: fc25a2596ff4a6a4d8e850e5e63bd566, type: 3}
       propertyPath: m_LocalPosition.x
       value: -21.827074
@@ -386,7 +394,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9053365423661525697, guid: fc25a2596ff4a6a4d8e850e5e63bd566, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -466,6 +474,10 @@ PrefabInstance:
     - target: {fileID: 2011652292342136853, guid: 09a39c47c3bbfe349895bfe1d74ed657, type: 3}
       propertyPath: m_Name
       value: TouchScreenParticle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2011652292342136853, guid: 09a39c47c3bbfe349895bfe1d74ed657, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6128149590516960391, guid: 09a39c47c3bbfe349895bfe1d74ed657, type: 3}
       propertyPath: m_Pivot.x
@@ -648,6 +660,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ---[FrontUICanvas]
       objectReference: {fileID: 0}
+    - target: {fileID: 3479087983231432966, guid: 1f0afdd8f4131cb47bee36af44e43010, type: 3}
+      propertyPath: m_text
+      value: "\u200B"
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -777,7 +793,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8881726890332653229, guid: 9e9a3fa7d4d71e54b9f24da7f34330ff, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
