@@ -12,7 +12,8 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     [SerializeField] float costGrowthRate;
     [SerializeField] int limitLv;
 
-    BigInteger nextCost;
+    BigInteger nextCost = new BigInteger();
+
     float percentage;
     int buyCount = 1;
 
@@ -49,6 +50,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     float rotateSpeedMultiPlyer = 15f;
     private void Update()
     {
+        // 배경 회전
         if (rankNum != RankType.Rare && gameObject.activeInHierarchy)
         {
             if(effectRef == null)
@@ -82,10 +84,11 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         setNextCost();
         setText();
 
-        upBtn.onClick.AddListener(() => {  AudioManager.inst.Play_Ui_SFX(1, 0.8f); ClickUp(); });
+        upBtn.onClick.AddListener(() => {  ClickUp(); });
 
     }
 
+    BigInteger haveStar = new BigInteger();
     void setNextCost()
     {
         //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f);
@@ -97,7 +100,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         else//max일 때
         {
             buyCount = 1;
-            BigInteger haveStar = BigInteger.Parse(GameStatus.inst.Star);
+           haveStar = BigInteger.Parse(GameStatus.inst.Star);
             setNextCost(buyCount);
             while (haveStar >= nextCost && Lv + buyCount <= limitLv)
             {
@@ -158,10 +161,11 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         PriceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
     }
 
+    BigInteger haveStar1 = new BigInteger();
     public void ClickUp()
     {
-        BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
-        if (haveStar >= nextCost)
+        haveStar1 = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
+        if (haveStar1 >= nextCost)
         {
             Lv += buyCount;
             GameStatus.inst.MinusStar(nextCost.ToString());
@@ -169,15 +173,17 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         }
     }
 
+    BigInteger haveStar2 = new BigInteger();
     void checkStar()
     {
-        BigInteger haveStar = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
+       
+        haveStar2 = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
 
-        if (haveStar < nextCost && upBtn.interactable)
+        if (haveStar2 < nextCost && upBtn.interactable)
         {
             upBtn.interactable = false;
         }
-        else if (upBtn.interactable == false && haveStar >= nextCost)
+        else if (upBtn.interactable == false && haveStar2 >= nextCost)
         {
             upBtn.interactable = true;
         }
@@ -195,6 +201,8 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     {
         return relicImgae.sprite;
     }
+
+
     /// <summary>
     /// x = rankNum, y = ItemNum
     /// </summary>
@@ -208,4 +216,6 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     {
         return (int)itemNum;
     }
+    
+
 }

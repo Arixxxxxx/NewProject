@@ -399,6 +399,7 @@ public class GameStatus : MonoBehaviour
     public void Use_crewMaterial(int index, int count)
     {
         crewMaterial[index] -= count;
+        onCrewMatChanged?.Invoke();
     }
 
     /////////////////////[ 플레이어 관련 변수 ]//////////////////////////////
@@ -1226,6 +1227,7 @@ public class GameStatus : MonoBehaviour
 
         //우편
         LetterManager.inst.LeftLetterMake(saveData.LetterBox);
+        saveData.LetterBox.Clear(); // 기록삭제
 
         // 광고제거
         AdDelete.inst.Set_AdDeleteBuffTime(saveData.adDeleteBuffTime);
@@ -1331,7 +1333,8 @@ public class GameStatus : MonoBehaviour
         saveData.BingoStack = BingoStack;
 
         // 우편 남은것
-        saveData.LetterBox.AddRange(LetterManager.inst.GetLeftLetter);
+        saveData.LetterBox.Clear();
+        saveData.LetterBox = LetterManager.inst.GetLeftLetter.ToList();
 
         // 광고제거
         saveData.adDeleteBuffTime = AdDelete.inst.Get_AdDeleteBuffTime();
@@ -1346,8 +1349,10 @@ public class GameStatus : MonoBehaviour
         saveData.adViewrGachaDate = Shop_adView_GachaDate;
         saveData.adViewrAdShopData = adViewrAdShopData;
 
-     
-     
+        // 쿠폰 확인 및 등록
+        saveData.couponBook.Clear();
+        saveData.couponBook = couponBook.ToList();
+
 
         // 0. 마지막 접속기록
         saveData.LastSignDate = DateTime.Now.ToString("o");

@@ -25,7 +25,7 @@ public class LetterPrefab : MonoBehaviour
 
     // 편지내용 확인 변수들
     int[] itemtypeAndCount = new int[2];
-
+    
     private void Awake()
     {
         AwakeInit();
@@ -75,7 +75,6 @@ public class LetterPrefab : MonoBehaviour
         letterText = text;
         letterItemCount = ItemCount;
 
-
         // 이미지아이콘 및 텍스트 초기화
         string itemTypetext = ItemType == 0 ? "루비" : ItemType == 1 ? "골드" : "별";
         mainIMG.sprite = SpriteResource.inst.CoinIMG(ItemType);
@@ -98,7 +97,7 @@ public class LetterPrefab : MonoBehaviour
             AudioManager.inst.Play_Ui_SFX(9,1);           
             // 편지수락 알림창 초기화 및 켜주기
             LetterManager.inst.alrimWindowAcitveTrueAndInit(mainIMG.sprite, ItemType, ItemCount, gameObject);
-            
+            LetterManager.inst.ListMyIDDelete(this);
             switch (ItemType) // 최종 자원 넣어줌
             {
                 case 0:

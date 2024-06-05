@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 4873485944268843623}
   - component: {fileID: 5612809998451945743}
   - component: {fileID: 7209837891259950}
+  - component: {fileID: 9038729144526037169}
   m_Layer: 0
   m_Name: FrontUI
   m_TagString: Untagged
@@ -177,6 +178,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5c2f7fc048dcc5408c17de0966ba0f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sfxMuteBtn: []
+  bgmMute: 0
+  sfxMute: 0
 --- !u!114 &6540071124928371434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,6 +293,18 @@ MonoBehaviour:
   - {fileID: 2019813025785309540, guid: 1f752a4b168ded347ae5c99bf6f5bb7e, type: 3}
   isChange: 0
   curGachaCount: 0
+--- !u!114 &9038729144526037169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2214145803004256810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c99c9a85bee23148bcad7ed2a28dbb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2562581402446063995
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,6 +681,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TestMode: 0
+  touchScreenParticle: {fileID: 0}
 --- !u!114 &1261329416261446279
 MonoBehaviour:
   m_ObjectHideFlags: 0

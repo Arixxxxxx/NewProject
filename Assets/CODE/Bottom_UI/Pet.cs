@@ -133,6 +133,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
     void checkHavePetMat()
     {
         int[] petMoney = GameStatus.inst.CrewMaterial;
+
         if (upBtn.gameObject.activeSelf && petMoney[(int)type] >= nextCost && upBtn.interactable == false)
         {
             upBtn.interactable = true;

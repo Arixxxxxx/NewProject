@@ -223,7 +223,7 @@ public class WorldUI_Manager : MonoBehaviour
     void Start()
     {
         BtnInIt();
-        //menuAnim.SetTrigger("Open");
+        menuAnim.SetTrigger("Open"); // 플레이바 열어놓고 시작
     }
 
 

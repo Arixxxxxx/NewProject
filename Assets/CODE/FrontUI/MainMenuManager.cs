@@ -37,6 +37,9 @@ public class MainMenuManager : MonoBehaviour
     TMP_Text completeBoxText;
 
 
+    //슬립모드
+    Button sleepModeBtn;
+
     [SerializeField]
     bool bgmMute, sfxMute;
     public bool SfxMute
@@ -106,7 +109,8 @@ public class MainMenuManager : MonoBehaviour
         couponReturnBtn = couponCompleteRef.transform.Find("Window/YesBtn").GetComponent<Button>();
         completeBoxText = couponCompleteRef.transform.Find("Window/InfoText").GetComponent<TMP_Text>();
 
-
+        //슬립모드
+        sleepModeBtn = boxRef.transform.Find("SleepMode/Bar/SleepModeBtn").GetComponent<Button>();
 
 
 
@@ -169,6 +173,13 @@ public class MainMenuManager : MonoBehaviour
             Application.Quit(); 
 #endif
         } );
+
+
+        // 슬립모드 ON 버튼
+        sleepModeBtn.onClick.AddListener(() =>
+        {
+            SleepMode.inst.Active_SleepMode(true);
+        });
     }
 
 

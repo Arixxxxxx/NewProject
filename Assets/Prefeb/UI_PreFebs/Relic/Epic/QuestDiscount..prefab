@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6372692548160178831}
   - component: {fileID: 4263195889175419269}
   - component: {fileID: 6306543768492996071}
-  - component: {fileID: 6021581774222688991}
   m_Layer: 5
   m_Name: QuestDiscount.
   m_TagString: Untagged
@@ -96,21 +95,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rankNum: 1
   itemNum: 5
-  costGrowthRate: 1.5
+  costGrowthRate: 1.3
   limitLv: 100
---- !u!114 &6021581774222688991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284277028275596853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd1cd938e7b412d4fae58fed2bf94ce1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetObj: {fileID: 284277028275596853}
 --- !u!1 &563958238502530100
 GameObject:
   m_ObjectHideFlags: 0
@@ -992,6 +978,7 @@ GameObject:
   - component: {fileID: 3934779278148611170}
   - component: {fileID: 8046667960951920669}
   - component: {fileID: 8168943853663528914}
+  - component: {fileID: 1186889337288882829}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1103,6 +1090,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1186889337288882829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3156259065400635679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd1cd938e7b412d4fae58fed2bf94ce1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObj: {fileID: 284277028275596853}
 --- !u!1 &4369043721333400567
 GameObject:
   m_ObjectHideFlags: 0

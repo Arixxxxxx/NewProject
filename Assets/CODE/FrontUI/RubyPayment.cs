@@ -111,11 +111,9 @@ public class RubyPayment : MonoBehaviour
         }
         else if (totalPrice >= 0) // 결제창 초기화
         {
-            curRubyText.text = curRuby.ToString("N0");
-            minusRubyText.text = Price.ToString("N0");
-
-
-            totalRubyText.text = totalPrice.ToString("N0");
+            curRubyText.text = CalCulator.inst.StringFourDigitAddFloatChanger(curRuby.ToString());
+            minusRubyText.text = CalCulator.inst.StringFourDigitAddFloatChanger(Price.ToString());
+            totalRubyText.text = CalCulator.inst.StringFourDigitAddFloatChanger(totalPrice.ToString());
 
             //금전을 지불후 작동될 기능
             rubyPayYes.onClick.RemoveAllListeners();

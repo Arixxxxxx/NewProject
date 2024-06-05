@@ -14,13 +14,7 @@ public class DataManager : MonoBehaviour
     // 씬로딩 관련
 
     RectTransform ScreenArea;
-
     public SaveData savedata = new SaveData();
-
-
-
-
-    
 
     bool isHaveJsonFile = false;
     public bool IshaveJsonFile { get { return isHaveJsonFile; } }
@@ -117,6 +111,8 @@ public class DataManager : MonoBehaviour
     }
 
     string path = string.Empty;
+    private AndroidJavaObject wakeLock;
+
     private void Awake()
     {
 
@@ -136,6 +132,7 @@ public class DataManager : MonoBehaviour
         }
 
         Application.targetFrameRate = 60;
+        Application.runInBackground = true;  //백그라운드에서도 재생되게
         currentSceneIndex = SceneManager.GetActiveScene();
         sceneIndexNumber = currentSceneIndex.buildIndex;
 
@@ -149,6 +146,25 @@ public class DataManager : MonoBehaviour
 
         // 1번씬 로딩완료시 FakeUI 작동예정
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // 백그라운드에서도 재생되게 Wake Lock 활성화
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaObject context = activity.Call<AndroidJavaObject>("getApplicationContext");
+            AndroidJavaObject powerManager = context.Call<AndroidJavaObject>("getSystemService", "power");
+            wakeLock = powerManager.Call<AndroidJavaObject>("newWakeLock", 1, "MyApp::MyWakelockTag");
+            wakeLock.Call("acquire");
+        }
+
+    }
+    private void OnDestroy()
+    {
+        if (wakeLock != null)
+        {
+            wakeLock.Call("release");
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -181,6 +197,8 @@ public class DataManager : MonoBehaviour
     {
         if (pause) // 어플리케이션이 일시 정지될 때
         {
+            SleepMode.inst.Active_SleepMode(true);
+
             if (saveAble)
             {
                 Save_EndGame();

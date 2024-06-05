@@ -107,6 +107,7 @@ public class LetterManager : MonoBehaviour
     }
 
 
+    int todayMakeCount = 0;
     /// <summary>
     /// 편지 생성기
     /// </summary>
@@ -129,15 +130,28 @@ public class LetterManager : MonoBehaviour
         obj.GetComponent<LetterPrefab>().Set_Letter(ItemType, From, text, ItemCount);
         obj.transform.SetParent(letterBox.transform);
         obj.SetActive(true);
-
+        
+     
 
         // 기록
         saveLetterList.Add(new SaveLetter(ItemType, From, text, ItemCount, obj.GetComponent<LetterPrefab>()));
 
+        
+
         LetterBoxOnlyInit(); // 최신화한번더
     }
 
-
+    public void ListMyIDDelete(LetterPrefab thisNumber)
+    {
+        for(int index=0; index < saveLetterList.Count; index++)
+        {
+            if (saveLetterList[index].letterPrefab == thisNumber)
+            {
+                Debug.Log($"{saveLetterList[index].letterText} 삭제");
+                saveLetterList.RemoveAt(index);
+            }
+        }
+    }
 
     /// <summary> 순서=> 2
     ///  알림윈도우 팝업시 해당창 초기화
@@ -209,7 +223,9 @@ public class LetterManager : MonoBehaviour
         //모든 편지 내용물확인
         for (int index = 0; index < childCount; index++)
         {
-            letterList.Add(letterBox.transform.GetChild(index).GetComponent<LetterPrefab>());
+            LetterPrefab thisLetter = letterBox.transform.GetChild(index).GetComponent<LetterPrefab>();
+            ListMyIDDelete(thisLetter); // 세이브 리스트에서 삭제
+            letterList.Add(thisLetter);
             int[] check = letterList[index].ReturnThisLetterItemTypeAndCount(); // 타입 갯수가져옴
             saveLetterItemArr[check[0]] += check[1]; // 각 아이템타입 인덱스를 찾아 값을올려줌
         }
@@ -326,8 +342,7 @@ public class LetterManager : MonoBehaviour
         {
             MakeLetter(list[index].itemtype, list[index].letterFrom, list[index].letterText, list[index].letterItemCount);
         }
-
-        saveLetterList.Clear();
+        
     }
 
    

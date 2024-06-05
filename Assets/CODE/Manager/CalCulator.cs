@@ -713,7 +713,7 @@ public class CalCulator : MonoBehaviour
 
     // 상수 A와 B를 정의
     BigInteger A = new BigInteger(65);  // 초기값
-    float B = 1.05f;  // 증가율, 이 값은 조정 가능합니다.
+    float B = 1.07f;  // 증가율, 이 값은 조정 가능합니다.
 
     /// <summary>
     /// 현재 스테이지 레벨비례하여 환생시 지급되는 포인트양을 계산하여 스트링으로 받음
