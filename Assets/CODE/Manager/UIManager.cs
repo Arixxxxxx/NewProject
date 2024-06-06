@@ -227,6 +227,9 @@ public class UIManager : MonoBehaviour
             GameStatus.inst.PlusGold("99999999999999999999999999999999");
             GameStatus.inst.PlusRuby(1000);
             GameStatus.inst.PlusStar("100000000");
+            GameStatus.inst.Set_crewMaterial(0, 1000);
+            GameStatus.inst.Set_crewMaterial(1, 1000);
+            GameStatus.inst.Set_crewMaterial(2, 1000);
         }
 
         if (Input.GetKeyDown(KeyCode.R))

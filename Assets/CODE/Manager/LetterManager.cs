@@ -106,8 +106,7 @@ public class LetterManager : MonoBehaviour
         }
     }
 
-
-    int todayMakeCount = 0;
+    
     /// <summary>
     /// 편지 생성기
     /// </summary>

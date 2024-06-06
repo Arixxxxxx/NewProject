@@ -23,8 +23,7 @@ public class WorldUI_Manager : MonoBehaviour
     Image uiBossHead;
     TMP_Text stageText;
 
-    Button[] testBtn;
-    TMP_Text[] weapbtnText;
+ 
     Animator cuttonBlack;
 
     // 하단 자원현황바 텍스트
@@ -169,15 +168,7 @@ public class WorldUI_Manager : MonoBehaviour
             stageSlot[index] = worldUI.transform.Find("StageUI/TopLayOut/StageInfo").GetChild(index).GetComponent<Image>();
         }
 
-        //테스트 버튼
-        testBtn = worldUI.transform.Find("TestBtn").GetComponentsInChildren<Button>();
-
-
-        weapbtnText = new TMP_Text[testBtn.Length];
-        for (int index = 0; index < testBtn.Length; index++)
-        {
-            weapbtnText[index] = testBtn[index].GetComponentInChildren<TMP_Text>();
-        }
+   
         curMaterial[0] = worldUI.transform.Find("StageUI/MaterialBox/Gold/Text").GetComponent<TMP_Text>();
         curMaterial[1] = worldUI.transform.Find("StageUI/MaterialBox/Star/Text").GetComponent<TMP_Text>();
         curMaterial[3] = worldUI.transform.Find("StageUI/MaterialBox/Ruby/Text").GetComponent<TMP_Text>();

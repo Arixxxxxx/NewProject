@@ -26,6 +26,17 @@ public class RubyPayment : MonoBehaviour
     //상점으로 이동관련
     Button goToRubyShopBtnNo;
     Button goToRubyShopBtnYes;
+
+
+    // 펫 강화 결제창
+    GameObject crewPayRef, nohaveCrewMatRef;
+    TMP_Text curMatText, minusMatText, totalMatText;
+    Image[] crewPayWindowImg;
+    Button[] crewpayWindowBtn = new Button[2];
+
+    //재료없어 창
+    Button[] nohaveCrewMatWindowBtn = new Button[2];
+
     private void Awake()
     {
         if (inst == null)
@@ -61,6 +72,21 @@ public class RubyPayment : MonoBehaviour
         goToRubyShopBtnNo = nohaveRubyRef.transform.Find("Title/NoBtn").GetComponent<Button>();
         goToRubyShopBtnYes = nohaveRubyRef.transform.Find("Title/YesBtn").GetComponent<Button>();
 
+
+        // 강화재료 결제창
+        crewPayRef = parentRef.transform.GetChild(2).gameObject;
+        curMatText = crewPayRef.transform.Find("Title/CurMatText").GetComponent<TMP_Text>();
+        minusMatText = crewPayRef.transform.Find("Title/PriceText").GetComponent<TMP_Text>();
+        totalMatText = crewPayRef.transform.Find("Title/TotalText").GetComponent<TMP_Text>();
+        crewpayWindowBtn[0] = crewPayRef.transform.Find("Title/NoBtn").GetComponent<Button>();
+        crewpayWindowBtn[1] = crewPayRef.transform.Find("Title/YesBtn").GetComponent<Button>();
+        crewPayWindowImg = crewPayRef.transform.Find("Title/Ruby_Text").GetComponentsInChildren<Image>();
+
+        // 재료없어 창
+        nohaveCrewMatRef = parentRef.transform.GetChild(3).gameObject;
+        nohaveCrewMatWindowBtn[0] = nohaveCrewMatRef.transform.Find("Title/NoBtn").GetComponent<Button>();
+        nohaveCrewMatWindowBtn[1] = nohaveCrewMatRef.transform.Find("Title/YesBtn").GetComponent<Button>();
+
         buttonInit();
     }
     void Start()
@@ -73,6 +99,7 @@ public class RubyPayment : MonoBehaviour
     {
         //결제창 버튼 초기화
         rubyPayNo.onClick.AddListener(() => CloseUI());
+        crewpayWindowBtn[0].onClick.AddListener(() => CloseUI());
 
         // 루비없는 창 버튼 초기화
         goToRubyShopBtnNo.onClick.AddListener(() => // 아니요 버튼
@@ -82,9 +109,22 @@ public class RubyPayment : MonoBehaviour
 
         goToRubyShopBtnYes.onClick.AddListener(() =>  //예 버튼
         {
-            nohaveRubyRef.SetActive(false);
+            CloseUI();
             AllFrontUIClose();
-            ShopManager.inst.Active_Shop(2,true);
+            ShopManager.inst.Active_Shop(2, true);
+        });
+
+        // 강화재료 없는창
+        nohaveCrewMatWindowBtn[0].onClick.AddListener(() => // 아니요 버튼
+        {
+            CloseUI();
+        });
+
+        nohaveCrewMatWindowBtn[1].onClick.AddListener(() =>  //예 버튼
+        {
+            CloseUI();
+            AllFrontUIClose();
+            UIManager.Instance.ClickBotBtn(4);
         });
     }
 
@@ -161,10 +201,64 @@ public class RubyPayment : MonoBehaviour
         }
     }
 
+
+    // 동료강화창 호출 및 초기화
+    /// <summary>
+    /// 동료강화 결제창
+    /// </summary>
+    /// <param name="myType"> 0설화, 1스파크, 2호두(강화재료순서대로)</param>
+    /// <param name="Price"> 사야되는가격 </param>
+    /// <param name="action"> 이후 호출 </param>
+    public void CrewMatPaymentUiActive(int myType, int Price, Action action)
+    {
+        if (parentRef.activeSelf == false) //메인창 켜짐
+        {
+            parentRef.SetActive(true);
+        }
+
+        // 현재 소지 루비량 체크
+        int curMat = GameStatus.inst.CrewMaterial[myType];
+        int totalPrice = curMat - Price;
+
+        if (totalPrice < 0)  // 돈부족 => 루비상점으로 갈껀지 물어봄
+        {
+            nohaveCrewMatRef.SetActive(true);
+        }
+        else if (totalPrice >= 0) // 결제창 초기화
+        {
+            for (int index = 0; index < crewPayWindowImg.Length; index++)
+            {
+                crewPayWindowImg[index].sprite = SpriteResource.inst.CrewMaterialIMG(myType);
+            }
+
+            curMatText.text = curMat.ToString("N0");
+            minusMatText.text = Price.ToString("N0");
+            totalMatText.text = totalPrice.ToString("N0");
+
+            //금전을 지불후 작동될 기능
+            crewpayWindowBtn[1].onClick.RemoveAllListeners();
+            crewpayWindowBtn[1].onClick.AddListener(() => //결제버튼 
+            {
+                paymentAction += action;
+                paymentAction?.Invoke();
+                paymentAction = null;
+
+                crewPayRef.SetActive(false);
+            });
+
+            crewPayRef.SetActive(true);
+        }
+    }
+
+    // 전부 닫기
     private void CloseUI()
     {
         payReadyRef.SetActive(false);
         nohaveRubyRef.SetActive(false);
+
+        crewPayRef.SetActive(false);
+        nohaveCrewMatRef.SetActive(false);
+
         parentRef.SetActive(false);
     }
 

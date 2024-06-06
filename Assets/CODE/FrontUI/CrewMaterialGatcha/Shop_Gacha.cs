@@ -387,6 +387,7 @@ public class Shop_Gacha : MonoBehaviour
     int criType = 0;
     IEnumerator PlayMaterial(int Count, bool isAd)
     {
+        WorldUI_Manager.inst.Effect_WhiteCutton(1f); // «œæ·»≠∏È ¿Ã∆Â∆Æ
         yield return startWaitTime;
 
         for (int index = 0; index < Count; index++)

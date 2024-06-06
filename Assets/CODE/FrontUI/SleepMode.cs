@@ -31,10 +31,12 @@ public class SleepMode : MonoBehaviour
     {
         
     }
+    // 켜기전용
     public void Active_SleepMode(bool value)
     {
         if (value)
         {
+            AudioManager.inst.Set_VoulemMute("SFX", true);
             PandaIMGChanger(0);
             sleepModeRef.alpha = 1f;
             sleepModeRef.gameObject.SetActive(true);
@@ -46,6 +48,7 @@ public class SleepMode : MonoBehaviour
     }
 
 
+    // 끄기전용
     public void Active_SleepMode(bool value, RectTransform rect)
     {
         if (value)
@@ -55,7 +58,7 @@ public class SleepMode : MonoBehaviour
         }
         else 
         {
-  
+            AudioManager.inst.Set_VoulemMute("SFX", false);
             StartCoroutine(SleepModeEnd(rect)); 
         }
     }
@@ -65,6 +68,8 @@ public class SleepMode : MonoBehaviour
     IEnumerator SleepModeEnd(RectTransform rect)
     {
         timer = 0;
+
+        AudioManager.inst.Play_Ui_SFX(8, 1);
 
         while (timer < duration)
         {

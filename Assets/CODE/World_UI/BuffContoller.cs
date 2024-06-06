@@ -35,7 +35,7 @@ public class BuffContoller : MonoBehaviour
     public bool BuffActiveCheck(int value) => buffActiveCheck[value];
 
 
-    ParticleSystem[] buffIconPs;
+    //ParticleSystem[] buffIconPs;
 
     GameObject newBieObj;
 
@@ -58,7 +58,7 @@ public class BuffContoller : MonoBehaviour
         buffActive = new GameObject[buffChild];
         buffTime = new TMP_Text[buffChild];
         buffTimer = new double[buffChild];
-        buffIconPs = new ParticleSystem[buffChild];
+        //buffIconPs = new ParticleSystem[buffChild];
         buffIconMask = new Image[buffChild];
 
 
@@ -68,7 +68,7 @@ public class BuffContoller : MonoBehaviour
             buffIconMask[index] = buffBtns[index].transform.GetChild(0).GetComponent<Image>();
             buffActive[index] = buffBtns[index].transform.GetChild(1).gameObject;
             buffTime[index] = buffActive[index].GetComponentInChildren<TMP_Text>();
-            buffIconPs[index] = buffActive[index].GetComponentInChildren<ParticleSystem>();
+            //buffIconPs[index] = buffActive[index].GetComponentInChildren<ParticleSystem>();
         }
         newBieObj = buffActive[4].transform.parent.gameObject;
         //buffActive[4] = buffActive[4].transform.parent.gameObject;
@@ -109,7 +109,6 @@ public class BuffContoller : MonoBehaviour
                 if (buffActive[Num].activeSelf == false)
                 {
                     buffActive[Num].SetActive(true);
-                    BuffIconParticleReset();
                 }
 
                 break;
@@ -119,7 +118,6 @@ public class BuffContoller : MonoBehaviour
                 if (buffBtns[Num].gameObject.activeSelf == false)
                 {
                     buffBtns[Num].gameObject.SetActive(true);
-                    BuffIconParticleReset();
                 }
 
                 break;
@@ -229,14 +227,14 @@ public class BuffContoller : MonoBehaviour
         }
     }
 
-    public void BuffIconParticleReset()
-    {
-        for (int index = 0; index < buffIconPs.Length; index++)
-        {
-            buffIconPs[index].Stop();
-            buffIconPs[index].Play();
-        }
-    }
+    //public void BuffIconParticleReset()
+    //{
+    //    for (int index = 0; index < buffIconPs.Length; index++)
+    //    {
+    //        buffIconPs[index].Stop();
+    //        buffIconPs[index].Play();
+    //    }
+    //}
 
 
     /// <summary>

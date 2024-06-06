@@ -11,6 +11,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
     [SerializeField] int releaseStage;
     [SerializeField] PetType type;
     int lv;
+    int myMatTypeIndex;
     int Lv
     {
         get => lv;
@@ -59,7 +60,23 @@ public class Pet : MonoBehaviour, IClickLvUpAble
 
     void Start()
     {
+        switch (type) 
+        {
+            case PetType.Bomb:
+                myMatTypeIndex = 1;
+                break;
 
+            case PetType.Panda:
+                myMatTypeIndex = 2;
+                break;
+
+            case PetType.Necromancer:
+                myMatTypeIndex = 0;
+                break;
+
+        }
+
+        upBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     public void initPet()
@@ -134,11 +151,11 @@ public class Pet : MonoBehaviour, IClickLvUpAble
     {
         int[] petMoney = GameStatus.inst.CrewMaterial;
 
-        if (upBtn.gameObject.activeSelf && petMoney[(int)type] >= nextCost && upBtn.interactable == false)
+        if (upBtn.gameObject.activeSelf && petMoney[myMatTypeIndex] >= nextCost && upBtn.interactable == false)
         {
             upBtn.interactable = true;
         }
-        else if (upBtn.gameObject.activeSelf && petMoney[(int)type] >= nextCost && upBtn.interactable == true)
+        else if (upBtn.gameObject.activeSelf && petMoney[myMatTypeIndex] >= nextCost && upBtn.interactable == true)
         {
             upBtn.interactable = false;
         }
@@ -148,13 +165,24 @@ public class Pet : MonoBehaviour, IClickLvUpAble
     {
         int[] petMoney = GameStatus.inst.CrewMaterial;
 
-        if (petMoney[(int)type] >= nextCost)
+        if (petMoney[myMatTypeIndex] >= nextCost) // 재료있을때
         {
-            GameStatus.inst.Use_crewMaterial((int)type, nextCost);
-            Lv++;
+            RubyPayment.inst.CrewMatPaymentUiActive(myMatTypeIndex, nextCost, () => 
+            {
+                GameStatus.inst.Use_crewMaterial(myMatTypeIndex, nextCost);
+                Lv++;
+            });
+        }
+        else// 재료 없을때
+        {
+            RubyPayment.inst.CrewMatPaymentUiActive(myMatTypeIndex, nextCost, () =>
+            {
+                GameStatus.inst.Use_crewMaterial(myMatTypeIndex, nextCost);
+                Lv++;
+            });
         }
 
-        upBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
+        
     }
 
     void setNextCost()

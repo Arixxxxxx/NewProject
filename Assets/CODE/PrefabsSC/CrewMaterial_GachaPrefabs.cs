@@ -120,7 +120,7 @@ public class CrewMaterial_GachaPrefabs : MonoBehaviour
                 criticalRef.SetActive(true);
                 bgEffect[0].SetActive(false);
                 bgEffect[1].SetActive(true);
-                WorldUI_Manager.inst.Effect_WhiteCutton(1.2f); // «œæ·»≠∏È ¿Ã∆Â∆Æ
+                
                 break;
         }
 

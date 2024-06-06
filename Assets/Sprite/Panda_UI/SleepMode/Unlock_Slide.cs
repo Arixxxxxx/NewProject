@@ -38,6 +38,7 @@ public class Unlock_Slide : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     {
         if (dragStart)
         {
+            
             Vector2 localPoint;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTrs.parent as RectTransform, eventData.position, eventData.pressEventCamera, out localPoint);
             dragOffset = rectTrs.anchoredPosition - localPoint;
@@ -82,6 +83,7 @@ public class Unlock_Slide : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         if (dragStart == false)
         {
             dragStart = true;
+            AudioManager.inst.SleepMode_SFX(2, 1);
             SleepMode.inst.PandaIMGChanger(1);
         }
 

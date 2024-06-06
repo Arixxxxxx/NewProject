@@ -28,14 +28,15 @@ public class AudioManager : MonoBehaviour
     float[] worldSoundDealy = { 0.25f, 0.25f };
     [Header("#Audio Mixer")]
     [SerializeField] AudioMixer audioMixer;
-    [SerializeField] AudioMixerGroup SFXGroup;
-    public bool noSound; 
+    [SerializeField] AudioMixerGroup sfxGroup;
+    [SerializeField] AudioMixerGroup sleepModeGroup;
+    public bool noSound;
     Queue<AudioSource> audioQue = new Queue<AudioSource>();
     int channel = 32;
     int curBGMNum;
     private void Awake()
     {
-        if(inst == null)
+        if (inst == null)
         {
             inst = this;
         }
@@ -46,16 +47,16 @@ public class AudioManager : MonoBehaviour
 
         DontDestroyOnLoad(this);
         sfxTrs = transform.Find("SFX");
-        bgmPlayer =transform.Find("BGMPlayer").GetComponent<AudioSource>();
+        bgmPlayer = transform.Find("BGMPlayer").GetComponent<AudioSource>();
 
         isSoundPlay = new bool[2];
         worldSoundDealyTimer = new float[2];
 
-        for (int index = 0; index < channel; index++) 
+        for (int index = 0; index < channel; index++)
         {
             MakeSoundClip();
         }
-        
+
     }
     void Start()
     {
@@ -63,23 +64,23 @@ public class AudioManager : MonoBehaviour
         bgmPlayer.clip = BGM[0];
         bgmPlayer.Play();
 
-        
+
     }
 
     // Update is called once per frame
- 
+
     void Update()
     {
         WorldSoundDealyCheker(0);
         WorldSoundDealyCheker(1);
-     }
+    }
 
     private void WorldSoundDealyCheker(int soundIndex)
     {
         if (isSoundPlay[soundIndex] == true)
         {
             worldSoundDealyTimer[soundIndex] += Time.deltaTime;
-            
+
             if (worldSoundDealyTimer[soundIndex] >= worldSoundDealy[soundIndex])
             {
                 worldSoundDealyTimer[soundIndex] = 0f;
@@ -93,7 +94,7 @@ public class AudioManager : MonoBehaviour
     {
         AudioSource audioObj = new GameObject("SFX").AddComponent<AudioSource>();
         audioObj.playOnAwake = false;
-        audioObj.outputAudioMixerGroup = SFXGroup;
+        audioObj.outputAudioMixerGroup = sfxGroup;
         audioObj.transform.SetParent(sfxTrs);
         audioObj.gameObject.SetActive(false);
         audioQue.Enqueue(audioObj);
@@ -119,6 +120,8 @@ public class AudioManager : MonoBehaviour
             counter += Time.deltaTime;
             yield return null;
         }
+
+
         bgmPlayer.clip = BGM[number];
         bgmPlayer.Play();
         counter = 0f;
@@ -136,12 +139,12 @@ public class AudioManager : MonoBehaviour
     /// <param name="index"> 0:로그인씬 탭투스크린<br/>1:</param>
     public void Play_Ui_SFX(int index, float Volume)
     {
-        if(audioQue.Count <= 0)
+        if (audioQue.Count <= 0)
         {
             MakeSoundClip();
         }
 
-        StartCoroutine(SFX_SoundPlay(index, Volume)); 
+        StartCoroutine(SFX_SoundPlay(index, Volume));
     }
 
     IEnumerator SFX_SoundPlay(int index, float Volume)
@@ -161,12 +164,47 @@ public class AudioManager : MonoBehaviour
         obj.Stop();
         obj.clip = null;
         obj.volume = 1;
-        obj.gameObject.SetActive (false);
+        obj.gameObject.SetActive(false);
         audioQue.Enqueue(obj);
     }
 
+    /// <summary>
+    /// SFX 재생기 (UI 효과음)
+    /// </summary>
+    /// <param name="index"> 0:로그인씬 탭투스크린<br/>1:</param>
+    public void SleepMode_SFX(int index, float Volume)
+    {
+        if (audioQue.Count <= 0)
+        {
+            MakeSoundClip();
+        }
 
-  
+        StartCoroutine(Sleep_SoundPlay(index, Volume));
+    }
+
+    IEnumerator Sleep_SoundPlay(int index, float Volume)
+    {
+        AudioSource obj = audioQue.Dequeue();
+        obj.outputAudioMixerGroup = sleepModeGroup;
+        obj.volume = Volume;
+        obj.clip = Ui_SFX[index];
+        obj.gameObject.SetActive(true);
+        obj.Play();
+
+        yield return null;
+        while (obj.isPlaying)
+        {
+            yield return null;
+        }
+
+        obj.Stop();
+        obj.clip = null;
+        obj.volume = 1;
+        obj.outputAudioMixerGroup = sfxGroup;
+        obj.gameObject.SetActive(false);
+        audioQue.Enqueue(obj);
+    }
+
     /// <summary>
     /// World 재생
     /// </summary>
@@ -181,7 +219,7 @@ public class AudioManager : MonoBehaviour
 
         StartCoroutine(SoundPlay(index, Volume));
 
-        
+
     }
 
     IEnumerator SoundPlay(int index, float Volume)
@@ -211,7 +249,7 @@ public class AudioManager : MonoBehaviour
     /// <param name="index"> 0:설아 HIT<br/></param>
     public void Play_HitOnly(int index, float Volume, bool Cri)
     {
-        if(noSound) { return; }
+        if (noSound) { return; }
 
         if (audioQue.Count <= 0)
         {
@@ -221,7 +259,7 @@ public class AudioManager : MonoBehaviour
         if (isSoundPlay[0] == false)
         {
             isSoundPlay[0] = true;
-            StartCoroutine(HitSoundPlay(index, Volume,Cri));
+            StartCoroutine(HitSoundPlay(index, Volume, Cri));
         }
     }
 
@@ -232,13 +270,13 @@ public class AudioManager : MonoBehaviour
 
         if (Cri)
         {
-            obj.clip = playerCri[UnityEngine.Random.Range(0,playerCri.Length)];
+            obj.clip = playerCri[UnityEngine.Random.Range(0, playerCri.Length)];
         }
         else
         {
             obj.clip = playerHit[UnityEngine.Random.Range(0, playerHit.Length)];
         }
-    
+
         obj.gameObject.SetActive(true);
         obj.Play();
 
@@ -274,8 +312,8 @@ public class AudioManager : MonoBehaviour
     IEnumerator MonsterHitSoundPlay(bool enemyLive, float Volume)
     {
         AudioSource obj = audioQue.Dequeue();
-        
-        if(enemyLive == true)
+
+        if (enemyLive == true)
         {
             obj.clip = monsterHit[UnityEngine.Random.Range(0, monsterHit.Length)];
         }
@@ -301,6 +339,10 @@ public class AudioManager : MonoBehaviour
     }
 
 
+
+
+
+
     float muteValue = -80f;
     float defaultVolumeValue = 0f;
 
@@ -311,7 +353,7 @@ public class AudioManager : MonoBehaviour
     /// <param name="value">true, false</param>
     public void Set_VoulemMute(string parameterName, bool value)
     {
-        switch (parameterName) 
+        switch (parameterName)
         {
             case "BGM":
                 if (!value)
