@@ -118,8 +118,11 @@ public class SpriteResource : MonoBehaviour
     [SerializeField] private Sprite[] crewMaterialIMG;
     [Header("# Quest 아이콘")]
     [SerializeField] private Sprite[] questIcon;
-
     public Sprite Get_QuestIcon(int value) => questIcon[value];
+
+    [Header("# 몬스터 정수 냉기/화염/인간")]
+    [SerializeField] private Sprite[] enemySoul;
+    public Sprite EnemySoul(int  value) => enemySoul[value];    
     /// <summary>
     /// 버프 아이콘 스프라이트
     /// </summary>

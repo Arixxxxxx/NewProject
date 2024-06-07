@@ -436,7 +436,7 @@ public class ActionManager : MonoBehaviour
 
         if (CrewType == 0) // 폭탄마 ( 총체력에서 공격력을 뺀값 )
         {
-            CrewATK = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 1);
+            CrewATK = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 2); // 시작시 3배 시작
             MinusValue = CalCulator.inst.BigIntigerMinus(enemyCurHP, CrewATK);
         }
         else if (CrewType == 1) // 사령술사
@@ -520,10 +520,7 @@ public class ActionManager : MonoBehaviour
         {
             doEnemyMove = false;
             GameStatus.inst.FloorLv++;
-            Enemyinit();
             StartCoroutine(NextStageAction()); //  다음 층으로 이동하는거처럼
-            //FloorEnd_NextStage();
-            //Debug.Log("다음맵으로!");
         }
     }
 
@@ -553,6 +550,8 @@ public class ActionManager : MonoBehaviour
 
     IEnumerator NextStageAction()
     {
+        //위치 옴긴후
+        enemyObj.transform.position = enemy_StartPoint.position;
 
         playerAnim.SetTrigger("Out");
 
@@ -563,6 +562,7 @@ public class ActionManager : MonoBehaviour
 
         // 맵변경
         MapChanger();
+        Enemyinit();
         doEnemyMove = true;
 
         yield return new WaitForSeconds(0.5f);
@@ -634,8 +634,9 @@ public class ActionManager : MonoBehaviour
         Set_EnemyBossOrNormal();
     }
 
-
+    [SerializeField]
     [Tooltip("Stage, Enemy Number")] int[] curEnemyNumber = new int[2];
+    [SerializeField]
     Sprite[] curStageEnemy;
     Vector3 bossSpriteSize = new Vector3(1.5f, 1.5f, 1);
     /// <summary>
@@ -645,13 +646,32 @@ public class ActionManager : MonoBehaviour
     private void Set_EnemyBossOrNormal()
     {
         // 현재 스테이지에 맞는 에너미 생성
-        int curStage = (GameStatus.inst.StageLv - 1) % 3 + 1;
-        curEnemyNumber[0] = curStage;
-        curStageEnemy = SpriteResource.inst.enemySprite(curStage);
+        //int curStage = (GameStatus.inst.StageLv - 1) % 3 + 1;
+        //curEnemyNumber[0] = curStage;
 
+        //현재 스테이지의 몬스터 스프라이트 가져옴
+        switch (backGroundIMG.sprite.name)
+        {
+            case "1_Stage":
+                curEnemyNumber[0] = 1;
+                break;
+
+            case "2_Stage":
+                curEnemyNumber[0] = 2;
+                break;
+
+            case "3_Stage":
+                curEnemyNumber[0] = 3;
+                break;
+        }
+               
+        curStageEnemy = SpriteResource.inst.enemySprite(curEnemyNumber[0]);
+
+        //현재 몬스터 번호 생성
         curEnemyNumber[1] = UnityEngine.Random.Range(0, curStageEnemy.Length);
         enemySr.sprite = curStageEnemy[curEnemyNumber[1]];
 
+        // 체력초기화
         enemyMaxHP = CalCulator.inst.EnemyHpSetup();
 
         if (GameStatus.inst.FloorLv != 5) // 일반몹
@@ -811,12 +831,12 @@ public class ActionManager : MonoBehaviour
 
     }
 
-    int mapint = 0;
+    int curMapNumber = 0;
     private void MapChanger()
     {
-        mapint++;
-        mapint = (int)Mathf.Repeat(mapint, 3);
-        backGroundIMG.sprite = SpriteResource.inst.Map(mapint);
+        curMapNumber++;
+        curMapNumber = (int)Mathf.Repeat(curMapNumber, 3);
+        backGroundIMG.sprite = SpriteResource.inst.Map(curMapNumber);
     }
 
 

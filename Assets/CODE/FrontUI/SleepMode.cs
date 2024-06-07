@@ -69,7 +69,7 @@ public class SleepMode : MonoBehaviour
     {
         timer = 0;
 
-        AudioManager.inst.Play_Ui_SFX(8, 1);
+        AudioManager.inst.Play_Ui_SFX(8, 0.4f);
 
         while (timer < duration)
         {

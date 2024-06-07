@@ -111,7 +111,8 @@ public class RubyPayment : MonoBehaviour
         {
             CloseUI();
             AllFrontUIClose();
-            ShopManager.inst.Active_Shop(2, true);
+            UIManager.Instance.ClickBotBtn(4);
+            ShopManager.inst.Active_Shop(2,true);
         });
 
         // 강화재료 없는창
@@ -125,6 +126,7 @@ public class RubyPayment : MonoBehaviour
             CloseUI();
             AllFrontUIClose();
             UIManager.Instance.ClickBotBtn(4);
+            ShopManager.inst.Active_Shop(2, true);
         });
     }
 
