@@ -77,7 +77,10 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
         nameText.text = $"{Number + 1}. {Set_WeaponName(Number)}";
         SetbtnActive();
-        GameStatus.inst.OnPercentageChanged.AddListener(() => { setNextCost(); setText(); });
+        GameStatus.inst.OnPercentageChanged.AddListener(() => 
+        {
+            setNextCost(); setText(); Atk = getAtk(Number);
+        });
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
         UIManager.Instance.WeaponReset.AddListener(resetWeapon);
         objBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
@@ -150,14 +153,12 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
 
     private BigInteger getAtk(int num)
     {
-        //return (BigInteger)(Lv * Mathf.Pow(5, num * atkRate));
-        return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate));
+        return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
     }
 
     private BigInteger getNextAtk(int num)
     {
-        //return (BigInteger)((Lv + 1) * Mathf.Pow(5, num * atkRate));
-        return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate));
+        return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
     }
 
     private void SetbtnActive()
@@ -201,7 +202,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
 
     public BigInteger GetNextCost()
     {
-        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
+        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.WeaponDiscount);
         return nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
     }
 

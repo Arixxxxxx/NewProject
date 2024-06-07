@@ -163,8 +163,9 @@ public class Pet : MonoBehaviour, IClickLvUpAble
 
     public void ClickUp()
     {
-        int[] petMoney = GameStatus.inst.CrewMaterial;
 
+        int[] petMoney = GameStatus.inst.CrewMaterial;
+        
         if (petMoney[myMatTypeIndex] >= nextCost) // 재료있을때
         {
             RubyPayment.inst.CrewMatPaymentUiActive(myMatTypeIndex, nextCost, () => 

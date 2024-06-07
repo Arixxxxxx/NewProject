@@ -45,7 +45,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     GameObject priceImage;
     GameObject priceMask;
     GameObject starImgRef;
-    
+
     GameObject effectRef;
     float rotateSpeedMultiPlyer = 15f;
     private void Update()
@@ -53,7 +53,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         // 배경 회전
         if (rankNum != RankType.Rare && gameObject.activeInHierarchy)
         {
-            if(effectRef == null)
+            if (effectRef == null)
             {
                 effectRef = transform.Find("IMG_Layout/Bg_Effect").gameObject;
             }
@@ -71,7 +71,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         upBtn = transform.Find("Button").GetComponent<Button>();
         relicImgae = transform.Find("IMG_Layout/IMG").GetComponent<Image>();
         priceImage = transform.Find("Button/Image").gameObject;
-        priceMask = transform.Find("Button/Mask").gameObject;
+        priceMask = transform.Find("Mask").gameObject;
         UIManager.Instance.OnRelicBuyCountChanged.AddListener(() => _OnCountChanged());
         GameStatus.inst.OnStartChanged.AddListener(checkStar);
 
@@ -84,7 +84,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         setNextCost();
         setText();
 
-        upBtn.onClick.AddListener(() => {  ClickUp(); });
+        upBtn.onClick.AddListener(() => { ClickUp(); });
 
     }
 
@@ -93,14 +93,19 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     {
         //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f);
         int btnnum = UIManager.Instance.RelicBuyCountBtnNum;
+        if (Lv + buyCount >= limitLv)
+        {
+            buyCount = limitLv - Lv;
+         
+        }
         if (btnnum != 3)//max가 아닐때
         {
-            nextCost =CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1));
+            nextCost = CalCulator.inst.CalculatePow(costGrowthRate, Lv) * (BigInteger)((Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1));
         }
         else//max일 때
         {
             buyCount = 1;
-           haveStar = BigInteger.Parse(GameStatus.inst.Star);
+            haveStar = BigInteger.Parse(GameStatus.inst.Star);
             setNextCost(buyCount);
             while (haveStar >= nextCost && Lv + buyCount <= limitLv)
             {
@@ -108,6 +113,11 @@ public class Relic : MonoBehaviour, IClickLvUpAble
                 setNextCost(buyCount);
                 if (buyCount >= 100)
                 {
+                    break;
+                }
+                if (Lv + buyCount >= limitLv)
+                {
+                    buyCount = limitLv - Lv + 1;
                     break;
                 }
             }
@@ -148,8 +158,8 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     void setText()
     {
         LvText.text = $"Lv. {lv}";
-      
-        if(itemNum == ItemTag.Critical)
+
+        if (itemNum == ItemTag.Critical)
         {
             PercentText.text = percentage.ToString("F1") + "%";
         }
@@ -157,13 +167,17 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         {
             PercentText.text = percentage.ToString("N0") + "%";
         }
-        
+
         PriceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
     }
 
     BigInteger haveStar1 = new BigInteger();
     public void ClickUp()
     {
+        if (Lv >= limitLv)
+        {
+            return;
+        }
         haveStar1 = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
         if (haveStar1 >= nextCost)
         {
@@ -176,7 +190,12 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     BigInteger haveStar2 = new BigInteger();
     void checkStar()
     {
-       
+
+        if (Lv >= limitLv)
+        {
+            upBtn.interactable = false;
+            return;
+        }
         haveStar2 = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(GameStatus.inst.Star));
 
         if (haveStar2 < nextCost && upBtn.interactable)
@@ -192,6 +211,10 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     private void _OnCountChanged()
     {
         buyCount = UIManager.Instance.RelicBuyCount;
+        if (Lv + buyCount >= limitLv)
+        {
+            buyCount = limitLv - Lv;
+        }
         setNextCost();
         setText();
         checkStar();
@@ -216,6 +239,6 @@ public class Relic : MonoBehaviour, IClickLvUpAble
     {
         return (int)itemNum;
     }
-    
+
 
 }

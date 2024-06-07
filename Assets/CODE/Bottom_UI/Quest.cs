@@ -90,8 +90,12 @@ public class Quest : MonoBehaviour,IClickLvUpAble
             }
             SetbtnActive();
         });
-        GameStatus.inst.OnPercentageChanged.AddListener(_OnItemPercentChanged);
-        GameStatus.inst.OnPercentageChanged.AddListener(setItemCur);
+        GameStatus.inst.OnPercentageChanged.AddListener(() => 
+        { 
+            _OnItemPercentChanged();
+            setItemCur();
+            setNextCost();
+        });
         UpBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
