@@ -479,7 +479,7 @@ public class DogamManager : MonoBehaviour
         float randomValue = UnityEngine.Random.Range(0, 100f);
         if (randomValue > getChance) { return; };
 
-        Sprite IMG = SpriteResource.inst.CoinIMG(3);
+        Sprite IMG = SpriteResource.inst.EnemySoul(stage - 1);
 
         string monsterName = monsterNameAndInfo[monsterIndex].Split('-')[0];
         string text = $"'{monsterName}'ÀÇ Á¤¼ö";

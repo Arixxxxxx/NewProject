@@ -22,6 +22,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip[] playerCri;
     [SerializeField] AudioClip[] monsterHit;
     [SerializeField] AudioClip[] monsterDead;
+    [Header("#동료 관련")]
+    [SerializeField] AudioClip[] crew_Audio;
     Transform sfxTrs;
     bool[] isSoundPlay;
     float[] worldSoundDealyTimer;
@@ -378,5 +380,40 @@ public class AudioManager : MonoBehaviour
                 break;
         }
 
+    }
+
+    /// <summary>
+    /// 캐릭터관련 사운드 재생
+    /// </summary>
+    /// <param name="index"> 0:로그인씬 탭투스크린<br/>1:</param>
+    public void Crew_Play_SFX(int index, float Volume)
+    {
+        if (audioQue.Count <= 0)
+        {
+            MakeSoundClip();
+        }
+
+        StartCoroutine(Crew_SoundPlay(index, Volume));
+    }
+
+    IEnumerator Crew_SoundPlay(int index, float Volume)
+    {
+        AudioSource obj = audioQue.Dequeue();
+        obj.volume = Volume;
+        obj.clip = crew_Audio[index];
+        obj.gameObject.SetActive(true);
+        obj.Play();
+
+        yield return null;
+        while (obj.isPlaying)
+        {
+            yield return null;
+        }
+
+        obj.Stop();
+        obj.clip = null;
+        obj.volume = 1;
+        obj.gameObject.SetActive(false);
+        audioQue.Enqueue(obj);
     }
 }

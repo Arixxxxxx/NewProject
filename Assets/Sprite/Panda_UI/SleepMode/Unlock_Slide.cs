@@ -83,7 +83,7 @@ public class Unlock_Slide : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         if (dragStart == false)
         {
             dragStart = true;
-            AudioManager.inst.SleepMode_SFX(2, 1);
+            AudioManager.inst.SleepMode_SFX(11, 1f);
             SleepMode.inst.PandaIMGChanger(1);
         }
 
