@@ -103,22 +103,22 @@ public class AudioManager : MonoBehaviour
     }
 
     //BGM
-    public void PlayBGM(int number)
+    public void PlayBGM(int number, float maxVoluem)
     {
         if (bgmPlayer.clip == BGM[number]) { return; };
 
-        StartCoroutine(BGM_Changer(number));
+        StartCoroutine(BGM_Changer(number, maxVoluem));
     }
 
     float duration = 0.2f;
     float counter = 0f;
-    IEnumerator BGM_Changer(int number)
+    IEnumerator BGM_Changer(int number, float maxVoluem)
     {
         counter = 0f;
-
+        float curvoluem = bgmPlayer.volume;
         while (counter < duration)
         {
-            bgmPlayer.volume = Mathf.Lerp(0.8f, 0f, counter / duration);
+            bgmPlayer.volume = Mathf.Lerp(curvoluem, 0f, counter / duration);
             counter += Time.deltaTime;
             yield return null;
         }
@@ -130,7 +130,7 @@ public class AudioManager : MonoBehaviour
 
         while (counter < duration)
         {
-            bgmPlayer.volume = Mathf.Lerp(0f, 0.8f, counter / duration);
+            bgmPlayer.volume = Mathf.Lerp(0f, maxVoluem, counter / duration);
             counter += Time.deltaTime;
             yield return null;
         }

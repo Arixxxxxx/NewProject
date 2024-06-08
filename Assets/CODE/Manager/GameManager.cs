@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
         if (value)
         {
             TouchScrrenParticle_Actve(false);
-            AudioManager.inst.PlayBGM(1);
+            AudioManager.inst.PlayBGM(1,0.6f);
             miniGameMode = true;
             AudioManager.inst.noSound = true;
             miniGameRef.SetActive(true);
@@ -103,7 +103,7 @@ public class GameManager : MonoBehaviour
         else
         {
             TouchScrrenParticle_Actve(true);
-            AudioManager.inst.PlayBGM(0);
+            AudioManager.inst.PlayBGM(0,0.8f);
             miniGameMode = false;
             AudioManager.inst.noSound = false;
             worldCam.gameObject.SetActive(true);

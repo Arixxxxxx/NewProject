@@ -296,6 +296,8 @@ public class HwanSengSystem : MonoBehaviour
     IEnumerator FeverPlay(float InputTime)
     {
         //ÄÑÁÜ
+        AudioManager.inst.PlayBGM(3, 0.5f);
+
         if (feverAnim.gameObject.activeSelf == false)
         {
             WorldUI_Manager.inst.Effect_WhiteCutton(2f); // È­¸é ÇÏ¾é°Ô ÀÌÆåÆ®
@@ -315,6 +317,7 @@ public class HwanSengSystem : MonoBehaviour
 
         feverCountTimer = 0;
         feverAnim.SetTrigger("Hide");
+        AudioManager.inst.PlayBGM(0, 0.8f);
         ActionManager.inst.IsFever = false;
         ActionManager.inst.FeverTime_End();
         yield return new WaitForSeconds(1f);

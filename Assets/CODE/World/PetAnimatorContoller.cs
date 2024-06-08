@@ -30,7 +30,7 @@ public class PetAnimatorContoller : MonoBehaviour
     }
     public void A_Pet1_Attack()
     {
-        AudioManager.inst.Crew_Play_SFX(1, 0.2f);
+        AudioManager.inst.Crew_Play_SFX(1, 0.4f);
         PetContollerManager.inst.Pet_1_StartEffect("Attack");
     }
 

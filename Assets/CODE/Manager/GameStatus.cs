@@ -1254,6 +1254,7 @@ public class GameStatus : MonoBehaviour
 
         //세이브가능
         DataManager.inst.saveAble = true;
+        AudioManager.inst.Crew_Play_SFX(4, 0.7f);
     }
 
 

@@ -156,6 +156,7 @@ public class MainMenuManager : MonoBehaviour
 
         couponInput.onSubmit.AddListener((text) =>
         {
+            couponInput.text = string.Empty;
             completeBoxText.text = GameStatus.inst.CheckMyCoupon(text);
             couponCompleteRef.SetActive(true);
         });

@@ -245,6 +245,7 @@ public class RubyPayment : MonoBehaviour
                 paymentAction?.Invoke();
                 paymentAction = null;
 
+                AudioManager.inst.Crew_Play_SFX(8, 0.5f);
                 crewPayRef.SetActive(false);
             });
 

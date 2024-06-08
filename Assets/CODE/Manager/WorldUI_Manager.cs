@@ -295,7 +295,7 @@ public class WorldUI_Manager : MonoBehaviour
         buffShopBtn.onClick.AddListener(() => { BuffManager.inst.Buff_UI_Active(true); });
         crewViewrBtn.onClick.AddListener(() =>
         {
-            PetDetailViewr_UI.inst.TopArrayBtnActive(0);
+            PetDetailViewr_UI.inst.PetDetialviewrUI_Active(0);
         });
 
         weaponShopBtn.onClick.AddListener(() =>

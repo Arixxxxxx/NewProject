@@ -60,7 +60,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
 
     void Start()
     {
-        switch (type) 
+        switch (type)
         {
             case PetType.Bomb:
                 myMatTypeIndex = 1;
@@ -76,7 +76,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
 
         }
 
-        upBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
+        //upBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     public void initPet()
@@ -120,7 +120,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
         upBtn.onClick.AddListener(ClickUp);
         BuyBtn.onClick.AddListener(() =>
         {
-            BuyBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
+
             RubyPayment.inst.RubyPaymentUiActive(baseCost, () =>
             {
                 Lv++;
@@ -128,7 +128,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
                 PetContollerManager.inst.CrewUnlock_Action((int)type, true);
             });
         });
-        DetailBtn.onClick.AddListener(() => { PetDetailViewr_UI.inst.TopArrayBtnActive(transform.GetSiblingIndex()); AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
+        DetailBtn.onClick.AddListener(() => { PetDetailViewr_UI.inst.PetDetialviewrUI_Active(transform.GetSiblingIndex()); AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     void checkHaveRuby()
@@ -165,11 +165,12 @@ public class Pet : MonoBehaviour, IClickLvUpAble
     {
 
         int[] petMoney = GameStatus.inst.CrewMaterial;
-        
+
         if (petMoney[myMatTypeIndex] >= nextCost) // 재료있을때
         {
-            RubyPayment.inst.CrewMatPaymentUiActive(myMatTypeIndex, nextCost, () => 
+            RubyPayment.inst.CrewMatPaymentUiActive(myMatTypeIndex, nextCost, () =>
             {
+                PetContollerManager.inst.PetLvUp_WorldText_Active((int)type);
                 GameStatus.inst.Use_crewMaterial(myMatTypeIndex, nextCost);
                 Lv++;
             });
@@ -183,7 +184,7 @@ public class Pet : MonoBehaviour, IClickLvUpAble
             });
         }
 
-        
+
     }
 
     void setNextCost()

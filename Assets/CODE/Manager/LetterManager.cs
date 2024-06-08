@@ -225,7 +225,7 @@ public class LetterManager : MonoBehaviour
             LetterPrefab thisLetter = letterBox.transform.GetChild(index).GetComponent<LetterPrefab>();
             ListMyIDDelete(thisLetter); // 세이브 리스트에서 삭제
             letterList.Add(thisLetter);
-            int[] check = letterList[index].ReturnThisLetterItemTypeAndCount(); // 타입 갯수가져옴
+            int[] check = letterList[index].ReturnThisLetterItemTypeAndCount(); // 타입 & 갯수가져옴
             saveLetterItemArr[check[0]] += check[1]; // 각 아이템타입 인덱스를 찾아 값을올려줌
         }
 

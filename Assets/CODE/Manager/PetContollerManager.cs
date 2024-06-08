@@ -41,7 +41,9 @@ public class PetContollerManager : MonoBehaviour
     Button unlockWindowXbtn;
     TMP_Text charNameText;
     TMP_Text charInfoText;
-
+    Transform[] lvupTextTrs = new Transform[3];
+    RectTransform lvupTextRectTrs;
+    
     private void Awake()
     {
         if (inst == null)
@@ -57,6 +59,11 @@ public class PetContollerManager : MonoBehaviour
         effectRef = GameManager.inst.WorldSpaceRef.transform.Find("Effect").gameObject;
         frontUiRef = GameManager.inst.FrontUiRef;
 
+        // 레벨업 연출 (월드공간)
+        lvupTextRectTrs = GameManager.inst.WorldSpaceRef.transform.Find("Player_Obj/LvUPCanvas").GetComponent<RectTransform>();
+        lvupTextTrs[0] = GameManager.inst.WorldSpaceRef.transform.Find("Player_Obj/Pet_0");
+        lvupTextTrs[1] = GameManager.inst.WorldSpaceRef.transform.Find("Player_Obj/Pet_1");
+        lvupTextTrs[2] = GameManager.inst.WorldSpaceRef.transform.Find("Player_Obj/Pet_2");
         //0번 공격
         petAnim[0] = playerObj.transform.Find("Pet_0").GetComponent<Animator>();
         pet0Dust = petAnim[0].transform.Find("Dust").GetComponent<ParticleSystem>();
@@ -110,28 +117,33 @@ public class PetContollerManager : MonoBehaviour
     /// <param name="crewNumber"> 0폭탄마 / 1요리사 / 2사령술사 </param>
     public void CrewUnlock_Action(int crewNumber, bool bValue)
     {
+       
         if (bValue)
         {
+            AudioManager.inst.Crew_Play_SFX(3, 1);
             whiteBg.color = Color.white;
 
             // 배경색
             switch (crewNumber) 
             {
                 case 0:
+                    AudioManager.inst.Crew_Play_SFX(5, 0.7f);
                     charBg.color = new Color(1, 0.46f, 0, 0.85f);
-                    charNameText.text = $"폭탄마 (공격형)";
+                    charNameText.text = $"스파크 (폭탄마)";
                     charInfoText.text = "적에게 강력한 폭탄을 던져 공격하는 동료\r\n메인캐릭터의 공격력 x 3배\r\n<color=yellow>(동료 강화시 1배씩 증가)";
                     break;
 
                 case 1:
+                    AudioManager.inst.Crew_Play_SFX(6, 0.7f);
                     charBg.color = new Color(0, 1, 0, 0.85f);
-                    charNameText.text = $"요리사 (버퍼)";
+                    charNameText.text = $"호두 (요리사)";
                     charInfoText.text = "아군에게 맛있는 요리로 버프를 주는 동료\r\n25%확률 공격력증가 또는 치명타확률 증가\r\n<color=yellow>(동료 강화시 확률 증가)";
                     break;
 
                 case 2:
+                    AudioManager.inst.Crew_Play_SFX(7, 0.7f);
                     charBg.color = new Color(0.65f, 0, 1, 0.85f);
-                    charNameText.text = $"사령술사 (공격형)";
+                    charNameText.text = $"령화 (사령술사)";
                     charInfoText.text = "적의 생명력 기반으로 공격하는 동료\r\n매 공격시  생명력의 1% 만큼 공격\r\n<color=yellow>(동료 강화시 1%씩 증가)";
                     break;
             }
@@ -141,6 +153,7 @@ public class PetContollerManager : MonoBehaviour
         }
         else
         {
+            AudioManager.inst.Play_Ui_SFX(3, 1f);
             particleRef.SetActive(false);
             petUnlockRef.SetActive(false);
         }
@@ -274,6 +287,30 @@ public class PetContollerManager : MonoBehaviour
         }
     }
 
+    // 재료강화시 레벨업 연출
+    WaitForSeconds lvupTextDurationTime = new WaitForSeconds(5f);
+    Coroutine lvuptext;
+    public void PetLvUp_WorldText_Active(int petType)
+    {
+        lvupTextRectTrs.gameObject.transform.localPosition = lvupTextTrs[petType].localPosition;
+
+        if(lvuptext != null)
+        {
+            lvupTextRectTrs.gameObject.SetActive(false);
+            StopCoroutine(lvuptext);
+            lvuptext = null;
+        }
+
+        lvuptext = StartCoroutine(lvupTextPlay());
+
+    }
+
+    IEnumerator lvupTextPlay()
+    {
+        lvupTextRectTrs.gameObject.SetActive(true);
+        yield return lvupTextDurationTime;
+        lvupTextRectTrs.gameObject.SetActive(false);
+    }
     public void AttackBuffDisable()
     {
         GameStatus.inst.AddPetAtkBuff = "0";

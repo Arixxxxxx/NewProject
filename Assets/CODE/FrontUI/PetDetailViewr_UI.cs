@@ -27,15 +27,12 @@ public class PetDetailViewr_UI : MonoBehaviour
     //상단 하단 선택번호
     int curCharNum, curBotNum;
 
-
-
     // Title 상단 엑스버튼
     Button xBtn;
     GameObject[] petChar = new GameObject[3];
     TMP_Text viewLeftBotText;
 
     // 상단 캐릭터 버튼 및 버튼 이미지
-
     Image ViewBG; // 배경
     Button[] topArrayBtns;
     Image[] topArrayBtnsImage = new Image[3];
@@ -45,11 +42,14 @@ public class PetDetailViewr_UI : MonoBehaviour
     Image[] midArrayBtnsImage = new Image[2];
 
 
-    // 정보 오브젝트들
+    // 정 보  
     GameObject[] petInfo = new GameObject[3];
+    TMP_Text[] lvText = new TMP_Text[3];
 
-    // 각성 오브젝트들
+    // 각성
     GameObject[] petGakSeong = new GameObject[3];
+
+    //
 
     //// 강화 오브젝트들 (24.04.19 => 삭제함)
     //GameObject[] petUpgrade = new GameObject[4];
@@ -67,7 +67,7 @@ public class PetDetailViewr_UI : MonoBehaviour
 
         /////////////////하이라키 Ref 참조 /////////////////
 
-        frontUIObj = GameObject.Find("---[FrontUICanvas]").gameObject;
+        frontUIObj = GameManager.inst.FrontUiRef;
         PetDetailViwerObj = frontUIObj.transform.Find("Pet_Detail_Window").gameObject;
         hiearchySurchPoint = PetDetailViwerObj.transform.Find("Window").gameObject;
 
@@ -81,9 +81,13 @@ public class PetDetailViewr_UI : MonoBehaviour
 
         // 뷰어 펫 캐릭터 오브젝트 [에니메이터 & 이미지]
         petChar[0] = ViewBG.transform.Find("PET_0").gameObject;
+        lvText[0] = hiearchySurchPoint.transform.Find("PetInfo/Pet_0/WideBox/TextBox/LvBox/Lv").GetComponent<TMP_Text>();
+
         petChar[1] = ViewBG.transform.Find("PET_1").gameObject;
+        lvText[1] = hiearchySurchPoint.transform.Find("PetInfo/Pet_1/WideBox/TextBox/LvBox/Lv").GetComponent<TMP_Text>();
         petChar[2] = ViewBG.transform.Find("PET_2").gameObject;
-        
+        lvText[2] = hiearchySurchPoint.transform.Find("PetInfo/Pet_2/WideBox/TextBox/LvBox/Lv").GetComponent<TMP_Text>();
+
 
         // 펫 해금조건 설명 텍스트
         viewLeftBotText = ViewBG.transform.Find("TextBar").GetComponentInChildren<TMP_Text>();
@@ -131,9 +135,9 @@ public class PetDetailViewr_UI : MonoBehaviour
     private void BtnInIt()
     {
         xBtn.onClick.AddListener(() => { middleBtnImageChanger(0); curCharNum = 0; curBotNum = 0; PetDetailViwerObj.SetActive(false); });
-        topArrayBtns[0].onClick.AddListener(() => TopArrayBtnActive(0));
-        topArrayBtns[1].onClick.AddListener(() => TopArrayBtnActive(1));
-        topArrayBtns[2].onClick.AddListener(() => TopArrayBtnActive(2));
+        topArrayBtns[0].onClick.AddListener(() => PetDetialviewrUI_Active(0));
+        topArrayBtns[1].onClick.AddListener(() => PetDetialviewrUI_Active(1));
+        topArrayBtns[2].onClick.AddListener(() => PetDetialviewrUI_Active(2));
 
         midArrayBtns[0].onClick.AddListener(() =>
         {
@@ -160,11 +164,40 @@ public class PetDetailViewr_UI : MonoBehaviour
     /// 상단 캐릭터버튼 배경 변경 함수
     /// </summary>
     /// <param name="indexNum"> 공격펫 / 버프펫 / 골드펫 </param>
-    public void TopArrayBtnActive(int indexNum)
+    public void PetDetialviewrUI_Active(int indexNum)
     {
         if (PetDetailViwerObj.gameObject.activeSelf == false)
         {
             PetDetailViwerObj.gameObject.SetActive(true);
+            
+            if (GameStatus.inst.Pet0_Lv != 0)
+            {
+                lvText[0].text = $"Lv. {GameStatus.inst.Pet0_Lv}";
+            }
+            else
+            {
+                lvText[0].text = $"미획득";
+            }
+
+            if (GameStatus.inst.Pet1_Lv != 0)
+            {
+                lvText[1].text = $"Lv. {GameStatus.inst.Pet1_Lv}";
+            }
+            else
+            {
+                lvText[1].text = $"미획득";
+            }
+
+            if (GameStatus.inst.Pet2_Lv != 0)
+            {
+                lvText[2].text = $"Lv. {GameStatus.inst.Pet2_Lv}";
+            }
+            else
+            {
+                lvText[2].text = $"미획득";
+            }
+       
+            
         }
 
         curCharNum = indexNum;
