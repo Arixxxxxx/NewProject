@@ -77,7 +77,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
         weaponImage.sprite = SpriteResource.inst.Weapons[Number];
         nameText.text = $"{Number + 1}. {Set_WeaponName(Number)}";
         SetbtnActive();
-        GameStatus.inst.OnPercentageChanged.AddListener(() => 
+        GameStatus.inst.OnPercentageChanged.AddListener(() =>
         {
             setNextCost(); setText(); Atk = getAtk(Number);
         });
@@ -153,12 +153,29 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
 
     private BigInteger getAtk(int num)
     {
-        return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
+        float relicAtk = GameStatus.inst.GetAryPercent((int)ItemTag.Atk);
+        if (relicAtk == 0)
+        {
+            return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate));
+        }
+        else
+        {
+            return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
+        }
     }
 
     private BigInteger getNextAtk(int num)
     {
-        return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
+        float relicAtk = GameStatus.inst.GetAryPercent((int)ItemTag.Atk);
+        if (relicAtk == 0)
+        {
+            return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate));
+        }
+        else
+        {
+            return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
+        }
+        
     }
 
     private void SetbtnActive()

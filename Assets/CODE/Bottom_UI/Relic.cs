@@ -147,7 +147,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
                 ActionManager.inst.PlayerAttackSpeedLvUp();
                 break;
         }
-        GameStatus.inst.SetAryPercent((int)itemNum, Lv);
+        GameStatus.inst.SetAryPercent((int)itemNum, percentage);
     }
 
     void setNextCost(int count)

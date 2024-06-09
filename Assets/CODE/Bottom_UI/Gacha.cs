@@ -267,8 +267,8 @@ public class Gacha : MonoBehaviour
         int haveCount = list_haveRelic.Count;
         for (int iNum = 0; iNum < haveCount; iNum++)
         {
-            int indexNum = (int)list_haveRelic[iNum].GetComponent<Relic>().GetMyType().y;
-            list_haveRelic[iNum].transform.SetSiblingIndex(indexNum);
+            //int indexNum = (int)list_haveRelic[iNum].GetComponent<Relic>().GetMyType().y;
+            list_haveRelic[iNum].transform.SetSiblingIndex(iNum);
         }
 
         UIManager.Instance.SetHaveRelic(list_haveRelic);

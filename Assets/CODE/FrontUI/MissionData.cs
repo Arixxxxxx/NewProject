@@ -24,6 +24,7 @@ public class MissionData : MonoBehaviour
     TMP_Text worldTitleText;//메인화면 미션 타이틀 텍스트
     TMP_Text worldDetailText;//메인화면 미션 세부 텍스트
     Image missionIconBG;
+    Animator missionIconAnim;
 
     [SerializeField] GameObject obj_Mission;//일일,주간 미션 바
     [SerializeField] GameObject obj_SpecialMission;//스페셜 미션 바
@@ -158,6 +159,7 @@ public class MissionData : MonoBehaviour
                         isMaxCount = true;
                         Instance.ClearStack++;
                         Instance.DailyClearStack++;
+                        Instance.SetIconBGColor(true);
                     }
                     count = maxCount;
                     moveBtn.gameObject.SetActive(false);
@@ -166,6 +168,7 @@ public class MissionData : MonoBehaviour
                 }
                 else if (IsClear)
                 {
+                    count = maxCount;
                     clearBtn.gameObject.SetActive(false);
                     moveBtn.gameObject.SetActive(false);
                     Mask.SetActive(true);
@@ -280,6 +283,7 @@ public class MissionData : MonoBehaviour
             ClearText.SetActive(true);
             Instance.ClearStack--;
             Instance.DailyClearStack--;
+            Instance.SetIconBGColor(false);
             AudioManager.inst.Play_Ui_SFX(4, 0.8f);
         }
 
@@ -377,12 +381,14 @@ public class MissionData : MonoBehaviour
                         isMaxCount = true;
                         Instance.ClearStack++;
                         Instance.WeeklyClearStack++;
+                        Instance.SetIconBGColor(true);
                     }
                     moveBtn.gameObject.SetActive(false);
                     clearBtn.gameObject.SetActive(true);
                 }
                 else if (IsClear)
                 {
+                    count = maxCount;
                     clearBtn.gameObject.SetActive(false);
                     Mask.SetActive(true);
                     ClearText.SetActive(true);
@@ -493,6 +499,7 @@ public class MissionData : MonoBehaviour
             ClearText.SetActive(true);
             Instance.ClearStack--;
             Instance.WeeklyClearStack--;
+            Instance.SetIconBGColor(false);
             AudioManager.inst.Play_Ui_SFX(4, 0.8f);
         }
 
@@ -783,10 +790,12 @@ public class MissionData : MonoBehaviour
         if (isClear)
         {
             missionIconBG.color = clearColor;
+            missionIconAnim.SetBool("clear", true);
         }
         else
         {
             missionIconBG.color = defaultColor;
+            missionIconAnim.SetBool("clear", false);
         }
     }
 
@@ -854,6 +863,7 @@ public class MissionData : MonoBehaviour
         Transform worldUiCanvas = GameObject.Find("---[World UI Canvas]").transform;
         MissionOpenBtn = worldUiCanvas.Find("StageUI/QeustList/Button").GetComponent<Button>();
         missionIconBG = worldUiCanvas.Find("StageUI/QeustList/BG").GetComponent<Image>();
+        missionIconAnim = worldUiCanvas.Find("StageUI/QeustList/BG").GetComponent<Animator>();
         simball = worldUiCanvas.Find("StageUI/QeustList/Button/Simball").gameObject;
         worldTitleText = worldUiCanvas.Find("StageUI/QeustList/BG/Step").GetComponent<TMP_Text>();
         worldDetailText = worldUiCanvas.Find("StageUI/QeustList/BG/Text").GetComponent<TMP_Text>();
@@ -1007,6 +1017,7 @@ public class MissionData : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.J))
         {
             initDailyMission();
+            initWeeklyMission();
         }
     }
 

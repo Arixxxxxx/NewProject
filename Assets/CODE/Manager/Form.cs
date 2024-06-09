@@ -20,15 +20,6 @@ public enum ItemTag
     KillGold,
 }
 
-public enum NormalRelicTag
-{ 
-    Atk,
-    AtkSpeed,
-    Critical,
-    QuestGold,
-    EnemyGold,
-}
-
 public enum ProductTag
 { 
     Gold,

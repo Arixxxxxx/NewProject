@@ -155,6 +155,10 @@ public class Quest : MonoBehaviour,IClickLvUpAble
         if (btnnum != 3)//max가 아닐때
         {
             nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
+            if (nextCost == 0)
+            {
+                nextCost = 1;
+            }
         }
         else//max일 때
         {
@@ -191,7 +195,7 @@ public class Quest : MonoBehaviour,IClickLvUpAble
 
     private void _OnItemPercentChanged()
     {
-        itemCur = GameStatus.inst.GetAryPercent((int)NormalRelicTag.QuestGold);
+        itemCur = GameStatus.inst.GetAryPercent((int)ItemTag.QuestGold);
         TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
         setText();
     }
