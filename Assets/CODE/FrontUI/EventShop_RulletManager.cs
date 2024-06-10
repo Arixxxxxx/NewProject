@@ -55,7 +55,6 @@ public class EventShop_RulletManager : MonoBehaviour
     Animator nohaveTiketAnim;
 
     // ·ê·¿
-    [SerializeField]
     Animator rulletArrowAnim;
 
     // Àç»ý°ü·Ã
@@ -363,23 +362,25 @@ public class EventShop_RulletManager : MonoBehaviour
             StopCoroutine(slotMachines[1]);
             StopCoroutine(slotMachines[2]);
         }
-
-        slotMachines[0] = StartCoroutine(SlotPlay(0));
-        slotMachines[1] = StartCoroutine(SlotPlay(1));
-        slotMachines[2] = StartCoroutine(SlotPlay(2));
+        AudioSource obj = AudioManager.inst.EventShop_Play_SFX(0, 0.5f);
+        slotMachines[0] = StartCoroutine(SlotPlay(0, obj));
+        slotMachines[1] = StartCoroutine(SlotPlay(1, obj));
+        slotMachines[2] = StartCoroutine(SlotPlay(2, obj));
     }
 
 
     float tillingSpeedMultiplyer = 3.8f;
     float slotFloat = 0.168f; // Å¸ÀÏ¸µ 1Ä­
 
-    IEnumerator SlotPlay(int value)
+    IEnumerator SlotPlay(int value, AudioSource obj)
     {
         Vector2 tillingVec = Vector2.zero;
         float timer = 0f;
         float randomStartValue = Random.Range(0f, 1f);
         tillingVec.y = randomStartValue;
         rulletParticle.gameObject.SetActive(false);
+     
+
         // ½½·Ô µ¹¾Æ°¡´Â ½Ã°£ »ý¼º
 
         float slotActiontime = 0f;
@@ -423,16 +424,27 @@ public class EventShop_RulletManager : MonoBehaviour
             if (value == 2 && lerpTime > 0.15f && once == false) // 3¹ø¤Š ½½·Ô ¸ØÃß¸é
             {
                 once = true;
+                obj.Stop();
                 //´çÃ· ·ÎÁ÷
                 RewardItem();
                 MaterialTextUpdater();
                 RulletAction(false);
             }
+            else if (value == 0 && lerpTime > 0.15f && once == false) // 3¹ø¤Š ½½·Ô ¸ØÃß¸é
+            {
+                once = true;
+                AudioManager.inst.EventShop_Play_SFX(1, 1);
+            }
+            else if (value == 1 && lerpTime > 0.15f && once == false) // 3¹ø¤Š ½½·Ô ¸ØÃß¸é
+            {
+                once = true;
+                AudioManager.inst.EventShop_Play_SFX(2, 1);
+            }
 
             yield return null;
         }
 
-        if (value == 2) // 3¹ø¤Š ½½·Ô ¸ØÃß¸é
+         if (value == 2) // 3¹ø¤Š ½½·Ô ¸ØÃß¸é
         {
             doSlotMachine = false;
         }
@@ -471,6 +483,7 @@ public class EventShop_RulletManager : MonoBehaviour
                     haveReward = true;
                     PlayPandaAnimation(2);
                     rulletParticle.gameObject.SetActive(true);
+                    AudioManager.inst.EventShop_Play_SFX(3, 1);
 
                     if (pair.Key == 0) //·çºñ 2°³ ´çÃ·
                     {
@@ -508,6 +521,7 @@ public class EventShop_RulletManager : MonoBehaviour
                     haveReward = true;
                     PlayPandaAnimation(3);
                     rulletParticle.gameObject.SetActive(true);
+                    AudioManager.inst.EventShop_Play_SFX(3, 1);
 
                     if (pair.Key == 0) //·çºñ 3°³ ´çÃ·
                     {
@@ -545,6 +559,7 @@ public class EventShop_RulletManager : MonoBehaviour
         if (haveReward == false)
         {
             Debug.Log("²Î");
+            AudioManager.inst.EventShop_Play_SFX(4, 1);
             PlayPandaAnimation(4);
         }
     }
@@ -700,13 +715,14 @@ public class EventShop_RulletManager : MonoBehaviour
     float spinSpeedDownMulyfly;
 
     Vector3 rotZ;
-
+    AudioSource rulletAudio;
     private void RulletStart()
     {
         if (RulletRef.activeSelf == true && doRullet == false)
         {
             rulletParticle.gameObject.SetActive(false);
             RulletAction(true);
+            rulletAudio = AudioManager.inst.EventShop_Play_SFX(0, 0.5f);
             StartCoroutine(RulletSpinStart());
         }
     }
@@ -739,7 +755,7 @@ public class EventShop_RulletManager : MonoBehaviour
             if (spinSpeed <= 0)
             {
                 spinSpeed = 0;
-
+                rulletAudio.Stop();
                 // ·ê·¿ º¸»ó
                 float checkvalue = rulletPan.transform.eulerAngles.z;
                 Debug.Log(checkvalue);
@@ -749,33 +765,36 @@ public class EventShop_RulletManager : MonoBehaviour
                     rulletParticle.gameObject.SetActive(true);
                     GameStatus.inst.PlusRuby(10); //½ÇÇà
                     WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " ·çºñ +10");
+                    AudioManager.inst.EventShop_Play_SFX(3, 0.5f);
                 }
                 else if (checkvalue >= 30 && checkvalue < 90)
                 {
                     Debug.Log("²Î");
+                    AudioManager.inst.EventShop_Play_SFX(4, 1f);
                 }
                 else if (checkvalue >= 90 && checkvalue < 150)
                 {
                     rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(0, 2, "°ø°Ý·Â ¹öÇÁ 2ºÐ");
-                    //WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.BuffIMG(0),"°ø°Ý·Â ¹öÇÁ 2ºÐ");
-
+                    AudioManager.inst.EventShop_Play_SFX(3, 0.5f);
                 }
                 else if (checkvalue >= 150 && checkvalue < 210)
                 {
                     rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(3, 2, "°­ÇÑ °ø°Ý·Â ¹öÇÁ 2ºÐ");
-
+                    AudioManager.inst.EventShop_Play_SFX(3, 0.5f);
                 }
                 else if (checkvalue >= 210 && checkvalue < 270)
                 {
                     rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(2, 2, "°ñµå È¹µæ·® Áõ°¡ ¹öÇÁ 2ºÐ");
+                    AudioManager.inst.EventShop_Play_SFX(3, 0.5f);
                 }
                 else if (checkvalue >= 270 && checkvalue < 330)
                 {
                     rulletParticle.gameObject.SetActive(true);
                     BuffManager.inst.ActiveBuff(1, 2, "ÀÌµ¿¼Óµµ Áõ°¡ ¹öÇÁ 2ºÐ");
+                    AudioManager.inst.EventShop_Play_SFX(3, 0.5f);
                 }
 
                 MaterialTextUpdater();

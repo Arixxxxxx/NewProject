@@ -79,12 +79,15 @@ public class MinigameController : MonoBehaviour
     }
 
     //타이틀화면 -> 게임선택화면
+    bool startonce = false;
     private void TitleScrrenKeyInput_Cheack()
     {
-        if (mainScrrenRef.gameObject.activeSelf == false) { return; }
+        if (mainScrrenRef.gameObject.activeInHierarchy == false) { return; }
 
-        if (mainScrrenRef.gameObject.activeSelf && bBtn == true)
+        if (mainScrrenRef.gameObject.activeInHierarchy && bBtn == true && !startonce)
         {
+            startonce = true;
+            AudioManager.inst.SleepMode_SFX(0, 0.8f);
             titleScrren.GetComponent<Animator>().SetTrigger("Hide");
         }
     }
@@ -95,64 +98,133 @@ public class MinigameController : MonoBehaviour
     bool waitAction;
     private void SelectGameScrrenKeyInput_Cheack()
     {
-        if (selectGameScrren.gameObject.activeSelf == false && gameStart == false) { return; }
+        if (selectGameScrren.gameObject.activeInHierarchy == false && gameStart == false) { return; }
 
-        if (selectGameScrren.gameObject.activeSelf && left == true && waitAction == false)
+        if (selectGameScrren.gameObject.activeInHierarchy && left == true && waitAction == false)
         {
             waitAction = true;
             StartCoroutine(ViewNext(0));
         }
-        if (selectGameScrren.gameObject.activeSelf && right == true && waitAction == false)
+        if (selectGameScrren.gameObject.activeInHierarchy && right == true && waitAction == false)
         {
             waitAction = true;
             StartCoroutine(ViewNext(1));
         }
 
-        if(selectGameScrren.gameObject.activeSelf && bBtn == true && gameStart == false) 
+        if(selectGameScrren.gameObject.activeInHierarchy && bBtn == true && gameStart == false) 
         {
-            gameStart = true;
-            GameStart();
+            if(gameIndex == 0)
+            {
+                gameStart = true;
+                GameStart();
+            }
+            
         }
     }
 
 
+    float nextMoveDuration = 0.3f;
+    float nextMoveCounter = 0f;
     IEnumerator ViewNext(int leftRight)
     {
-        //예외처리
-        if (leftRight == 0 && gameIndex == 0 ) { waitAction=false; yield break; }
+        // 예외 처리
+        if (leftRight == 0 && gameIndex == 0) { waitAction = false; yield break; }
         if (leftRight == 1 && gameIndex == gameCount - 1) { waitAction = false; yield break; }
 
+        AudioManager.inst.SleepMode_SFX(2, 0.8f);
 
-        Vector2 vec = new Vector2(-1000 * Time.deltaTime, 0);
+        nextMoveCounter = 0f;
+        Vector2 vec = Vector2.zero;
+
         float nextAmount = 455;
         float arrivePosX = 0f;
+        float startPos = viewBox.anchoredPosition.x;
+
         if (leftRight == 0)
         {
-           arrivePosX = viewBox.anchoredPosition.x + nextAmount;
-
+            arrivePosX = startPos + nextAmount;
             gameIndex--;
-            while (viewBox.anchoredPosition.x < arrivePosX)
-            {
-                viewBox.anchoredPosition -= vec;
-                yield return null;
-            }
         }
-        else if(leftRight == 1)
+        else if (leftRight == 1)
         {
-            arrivePosX = viewBox.anchoredPosition.x - nextAmount;
+            arrivePosX = startPos - nextAmount;
             gameIndex++;
-
-            while (viewBox.anchoredPosition.x > arrivePosX)
-            {
-                viewBox.anchoredPosition += vec;
-                yield return null;
-            }
         }
 
-        viewBox.anchoredPosition = new Vector2(arrivePosX, 0);
-        GameNameTextInit(); // 게임 이름 초기화
+        vec = new Vector2(startPos, viewBox.anchoredPosition.y);
+
+        while (nextMoveCounter < nextMoveDuration)
+        {
+            vec.x = Mathf.Lerp(startPos, arrivePosX, nextMoveCounter / nextMoveDuration);
+            viewBox.anchoredPosition = vec;
+            nextMoveCounter += Time.deltaTime;
+            yield return null;
+        }
+
+        vec.x = arrivePosX;
+        viewBox.anchoredPosition = vec;
+
+        // 게임 이름 초기화
+        GameNameTextInit();
         waitAction = false;
     }
+    //IEnumerator ViewNext(int leftRight)
+    //{
+    //    //예외처리
+
+    //    if (leftRight == 0 && gameIndex == 0 ) { waitAction=false; yield break; }
+    //    if (leftRight == 1 && gameIndex == gameCount - 1) { waitAction = false; yield break; }
+    //    AudioManager.inst.SleepMode_SFX(2, 0.8f);
+
+    //    nextmoveCounter = 0f;
+    //    Vector2 vec = Vector2.zero;
+
+    //    float nextAmount = 455;
+    //    float arrivePosX = 0f;
+    //    float startPos = 0f;
+
+    //    if (leftRight == 0)
+    //    {
+    //        arrivePosX = viewBox.anchoredPosition.x + nextAmount;
+    //        startPos = viewBox.anchoredPosition.x;
+    //        vec = new Vector2(viewBox.anchoredPosition.x, viewBox.anchoredPosition.y);
+
+    //        gameIndex--;
+
+    //        while(nextmoveCounter < nextmoveDuration)
+    //        {
+    //            vec.x = Mathf.Lerp(startPos, arrivePosX, nextmoveCounter / nextmoveDuration);
+    //            viewBox.anchoredPosition = vec;
+    //            nextmoveCounter += Time.deltaTime;
+    //            yield return null;
+    //        }
+    //        vec.x = arrivePosX;
+    //        viewBox.anchoredPosition = vec;
+    //    }
+    //    else if (leftRight == 1)
+    //    {
+    //        arrivePosX = viewBox.anchoredPosition.x - nextAmount;
+    //        startPos = viewBox.anchoredPosition.x;
+    //        vec = new Vector2(viewBox.anchoredPosition.x, viewBox.anchoredPosition.y);
+
+    //        gameIndex++;
+
+    //        while (nextmoveCounter < nextmoveDuration)
+    //        {
+    //            vec.x = Mathf.Lerp(startPos, arrivePosX, nextmoveCounter / nextmoveDuration);
+    //            viewBox.anchoredPosition = vec;
+    //            nextmoveCounter += Time.deltaTime;
+    //            yield return null;
+    //        }
+    //        vec.x = arrivePosX;
+    //        viewBox.anchoredPosition = vec;
+    //    }
+
+
+    //    viewBox.anchoredPosition = new Vector2(arrivePosX, 0);
+    //    GameNameTextInit(); // 게임 이름 초기화
+    //    waitAction = false;
+    //}
 
     float releaseGameFontSize = 45;
     float non_releaseGameFontSize = 38;
@@ -167,7 +239,7 @@ public class MinigameController : MonoBehaviour
 
             case 1:
                 gameNameText.fontSize = non_releaseGameFontSize;
-                gameNameText.text = "<color=red>Coming Soon!";
+                gameNameText.text = "<color=red>Coming Soon";
                 break;
 
             case 2:
@@ -199,6 +271,7 @@ public class MinigameController : MonoBehaviour
     /// </summary>
     public void ResetViewBoxPos()
     {
+        startonce = false;
         gameStart =false;
         gameIndex = 0;
         waitAction = false;

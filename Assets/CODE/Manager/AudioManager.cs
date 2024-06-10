@@ -24,6 +24,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip[] monsterDead;
     [Header("#동료 관련")]
     [SerializeField] AudioClip[] crew_Audio;
+    [Header("#이벤트샾")]
+    [SerializeField] AudioClip[] event_Shop;
     Transform sfxTrs;
     bool[] isSoundPlay;
     float[] worldSoundDealyTimer;
@@ -110,7 +112,7 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(BGM_Changer(number, maxVoluem));
     }
 
-    float duration = 0.2f;
+    float duration = 0.5f;
     float counter = 0f;
     IEnumerator BGM_Changer(int number, float maxVoluem)
     {
@@ -134,6 +136,28 @@ public class AudioManager : MonoBehaviour
             counter += Time.deltaTime;
             yield return null;
         }
+    }
+
+    public void PlayBGM_Mute()
+    {
+        StartCoroutine(BGM_Mute());
+    }
+
+    float durations = 0.2f;
+    float counters = 0f;
+    IEnumerator BGM_Mute()
+    {
+        counters = 0f;
+        float curvoluem = bgmPlayer.volume;
+        while (counters < durations)
+        {
+            bgmPlayer.volume = Mathf.Lerp(curvoluem, 0f, counters / durations);
+            counters += Time.deltaTime;
+            yield return null;
+        }
+
+        bgmPlayer.volume = 0f;
+        bgmPlayer.clip = null;
     }
     /// <summary>
     /// SFX 재생기 (UI 효과음)
@@ -412,6 +436,46 @@ public class AudioManager : MonoBehaviour
 
         obj.Stop();
         obj.clip = null;
+        obj.volume = 1;
+        obj.gameObject.SetActive(false);
+        audioQue.Enqueue(obj);
+    }
+
+    /// <summary>
+    /// 이벤트샾 
+    /// </summary>
+    /// <param name="index"> 0:로그인씬 탭투스크린<br/>1:</param>
+    public AudioSource EventShop_Play_SFX(int index, float Volume)
+    {
+        if (audioQue.Count <= 0)
+        {
+            MakeSoundClip();
+        }
+
+        AudioSource obj = audioQue.Dequeue();
+        obj.volume = Volume;
+
+        StartCoroutine(EventSoundPlay(index, Volume, obj));
+
+        return obj;
+    }
+
+    IEnumerator EventSoundPlay(int index, float Volume, AudioSource obj)
+    {
+        
+        obj.clip = event_Shop[index];
+        obj.gameObject.SetActive(true);
+        obj.Play();
+
+        yield return null;
+        
+        while (obj.isPlaying)
+        {
+            yield return null;
+        }
+       
+        obj.clip = null;
+        obj.loop = false;
         obj.volume = 1;
         obj.gameObject.SetActive(false);
         audioQue.Enqueue(obj);

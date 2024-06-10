@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
         if (value)
         {
             TouchScrrenParticle_Actve(false);
-            AudioManager.inst.PlayBGM(1,0.6f);
+            AudioManager.inst.PlayBGM(1,0.8f);
             miniGameMode = true;
             AudioManager.inst.noSound = true;
             miniGameRef.SetActive(true);

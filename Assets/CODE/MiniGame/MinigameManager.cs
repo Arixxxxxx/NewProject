@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -70,7 +71,7 @@ public class MinigameManager : MonoBehaviour
     Image fillbar;
     TMP_Text fillText;
     TMP_Text result_MenuText, result_ReStartText;
-    GameObject resultRef;
+    GameObject resultRef, startCanvas;
     //결과창 선택 화살표 액티브
     [SerializeField][Tooltip("0논클릭/1클릭")] TMP_ColorGradient[] ResultMenuGradiuntPreset;
     GameObject[] resultMenuSelect = new GameObject[2];
@@ -128,6 +129,7 @@ public class MinigameManager : MonoBehaviour
         noBtn = endGameQuestionBox.transform.Find("Window/Cutton/Middle/No").GetComponent<Button>();
         YesBtn = endGameQuestionBox.transform.Find("Window/Cutton/Middle/Yes").GetComponent<Button>();
 
+        startCanvas = miniGamesRef.transform.Find("StartCanvas").gameObject;
         resultRef = miniGamesRef.transform.Find("StartCanvas/Result").gameObject;
         startCountAnim = miniGamesRef.transform.Find("StartCanvas/GameStart_Animation").GetComponent<Animator>();
         timeUpAnim = miniGamesRef.transform.Find("StartCanvas/Time_Up").GetComponent<Animator>();
@@ -200,6 +202,11 @@ public class MinigameManager : MonoBehaviour
     //껏다 켯을때 최초상태로 해주는 함수
     public void minigameReset()
     {
+        for (int index = 0; index < startCanvas.transform.childCount; index++)
+        {
+            startCanvas.transform.GetChild(index).gameObject.SetActive(false);
+        }
+
         mainScrrenRef.SetActive(true);
         titleLogo.SetActive(true);
         selectGameRef.SetActive(false);
@@ -227,8 +234,8 @@ public class MinigameManager : MonoBehaviour
         selectGameRef.SetActive(true);
     }
 
-    float startFadeDuration = 2;
-    float ingameFadeDuration = 1.25f;
+    float startFadeDuration = 1f;
+    float ingameFadeDuration = 0.5f;
 
     /// <summary>
     /// 게임시작시 페이드아웃
@@ -266,7 +273,7 @@ public class MinigameManager : MonoBehaviour
     public void CuttonFadeInoutAndFuntion(Action funtion)
     {
         if (selectGame == true) { return; }
-
+        AudioManager.inst.SleepMode_SFX(0, 0.8f);
         selectGame = true;
         cutton.color = new Color(0, 0, 0, 0);
 
@@ -281,7 +288,7 @@ public class MinigameManager : MonoBehaviour
     {
 
         float elapsedTime = 0f;
-
+        
         // 페이드 인
         while (elapsedTime < ingameFadeDuration)
         {
@@ -293,7 +300,6 @@ public class MinigameManager : MonoBehaviour
         cutton.color = new Color(0, 0, 0, 1);
         startGameFuntion?.Invoke();
 
-        yield return nextMenuTime;
         yield return nextMenuTime;
         yield return nextMenuTime;
 
@@ -321,6 +327,14 @@ public class MinigameManager : MonoBehaviour
     /// <param name="index"></param>
     public void ActiveMinigame(int index, bool value)
     {
+        //BGM변경
+        switch (index)
+        {
+            case 0:
+                AudioManager.inst.PlayBGM(2, 0.6f);
+                break;
+        }
+
         if (value)
         {
             miniGame[index].SetActive(true);
@@ -335,6 +349,7 @@ public class MinigameManager : MonoBehaviour
                     miniGame[indexs].SetActive(false);
                 }
             }
+            AudioManager.inst.PlayBGM(1, 0.8f);
             minigameReset();
            
         }
@@ -403,7 +418,7 @@ public class MinigameManager : MonoBehaviour
         }
 
         resultRef.SetActive(true);
-
+        AudioManager.inst.SleepMode_SFX(17, 0.5f);
         float[] getCountAndMaxCunt = new float[2];
 
         // 스코어 및 최대점수량 가져오기
@@ -493,6 +508,7 @@ public class MinigameManager : MonoBehaviour
 
             if (ResultMenuSelectIndex < 1)
             {
+                AudioManager.inst.SleepMode_SFX(2, 0.8f);
                 ResultMenuSelectIndex++;
                 result_ReStartText.fontSize = ClickFontSize;
                 result_ReStartText.colorGradientPreset = ResultMenuGradiuntPreset[1];
@@ -507,6 +523,7 @@ public class MinigameManager : MonoBehaviour
 
             if (ResultMenuSelectIndex > 0)
             {
+                AudioManager.inst.SleepMode_SFX(2, 0.8f);
                 ResultMenuSelectIndex--;
                 result_ReStartText.fontSize = nonClickFontSize;
                 result_ReStartText.colorGradientPreset = ResultMenuGradiuntPreset[0];
@@ -518,6 +535,8 @@ public class MinigameManager : MonoBehaviour
         //메인메뉴로 (B버튼 클릭)
         if (MinigameController.inst.Bbtn == true && popupresult == true && ResultMenuSelectIndex == 0)
         {
+            AudioManager.inst.SleepMode_SFX(9, 0.8f);
+            AudioManager.inst.PlayBGM(2, 0.8f);
             MinigameController.inst.Bbtn = false;
             popupresult = false;
 
@@ -549,6 +568,7 @@ public class MinigameManager : MonoBehaviour
                 case 0:
                     CuttonFadeInoutAndFuntion(() =>
                     {
+                        AudioManager.inst.PlayBGM(4, 0.4f);
                         MiniGame_0.inst.ReStartGame();
                         resultRef.SetActive(false);
                         ResultMenuSelectIndex = 0;

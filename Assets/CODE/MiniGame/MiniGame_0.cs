@@ -21,6 +21,7 @@ public class MiniGame_0 : MonoBehaviour
 
     //캐릭터
     Rigidbody2D charRigid;
+    AudioSource charAudio;
     Animator charAnim;
     ParticleSystem runningDustPs;
     ParticleSystem itemGetPs;
@@ -59,6 +60,8 @@ public class MiniGame_0 : MonoBehaviour
 
         world = game0Ref.transform.Find("Game(World)").gameObject;
         charRigid = game0Ref.transform.Find("Game(World)/Player").GetComponent<Rigidbody2D>();
+        charAudio = charRigid.gameObject.GetComponent<AudioSource>();
+        charAudio.volume = 0.5f;
         originCharVec = charRigid.position;
 
         runningDustPs = charRigid.transform.Find("Dust").GetComponent<ParticleSystem>();
@@ -100,7 +103,7 @@ public class MiniGame_0 : MonoBehaviour
 
 
     // 죽순 풀링 시작
-    float poolinginterval = 0.5f;
+    float poolinginterval = 0.75f;
     float Timer = 0f;
     private void PoolingStart()
     {
@@ -109,6 +112,7 @@ public class MiniGame_0 : MonoBehaviour
 
         if (Timer > poolinginterval)
         {
+            AudioManager.inst.SleepMode_SFX(5, 1f);
             Timer = 0;
             maxBambooCount++;
 
@@ -181,7 +185,7 @@ public class MiniGame_0 : MonoBehaviour
     {
         // 메인화면
 
-        if (mainScrrenRef.activeSelf || gameInfoRef.activeSelf)
+        if (mainScrrenRef.activeInHierarchy || gameInfoRef.activeInHierarchy)
         {
             gameMainScrrenController();
             SelectMenu();
@@ -208,12 +212,14 @@ public class MiniGame_0 : MonoBehaviour
 
         if (MinigameController.inst.Up && mainScrrenSelectIndex < 2)
         {
+            AudioManager.inst.SleepMode_SFX(3, 0.8f);
             MinigameController.inst.Up = false;
             mainScrrenSelectIndex++;
             SelectOptionInit();
         }
         else if (MinigameController.inst.Down && mainScrrenSelectIndex > 0)
         {
+            AudioManager.inst.SleepMode_SFX(3, 0.8f);
             MinigameController.inst.Down = false;
             mainScrrenSelectIndex--;
             SelectOptionInit();
@@ -234,6 +240,7 @@ public class MiniGame_0 : MonoBehaviour
 
             MinigameManager.inst.CuttonFadeInoutAndFuntion(() =>
             {
+                AudioManager.inst.PlayBGM(4, 0.4f);
                 StartCoroutine(gameStartCorutines());
             });
         }
@@ -270,6 +277,7 @@ public class MiniGame_0 : MonoBehaviour
 
             MinigameManager.inst.CuttonFadeInoutAndFuntion(() =>
             {
+
                 MinigameManager.inst.ActiveMinigame(0, false);
             });
         }
@@ -382,6 +390,14 @@ public class MiniGame_0 : MonoBehaviour
             }
         }
         charRigid.MovePosition(charRigid.position + moveVec);
+        if(moveVec.x != 0 && charAudio.isPlaying == false)
+        {
+            charAudio.Play();
+        }
+        else if(moveVec.x == 0 && charAudio.isPlaying == true)
+        {
+            charAudio.Stop();
+        }
     }
 
     /////  UI 
@@ -396,11 +412,13 @@ public class MiniGame_0 : MonoBehaviour
 
             if (gameTimeCounter <= 0)
             {
+                AudioManager.inst.PlayBGM_Mute();
+                AudioManager.inst.SleepMode_SFX(14, 0.8f);
+                charAudio.Stop();
                 gameStart = false;
                 runningDustPs.gameObject.SetActive(false);
                 gameTimeCounter = 0f;
                 timerText.text = ((int)gameTimeCounter).ToString();
-
                 // 게임 종료함수
                 MinigameManager.inst.TimeUPAnimationInvoke();
             }
@@ -415,6 +433,7 @@ public class MiniGame_0 : MonoBehaviour
     // 죽순 먹으면 데이터 넣어줄것들
     public void F_bamboocountUP()
     {
+        AudioManager.inst.SleepMode_SFX(13, 0.4f);
         curBambooCount++;
         scoreText.text = curBambooCount.ToString();
     }
