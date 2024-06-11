@@ -96,7 +96,7 @@ public class Quest : MonoBehaviour,IClickLvUpAble
             setItemCur();
             setNextCost();
         });
-        UpBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
+        //UpBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
     }
 
     void initValue()//초기값 설정

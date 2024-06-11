@@ -23,7 +23,7 @@ public class WorldUI_Manager : MonoBehaviour
     Image uiBossHead;
     TMP_Text stageText;
 
- 
+
     Animator cuttonBlack;
 
     // 하단 자원현황바 텍스트
@@ -168,7 +168,7 @@ public class WorldUI_Manager : MonoBehaviour
             stageSlot[index] = worldUI.transform.Find("StageUI/TopLayOut/StageInfo").GetChild(index).GetComponent<Image>();
         }
 
-   
+
         curMaterial[0] = worldUI.transform.Find("StageUI/MaterialBox/Gold/Text").GetComponent<TMP_Text>();
         curMaterial[1] = worldUI.transform.Find("StageUI/MaterialBox/Star/Text").GetComponent<TMP_Text>();
         curMaterial[3] = worldUI.transform.Find("StageUI/MaterialBox/Ruby/Text").GetComponent<TMP_Text>();
@@ -288,7 +288,7 @@ public class WorldUI_Manager : MonoBehaviour
 
         // 월드 버튼 초기화
         hwanSengBtn.onClick.AddListener(() => { HwanSengSystem.inst.Set_HwansengUIActive(true); }); //환생버튼
-        getLetterBtn.onClick.AddListener(() => {LetterManager.inst.OpenPostOnOfficeAndInit(true); });
+        getLetterBtn.onClick.AddListener(() => { LetterManager.inst.OpenPostOnOfficeAndInit(true); });
         dailyPlayCheckBtn.onClick.AddListener(() => { DailyPlayCheckUIManager.inst.MainWindow_Acitve(true); });
         newBieBtn.onClick.AddListener(() => { Newbie_Content.inst.Set_NewbieWindowActive(true); });
         adDeleteBtn.onClick.AddListener(() => { AdDelete.inst.ActiveAdDeleteWindow(true); });
@@ -450,8 +450,13 @@ public class WorldUI_Manager : MonoBehaviour
 
         obj = poolingQue[1].Dequeue();
         obj.gameObject.SetActive(true);
-        AudioManager.inst.Play_World_SFX(0,0.4f);
-        obj.GetComponent<GetItemPrefabs>().Set_GetItemSpriteAndText(img, Value);
+        AudioManager.inst.Play_World_SFX(0, 0.4f);
+
+        // 아이템획득 연출
+        if (worldUI.gameObject.activeInHierarchy)
+        {
+            obj.GetComponent<GetItemPrefabs>().Set_GetItemSpriteAndText(img, Value);
+        }
 
     }
 
@@ -654,6 +659,6 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="value"></param>
     public void GetTrs_VerticalLayOutActive(bool value) => getItemLayOut.enabled = value;
 
-    
+
 
 }

@@ -24,7 +24,7 @@ public class LetterPrefab : MonoBehaviour
     int letterItemCount;
 
     // 편지내용 확인 변수들
-    int[] itemtypeAndCount = new int[2];
+    int[] itemtypeAndCount;
     
     private void Awake()
     {
@@ -64,6 +64,7 @@ public class LetterPrefab : MonoBehaviour
         {
             AwakeInit();
         }
+        itemtypeAndCount = new int[2];
 
         // 내부변수 초기화 (리턴용)
         itemtypeAndCount[0] = ItemType;

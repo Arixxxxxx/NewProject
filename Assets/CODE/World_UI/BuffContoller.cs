@@ -95,6 +95,11 @@ public class BuffContoller : MonoBehaviour
     /// <param name="Time">시간(분)</param>
     public void ActiveBuff(int Num, double Time)
     {
+        // 뉴비혜택 추가 시간 넣어주는것 방지
+        if(Num == 4 && buffTimer[Num] > 0)
+        {
+            return;
+        }
 
         buffTimer[Num] += Time * 60;
         buffIconMask[Num].gameObject.SetActive(false);
@@ -226,17 +231,7 @@ public class BuffContoller : MonoBehaviour
             }
         }
     }
-
-    //public void BuffIconParticleReset()
-    //{
-    //    for (int index = 0; index < buffIconPs.Length; index++)
-    //    {
-    //        buffIconPs[index].Stop();
-    //        buffIconPs[index].Play();
-    //    }
-    //}
-
-
+        
     /// <summary>
     /// 버프시간의 남은 시간 [분 (min) ] 으로 리턴
     /// </summary>

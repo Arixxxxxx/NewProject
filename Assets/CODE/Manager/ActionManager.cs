@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -883,7 +884,23 @@ public class ActionManager : MonoBehaviour
 
 
     // 몬스터 죽고 골드 상승
-    public string Get_EnemyDeadGold() => CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 3);
+    int defaultKillGoldValue = 3;
+    int relicMultiplyer = 0;
+    public string Get_EnemyDeadGold()
+    {
+        
+        string normalValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), defaultKillGoldValue);
+
+        // 적 처지골드 유물
+        if(GameStatus.inst.GetAryRelicLv(9) != 0)
+        {
+            relicMultiplyer = GameStatus.inst.GetAryRelicLv(9);
+            normalValue = CalCulator.inst.DigitAndIntPercentMultiply(normalValue, relicMultiplyer);
+        }
+
+        return normalValue;
+    }
+
 
     // 플레이어 하이라키 오브젝트 리턴
     public GameObject ReturnPlayerObjInHierachy() => playerAnim.gameObject;

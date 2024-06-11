@@ -20,7 +20,7 @@ public class GameStatus : MonoBehaviour
         {
             int index = couponBook.IndexOf(coupon);
             couponBook.Remove(coupon);
-            switch (index) 
+            switch (index)
             {
                 case 1:
                     LetterManager.inst.MakeLetter(0, "동은", "친구선물", 100000);
@@ -35,7 +35,7 @@ public class GameStatus : MonoBehaviour
 
     public void Set_couponBook(List<string> inputCouponBook)
     {
-        if(inputCouponBook.Count <= 0) // 신규유저 쿠폰넣어줌
+        if (inputCouponBook.Count <= 0) // 신규유저 쿠폰넣어줌
         {
             couponBook.Add("checkInput");
             couponBook.Add("난동은이친구");
@@ -75,6 +75,12 @@ public class GameStatus : MonoBehaviour
                     //하루가 지남
                     if (LastLoginDate.Date < DateTime.Now.Date)
                     {
+
+                        TodayGetNewbie_Reward = false;
+                        // 접속날짜 확인하여 뉴비컨텐츠 초기화
+
+
+                        //출석체크
                         Daily_init();
 
                         //  주간 리셋 (월요일이 한번이라도 지났는지 확인)
@@ -86,6 +92,8 @@ public class GameStatus : MonoBehaviour
                     }
                     else if (LastLoginDate.Date == DateTime.Now.Date) // 오늘 재접
                     {
+                        Newbie_Content_Init(true);
+                        //Newbie_Content.inst.NewbieWindow_Init(TodayGetNewbie_Reward);
                         DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
                     }
 
@@ -148,7 +156,15 @@ public class GameStatus : MonoBehaviour
 
     // 오늘 받았는지 확인
     bool todayGetNewBie_Reward;
-    public bool TodayGetNewbie_Reward { get { return todayGetNewBie_Reward; } set { todayGetNewBie_Reward = value; } }
+    public bool TodayGetNewbie_Reward
+    {
+        get { return todayGetNewBie_Reward; }
+        set
+        {
+            todayGetNewBie_Reward = value;
+            Newbie_Content_Init(true);
+        }
+    }
 
 
     // 뉴비 기간 체크
@@ -177,6 +193,7 @@ public class GameStatus : MonoBehaviour
             }
             else
             {
+                // 일일체크 라스트데이가 가져감
                 newbieBuffLastDay = value;
             }
 
@@ -211,7 +228,11 @@ public class GameStatus : MonoBehaviour
     public bool TotayGotDaily_Reward
     {
         get { return totayGotDailyGift; }
-        set { totayGotDailyGift = value; }
+        set
+        {
+            totayGotDailyGift = value;
+            DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+        }
     }
 
     // 5. 뉴비 변수들
@@ -363,7 +384,7 @@ public class GameStatus : MonoBehaviour
     // 동료 강화재료
     [HideInInspector] public UnityEvent onCrewMatChanged;
     int[] crewMaterial = new int[3];
-    public int[] CrewMaterial 
+    public int[] CrewMaterial
     {
         get { return (int[])crewMaterial.Clone(); } // 배열의 복사본 반환
         set
@@ -385,7 +406,7 @@ public class GameStatus : MonoBehaviour
     /// </summary>
     /// <param name="index"></param>
     /// <param name="count"></param>
-    public void Set_crewMaterial(int index, int count) 
+    public void Set_crewMaterial(int index, int count)
     {
         crewMaterial[index] += count;
         onCrewMatChanged?.Invoke();
@@ -571,7 +592,7 @@ public class GameStatus : MonoBehaviour
         set
         {
             pet0_Lv = value;
-            
+
             // 첫 로드시에만 작동
             if (DataManager.inst.saveAble == false)
             {
@@ -585,8 +606,9 @@ public class GameStatus : MonoBehaviour
     public int Pet1_Lv
     {
         get { return pet1_Lv; }
-        set {
-            
+        set
+        {
+
             pet1_Lv = value;
             // 첫 로드시에만 작동
             if (DataManager.inst.saveAble == false)
@@ -617,7 +639,7 @@ public class GameStatus : MonoBehaviour
     public int Pet2_Lv
     {
         get { return pet2_Lv; }
-        set 
+        set
         {
             pet2_Lv = value;
 
@@ -653,7 +675,7 @@ public class GameStatus : MonoBehaviour
     public string[] AdViewrAdShopData
     {
         get => adViewrAdShopData;
-        set 
+        set
         {
             adViewrAdShopData = value;
         }
@@ -944,8 +966,7 @@ public class GameStatus : MonoBehaviour
 
     void Start()
     {
-        // 접속날짜 확인하여 뉴비컨텐츠 초기화
-        Newbie_ContentInit();
+
 
         // 뉴비 불리언변수 초기화
         IsNewBie = true;
@@ -955,7 +976,7 @@ public class GameStatus : MonoBehaviour
 
     private void Update()
     {
-        //시간체크
+        // 정시체크 (게임 스탯 리셋)
         if (Time.time > nextCheckTime && checkStart)
         {
             RealTime_Check();
@@ -974,12 +995,11 @@ public class GameStatus : MonoBehaviour
         if (LastLoginDate == DateTime.MinValue || LastLoginDate.Date == DateTime.Now.Date) { return; }
 
         // 자정이 지남 일일퀘스트 리셋 항목들
-        if (LastLoginDate.Date <= DateTime.Now.Date)
+        if (LastLoginDate.Date <= DateTime.Now.Date.AddDays(1))
         {
-            //1. 출석체크
+            //1. 출석체크 && 뉴비
             Daily_init();
-
-            //2. 뉴비
+                     
 
             //3. 미션 일일퀘스트
             MissionData.Instance.initDailyMission();
@@ -1011,6 +1031,12 @@ public class GameStatus : MonoBehaviour
             DailyADRuby = false;
         }
 
+        // 뉴비
+        if(TodayGetNewbie_Reward == true)
+        {
+            TodayGetNewbie_Reward = false;
+        }
+
         // 슬롯머신 버튼들
         if (AdRulletActive == true)
         {
@@ -1021,8 +1047,8 @@ public class GameStatus : MonoBehaviour
             AdSlotMachineActive = false;
         }
 
-        ShopManager.inst.onDailyReset?.Invoke();
-        DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+        //ShopManager.inst.onDailyReset?.Invoke();
+
     }
 
 
@@ -1116,23 +1142,22 @@ public class GameStatus : MonoBehaviour
     /// <summary>
     /// 뉴비컨텐츠 접속시 체크
     /// </summary>
-    public void Newbie_ContentInit()
+    public void Newbie_Content_Init(bool login)
     {
         // 7일 이내인 경우
         if (DateTime.Now.Date < NewbieBuffLastDay.Date)
         {
-            // 매일 자정 기준으로 하루가 지났는지 확인
-            if (DateTime.Now.Date > LastLoginDate.Date)
-            {
-                TodayGetNewbie_Reward = false;
-            }
 
             // 보상 활성화 부분
+
             Newbie_Content.inst.NewbieWindow_Init(TodayGetNewbie_Reward);
 
-            // 버프 시간 재계산
-            TimeSpan buffTime = NewbieBuffLastDay - DateTime.Now;
-            BuffContoller.inst.ActiveBuff(4, buffTime.TotalMinutes);
+            if (login)
+            {
+                // 버프 시간 재계산
+                TimeSpan buffTime = NewbieBuffLastDay - DateTime.Now;
+                BuffContoller.inst.ActiveBuff(4, buffTime.TotalMinutes);
+            }
         }
 
         // 7일이 지난 시점
@@ -1140,7 +1165,11 @@ public class GameStatus : MonoBehaviour
         {
             // 뉴비 기간 종료
             // 뉴비 관련 UI 비활성화 로직
-            WorldUI_Manager.inst.NewbieBtnAcitveFalse();
+
+            if (NewbieBuffLastDay != DateTime.MinValue)
+            {
+                WorldUI_Manager.inst.NewbieBtnAcitveFalse();
+            }
         }
     }
 
@@ -1178,13 +1207,13 @@ public class GameStatus : MonoBehaviour
         TodayGetNewbie_Reward = saveData.todayGetRaward;
         GotNewbieGiftCount = saveData.getNewbieRewardCount;
 
-        if (saveData.newbieBuffLastDay != string.Empty)
+        if (saveData.newbieBuffLastDay != string.Empty) // 뉴비 적용기간이 안비어있다면
         {
             NewbieBuffLastDay = DateTime.Parse(saveData.newbieBuffLastDay, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
         }
-        else
+        else  //최초 신규가입자라 string이 empty일경우
         {
-            NewbieBuffLastDay = DateTime.MinValue;
+            NewbieBuffLastDay = DateTime.MinValue; // 
         }
 
 
@@ -1273,7 +1302,7 @@ public class GameStatus : MonoBehaviour
 
         // 2.펫재료
         saveData.CrewUpgradeMaterial = CrewMaterial;
-        
+
 
 
         // 3.미니게임
@@ -1359,7 +1388,8 @@ public class GameStatus : MonoBehaviour
         saveData.LastSignDate = DateTime.Now.ToString("o");
 
 
-        
+
+
         save = JsonUtility.ToJson(saveData, true);
 
         return save;

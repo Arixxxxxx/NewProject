@@ -139,14 +139,24 @@ public class Newbie_Content : MonoBehaviour
     /// <param name="value"></param>
     public void NewbieWindow_Init(bool TodayGetReward)
     {
-        // 버튼 활성화 및 비활성화 변경
-        GetBtnAcitve(!TodayGetReward);
+        if (GameStatus.inst.GotNewbieGiftCount >= 7)
+        {
+            TodayGetReward = true;
+        }
+
+            // 버튼 활성화 및 비활성화 변경
+            GetBtnAcitve(!TodayGetReward);
         simBall.SetActive(!TodayGetReward);
         //보석 일차수 레이아웃 최신화
         IconBoxInit();
         
+        int rubyCount = 0;
+
         //루비 계산 및 텍스트 초기화 (적어놓은 텍스트에서 빼옴)
-        int rubyCount = int.Parse(layoutRef.transform.GetChild(GameStatus.inst.GotNewbieGiftCount).Find("CountText").GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
+        if (GameStatus.inst.GotNewbieGiftCount < 7)
+        {
+           rubyCount = int.Parse(layoutRef.transform.GetChild(GameStatus.inst.GotNewbieGiftCount).Find("CountText").GetComponent<TMP_Text>().text.Where(x => char.IsDigit(x)).ToArray());
+        }
         mainTaxt.text = $"  < {GameStatus.inst.GotNewbieGiftCount + 1}일차 > 신규유저 보상받기\r\n - 보상은 <color=green>우편함</color>으로 발송됩니다.";
 
         GetBtn[0].transform.Find("GetGiftBtn").GetComponent<Button>().onClick.RemoveAllListeners();
@@ -212,6 +222,7 @@ public class Newbie_Content : MonoBehaviour
         alrimWindow.SetActive(true);
     }
 
+    // 받기 버튼부 활성화 / 비활성화
     public void GetBtnAcitve(bool value)
     {
         if (value == true)
@@ -231,7 +242,7 @@ public class Newbie_Content : MonoBehaviour
 
 
 
-
+    // 받은 아이템 아이콘 변경
     private void GetIconChanger(int value)
     {
         layoutRef.transform.GetChild(value).Find("BG").gameObject.SetActive(true);
