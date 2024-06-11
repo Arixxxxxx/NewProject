@@ -38,6 +38,10 @@ public class ShopManager : MonoBehaviour
             PriceText = trs.Find("Button/PriceText").GetComponent<TMP_Text>();
             ProductText = trs.Find("RewardText").GetComponent<TMP_Text>();
             PriceText.text = Price;
+            if(PriceType == ProductTag.Money)
+            {
+                PriceText.text += "원";
+            }
 
             UIManager.Instance.onOpenShop.AddListener(() =>
             {
@@ -52,7 +56,7 @@ public class ShopManager : MonoBehaviour
 
                         break;
                     case ProductTag.Ruby:
-                        ProductText.text = count.ToString();
+                        ProductText.text =  count.ToString("N0") + "개";
                         break;
                 }
             });
@@ -82,6 +86,10 @@ public class ShopManager : MonoBehaviour
                         {
                             return;
                         }
+                        break;
+
+                    case ProductTag.Money:
+                        //결제
                         break;
                 }
 
@@ -138,6 +146,7 @@ public class ShopManager : MonoBehaviour
                     case ProductTag.Ruby:
                         ProductText.text = count.ToString();
                         break;
+
                 }
             });
 
@@ -180,7 +189,7 @@ public class ShopManager : MonoBehaviour
                 else if (adShopDate.Date <= DateTime.Now.Date)
                 {
                     BuyBtn.interactable = false;
-                    BuyBtnText.text = "재고 부족";
+                    BuyBtnText.text = "시청 완료";
                 }
             }
             else

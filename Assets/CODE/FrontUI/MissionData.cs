@@ -965,7 +965,6 @@ public class MissionData : MonoBehaviour
         {
             trs_MissionWindow.gameObject.SetActive(true);
             UICanvas.sortingOrder = 15;
-            AudioManager.inst.Play_Ui_SFX(1, 0.8f);
         });
         MissionCloseBtn.onClick.AddListener(() => { UICanvas.sortingOrder = 12; });
         MissionBGBtn.onClick.AddListener(() => { UICanvas.sortingOrder = 12; });

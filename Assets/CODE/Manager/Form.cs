@@ -24,7 +24,8 @@ public enum ProductTag
 { 
     Gold,
     Star,
-    Ruby
+    Ruby,
+    Money
 }
 
 public enum SpMissionTag

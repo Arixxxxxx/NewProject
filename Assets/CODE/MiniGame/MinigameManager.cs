@@ -535,7 +535,7 @@ public class MinigameManager : MonoBehaviour
         //메인메뉴로 (B버튼 클릭)
         if (MinigameController.inst.Bbtn == true && popupresult == true && ResultMenuSelectIndex == 0)
         {
-            AudioManager.inst.SleepMode_SFX(9, 0.8f);
+            //AudioManager.inst.SleepMode_SFX(9, 0.8f);
             AudioManager.inst.PlayBGM(2, 0.8f);
             MinigameController.inst.Bbtn = false;
             popupresult = false;
