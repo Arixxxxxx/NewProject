@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -273,7 +272,7 @@ public class MinigameManager : MonoBehaviour
     public void CuttonFadeInoutAndFuntion(Action funtion)
     {
         if (selectGame == true) { return; }
-        AudioManager.inst.SleepMode_SFX(0, 0.8f);
+        AudioManager.inst.Play_Ui_SFX(0, 0.8f);
         selectGame = true;
         cutton.color = new Color(0, 0, 0, 0);
 
@@ -508,7 +507,7 @@ public class MinigameManager : MonoBehaviour
 
             if (ResultMenuSelectIndex < 1)
             {
-                AudioManager.inst.SleepMode_SFX(2, 0.8f);
+                AudioManager.inst.Play_Ui_SFX(2, 0.8f);
                 ResultMenuSelectIndex++;
                 result_ReStartText.fontSize = ClickFontSize;
                 result_ReStartText.colorGradientPreset = ResultMenuGradiuntPreset[1];
@@ -523,7 +522,7 @@ public class MinigameManager : MonoBehaviour
 
             if (ResultMenuSelectIndex > 0)
             {
-                AudioManager.inst.SleepMode_SFX(2, 0.8f);
+                AudioManager.inst.Play_Ui_SFX(2, 0.8f);
                 ResultMenuSelectIndex--;
                 result_ReStartText.fontSize = nonClickFontSize;
                 result_ReStartText.colorGradientPreset = ResultMenuGradiuntPreset[0];

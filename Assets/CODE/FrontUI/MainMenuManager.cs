@@ -49,7 +49,7 @@ public class MainMenuManager : MonoBehaviour
         set
         {
             sfxMute = value;
-            AudioManager.inst.Set_VoulemMute("SFX", sfxMute);
+            AudioManager.inst.MuteSfx = sfxMute;
         }
     }
 
@@ -60,7 +60,7 @@ public class MainMenuManager : MonoBehaviour
         set
         {
             bgmMute = value;
-            AudioManager.inst.Set_VoulemMute("BGM", bgmMute);
+            AudioManager.inst.MuteBGM = bgmMute;
         }
     }
 

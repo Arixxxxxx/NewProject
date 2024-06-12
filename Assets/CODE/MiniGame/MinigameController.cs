@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class MinigameController : MonoBehaviour
 {
     public static MinigameController inst;
@@ -87,7 +88,7 @@ public class MinigameController : MonoBehaviour
         if (mainScrrenRef.gameObject.activeInHierarchy && bBtn == true && !startonce)
         {
             startonce = true;
-            AudioManager.inst.SleepMode_SFX(0, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(0, 0.8f);
             titleScrren.GetComponent<Animator>().SetTrigger("Hide");
         }
     }
@@ -131,7 +132,7 @@ public class MinigameController : MonoBehaviour
         if (leftRight == 0 && gameIndex == 0) { waitAction = false; yield break; }
         if (leftRight == 1 && gameIndex == gameCount - 1) { waitAction = false; yield break; }
 
-        AudioManager.inst.SleepMode_SFX(2, 0.8f);
+        AudioManager.inst.Play_Ui_SFX(2, 0.8f);
 
         nextMoveCounter = 0f;
         Vector2 vec = Vector2.zero;

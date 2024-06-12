@@ -195,7 +195,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &769771364189306969
 Transform:
   m_ObjectHideFlags: 0
@@ -12254,7 +12254,7 @@ AudioSource:
   m_GameObject: {fileID: 225436366545217883}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6265183846473941504, guid: 996ab650a2aabfb46a6427d90b7d7b3c, type: 2}
   m_audioClip: {fileID: 8300000, guid: 6867c3bc9fee7c9438b25e7e5d6722f3, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -12413,6 +12413,22 @@ PrefabInstance:
     - target: {fileID: 496068, guid: c8ded7e7fd6f5344a845fe65c2ea578d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 19829166, guid: c8ded7e7fd6f5344a845fe65c2ea578d, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19829166, guid: c8ded7e7fd6f5344a845fe65c2ea578d, type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19829166, guid: c8ded7e7fd6f5344a845fe65c2ea578d, type: 3}
+      propertyPath: InitialModule.startRotationX.minMaxState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 19829166, guid: c8ded7e7fd6f5344a845fe65c2ea578d, type: 3}
+      propertyPath: InitialModule.startRotationY.minMaxState
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19847330, guid: c8ded7e7fd6f5344a845fe65c2ea578d, type: 3}
       propertyPath: InitialModule.startSpeed.scalar

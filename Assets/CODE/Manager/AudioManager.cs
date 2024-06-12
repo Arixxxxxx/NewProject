@@ -33,10 +33,50 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioMixer audioMixer;
     [SerializeField] AudioMixerGroup sfxGroup;
     [SerializeField] AudioMixerGroup sleepModeGroup;
-    public bool noSound;
+    public bool noSound; // 일시적으로 소리 닫아주는 변수
     Queue<AudioSource> audioQue = new Queue<AudioSource>();
     int channel = 32;
     int curBGMNum;
+
+    bool muteSfx;
+
+    // 뮤트 모드용
+    public bool MuteSfx
+    {
+        get { return muteSfx; }
+        set
+        {
+            muteSfx = value;
+            if (muteSfx)
+            {
+                audioMixer.SetFloat("SFX", muteValue);
+            }
+            else
+            {
+                audioMixer.SetFloat("SFX", defaultVolumeValue);
+            }
+
+        }
+    }
+
+    bool muteBGM;
+    public bool MuteBGM
+    {
+        get { return muteBGM; }
+        set
+        {
+            muteBGM = value;
+            if (muteBGM)
+            {
+                audioMixer.SetFloat("BGM", muteValue);
+            }
+            else
+            {
+                audioMixer.SetFloat("BGM", defaultVolumeValue);
+            }
+        }
+    }
+
     private void Awake()
     {
         if (inst == null)
@@ -381,6 +421,8 @@ public class AudioManager : MonoBehaviour
         switch (parameterName)
         {
             case "BGM":
+                if (MuteBGM) { return; }
+
                 if (!value)
                 {
                     audioMixer.SetFloat("BGM", defaultVolumeValue);
@@ -392,6 +434,9 @@ public class AudioManager : MonoBehaviour
                 break;
 
             case "SFX":
+
+                if (MuteSfx) { return; }
+
                 if (!value)
                 {
                     audioMixer.SetFloat("SFX", defaultVolumeValue);
@@ -411,6 +456,8 @@ public class AudioManager : MonoBehaviour
     /// <param name="index"> 0:로그인씬 탭투스크린<br/>1:</param>
     public void Crew_Play_SFX(int index, float Volume)
     {
+        if (noSound) { return; }
+
         if (audioQue.Count <= 0)
         {
             MakeSoundClip();
@@ -461,18 +508,18 @@ public class AudioManager : MonoBehaviour
 
     IEnumerator EventSoundPlay(int index, float Volume, AudioSource obj)
     {
-        
+
         obj.clip = event_Shop[index];
         obj.gameObject.SetActive(true);
         obj.Play();
 
         yield return null;
-        
+
         while (obj.isPlaying)
         {
             yield return null;
         }
-       
+
         obj.clip = null;
         obj.loop = false;
         obj.volume = 1;

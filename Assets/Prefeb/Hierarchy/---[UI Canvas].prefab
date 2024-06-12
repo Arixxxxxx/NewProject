@@ -5290,7 +5290,7 @@ MonoBehaviour:
   m_text: "\uC720\uBB3C \uD68D\uB4DD \uB3C4\uAC10 (\uC5F4\uAE30)"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b323b74669e8acb47a72551312ea9a5d, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 5a52449c343eb3a47b5ae665dd41e21e, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: e55b37baf614ba641b8e40da3ce480c0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5298,14 +5298,14 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
+  m_enableVertexGradient: 1
   m_colorMode: 3
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
     topRight: {r: 1, g: 1, b: 1, a: 1}
     bottomLeft: {r: 1, g: 1, b: 1, a: 1}
     bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
+  m_fontColorGradientPreset: {fileID: 11400000, guid: 3834b3168a306f143ac34aa831a3b2ba, type: 2}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
@@ -19099,7 +19099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8660944715388230486
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19922,7 +19922,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 253.125, y: 25}
+  m_SizeDelta: {x: 338, y: 25}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6351966789228132927
 CanvasRenderer:
@@ -19945,7 +19945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.96633047, b: 0.24056602, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -20321,7 +20321,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -190.83127}
+  m_SizeDelta: {x: 0, y: -190.56558}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5576669738001224478
 MonoBehaviour:
@@ -37964,7 +37964,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3460208649268614451, guid: 1683802b68bea6a4a91206660330baaf, type: 3}
       propertyPath: releaseStage
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4259981828669760499, guid: 1683802b68bea6a4a91206660330baaf, type: 3}
       propertyPath: m_margin.w
@@ -47083,7 +47083,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3460208649268614451, guid: 1683802b68bea6a4a91206660330baaf, type: 3}
       propertyPath: releaseStage
-      value: 20
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4259981828669760499, guid: 1683802b68bea6a4a91206660330baaf, type: 3}
       propertyPath: m_margin.w

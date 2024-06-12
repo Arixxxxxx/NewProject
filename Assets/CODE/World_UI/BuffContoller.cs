@@ -260,6 +260,7 @@ public class BuffContoller : MonoBehaviour
 
                 case 1: // ¿Ãµøº”µµ ¡ı∞°
                     GameStatus.inst.BuffAddSpeed = 0.8f;
+                    ActionManager.inst.buffAddSpeed = 1.5f;
                     break;
 
                 case 2: // ∞ÒµÂ »πµÊ∑Æ¡ı∞°
@@ -288,6 +289,7 @@ public class BuffContoller : MonoBehaviour
 
                 case 1:
                     GameStatus.inst.BuffAddSpeed = 0f;
+                    ActionManager.inst.buffAddSpeed = 0f;
                     break;
 
                 case 2:

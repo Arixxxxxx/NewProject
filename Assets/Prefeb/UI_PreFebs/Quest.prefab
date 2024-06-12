@@ -718,7 +718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3665080513749924594, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.66
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3665080513749924594, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -738,7 +738,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3976168906616826217, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_fontSize
-      value: 9
+      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 3976168906616826217, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_fontStyle
@@ -762,12 +762,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3976168906616826217, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_fontSizeBase
-      value: 9
+      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 3976168906616826217, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -5883301072652237436, guid: b323b74669e8acb47a72551312ea9a5d, type: 2}
+      objectReference: {fileID: 2100000, guid: e55b37baf614ba641b8e40da3ce480c0, type: 2}
     - target: {fileID: 3976168906616826217, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_enableAutoSizing
       value: 0
@@ -788,6 +788,14 @@ PrefabInstance:
       propertyPath: m_hasFontAssetChanged
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3976168906616826217, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
+      propertyPath: m_enableVertexGradient
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976168906616826217, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
+      propertyPath: m_fontColorGradientPreset
+      value: 
+      objectReference: {fileID: 11400000, guid: d739fa6c8e3e7a14a803964f72ecd9ee, type: 2}
     - target: {fileID: 9045075370741723019, guid: 53a1099165b7e6340b67480b4f2d00bf, type: 3}
       propertyPath: m_Name
       value: LvText

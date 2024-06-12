@@ -126,7 +126,7 @@ public class RubyPayment : MonoBehaviour
             CloseUI();
             AllFrontUIClose();
             UIManager.Instance.ClickBotBtn(4);
-            ShopManager.inst.Active_Shop(2, true);
+            ShopManager.inst.Active_Shop(0, true);
         });
     }
 

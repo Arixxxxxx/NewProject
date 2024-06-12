@@ -236,6 +236,8 @@ public class ActionManager : MonoBehaviour
 
         BackHPBarUpdater();
 
+#if UNITY_EDITOR
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             WorldUI_Manager.inst.Get_ItemInfomation_UI_Active(SpriteResource.inst.CoinIMG(0), "루비 +100");
@@ -254,6 +256,8 @@ public class ActionManager : MonoBehaviour
         {
             LetterManager.inst.MakeLetter(2, "박겸희", "테스트 편지 (별)입니다", 2000);
         }
+
+#endif
     }
 
     public void FeverTime_End()
@@ -310,7 +314,7 @@ public class ActionManager : MonoBehaviour
         }
     }
 
-
+    public float buffAddSpeed = 0f;
     private void EnemyMove()
     {
         //에너미 스폰 및 대기장소까지 전진
@@ -321,7 +325,7 @@ public class ActionManager : MonoBehaviour
 
         if (checkPosition > 1.4f)
         {
-            enemyPosX += (Time.deltaTime * enemySpawnSpeed) * (1 + (GameStatus.inst.BuffAddSpeed + GameStatus.inst.NewbieMoveSpeedBuffValue));
+            enemyPosX += (Time.deltaTime * enemySpawnSpeed) * (1 + ((GameStatus.inst.BuffAddSpeed) + GameStatus.inst.NewbieMoveSpeedBuffValue));
             enemyVec.x -= enemyPosX;
             enemyObj.transform.position = enemyVec;
         }
@@ -646,23 +650,24 @@ public class ActionManager : MonoBehaviour
     /// <param name="isBoss"></param>
     private void Set_EnemyBossOrNormal()
     {
-        // 현재 스테이지에 맞는 에너미 생성
-        //int curStage = (GameStatus.inst.StageLv - 1) % 3 + 1;
-        //curEnemyNumber[0] = curStage;
-
+        int bossHPMultiPlyer = 1;
+        
         //현재 스테이지의 몬스터 스프라이트 가져옴
         switch (backGroundIMG.sprite.name)
         {
             case "1_Stage":
                 curEnemyNumber[0] = 1;
+                bossHPMultiPlyer = 2;
                 break;
 
             case "2_Stage":
                 curEnemyNumber[0] = 2;
+                bossHPMultiPlyer = 2;
                 break;
 
             case "3_Stage":
                 curEnemyNumber[0] = 3;
+                bossHPMultiPlyer = 5;
                 break;
         }
                
@@ -686,7 +691,7 @@ public class ActionManager : MonoBehaviour
         else if (GameStatus.inst.FloorLv == 5) // 보스몹
         {
             //보스체력 2배
-            enemyMaxHP = CalCulator.inst.StringAndIntMultiPly(enemyMaxHP, 2);
+            enemyMaxHP = CalCulator.inst.StringAndIntMultiPly(enemyMaxHP, bossHPMultiPlyer);
             enemySr.transform.localScale = bossSpriteSize;
             //몬스터 HP바 아웃라인
             hpBar_OutLine[0].SetActive(false);

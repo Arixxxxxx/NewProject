@@ -107,7 +107,7 @@ public class Unlock_Slide : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     private void Unlock()
     {
-        Debug.Log("¿·±› «ÿ¡¶µ !");
+        //Debug.Log("¿·±› «ÿ¡¶µ !");
         SleepMode.inst.Active_SleepMode(false, rectTrs);
     }
 

@@ -263,12 +263,9 @@ public class CalCulator : MonoBehaviour
         return value.ToString();
     }
 
-
-
-    public BigInteger baseHP = new BigInteger(400);  // 기본 체력
-    public double hpIncreaseFactor = 1.08;  // 체력 증가 계수 (밸런스 변수)
-
-    public BigInteger upBaseHP = new BigInteger(1000);  // 기본 체력
+    public BigInteger baseHP = new BigInteger(500);  // 기본 체력
+    public double hpIncreaseFactor = 1.3;  // 체력 증가 계수 (밸런스 변수)
+    public BigInteger upBaseHP = new BigInteger(1000);  // 스테이지 150 이후 기본 체력
     public double higherHpIncreaseFactor = 1.5;  // 스테이지 150 이후의 체력 증가 계수
 
     // 몬스터 체력 초기화
@@ -284,20 +281,24 @@ public class CalCulator : MonoBehaviour
 
         if (stage < 150)
         {
-            // 150 이전까지는 기존 체력 증가 공식
-            BigInteger factor = new BigInteger(hpIncreaseFactor * 1000);
-            BigInteger stageCubed = new BigInteger(stage) * stage * stage;
-            health = baseHP + (factor * stageCubed / 1000);
+            health = CalculateHealth(stage, baseHP, hpIncreaseFactor);
         }
         else
         {
-            // 150 이후부터는 더 큰 체력 증가 공식
-            BigInteger factor = new BigInteger(higherHpIncreaseFactor * 1000);
-            BigInteger stageCubed = new BigInteger(stage) * stage * stage;
-            health = upBaseHP + (factor * stageCubed / 1000);
+            health = CalculateHealth(stage, upBaseHP, higherHpIncreaseFactor);
         }
 
         return health.ToString();
+    }
+
+    private BigInteger CalculateHealth(int stage, BigInteger baseHealth, double increaseFactor)
+    {
+        BigInteger stageSquared = new BigInteger(stage * stage);
+        double exponent = Math.Pow(increaseFactor, stage);
+
+        // 체력 증가 공식: 기본 체력 + (스테이지 제곱 * 증가 계수의 스테이지 제곱근)
+        BigInteger healthIncrease = stageSquared * new BigInteger(exponent);
+        return baseHealth + healthIncrease;
     }
 
 

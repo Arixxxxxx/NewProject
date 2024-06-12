@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 public class MiniGame_0 : MonoBehaviour
@@ -112,7 +111,7 @@ public class MiniGame_0 : MonoBehaviour
 
         if (Timer > poolinginterval)
         {
-            AudioManager.inst.SleepMode_SFX(5, 1f);
+            AudioManager.inst.Play_Ui_SFX(5, 1f);
             Timer = 0;
             maxBambooCount++;
 
@@ -212,14 +211,14 @@ public class MiniGame_0 : MonoBehaviour
 
         if (MinigameController.inst.Up && mainScrrenSelectIndex < 2)
         {
-            AudioManager.inst.SleepMode_SFX(3, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(3, 0.8f);
             MinigameController.inst.Up = false;
             mainScrrenSelectIndex++;
             SelectOptionInit();
         }
         else if (MinigameController.inst.Down && mainScrrenSelectIndex > 0)
         {
-            AudioManager.inst.SleepMode_SFX(3, 0.8f);
+            AudioManager.inst.Play_Ui_SFX(3, 0.8f);
             MinigameController.inst.Down = false;
             mainScrrenSelectIndex--;
             SelectOptionInit();
@@ -413,7 +412,7 @@ public class MiniGame_0 : MonoBehaviour
             if (gameTimeCounter <= 0)
             {
                 AudioManager.inst.PlayBGM_Mute();
-                AudioManager.inst.SleepMode_SFX(14, 0.8f);
+                AudioManager.inst.Play_Ui_SFX(14, 0.8f);
                 charAudio.Stop();
                 gameStart = false;
                 runningDustPs.gameObject.SetActive(false);
@@ -433,7 +432,7 @@ public class MiniGame_0 : MonoBehaviour
     // 죽순 먹으면 데이터 넣어줄것들
     public void F_bamboocountUP()
     {
-        AudioManager.inst.SleepMode_SFX(13, 0.4f);
+        AudioManager.inst.Play_Ui_SFX(13, 0.4f);
         curBambooCount++;
         scoreText.text = curBambooCount.ToString();
     }
