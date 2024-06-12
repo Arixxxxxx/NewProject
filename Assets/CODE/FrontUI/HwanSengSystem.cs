@@ -304,7 +304,6 @@ public class HwanSengSystem : MonoBehaviour
             feverAnim.gameObject.SetActive(true);
             WorldUI_Manager.inst.RawImagePlayAcitve(0, true);
             ActionManager.inst.IsFever = true;
-            
         }
 
         // 환생시간 피버바
