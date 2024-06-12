@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Burst.Intrinsics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum SelectType 
+{
+    MaterialGacha, 
+    RelicGacha 
+}
 
 public class Shop_Gacha : MonoBehaviour
 {
@@ -43,7 +46,7 @@ public class Shop_Gacha : MonoBehaviour
     GachaBox_Animator boxSc;
 
     //현재 상태 추적
-    enum SelectType { MaterialGacha, RelicGacha }
+    
     SelectType curMode;
 
     // 모드변경 버튼
@@ -165,22 +168,12 @@ public class Shop_Gacha : MonoBehaviour
     {
         modeSwapBtn[0].onClick.AddListener(() =>
         {
-            if (isChange == true || curMode == SelectType.MaterialGacha) { return; }
-            isChange = true;
-
-            curMode = SelectType.MaterialGacha;
-            BtnMaskChanger((int)curMode);
-            boxAnim.SetTrigger(curMode.ToString());
+            GachaMode_Changer(SelectType.MaterialGacha);
         });
 
         modeSwapBtn[1].onClick.AddListener(() =>
         {
-            if (isChange == true || curMode == SelectType.RelicGacha) { return; }
-            isChange = true;
-
-            curMode = SelectType.RelicGacha;
-            BtnMaskChanger((int)curMode);
-            boxAnim.SetTrigger(curMode.ToString());
+            GachaMode_Changer(SelectType.RelicGacha);
         });
 
 
@@ -360,7 +353,21 @@ public class Shop_Gacha : MonoBehaviour
         }
     }
 
+    //외부에서 변경해주는 함수
+    public void GachaMode_Changer(SelectType types)
+    {
+        if (isChange == true || curMode == types)
+        {
+            return;
+        }
 
+        isChange = true;
+
+        // 전달된 매개변수 types 값을 사용하여 curMode 설정
+        curMode = types;
+        BtnMaskChanger((int)curMode);
+        boxAnim.SetTrigger(curMode.ToString());
+    }
 
     /////////////////////////////////////////// 연출 //////////////////////////////////////////
 

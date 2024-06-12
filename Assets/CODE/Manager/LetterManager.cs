@@ -28,7 +28,8 @@ public class LetterManager : MonoBehaviour
     //모두수락용
     Button everyAcceptBtn;
     List<LetterPrefab> letterList = new List<LetterPrefab>();
-    int[] saveLetterItemArr = new int[3]; // 현재 아이템종류 3가지
+
+
 
     GameObject EveryGetAlrimRef, EveryGetAlrimFreamlayOut;
     Button everyAcceptBackBtn;
@@ -81,7 +82,7 @@ public class LetterManager : MonoBehaviour
 
     private void Start()
     {
-        
+
     }
     private void BtnInIt()
     {
@@ -90,7 +91,20 @@ public class LetterManager : MonoBehaviour
         {
             GetEveryLetter();
         });
-        everyAcceptBackBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(3, 1);  EveryGetAlrimRef.SetActive(false); });
+
+        //모두 수락창 확인버튼
+        everyAcceptBackBtn.onClick.AddListener(() =>
+        {
+            AudioManager.inst.Play_Ui_SFX(3, 1);
+            EveryGetAlrimRef.SetActive(false);
+
+            ////사용했던 박스들 종료
+            //for(int index=0; index < letterbox.Length; index++)
+            //{
+            //    letterbox[index].gameObject.SetActive(false);
+            //}
+        }
+        );
     }
 
     //최초 빈 편지 생성
@@ -106,7 +120,7 @@ public class LetterManager : MonoBehaviour
         }
     }
 
-    
+
     /// <summary>
     /// 편지 생성기
     /// </summary>
@@ -129,20 +143,20 @@ public class LetterManager : MonoBehaviour
         obj.GetComponent<LetterPrefab>().Set_Letter(ItemType, From, text, ItemCount);
         obj.transform.SetParent(letterBox.transform);
         obj.SetActive(true);
-        
-     
+
+
 
         // 기록
         saveLetterList.Add(new SaveLetter(ItemType, From, text, ItemCount, obj.GetComponent<LetterPrefab>()));
 
-        
+
 
         LetterBoxOnlyInit(); // 최신화한번더
     }
 
     public void ListMyIDDelete(LetterPrefab thisNumber)
     {
-        for(int index=0; index < saveLetterList.Count; index++)
+        for (int index = 0; index < saveLetterList.Count; index++)
         {
             if (saveLetterList[index].letterPrefab == thisNumber)
             {
@@ -160,8 +174,8 @@ public class LetterManager : MonoBehaviour
     {
         // 이미지 교체해주고
         alrimSprite.sprite = itemSprite;
-        
-        switch (itemType) 
+
+        switch (itemType)
         {
             case 0:
                 alrimCountText.text = $"루비 +{itemCount.ToString("N0")}";
@@ -180,7 +194,10 @@ public class LetterManager : MonoBehaviour
 
         alrimWindow.SetActive(true);
         alrimDisableBtn.onClick.RemoveAllListeners();
-        alrimDisableBtn.onClick.AddListener(() => alrimWindowAcitveFalse(itemType, itemCount, letterObj)); // 편지 리턴
+        alrimDisableBtn.onClick.AddListener(() =>
+        {
+            alrimWindowAcitveFalse(itemType, itemCount, letterObj);
+        }); // 편지 리턴
     }
 
 
@@ -200,7 +217,7 @@ public class LetterManager : MonoBehaviour
         {
             // Text Init 풀링 시스템 리턴
             simBall.gameObject.SetActive(false);
-
+            LetterBoxOnlyInit(); // 빈박스 표기
         }
 
         alrimWindow.SetActive(false);
@@ -211,21 +228,23 @@ public class LetterManager : MonoBehaviour
     {
         //초기화
         letterList.Clear();
+        int[] saveLetterItemArr = new int[3];
         Array.Fill(saveLetterItemArr, 0);
-                
+
 
         int childCount = letterBox.transform.childCount;
         if (childCount == 0) { AudioManager.inst.Play_Ui_SFX(4, 1); return; }
-        
+
         AudioManager.inst.Play_Ui_SFX(9, 1);
 
-        //모든 편지 내용물확인
+        //모든 편지 내용물확인   
         for (int index = 0; index < childCount; index++)
         {
             LetterPrefab thisLetter = letterBox.transform.GetChild(index).GetComponent<LetterPrefab>();
             ListMyIDDelete(thisLetter); // 세이브 리스트에서 삭제
             letterList.Add(thisLetter);
-            int[] check = letterList[index].ReturnThisLetterItemTypeAndCount(); // 타입 & 갯수가져옴
+
+            int[] check = thisLetter.ReturnThisLetterItemTypeAndCount(); // 타입 & 갯수가져옴
             saveLetterItemArr[check[0]] += check[1]; // 각 아이템타입 인덱스를 찾아 값을올려줌
         }
 
@@ -233,24 +252,31 @@ public class LetterManager : MonoBehaviour
         // 자원 획득
         for (int index = 0; index < saveLetterItemArr.Length; index++)
         {
-            if (saveLetterItemArr[index] <= 0) { continue; }
-
             switch (index)
             {
                 case 0: //루비
-                    GameStatus.inst.PlusRuby(saveLetterItemArr[index]);
+                    if (saveLetterItemArr[index] != 0)
+                    {
+                        GameStatus.inst.PlusRuby(saveLetterItemArr[index]);
+                    }
                     break;
 
                 case 1: //골드
-                    GameStatus.inst.PlusGold(saveLetterItemArr[index].ToString());
+                    if (saveLetterItemArr[index] != 0)
+                    {
+                        GameStatus.inst.PlusGold(saveLetterItemArr[index].ToString());
+                    }
                     break;
 
                 case 2: //별
-                    GameStatus.inst.PlusStar(saveLetterItemArr[index].ToString());
+                    if (saveLetterItemArr[index] != 0)
+                    {
+                        GameStatus.inst.PlusStar(saveLetterItemArr[index].ToString());
+                    }
                     break;
             }
 
-            // 모두수락한후 뜨는창 몇개받았는지 텍스트 초기화
+            // 최종 수락한 아이템 결과창 초기화
             letterbox[index].SetIconAndValue(saveLetterItemArr[index]);
         }
 
@@ -264,7 +290,7 @@ public class LetterManager : MonoBehaviour
         EveryGetAlrimRef.SetActive(true);
         simBall.gameObject.SetActive(false);
         LetterBoxOnlyInit(); // 빈박스 표기
-    
+
     }
 
 
@@ -311,6 +337,7 @@ public class LetterManager : MonoBehaviour
         postOfficeRef.SetActive(value);
     }
 
+    // 우편이없있을떄 없을때 우편함내 표기 ex => '수신함에 우편이없습니다'
     public void LetterBoxOnlyInit()
     {
         int childCount = letterBox.transform.childCount;
@@ -335,18 +362,18 @@ public class LetterManager : MonoBehaviour
     //시작할때 편지 생성
     public void LeftLetterMake(List<SaveLetter> list)
     {
-        if(list.Count <= 0) {  return; }   
+        if (list.Count <= 0) { return; }
 
-        for(int index =0; index< list.Count; index++)
+        for (int index = 0; index < list.Count; index++)
         {
             MakeLetter(list[index].itemtype, list[index].letterFrom, list[index].letterText, list[index].letterItemCount);
         }
-        
+
     }
 
-   
 
-    
+
+
 }
 
 [Serializable]

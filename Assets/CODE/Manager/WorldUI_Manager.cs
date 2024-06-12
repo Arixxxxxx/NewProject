@@ -363,6 +363,8 @@ public class WorldUI_Manager : MonoBehaviour
 
     }
 
+    Queue<GetItemPrefabs> getItemTextQue = new Queue<GetItemPrefabs>();
+    List<GetItemPrefabs> getItemTextList = new List<GetItemPrefabs>();
     /// <summary>
     /// 오브젝트 생성
     /// </summary>
@@ -375,19 +377,27 @@ public class WorldUI_Manager : MonoBehaviour
         {
             case 0: // Reward
                 obj = Instantiate(poolingObj[value], rewardRef.transform);
+                poolingQue[value].Enqueue(obj);
                 break;
 
             case 1: //좌하단
                 obj = Instantiate(poolingObj[value], getItemLayOut.gameObject.transform);
+                GetItemPrefabs textobj = obj.GetComponent<GetItemPrefabs>();
+
+                getItemTextList.Add(textobj); // 실행여부 체크용
+                getItemTextQue.Enqueue(textobj); // 풀링용
+                textobj.gameObject.SetActive(false);
+
                 break;
 
             case 2: // 골드소모 폰트
                 obj = Instantiate(poolingObj[value], fontDanymic);
                 minusMaterialFont[value] = obj.GetComponent<UI_IncreaseValueFont>();
                 obj.transform.position = fontDanymic.transform.position;
+                poolingQue[value].Enqueue(obj);
                 break;
         }
-        poolingQue[value].Enqueue(obj);
+
         obj.SetActive(false);
     }
 
@@ -441,21 +451,25 @@ public class WorldUI_Manager : MonoBehaviour
     {
         if (!worldUI.gameObject.activeInHierarchy) { return; }
 
-        GameObject obj;
+        GetItemPrefabs obj;
 
         if (poolingQue[1].Count <= 0)
         {
             InstantiatePrefabs(1);
         }
 
-        obj = poolingQue[1].Dequeue();
+        obj = getItemTextQue.Dequeue();
         obj.gameObject.SetActive(true);
-        AudioManager.inst.Play_World_SFX(0, 0.4f);
+
+        if (!AudioManager.inst.noSound)
+        {
+            AudioManager.inst.Play_Ui_SFX(18, 0.35f);
+        }
 
         // 아이템획득 연출
         if (worldUI.gameObject.activeInHierarchy)
         {
-            obj.GetComponent<GetItemPrefabs>().Set_GetItemSpriteAndText(img, Value);
+            obj.Set_GetItemSpriteAndText(img, Value);
         }
 
     }
@@ -467,14 +481,33 @@ public class WorldUI_Manager : MonoBehaviour
     /// <param name="value"> 0 Reward / 1 UI Material</param>
     public void Return_WorldUIObjPoolingObj(GameObject obj, int value)
     {
-        if (obj.activeSelf)
-        {
-            obj.SetActive(false);
-        }
+        obj.SetActive(false);
         poolingQue[value].Enqueue(obj);
     }
 
+    public void Return_GetItemText(GetItemPrefabs obj)
+    {
+        obj.gameObject.SetActive(false);
+        getItemTextQue.Enqueue(obj);
+    }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            GetItemTextAllReturn();
+        }
+    }
+    public void GetItemTextAllReturn()
+    {
+        for (int index = 0; index < getItemTextList.Count; index++)
+        {
+            if (getItemTextList[index].gameObject.activeInHierarchy)
+            {
+                getItemTextList[index].A_ReturnObj();
+            }
+        }
+    }
 
     Coroutine cuttonCor;
     Color colorFadeValue = new Color(0, 0, 0, 0.2f);

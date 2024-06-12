@@ -98,7 +98,9 @@ public class GameManager : MonoBehaviour
             worldCam.gameObject.SetActive(false);
             frontUiRef.SetActive(false);
             uiCanvasRef.SetActive(false);
+            WorldUI_Manager.inst.GetItemTextAllReturn();
             worldUiRef.SetActive(false);
+          
         }
         else
         {

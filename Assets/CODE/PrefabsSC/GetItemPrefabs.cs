@@ -103,12 +103,13 @@ public class GetItemPrefabs : MonoBehaviour
         A_ReturnObj();
     }
 
-    private void A_ReturnObj()
+    public void A_ReturnObj()
     {
         for (int index = 0; index < bgRect.Length; index++)
         {
             bgRect[index].sizeDelta = orijinDelta;
         }
-        WorldUI_Manager.inst.Return_WorldUIObjPoolingObj(gameObject, 1);
+
+        WorldUI_Manager.inst.Return_GetItemText(this);
     }
 }

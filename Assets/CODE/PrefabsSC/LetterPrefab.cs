@@ -18,13 +18,15 @@ public class LetterPrefab : MonoBehaviour
     Button getBtn;
 
     //편지내용
+    [SerializeField]
     int letterItemType;
+    [SerializeField]
     string letterFrom;
+    [SerializeField]
     string letterText;
+    [SerializeField]
     int letterItemCount;
 
-    // 편지내용 확인 변수들
-    int[] itemtypeAndCount;
     
     private void Awake()
     {
@@ -64,11 +66,6 @@ public class LetterPrefab : MonoBehaviour
         {
             AwakeInit();
         }
-        itemtypeAndCount = new int[2];
-
-        // 내부변수 초기화 (리턴용)
-        itemtypeAndCount[0] = ItemType;
-        itemtypeAndCount[1] = ItemCount;
 
         // 저장용
         letterItemType = ItemType;
@@ -99,6 +96,7 @@ public class LetterPrefab : MonoBehaviour
             // 편지수락 알림창 초기화 및 켜주기
             LetterManager.inst.alrimWindowAcitveTrueAndInit(mainIMG.sprite, ItemType, ItemCount, gameObject);
             LetterManager.inst.ListMyIDDelete(this);
+            
             switch (ItemType) // 최종 자원 넣어줌
             {
                 case 0:
@@ -112,8 +110,10 @@ public class LetterPrefab : MonoBehaviour
                 case 2:
                     GameStatus.inst.PlusStar(ItemCount.ToString());
                     break;
+
             }
 
+            
 
         });
 
@@ -125,7 +125,8 @@ public class LetterPrefab : MonoBehaviour
     /// <returns></returns>
     public int[] ReturnThisLetterItemTypeAndCount()
     {
-        return itemtypeAndCount;
+        int[] itemtypeCount = { letterItemType, letterItemCount};
+        return itemtypeCount;
     }
 
     /// <summary>

@@ -11,7 +11,7 @@ public class LetterBoxIcon : MonoBehaviour
     public ItemType Type;
 
     TMP_Text valueText;
-
+    
     private void Awake()
     {
         valueText = GetComponentInChildren<TMP_Text>(true);
@@ -20,10 +20,12 @@ public class LetterBoxIcon : MonoBehaviour
     {
         Type = (ItemType)transform.GetSiblingIndex();
     }
+
+    
     // 모두수락창 아이콘 초기화 및 켜주고 꺼주기    
     public void SetIconAndValue(int value)
     {
-        if (value == 0)
+        if (value <= 0)
         {
             gameObject.SetActive(false);
             return;
@@ -41,8 +43,8 @@ public class LetterBoxIcon : MonoBehaviour
         switch (Type)
         {
             case ItemType.Ruby:
-                valueText.text = $"+ {value.ToString("N0")}";
-                break;
+                //valueText.text = $"+ {value.ToString("N0")}";
+                //break;
 
             case ItemType.Gold:
             case ItemType.Star:

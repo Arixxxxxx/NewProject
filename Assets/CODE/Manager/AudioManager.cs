@@ -17,7 +17,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip[] Ui_SFX;
     [Space]
     //월드 재생
-    [SerializeField] AudioClip[] Wolrd_SFX;
     [SerializeField] AudioClip[] playerHit;
     [SerializeField] AudioClip[] playerCri;
     [SerializeField] AudioClip[] monsterHit;
@@ -231,43 +230,43 @@ public class AudioManager : MonoBehaviour
         audioQue.Enqueue(obj);
     }
 
-    /// <summary>
-    /// World 재생
-    /// </summary>
-    /// <param name="index"> 0:아이템획득<br/></param>
-    public void Play_World_SFX(int index, float Volume)
-    {
+    ///// <summary>
+    ///// World 재생
+    ///// </summary>
+    ///// <param name="index"> 0:아이템획득<br/></param>
+    //public void Play_World_SFX(int index, float Volume)
+    //{
 
-        if (audioQue.Count <= 0)
-        {
-            MakeSoundClip();
-        }
+    //    if (audioQue.Count <= 0)
+    //    {
+    //        MakeSoundClip();
+    //    }
 
-        StartCoroutine(SoundPlay(index, Volume));
+    //    StartCoroutine(SoundPlay(index, Volume));
 
 
-    }
+    //}
 
-    IEnumerator SoundPlay(int index, float Volume)
-    {
-        AudioSource obj = audioQue.Dequeue();
-        obj.volume = Volume;
-        obj.clip = Wolrd_SFX[index];
-        obj.gameObject.SetActive(true);
-        obj.Play();
+    //IEnumerator SoundPlay(int index, float Volume)
+    //{
+    //    AudioSource obj = audioQue.Dequeue();
+    //    obj.volume = Volume;
+    //    obj.clip = Wolrd_SFX[index];
+    //    obj.gameObject.SetActive(true);
+    //    obj.Play();
 
-        yield return null;
-        while (obj.isPlaying)
-        {
-            yield return null;
-        }
+    //    yield return null;
+    //    while (obj.isPlaying)
+    //    {
+    //        yield return null;
+    //    }
 
-        obj.Stop();
-        obj.clip = null;
-        obj.volume = 1;
-        obj.gameObject.SetActive(false);
-        audioQue.Enqueue(obj);
-    }
+    //    obj.Stop();
+    //    obj.clip = null;
+    //    obj.volume = 1;
+    //    obj.gameObject.SetActive(false);
+    //    audioQue.Enqueue(obj);
+    //}
 
     /// <summary>
     /// World 재생

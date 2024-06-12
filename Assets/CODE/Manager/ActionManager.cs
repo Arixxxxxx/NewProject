@@ -212,7 +212,7 @@ public class ActionManager : MonoBehaviour
     }
 
    
-    float feverCountTimer = 0.8f;
+    float feverCountTimer = 0.6f;
     float feverNextTimer = 0f;
        
 
