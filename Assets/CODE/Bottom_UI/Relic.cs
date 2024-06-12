@@ -74,6 +74,7 @@ public class Relic : MonoBehaviour, IClickLvUpAble
         priceMask = transform.Find("Mask").gameObject;
         UIManager.Instance.OnRelicBuyCountChanged.AddListener(() => _OnCountChanged());
         GameStatus.inst.OnStartChanged.AddListener(checkStar);
+        Lv = GameStatus.inst.GetAryRelicLv((int)itemNum);
 
         //프리펩 하나하나 수정하기 힘들어서 코드로해놈..
         maxLvInfo_Text.text = $"</b>Lv당 {GameStatus.inst.RelicDefaultvalue((int)itemNum)}씩 증가 <color=#FFE100>( Max.{limitLv} )</color>";

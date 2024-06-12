@@ -385,7 +385,6 @@ public class UIManager : MonoBehaviour
                 GameObject obj = Instantiate(list_ObjRelic[iNum], relicParents);
                 Relic sc = obj.GetComponent<Relic>();
                 sc.initRelic();
-                sc.Lv = relicLv[iNum];
                 SetGotoGachaBtn(false);
                 list_haveRelic.Add(obj);
             }
