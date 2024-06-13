@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Numerics;
 
-public class Quest : MonoBehaviour,IClickLvUpAble
+public class Quest : MonoBehaviour, IClickLvUpAble
 {
     [Header("퀘스트단계")]
     int Number;//퀘스트 단계
@@ -26,7 +26,8 @@ public class Quest : MonoBehaviour,IClickLvUpAble
         {
             lv = value;
             GameStatus.inst.SetAryQuestLv(Number, value);
-            TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+            //TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+            setTotalProd();
             if (nextRelease == false && lv >= 1)
             {
                 UIManager.Instance.QeustUpComplete(Number);
@@ -46,6 +47,7 @@ public class Quest : MonoBehaviour,IClickLvUpAble
     BigInteger totalProd;//총 생산량
     private BigInteger TotalProd
     {
+        get => totalProd;
         set
         {
             GameStatus.inst.TotalProdGold -= totalProd;
@@ -90,13 +92,18 @@ public class Quest : MonoBehaviour,IClickLvUpAble
             }
             SetbtnActive();
         });
-        GameStatus.inst.OnPercentageChanged.AddListener(() => 
-        { 
+        GameStatus.inst.OnPercentageChanged.AddListener(() =>
+        {
             _OnItemPercentChanged();
             setItemCur();
             setNextCost();
         });
         //UpBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
+        if (Number == 0 && Lv == 0)
+        {
+            Lv = 1;
+        }
+        setText();
     }
 
     void initValue()//초기값 설정
@@ -108,13 +115,14 @@ public class Quest : MonoBehaviour,IClickLvUpAble
 
         baseCost = BigInteger.Multiply(initialProd, (BigInteger)initalProdRate);
         setNextCost();
-        TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+        //TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+        setTotalProd();
         setText();
     }
 
     private void setText()
     {
-        upGoldText.text = "LV별 증가치 +" + CalCulator.inst.StringFourDigitAddFloatChanger($"{initialProd * (Lv + buyCount) - initialProd * (Lv)}");
+        upGoldText.text = "LV별 증가치 +" + CalCulator.inst.StringFourDigitAddFloatChanger($"{getProd(Lv + buyCount) - getProd(Lv)}");
         priceText.text = CalCulator.inst.StringFourDigitAddFloatChanger(nextCost.ToString());
 
         LvText.text = "Lv : " + CalCulator.inst.StringFourDigitChanger(Lv.ToString());
@@ -154,7 +162,8 @@ public class Quest : MonoBehaviour,IClickLvUpAble
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
         if (btnnum != 3)//max가 아닐때
         {
-            nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
+            //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
+            nextCost = BigInteger.Pow(1000, Number) * CalCulator.inst.CalculatePow(1.8f, Lv);
             if (nextCost == 0)
             {
                 nextCost = 1;
@@ -186,6 +195,25 @@ public class Quest : MonoBehaviour,IClickLvUpAble
         nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
     }
 
+    void setTotalProd()
+    {
+        if (Lv != 0)
+        {
+            TotalProd = BigInteger.Pow(1000, Number) * CalCulator.inst.CalculatePow(1.2f, Lv) * Lv / (30 * (Number+1));
+            
+        }
+        else
+        {
+            TotalProd = 0;
+        }
+    }
+
+    BigInteger getProd(int lv)
+    {
+        BigInteger result =  BigInteger.Pow(1000, Number) * CalCulator.inst.CalculatePow(1.2f, lv) * lv / (30 * (Number + 1));
+        return result;
+    }
+
     private void _OnCountChanged()
     {
         buyCount = UIManager.Instance.QuestBuyCount;
@@ -196,7 +224,8 @@ public class Quest : MonoBehaviour,IClickLvUpAble
     private void _OnItemPercentChanged()
     {
         itemCur = GameStatus.inst.GetAryPercent((int)ItemTag.QuestGold);
-        TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+        //TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+        setTotalProd();
         setText();
     }
 

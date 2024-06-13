@@ -516,7 +516,7 @@ public class CalCulator : MonoBehaviour
                 break;
             }
         }
-        if (pointNum != 0)
+        if (pointNum != 0)//정수가 아닐경우
         {
             int pracCount = strValue.Length - pointNum - 1;
             float powpracCount = Mathf.Pow(10, pracCount);
@@ -525,9 +525,11 @@ public class CalCulator : MonoBehaviour
             BigInteger Result = BigInteger.Divide(powResult, BigInteger.Pow((BigInteger)powpracCount, pow));
             return Result;
         }
-        else
+        else//정수일 경우
         {
-            return BigInteger.Parse(strValue);
+            
+            BigInteger result = BigInteger.Pow((BigInteger)value, pow);
+            return result;
         }
     }
 

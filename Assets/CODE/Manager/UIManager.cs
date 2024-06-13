@@ -298,6 +298,7 @@ public class UIManager : MonoBehaviour
         }
 
         m_totalGold = canvas.transform.Find("ScreenArea/BackGround/Quest/TotalGpsBG/TotalGps").GetComponent<TextMeshProUGUI>();
+        
 
 
         //무기 초기화
@@ -356,6 +357,7 @@ public class UIManager : MonoBehaviour
         list_BotBtnAnim[0].SetBool("isSelect", true);
 
         QuestReset.AddListener(() => { TopQuestNum = 0; });
+        SetQuestScroll();
 
         //무기 초기화
         int weaponCount = m_WeaponParents.childCount;

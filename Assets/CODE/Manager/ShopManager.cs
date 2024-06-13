@@ -28,7 +28,7 @@ public class ShopManager : MonoBehaviour
         TMP_Text ProductText;
         Button BuyBtn;
         Image ProdImage;
-        
+
 
         public void initProduct(Transform _trs)
         {
@@ -37,8 +37,8 @@ public class ShopManager : MonoBehaviour
             ProdImage = trs.Find("ProductImage").GetComponent<Image>();
             PriceText = trs.Find("Button/PriceText").GetComponent<TMP_Text>();
             ProductText = trs.Find("RewardText").GetComponent<TMP_Text>();
-            PriceText.text = Price;
-            if(PriceType == ProductTag.Money)
+            PriceText.text = string.Format("{0:#,0}", Price);
+            if (PriceType == ProductTag.Money)
             {
                 PriceText.text += "원";
             }
@@ -56,14 +56,14 @@ public class ShopManager : MonoBehaviour
 
                         break;
                     case ProductTag.Ruby:
-                        ProductText.text =  count.ToString("N0") + "개";
+                        ProductText.text = count.ToString("N0") + "개";
                         break;
                 }
             });
 
             BuyBtn.onClick.AddListener(() =>
             {
-              
+
 
 
                 //가격타입에 맞는 보유자산 체크
@@ -85,6 +85,7 @@ public class ShopManager : MonoBehaviour
                         if (haveRuby < int.Parse(Price))
                         {
                             return;
+                            Debug.Log("루비부족");
                         }
                         break;
 
@@ -94,18 +95,41 @@ public class ShopManager : MonoBehaviour
                 }
 
                 //상품 종류에 따른 액션 등록
-                switch (ProductType)
+                inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
                 {
-                    case ProductTag.Gold:
-                        inst.ClickProduct(() => { GameStatus.inst.PlusGold(prodCount.ToString()); }, ProdImage.sprite, ProductText.text);
-                        break;
-                    case ProductTag.Star:
+                    //비용 차감
+                    switch (PriceType)
+                    {
+                        case ProductTag.Gold:
+                            GameStatus.inst.MinusGold(CalCulator.inst.ConvertChartoIndex(Price));
+                            break;
+                        case ProductTag.Star:
+                            GameStatus.inst.MinusStar(CalCulator.inst.ConvertChartoIndex(Price));
+                            break;
+                        case ProductTag.Ruby:
+                            GameStatus.inst.Ruby -= int.Parse(Price);
+                            break;
 
-                        break;
-                    case ProductTag.Ruby:
-                        inst.ClickProduct(() => { GameStatus.inst.PlusRuby(count); }, ProdImage.sprite, ProductText.text);
-                        break;
-                }
+                        case ProductTag.Money:
+                            //결제
+                            break;
+                    }
+
+                    //상품 지급
+                    switch (ProductType)
+                    {
+                        case ProductTag.Gold:
+                            GameStatus.inst.PlusGold(prodCount.ToString());
+                            break;
+                        case ProductTag.Star:
+                            GameStatus.inst.PlusStar(prodCount.ToString());
+                            break;
+                        case ProductTag.Ruby:
+                            GameStatus.inst.PlusRuby(count);
+                            break;
+                    }
+                });
+
             });
         }
     }
@@ -129,7 +153,7 @@ public class ShopManager : MonoBehaviour
             BuyBtnText = trs.Find("Button/PriceText").GetComponent<TMP_Text>();
 
             inst.onDailyReset.AddListener(() => { ResetAdBtn(GameStatus.inst.AdViewrAdShopData); });
-            
+
 
             UIManager.Instance.onOpenShop.AddListener(() =>
             {
@@ -170,10 +194,10 @@ public class ShopManager : MonoBehaviour
                         break;
                 }
 
-                GameStatus.inst.Ad_Viewr_AdShopDataDateValue(_trs.GetSiblingIndex(),DateTime.Now);
+                GameStatus.inst.Ad_Viewr_AdShopDataDateValue(_trs.GetSiblingIndex(), DateTime.Now);
             });
         }
-        
+
         public void ResetAdBtn(string[] dateValue)
         {
             int index = trs.GetSiblingIndex();
@@ -420,7 +444,7 @@ public class ShopManager : MonoBehaviour
         curRubyText.text = CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.Ruby.ToString());
     }
 
-    public void ClickProduct(UnityAction action, Sprite prodSprite, string prodText)
+    public void ClickProduct(Sprite prodSprite, string prodText, UnityAction action)
     {
         ObjCheckBuy.SetActive(true);
         ProdText.text = prodText;

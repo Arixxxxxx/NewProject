@@ -15,7 +15,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
         set
         {
             lv = value;
-            Atk = getAtk(Number);
+            Atk = getAtk(lv);
             GameStatus.inst.SetAryWeaponLv(Number, value);
 
             if (lv >= 5)
@@ -28,9 +28,23 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
             }
         }
     }
+    [Header("ºñ¿ë ¼ºÀå·ü")]
     [SerializeField] float costGrowthRate;//ºñ¿ë ¼ºÀå·ü
+    [Header("´Ü°èº° °¡°Ý »ó½Â·ü")]
     [SerializeField] float atkpowNumRate;//´Ü°èº° °¡°Ý »ó½Â·ü
-    [SerializeField] float atkRate;//´Ü°èº° °ø°Ý·Â »ó½Â·ü
+    [Header("°ø°Ý·Â »ó½Â·ü")]
+    [SerializeField] float atkRate;//°ø°Ý·Â »ó½Â·ü
+    [Space]
+    [SerializeField] string Name;
+    [SerializeField] TextMeshProUGUI priceText;
+    [SerializeField] TextMeshProUGUI upAtkText;
+    [SerializeField] TextMeshProUGUI LvText;
+    [SerializeField] TextMeshProUGUI totalAtkText;
+    [SerializeField] TextMeshProUGUI nameText;
+    [SerializeField] Button objBtn;
+    [SerializeField] GameObject mask;
+    [SerializeField] GameObject upBtnMask;
+    [SerializeField] GameObject upBtnImage;
 
     Image weaponImage;
 
@@ -48,27 +62,6 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
         }
     }
 
-    [SerializeField] string Name;
-    [SerializeField] TextMeshProUGUI priceText;
-    [SerializeField] TextMeshProUGUI upAtkText;
-    [SerializeField] TextMeshProUGUI LvText;
-    [SerializeField] TextMeshProUGUI totalAtkText;
-    [SerializeField] TextMeshProUGUI nameText;
-    [SerializeField] Button objBtn;
-    [SerializeField] GameObject mask;
-    [SerializeField] GameObject upBtnMask;
-    [SerializeField] GameObject upBtnImage;
-
-    private void Awake()
-    {
-
-    }
-
-    private void Start()
-    {
-
-    }
-
     public void InitWeapon()
     {
 
@@ -79,7 +72,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
         SetbtnActive();
         GameStatus.inst.OnPercentageChanged.AddListener(() =>
         {
-            setNextCost(); setText(); Atk = getAtk(Number);
+            setNextCost(); setText(); Atk = getAtk(Lv);
         });
         GameStatus.inst.OnGoldChanged.AddListener(SetbtnActive);
         UIManager.Instance.WeaponReset.AddListener(resetWeapon);
@@ -99,7 +92,8 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
             clickWeaponImage();
         }
 
-        baseCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f);
+        //baseCost = CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv), 1.67f);
+        baseCost = BigInteger.Pow(1000, Number);
         setNextCost();
         setText();
     }
@@ -107,7 +101,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
     private void setText()
     {
         LvText.text = $"Lv. {Lv} / 5";
-        upAtkText.text = $"LV Áõ°¡Ä¡ +{CalCulator.inst.StringFourDigitAddFloatChanger((getNextAtk(Number) - getAtk(Number)).ToString())}";
+        upAtkText.text = $"LV Áõ°¡Ä¡ +{CalCulator.inst.StringFourDigitAddFloatChanger((getAtk(Lv +1) - getAtk(Lv)).ToString())}";
         totalAtkText.text = $"Á¾ÇÕ ´ë¹ÌÁö : {CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString())} / Å¸°Ý";
         if (Lv < 5)
         {
@@ -147,36 +141,45 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
         if (Lv <= 5)
         {
             float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.WeaponDiscount);
-            nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
+            //nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
+            if (Lv == 0)
+            {
+                nextCost = baseCost;
+            }
+            else
+            {
+
+                nextCost = 200 * Lv * baseCost;
+            }
         }
     }
 
-    private BigInteger getAtk(int num)
+    private BigInteger getAtk(int lv)
     {
         float relicAtk = GameStatus.inst.GetAryPercent((int)ItemTag.Atk);
         if (relicAtk == 0)
         {
-            return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate));
+            return (BigInteger)(lv * Mathf.Pow(Number + 1, atkRate) + 100 * lv);
         }
         else
         {
-            return (BigInteger)(Lv * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
+            return (BigInteger)((lv * Mathf.Pow(Number + 1, atkRate) + 100 * lv) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
         }
     }
 
-    private BigInteger getNextAtk(int num)
-    {
-        float relicAtk = GameStatus.inst.GetAryPercent((int)ItemTag.Atk);
-        if (relicAtk == 0)
-        {
-            return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate));
-        }
-        else
-        {
-            return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
-        }
-        
-    }
+    //private BigInteger getNextAtk(int num)
+    //{
+    //    float relicAtk = GameStatus.inst.GetAryPercent((int)ItemTag.Atk);
+    //    if (relicAtk == 0)
+    //    {
+    //        return (BigInteger)((Lv + 1) * Mathf.Pow(num + 1, atkRate) + 100 * (Lv + 1));
+    //    }
+    //    else
+    //    {
+    //        return (BigInteger)(((Lv + 1) * Mathf.Pow(num + 1, atkRate) + 100 * (Lv + 1)) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
+    //    }
+
+    //}
 
     private void SetbtnActive()
     {
