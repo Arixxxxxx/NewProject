@@ -74,13 +74,8 @@ public class GameStatus : MonoBehaviour
                 {
                     //하루가 지남
                     if (LastLoginDate.Date < DateTime.Now.Date)
-                    {
-
-                        TodayGetNewbie_Reward = false;
-                        // 접속날짜 확인하여 뉴비컨텐츠 초기화
-
-
-                        //출석체크
+                    {                
+                        // 일일 리셋컨텐츠 리셋 함수 호출
                         Daily_init();
 
                         //  주간 리셋 (월요일이 한번이라도 지났는지 확인)
@@ -90,14 +85,11 @@ public class GameStatus : MonoBehaviour
                         }
 
                     }
-                    else if (LastLoginDate.Date == DateTime.Now.Date) // 오늘 재접
+                    else if (LastLoginDate.Date == DateTime.Now.Date) // 같은날 재접속시
                     {
                         Newbie_Content_Init(true);
-                        //Newbie_Content.inst.NewbieWindow_Init(TodayGetNewbie_Reward);
                         DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
                     }
-
-
                 }
                 lastLogindate = DateTime.Now;
                 checkStart = true;
@@ -171,10 +163,7 @@ public class GameStatus : MonoBehaviour
     private DateTime newbieBuffLastDay;
     public DateTime NewbieBuffLastDay
     {
-        get
-        {
-            return newbieBuffLastDay;
-        }
+        get { return newbieBuffLastDay; }
         set
         {
             DateTime ReLoginDate = value;
@@ -196,7 +185,6 @@ public class GameStatus : MonoBehaviour
                 // 일일체크 라스트데이가 가져감
                 newbieBuffLastDay = value;
             }
-
         }
     }
 
@@ -974,21 +962,21 @@ public class GameStatus : MonoBehaviour
         nextCheckTime = Time.time + timeCheckInterval;
     }
 
+
+    float timeCheckInterval = 30f; // 30초에 한번씩 시간체크
+    float nextCheckTime = 0.0f;
+    bool checkStart = false; // SaveData가 최초  load가 다 된이후부터 시작함
+
     private void Update()
     {
         // 정시체크 (게임 스탯 리셋)
         if (Time.time > nextCheckTime && checkStart)
         {
-            RealTime_Check();
             nextCheckTime = Time.time + timeCheckInterval;
+            RealTime_Check();
         }
     }
-
-
-    float timeCheckInterval = 30f; // 30초에 한번씩 시간체크
-    float nextCheckTime = 0.0f;
-    bool checkStart = false;
-
+    
     // 실시간 초기화 시간체크
     private void RealTime_Check()
     {
@@ -999,11 +987,9 @@ public class GameStatus : MonoBehaviour
         {
             //1. 출석체크 && 뉴비
             Daily_init();
-                     
-
+            
             //3. 미션 일일퀘스트
             MissionData.Instance.initDailyMission();
-
 
             //  주간 리셋 (매주 월요일)
             if (DateTime.Now.DayOfWeek == DayOfWeek.Monday && LastLoginDate.DayOfWeek != DayOfWeek.Monday)
@@ -1020,24 +1006,26 @@ public class GameStatus : MonoBehaviour
     // 일일이지나 초기화 해야되는 변수들
     public void Daily_init()
     {
-        //출석체크 부분
+        //출석체크 초기화
         if (TotayGotDaily_Reward == true)
         {
             TotayGotDaily_Reward = false;
             DailyADRuby = true;
         }
+        
+        // 하루에 한번  루비받기 초기화
         if (DailyADRuby == true)
         {
             DailyADRuby = false;
         }
 
-        // 뉴비
+        // 뉴비혜택 초기화
         if(TodayGetNewbie_Reward == true)
         {
             TodayGetNewbie_Reward = false;
         }
 
-        // 슬롯머신 버튼들
+        // 슬롯머신 광고무료 초기화
         if (AdRulletActive == true)
         {
             AdRulletActive = false;
@@ -1046,9 +1034,6 @@ public class GameStatus : MonoBehaviour
         {
             AdSlotMachineActive = false;
         }
-
-        //ShopManager.inst.onDailyReset?.Invoke();
-
     }
 
 
@@ -1147,25 +1132,18 @@ public class GameStatus : MonoBehaviour
         // 7일 이내인 경우
         if (DateTime.Now.Date < NewbieBuffLastDay.Date)
         {
-
             // 보상 활성화 부분
-
             Newbie_Content.inst.NewbieWindow_Init(TodayGetNewbie_Reward);
 
-            if (login)
+            if (login)  // 뉴비버프 시간 재계산해서 버프 활성화
             {
-                // 버프 시간 재계산
                 TimeSpan buffTime = NewbieBuffLastDay - DateTime.Now;
                 BuffContoller.inst.ActiveBuff(4, buffTime.TotalMinutes);
             }
         }
-
-        // 7일이 지난 시점
-        else
+        else // 7일이 지난 시점
         {
-            // 뉴비 기간 종료
-            // 뉴비 관련 UI 비활성화 로직
-
+            // 뉴비 기간 종료, 관련 UI 비활성화
             if (NewbieBuffLastDay != DateTime.MinValue)
             {
                 WorldUI_Manager.inst.NewbieBtnAcitveFalse();

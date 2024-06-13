@@ -487,6 +487,10 @@ public class WorldUI_Manager : MonoBehaviour
 
     public void Return_GetItemText(GetItemPrefabs obj)
     {
+        if (getItemTextList.Contains(obj))
+        {
+            getItemTextList.Remove(obj);
+        }
         obj.gameObject.SetActive(false);
         getItemTextQue.Enqueue(obj);
     }
