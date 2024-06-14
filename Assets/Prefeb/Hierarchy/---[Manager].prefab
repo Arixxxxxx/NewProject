@@ -148,8 +148,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   adBtnSprite:
-  - {fileID: 156669073, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
-  - {fileID: -222251119, guid: cee79416c94a20b4986727fc1e3206de, type: 3}
+  - {fileID: 791840736, guid: c58921b78686e0745a4298a3a42956c9, type: 3}
+  - {fileID: -1889503938, guid: c58921b78686e0745a4298a3a42956c9, type: 3}
 --- !u!114 &390421881016182503
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +251,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a0479c31c21a29468eed9565636ebbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rulletArrowAnim: {fileID: 0}
   spinSpeedDownMulyfly: 400
 --- !u!114 &5612809998451945743
 MonoBehaviour:
@@ -528,6 +527,7 @@ MonoBehaviour:
   attackReady: 0
   enemySpawnSpeed: 0.12
   shakeTime: 0.25
+  buffAddSpeed: 0
   curEnemyNumber: 0000000000000000
   curStageEnemy: []
 --- !u!114 &7882652714519950570

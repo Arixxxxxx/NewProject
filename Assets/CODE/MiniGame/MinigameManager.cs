@@ -417,7 +417,7 @@ public class MinigameManager : MonoBehaviour
         }
 
         resultRef.SetActive(true);
-        AudioManager.inst.SleepMode_SFX(17, 0.5f);
+        AudioManager.inst.Play_Ui_SFX(17, 0.5f);
         float[] getCountAndMaxCunt = new float[2];
 
         // 스코어 및 최대점수량 가져오기
