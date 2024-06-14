@@ -81,7 +81,7 @@ public class WorldEventRewardContent : MonoBehaviour
                 //¹°¾îº¸´ÂÃ¢ ¿ÀÇÂ
                 ADViewManager.inst.ActiveQuestionWindow(true, 1, 0, "·çºñ +100", () => {
                     //±¤°íº¸°í
-                    ADViewManager.inst.SampleAD_Active_Funtion(() =>
+                    ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
                     {
                         GameStatus.inst.PlusRuby(100); //½ÇÇà
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), " ·çºñ +100");
@@ -99,7 +99,7 @@ public class WorldEventRewardContent : MonoBehaviour
                 ADViewManager.inst.ActiveQuestionWindow(true, 1, 1, $"°ñµå +{CalCulator.inst.StringFourDigitAddFloatChanger(curgold)}", () => {
 
                     //±¤°íº¸°í
-                    ADViewManager.inst.SampleAD_Active_Funtion(() =>
+                    ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
                     {
                         GameStatus.inst.PlusGold(curgold);
                         WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(1), $"°ñµå +{CalCulator.inst.StringFourDigitAddFloatChanger(curgold)}");

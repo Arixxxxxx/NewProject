@@ -4,6 +4,9 @@
     package="com.unity3d.player"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="preferExternal">
+	
+
+	
 	<supports-screens
         android:smallScreens="true"
         android:normalScreens="true"
@@ -14,4 +17,5 @@
 	<application android:label="@string/app_name"
                           android:icon="@mipmap/app_icon" android:allowBackup="false" android:fullBackupContent="false"
 tools:replace="android:allowBackup"/>"
+
 </manifest>

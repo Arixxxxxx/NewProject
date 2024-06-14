@@ -3,6 +3,9 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using GoogleMobileAds;
+using GoogleMobileAds.Api;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class ADViewManager : MonoBehaviour
 {
@@ -25,6 +28,12 @@ public class ADViewManager : MonoBehaviour
     Action questionWindowAction;
     TMP_Text itemInfoText;
 
+
+    // Admob 리워드형 ID 
+    private string _adUnitId = "ca-app-pub-3940256099942544/5224354917";  /*Test용*/
+
+
+
     private void Awake()
     {
         if (inst == null)
@@ -44,7 +53,7 @@ public class ADViewManager : MonoBehaviour
         //샘플광고
         adSample = frontUIRef.transform.Find("SampleAD").gameObject;
         adXbtn = adSample.transform.Find("X").GetComponent<Button>();
-           
+
 
         //광고시청 전 질문창
         QuestionWindowRef = frontUIRef.transform.Find("QuestionWindow").gameObject;
@@ -53,37 +62,24 @@ public class ADViewManager : MonoBehaviour
 
         backBtn = QuestionWindowRef.transform.Find("Window/Btns/BackBtn").GetComponent<Button>();
         backBtn.onClick.AddListener(() => QuestionWindowRef.SetActive(false));
-        
+
         acceptBtn = QuestionWindowRef.transform.Find("Window/Btns/AcceptBtn").GetComponent<Button>();
     }
     void Start()
     {
-
+        // Initialize the Google Mobile Ads SDK.
+        MobileAds.Initialize((InitializationStatus initStatus) => { });
+        LoadRewardedAd();
     }
-         
-    /// <summary>
-    /// 광고 실행 후 델리게이트 호출
-    /// </summary>
-    /// <param name="funtion"> 실행시킬 함수 </param>
-    public void SampleAD_Active_Funtion(Action funtion)
+
+    public void AdMob_ActiveAndFuntion(Action funtion)
     {
         if (AdDelete.inst.IsAdDeleteBuy == false) // 광고 삭제 미구입시
         {
-            adXbtn.onClick.RemoveAllListeners();
-            adXbtn.onClick.AddListener(() =>
-            {
-                AdAfterInvokeFuntion += funtion;
-                AdAfterInvokeFuntion?.Invoke();
-                AdAfterInvokeFuntion = null;
-                adXbtn.gameObject.SetActive(false);
-                adSample.SetActive(false);
-            });
+            AdAfterInvokeFuntion = null;
+            AdAfterInvokeFuntion += funtion;
+            ShowRewardedAd();
 
-            if (AdDelete.inst.IsAdDeleteBuy == false)
-            {
-                StopCoroutine(PlayAD());
-                StartCoroutine(PlayAD());
-            }
         }
         else if (AdDelete.inst.IsAdDeleteBuy == true) //광고구입시 바로바로 발동
         {
@@ -92,6 +88,8 @@ public class ADViewManager : MonoBehaviour
             AdAfterInvokeFuntion = null;
         }
     }
+
+  
 
     /// <summary>
     ///  광고보고 보상받을껀지 물어보는 창 초기화
@@ -135,10 +133,153 @@ public class ADViewManager : MonoBehaviour
             QuestionWindowRef.SetActive(false);
         }
     }
-        IEnumerator PlayAD()
+
+
+
+
+
+
+    private RewardedAd _rewardedAd;
+
+    // 광고 로드
+    public void LoadRewardedAd()
     {
-        adSample.SetActive(true);
-        yield return new WaitForSeconds(3);
-        adXbtn.gameObject.SetActive(true);
+        // Clean up the old ad before loading a new one.
+        if (_rewardedAd != null)
+        {
+            _rewardedAd.Destroy();
+            _rewardedAd = null;
+        }
+
+        // create our request used to load the ad.
+        var adRequest = new AdRequest();
+       
+        // send the request to load the ad.
+        RewardedAd.Load(_adUnitId, adRequest,
+            (RewardedAd ad, LoadAdError error) =>
+            {
+                // if error is not null, the load request failed.
+                if (error != null || ad == null)
+                {
+                    Debug.LogError("Rewarded ad failed to load an ad " +
+                                   "with error : " + error);
+                    return;
+                }
+
+                Debug.Log("Rewarded ad loaded with response : "
+                          + ad.GetResponseInfo());
+
+                _rewardedAd = ad;
+
+                //핸들러 등록
+                RegisterEventHandlers(_rewardedAd);
+            });
     }
+
+    // Show
+    public void ShowRewardedAd()
+    {
+        if (_rewardedAd != null && _rewardedAd.CanShowAd())
+        {
+            _rewardedAd.Show((Reward reward) =>
+            {
+                
+            });
+        }
+    }
+
+    WaitForSeconds adFistDealyTiem = new WaitForSeconds(0.25f);
+    WaitForSeconds adDealyTiem = new WaitForSeconds(0.5f);
+    IEnumerator PlayFuntion()
+    {
+        yield return adFistDealyTiem;
+        
+        AdAfterInvokeFuntion?.Invoke();
+        yield return adDealyTiem;
+        yield return adDealyTiem;
+        LoadRewardedAd();
+    }
+    //이벤트
+    private void RegisterEventHandlers(RewardedAd ad)
+    {
+        // 광고로 수익이 발생한 것으로 추정되는 경우
+        ad.OnAdPaid += (AdValue adValue) =>
+        {
+            Debug.Log(String.Format("Rewarded ad paid {0} {1}.",
+                adValue.Value,
+                adValue.CurrencyCode));
+        };
+        // 광고에 대한 노출이 기록되면 발생
+        ad.OnAdImpressionRecorded += () =>
+        {
+            Debug.Log("Rewarded ad recorded an impression.");
+        };
+        //광고 클릭이 기록되면 발생
+        ad.OnAdClicked += () =>
+        {
+            Debug.Log("Rewarded ad was clicked.");
+        };
+        //  광고가 전체 화면 콘텐츠를 열 때 발생.
+        ad.OnAdFullScreenContentOpened += () =>
+        {
+            Debug.Log("Rewarded ad full screen content opened.");
+        };
+        // 닫혔을때
+        ad.OnAdFullScreenContentClosed += () =>
+        {
+            StartCoroutine(PlayFuntion());
+        };
+        // 실패
+        ad.OnAdFullScreenContentFailed += (AdError error) =>
+        {
+            //LoadRewardedAd();
+        };
+    }
+
+
+
+
+
+
+
+    // 개발당시 샘플버전
+
+    /// <summary>
+    /// 광고 실행 후 델리게이트 호출
+    /// </summary>
+    /// <param name="funtion"> 실행시킬 함수 </param>
+    //public void SampleAD_Active_Funtion(Action funtion)
+    //{
+    //    if (AdDelete.inst.IsAdDeleteBuy == false) // 광고 삭제 미구입시
+    //    {
+    //        adXbtn.onClick.RemoveAllListeners();
+    //        adXbtn.onClick.AddListener(() =>
+    //        {
+    //            AdAfterInvokeFuntion += funtion;
+    //            AdAfterInvokeFuntion?.Invoke();
+    //            AdAfterInvokeFuntion = null;
+    //            adXbtn.gameObject.SetActive(false);
+    //            adSample.SetActive(false);
+    //        });
+
+    //        if (AdDelete.inst.IsAdDeleteBuy == false)
+    //        {
+    //            StopCoroutine(PlayAD());
+    //            StartCoroutine(PlayAD());
+    //        }
+    //    }
+    //    else if (AdDelete.inst.IsAdDeleteBuy == true) //광고구입시 바로바로 발동
+    //    {
+    //        AdAfterInvokeFuntion += funtion;
+    //        AdAfterInvokeFuntion?.Invoke();
+    //        AdAfterInvokeFuntion = null;
+    //    }
+    //}
+
+    //IEnumerator PlayAD()
+    //{
+    //    adSample.SetActive(true);
+    //    yield return new WaitForSeconds(3);
+    //    adXbtn.gameObject.SetActive(true);
+    //}
 }

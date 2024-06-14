@@ -97,7 +97,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
 
         adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
         {
-            ADViewManager.inst.SampleAD_Active_Funtion(() =>
+            ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
             {
                 GameStatus.inst.PlusRuby(100);
                 WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");
@@ -231,7 +231,7 @@ public class DailyPlayCheckUIManager : MonoBehaviour
             adViewAndGetRubyBtn.onClick.RemoveAllListeners(); 
             adViewAndGetRubyBtn.onClick.AddListener(() => //광고 버튼
             {
-                ADViewManager.inst.SampleAD_Active_Funtion(() =>
+                ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
                 {
                     GameStatus.inst.PlusRuby(100);
                     WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 +100");

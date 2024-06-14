@@ -176,7 +176,7 @@ public class HwanSengSystem : MonoBehaviour
                     break;
 
                 case 1: // 광고 보여주고 실행
-                    ADViewManager.inst.SampleAD_Active_Funtion(() => FeverTimeActive(totalFeverTime, selectType));
+                    ADViewManager.inst.AdMob_ActiveAndFuntion(() => FeverTimeActive(totalFeverTime, selectType));
                     break;
 
                 case 2: // 구매창 물어본 후 실행

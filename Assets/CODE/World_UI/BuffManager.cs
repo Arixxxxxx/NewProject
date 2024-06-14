@@ -194,7 +194,7 @@ public class BuffManager : MonoBehaviour
 
     
         // 인게임 광고 보고 공격력증가 버튼
-        adBuffBtn.onClick.AddListener(() => ADViewManager.inst.SampleAD_Active_Funtion(() =>
+        adBuffBtn.onClick.AddListener(() => ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
         {
             adBuffBtn.gameObject.SetActive(false);
             BuffContoller.inst.ActiveBuff(3, AdbuffTime(3)); //버프활성화
@@ -242,7 +242,7 @@ public class BuffManager : MonoBehaviour
 
     private void AdBuffActive(int value)
     {
-        ADViewManager.inst.SampleAD_Active_Funtion(() =>
+        ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
         {
             BuffContoller.inst.ActiveBuff(value, AdbuffTime(value)); //버프활성화
             AddBuffCoolTime(value, (int)AdbuffTime(value)); // 쿨타임 시간추가

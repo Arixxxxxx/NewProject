@@ -227,7 +227,7 @@ public class EventShop_RulletManager : MonoBehaviour
         startadSlotMachineBtn.onClick.AddListener(() =>
         {
             if (doSlotMachine == true) { return; }
-            ADViewManager.inst.SampleAD_Active_Funtion(() =>
+            ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
             {
                 // 하루 추가
                 GameStatus.inst.AdSlotMachineActive = true;
@@ -252,7 +252,7 @@ public class EventShop_RulletManager : MonoBehaviour
         adStartRulletBtn.onClick.AddListener(() =>
         {
             if (doRullet == true) { return; }
-            ADViewManager.inst.SampleAD_Active_Funtion(() => 
+            ADViewManager.inst.AdMob_ActiveAndFuntion(() => 
             {
                 GameStatus.inst.AdRulletActive = true;
                 RulletStart(); 

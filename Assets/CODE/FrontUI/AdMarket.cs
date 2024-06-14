@@ -109,7 +109,7 @@ public class AdMarket : MonoBehaviour
     // 수신받기 
     public void ClickBtn(int type)
     {
-        ADViewManager.inst.SampleAD_Active_Funtion(() => 
+        ADViewManager.inst.AdMob_ActiveAndFuntion(() => 
         {
             curItemCount[type]--;
             adShopBtns[type].TextInit();

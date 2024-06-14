@@ -200,7 +200,7 @@ public class Shop_Gacha : MonoBehaviour
             crewMaterialBuyBtn[2].interactable = false;
             GameStatus.inst.Shop_adView_GachaDateValue(0, DateTime.Now);     // 일자기록
             
-            ADViewManager.inst.SampleAD_Active_Funtion(() => Play_CrewMaterialGacha(5, true));
+            ADViewManager.inst.AdMob_ActiveAndFuntion(() => Play_CrewMaterialGacha(5, true));
         });
 
         // 동료 뽑기결과창 종료 버튼
@@ -260,7 +260,7 @@ public class Shop_Gacha : MonoBehaviour
             AudioManager.inst.Play_Ui_SFX(4, 0.8f);
             relicBuyBtn[2].interactable = false;
             GameStatus.inst.Shop_adView_GachaDateValue(1,DateTime.Now);     // 일자기록
-            ADViewManager.inst.SampleAD_Active_Funtion(() => Play_RelicGacha(5, true));
+            ADViewManager.inst.AdMob_ActiveAndFuntion(() => Play_RelicGacha(5, true));
 
         });
 

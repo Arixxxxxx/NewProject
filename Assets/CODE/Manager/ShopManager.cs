@@ -85,7 +85,6 @@ public class ShopManager : MonoBehaviour
                         if (haveRuby < int.Parse(Price))
                         {
                             return;
-                            Debug.Log("루비부족");
                         }
                         break;
 
@@ -182,14 +181,14 @@ public class ShopManager : MonoBehaviour
                 switch (ProductType)
                 {
                     case ProductTag.Gold:
-                        ADViewManager.inst.SampleAD_Active_Funtion(() => { GameStatus.inst.PlusGold(prodCount.ToString()); });
+                        ADViewManager.inst.AdMob_ActiveAndFuntion(() => { GameStatus.inst.PlusGold(prodCount.ToString()); });
 
                         break;
                     case ProductTag.Star:
 
                         break;
                     case ProductTag.Ruby:
-                        ADViewManager.inst.SampleAD_Active_Funtion(() => { GameStatus.inst.PlusRuby(count); });
+                        ADViewManager.inst.AdMob_ActiveAndFuntion(() => { GameStatus.inst.PlusRuby(count); });
 
                         break;
                 }

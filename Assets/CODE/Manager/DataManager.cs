@@ -182,7 +182,7 @@ public class DataManager : MonoBehaviour
     {
         if (pause) // 어플리케이션이 일시 정지될 때
         {
-            SleepMode.inst.Active_SleepMode(true);
+            //SleepMode.inst.Active_SleepMode(true);
 
             if (saveAble)
             {
