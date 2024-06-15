@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -69,9 +70,17 @@ public class GameStatus : MonoBehaviour
                     signUpDate = DateTime.Now;
                     Debug.Log("신규유저");
                     DailyPlayCheckUIManager.inst.DialyContent_Init(TotayGotDaily_Reward);
+
+                    // 첫 연출 만화재생
+                    if(DataManager.inst.testmode == 1)
+                    {
+                        StartCoroutine(PlayOpenCartoon());
+                    }
                 }
                 else if (LastLoginDate.Year >= 2000)
                 {
+                    WorldUI_Manager.inst.LoadScene_FakeScreen_Active();
+                    AudioManager.inst.Crew_Play_SFX(4, 0.7f);
                     //하루가 지남
                     if (LastLoginDate.Date < DateTime.Now.Date)
                     {                
@@ -100,6 +109,8 @@ public class GameStatus : MonoBehaviour
             }
         }
     }
+    
+  
 
     private bool HasMondayPassed(DateTime lastLogin)
     {
@@ -1151,7 +1162,17 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-
+    // 오프닝 만화 재생
+    IEnumerator PlayOpenCartoon()
+    {
+        CartoonManager.inst.Cartoon_Active(0);
+        yield return null;
+        while (CartoonManager.inst.isPlaying)
+        {
+            yield return null;
+        }
+        AudioManager.inst.Crew_Play_SFX(4, 0.7f);
+    }
 
 
     private void LoadData()
@@ -1261,7 +1282,7 @@ public class GameStatus : MonoBehaviour
 
         //세이브가능
         DataManager.inst.saveAble = true;
-        AudioManager.inst.Crew_Play_SFX(4, 0.7f);
+      
     }
 
 

@@ -18,7 +18,7 @@ public class DataManager : MonoBehaviour
 
     bool isHaveJsonFile = false;
     public bool IshaveJsonFile { get { return isHaveJsonFile; } }
-
+    public int testmode;
 
     [System.Serializable]
     public class SaveData
@@ -157,7 +157,7 @@ public class DataManager : MonoBehaviour
         setScreen();
         if (scene.buildIndex == 1)
         {
-            WorldUI_Manager.inst.LoadScene_FakeScreen_Active();
+            
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
     }
