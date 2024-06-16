@@ -251,7 +251,7 @@ public class ShopManager : MonoBehaviour
     Image ProdImage;
     TMP_Text ProdText;
 
-    public UnityEvent onDailyReset;
+    [HideInInspector] public UnityEvent onDailyReset;
 
     [Tooltip("0∞´√≠/1∞ÒµÂªÛ¡°/2∑Á∫ÒªÛ¡°/3±§∞ÌªÛ¡°")] GameObject[] shopListChildRef;
 
