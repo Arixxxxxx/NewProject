@@ -216,7 +216,7 @@ public class MissionData : MonoBehaviour
                 case DailyMissionTag.VisitShop:
                     moveBtn.onClick.AddListener(() =>
                     {
-                        ShopManager.inst.Active_Shop(0,true);
+                        ShopManager.inst.Active_Shop(0, true);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
                         AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
@@ -224,7 +224,7 @@ public class MissionData : MonoBehaviour
                 case DailyMissionTag.UseRuby:
                     moveBtn.onClick.AddListener(() =>
                     {
-                        ShopManager.inst.Active_Shop(0,true);
+                        ShopManager.inst.Active_Shop(0, true);
                         Instance.trs_MissionWindow.gameObject.SetActive(false);
                         AudioManager.inst.Play_Ui_SFX(4, 0.8f);
                     });
@@ -256,15 +256,15 @@ public class MissionData : MonoBehaviour
             {
                 case ProductTag.Gold:
                     LetterManager.inst.MakeLetter(1, "미션", "일일미션 클리어!", int.Parse(rewardCount));
-                    GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                     break;
                 case ProductTag.Ruby:
                     LetterManager.inst.MakeLetter(0, "미션", "일일미션 클리어!", int.Parse(rewardCount));
-                    GameStatus.inst.Ruby += int.Parse(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                     break;
                 case ProductTag.Star:
                     LetterManager.inst.MakeLetter(2, "미션", "일일미션 클리어!", int.Parse(rewardCount));
-                    GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                     break;
             }
             if (Name != "일일미션 클리어")
@@ -481,15 +481,15 @@ public class MissionData : MonoBehaviour
             {
                 case ProductTag.Gold:
                     LetterManager.inst.MakeLetter(1, "미션", "주간미션 클리어!", int.Parse(rewardCount));
-                    GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                     break;
                 case ProductTag.Ruby:
                     LetterManager.inst.MakeLetter(0, "미션", "주간미션 클리어!", int.Parse(rewardCount));
-                    GameStatus.inst.Ruby += int.Parse(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                     break;
                 case ProductTag.Star:
                     LetterManager.inst.MakeLetter(2, "미션", "주간미션 클리어!", int.Parse(rewardCount));
-                    GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                     break;
             }
             GameStatus.inst.SetWeeklyMIssionClear(index, true);
@@ -685,15 +685,15 @@ public class MissionData : MonoBehaviour
                 {
                     case ProductTag.Gold:
                         LetterManager.inst.MakeLetter(1, "미션", "특별미션 클리어!", int.Parse(rewardCount));
-                        GameStatus.inst.PlusGold(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                         break;
                     case ProductTag.Ruby:
                         LetterManager.inst.MakeLetter(0, "미션", "특별미션 클리어!", int.Parse(rewardCount));
-                        GameStatus.inst.Ruby += int.Parse(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                         break;
                     case ProductTag.Star:
                         LetterManager.inst.MakeLetter(2, "미션", "특별미션 클리어!", int.Parse(rewardCount));
-                        GameStatus.inst.PlusStar(CalCulator.inst.ConvertChartoIndex(rewardCount));
+
                         break;
                 }
 
@@ -726,7 +726,7 @@ public class MissionData : MonoBehaviour
             {
                 moveBtn.gameObject.SetActive(true);
             }
-            
+
             needClearText.gameObject.SetActive(false);
             mask.SetActive(false);
         }
@@ -734,10 +734,10 @@ public class MissionData : MonoBehaviour
     [Header("스페셜 미션 목록")]
     [SerializeField] List<SpecialMIssion> list_SpecialMIssion = new List<SpecialMIssion>();
 
-    Color clearColor = new Vector4(0,0.7f,0,1);
-    Color defaultColor = new Vector4(0,0,0,1);
+    Color clearColor = new Vector4(0, 0.7f, 0, 1);
+    Color defaultColor = new Vector4(0, 0, 0, 1);
 
-    List <SpecialMIssion> list_SpecialQuest = new List<SpecialMIssion>();//스페셜 미션 퀘스트
+    List<SpecialMIssion> list_SpecialQuest = new List<SpecialMIssion>();//스페셜 미션 퀘스트
     List<SpecialMIssion> list_SpecialWeapon = new List<SpecialMIssion>();//스페셜 미션 무기
     List<SpecialMIssion> list_SpecialRelic = new List<SpecialMIssion>();//스페셜 미션 유물
 
@@ -978,9 +978,9 @@ public class MissionData : MonoBehaviour
     public void ClickMissionType(int value)
     {
         list_MissionWindow[missionTypeIndex].SetActive(false); // 아래 뷰
-        
+
         //list_MissionTopBtnImage[missionTypeIndex].sprite = list_topBtnNonSelectSprite[missionTypeIndex]; // 안눌렀을때
-        
+
         missionTypeIndex = value;
         list_MissionWindow[missionTypeIndex].SetActive(true);
         Set_Nonclick_Color(value); // 이미지 변경에서 색상변경으로 변경 => 동은 '24.05.24
@@ -994,7 +994,7 @@ public class MissionData : MonoBehaviour
     {
         for (int index = 0; index < topBtnIMG.Length; index++)
         {
-            if(index == indexNum)
+            if (index == indexNum)
             {
                 topBtnIMG[index].color = Color.white;
                 topBtnText[index].color = Color.white;

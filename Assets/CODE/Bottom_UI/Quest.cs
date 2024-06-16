@@ -10,14 +10,12 @@ public class Quest : MonoBehaviour, IClickLvUpAble
     [Header("퀘스트단계")]
     int Number;//퀘스트 단계
     [Header("비용 성장률")]
-    [SerializeField] float growthRate;//성장률
-    [Header("초기 생산량과 초기비용의 비율 낮을수록 초기가격이 비싸짐")]
-    [SerializeField] float initalProdRate;//초기 생산량과 초기비용의 비율
-    [Header("기초 생산량")]
-    [SerializeField] float baseProd;//기초 생산량
-    [Header("단계별 상승량 지수")]
-    [SerializeField] float powNumRate;//단계별 상승량 지수
-    [SerializeField] GameObject objMask;//단계별 상승량 지수
+    [SerializeField] float costGrowthRate;//비용 성장률
+
+    
+    [Header("골드 생산량 성장률")]
+    [SerializeField] float prodGrothRate;//골드 생산량 성장률
+    [SerializeField] GameObject objMask;
     int lv;//퀘스트 업그레이드 레벨
     int Lv
     {
@@ -108,14 +106,8 @@ public class Quest : MonoBehaviour, IClickLvUpAble
 
     void initValue()//초기값 설정
     {
-        powNum = powNumRate * (Number * (Number + 1)) / 2;// 단계별 지수 설정
-        BigInteger resultPowNum = CalCulator.inst.CalculatePow(10, powNum);
-
-        initialProd = BigInteger.Multiply((BigInteger)baseProd, resultPowNum);
-
-        baseCost = BigInteger.Multiply(initialProd, (BigInteger)initalProdRate);
-        setNextCost();
         //TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
+        setNextCost();
         setTotalProd();
         setText();
     }
@@ -163,7 +155,8 @@ public class Quest : MonoBehaviour, IClickLvUpAble
         if (btnnum != 3)//max가 아닐때
         {
             //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
-            nextCost = BigInteger.Pow(1000, Number) * CalCulator.inst.CalculatePow(1.8f, Lv);
+            //nextCost = BigInteger.Pow(1000, Number) * CalCulator.inst.CalculatePow(1.8f, Lv);
+            setNextCost(buyCount);
             if (nextCost == 0)
             {
                 nextCost = 1;
@@ -185,22 +178,25 @@ public class Quest : MonoBehaviour, IClickLvUpAble
 
             }
             buyCount--;
-            nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
+            setNextCost(buyCount);
+            //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
         }
     }
 
     private void setNextCost(int count)
     {
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
-        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
+        //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
+        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number) * (BigInteger)(Mathf.Pow(costGrowthRate, Lv) * (Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)),1 - (pricediscount/100));
     }
 
     void setTotalProd()
     {
         if (Lv != 0)
         {
-            TotalProd = BigInteger.Pow(1000, Number) * CalCulator.inst.CalculatePow(1.2f, Lv) * Lv / (30 * (Number+1));
-            
+            TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number + 1), prodGrothRate * Lv) / (900 * (Number + 1));
+            Debug.Log(TotalProd);
+
         }
         else
         {
@@ -210,7 +206,7 @@ public class Quest : MonoBehaviour, IClickLvUpAble
 
     BigInteger getProd(int lv)
     {
-        BigInteger result =  BigInteger.Pow(1000, Number) * CalCulator.inst.CalculatePow(1.2f, lv) * lv / (30 * (Number + 1));
+        BigInteger result = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number + 1), prodGrothRate * lv) / (900 * (Number + 1));
         return result;
     }
 
