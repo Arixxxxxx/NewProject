@@ -33,15 +33,25 @@ public class GetItemPrefabs : MonoBehaviour
         solting = transform.parent.childCount;
     }
 
-    // Update is called once per frame
+
+    // 혹시 모를사태를 대비해 강제리턴
+    float returnTime = 3f;
+    float returnTimer = 0f;
     void Update()
     {
-        
+        returnTime += Time.deltaTime;
+        if(returnTimer > returnTime)
+        {
+            returnTimer = 0;
+            A_ReturnObj();
+        }
     }
 
     public void Set_GetItemSpriteAndText(Sprite img, string Text)
     {
-        if(anim == null)
+        returnTimer = 0;
+
+        if (anim == null)
         {
             anim = GetComponent<Animator>();
             itemIMG = transform.Find("itemIMG").GetComponent<Image>();

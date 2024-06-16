@@ -117,39 +117,9 @@ public class PetContollerManager : MonoBehaviour
     /// <param name="crewNumber"> 0폭탄마 / 1요리사 / 2사령술사 </param>
     public void CrewUnlock_Action(int crewNumber, bool bValue)
     {
-       
         if (bValue)
         {
-            AudioManager.inst.Crew_Play_SFX(3, 1);
-            whiteBg.color = Color.white;
-
-            // 배경색
-            switch (crewNumber) 
-            {
-                case 0:
-                    AudioManager.inst.Crew_Play_SFX(5, 0.7f);
-                    charBg.color = new Color(1, 0.46f, 0, 0.85f);
-                    charNameText.text = $"스파크 (폭탄마)";
-                    charInfoText.text = "적에게 강력한 폭탄을 던져 공격하는 동료\r\n메인캐릭터의 공격력 x 3배\r\n<color=yellow>(동료 강화시 1배씩 증가)";
-                    break;
-
-                case 1:
-                    AudioManager.inst.Crew_Play_SFX(6, 0.7f);
-                    charBg.color = new Color(0, 1, 0, 0.85f);
-                    charNameText.text = $"호두 (요리사)";
-                    charInfoText.text = "아군에게 맛있는 요리로 버프를 주는 동료\r\n25%확률 공격력증가 또는 치명타확률 증가\r\n<color=yellow>(동료 강화시 확률 증가)";
-                    break;
-
-                case 2:
-                    AudioManager.inst.Crew_Play_SFX(7, 0.7f);
-                    charBg.color = new Color(0.65f, 0, 1, 0.85f);
-                    charNameText.text = $"령화 (사령술사)";
-                    charInfoText.text = "적의 생명력 기반으로 공격하는 동료\r\n매 공격시  생명력의 1% 만큼 공격\r\n<color=yellow>(동료 강화시 1%씩 증가)";
-                    break;
-            }
-            whiteBg.gameObject.SetActive(true);
-            petUnlockRef.SetActive(true);
-            StartCoroutine(PlayUnlock(crewNumber));
+          StartCoroutine(PlayAction(crewNumber));
         }
         else
         {
@@ -159,6 +129,49 @@ public class PetContollerManager : MonoBehaviour
         }
     }
 
+    IEnumerator PlayAction(int crewNumber)
+    {
+        CartoonManager.inst.Cartoon_Active(crewNumber + 1);
+        
+        yield return null;
+
+        while (CartoonManager.inst.isPlaying)
+        {
+            yield return null;
+        }
+        
+
+        AudioManager.inst.Crew_Play_SFX(3, 1);
+        whiteBg.color = Color.white;
+
+        // 배경색
+        switch (crewNumber)
+        {
+            case 0:
+                AudioManager.inst.Crew_Play_SFX(5, 0.7f);
+                charBg.color = new Color(1, 0.46f, 0, 0.85f);
+                charNameText.text = $"스파크 (폭탄마)";
+                charInfoText.text = "적에게 강력한 폭탄을 던져 공격하는 동료\r\n메인캐릭터의 공격력 x 3배\r\n<color=yellow>(동료 강화시 1배씩 증가)";
+                break;
+
+            case 1:
+                AudioManager.inst.Crew_Play_SFX(6, 0.7f);
+                charBg.color = new Color(0, 1, 0, 0.85f);
+                charNameText.text = $"호두 (요리사)";
+                charInfoText.text = "아군에게 맛있는 요리로 버프를 주는 동료\r\n25%확률 공격력증가 또는 치명타확률 증가\r\n<color=yellow>(동료 강화시 확률 증가)";
+                break;
+
+            case 2:
+                AudioManager.inst.Crew_Play_SFX(7, 0.7f);
+                charBg.color = new Color(0.65f, 0, 1, 0.85f);
+                charNameText.text = $"령화 (사령술사)";
+                charInfoText.text = "적의 생명력 기반으로 공격하는 동료\r\n매 공격시  생명력의 1% 만큼 공격\r\n<color=yellow>(동료 강화시 1%씩 증가)";
+                break;
+        }
+        whiteBg.gameObject.SetActive(true);
+        petUnlockRef.SetActive(true);
+        StartCoroutine(PlayUnlock(crewNumber));
+    }
     Color fadeColor = new Color(0, 0, 0, 0.1f);
     float fadeSpeedMultipley = 9f;
     IEnumerator PlayUnlock(int value)

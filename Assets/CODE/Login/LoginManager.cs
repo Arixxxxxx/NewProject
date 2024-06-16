@@ -78,6 +78,7 @@ public class LoginManager : MonoBehaviour
         }
 
         BtnInit();
+        DataManager.inst.testmode++;
     }
 
     // Update is called once per frame

@@ -25,6 +25,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip[] crew_Audio;
     [Header("#ÀÌº¥Æ®˜Þ")]
     [SerializeField] AudioClip[] event_Shop;
+    [Space]
+    [Header("#Ä«Å÷ ÀÌÆåÆ®")]
+    [SerializeField] AudioClip[] Cartoon_0;
+    [SerializeField] AudioClip[] Cartoon_1;
+    [SerializeField] AudioClip[] Cartoon_2;
+    [SerializeField] AudioClip[] Cartoon_3;
     Transform sfxTrs;
     bool[] isSoundPlay;
     float[] worldSoundDealyTimer;
@@ -270,44 +276,7 @@ public class AudioManager : MonoBehaviour
         audioQue.Enqueue(obj);
     }
 
-    ///// <summary>
-    ///// World Àç»ý
-    ///// </summary>
-    ///// <param name="index"> 0:¾ÆÀÌÅÛÈ¹µæ<br/></param>
-    //public void Play_World_SFX(int index, float Volume)
-    //{
-
-    //    if (audioQue.Count <= 0)
-    //    {
-    //        MakeSoundClip();
-    //    }
-
-    //    StartCoroutine(SoundPlay(index, Volume));
-
-
-    //}
-
-    //IEnumerator SoundPlay(int index, float Volume)
-    //{
-    //    AudioSource obj = audioQue.Dequeue();
-    //    obj.volume = Volume;
-    //    obj.clip = Wolrd_SFX[index];
-    //    obj.gameObject.SetActive(true);
-    //    obj.Play();
-
-    //    yield return null;
-    //    while (obj.isPlaying)
-    //    {
-    //        yield return null;
-    //    }
-
-    //    obj.Stop();
-    //    obj.clip = null;
-    //    obj.volume = 1;
-    //    obj.gameObject.SetActive(false);
-    //    audioQue.Enqueue(obj);
-    //}
-
+  
     /// <summary>
     /// World Àç»ý
     /// </summary>
@@ -526,4 +495,57 @@ public class AudioManager : MonoBehaviour
         obj.gameObject.SetActive(false);
         audioQue.Enqueue(obj);
     }
+
+    public void CartoonSoundPlay(int type, int index)
+    {
+        if (audioQue.Count <= 0)
+        {
+            MakeSoundClip();
+        }
+
+     
+        StartCoroutine(CartoonPlay(type, index));
+    }
+
+    IEnumerator CartoonPlay(int type, int index)
+    {
+        AudioSource obj = audioQue.Dequeue();
+        obj.outputAudioMixerGroup = sleepModeGroup;
+
+        switch (type)
+        {
+            case 0:
+                obj.clip = Cartoon_0[index];
+                break;
+
+            case 1:
+                obj.clip = Cartoon_1[index];
+                break;
+
+            case 2:
+                obj.clip = Cartoon_2[index];
+                break;
+
+            case 3:
+                obj.clip = Cartoon_3[index];
+                break;
+        }
+                
+        obj.gameObject.SetActive(true);
+        obj.Play();
+
+        yield return null;
+        while (obj.isPlaying)
+        {
+            yield return null;
+        }
+
+        obj.Stop();
+        obj.clip = null;
+        obj.volume = 1;
+        obj.outputAudioMixerGroup = sfxGroup;
+        obj.gameObject.SetActive(false);
+        audioQue.Enqueue(obj);
+    }
 }
+
