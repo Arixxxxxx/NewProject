@@ -91,7 +91,7 @@ public class ShopManager : MonoBehaviour
                         break;
                 }
 
-                if(PriceType != ProductTag.Ruby)
+                if(PriceType != ProductTag.Money)
                 {
                     ShopManager.inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
                     //상품 종류에 따른 액션 등록
