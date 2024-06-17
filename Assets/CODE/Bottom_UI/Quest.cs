@@ -195,7 +195,6 @@ public class Quest : MonoBehaviour, IClickLvUpAble
         if (Lv != 0)
         {
             TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number + 1), prodGrothRate * Lv) / (900 * (Number + 1));
-            Debug.Log(TotalProd);
 
         }
         else

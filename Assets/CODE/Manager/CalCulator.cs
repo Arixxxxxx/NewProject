@@ -265,11 +265,11 @@ public class CalCulator : MonoBehaviour
 
 
 
-    public BigInteger baseHP = new BigInteger(500);  // 기본 체력
-    public double hpIncreaseFactor = 1.23;  // 체력 증가 계수 (밸런스 변수)
+     BigInteger baseHP = new BigInteger(700);  // 기본 체력
+     double hpIncreaseFactor = 1.2;  // 체력 증가 계수 (밸런스 변수)
 
-    public BigInteger upBaseHP = new BigInteger(8888);  // 기본 체력
-    public double higherHpIncreaseFactor = 1.52;  // 스테이지 150 이후의 체력 증가 계수
+     BigInteger upBaseHP = new BigInteger(8888);  // 기본 체력
+     double higherHpIncreaseFactor = 1.52;  // 스테이지 150 이후의 체력 증가 계수
 
     // 몬스터 체력 초기화
     public string EnemyHpSetup()
@@ -284,17 +284,19 @@ public class CalCulator : MonoBehaviour
 
         if (stage < 150)
         {
+            Debug.Log($" 현재 : {stage}스테이지 / 150미만으로 초기화");
             // 150 이전까지는 기존 체력 증가 공식
             BigInteger factor = new BigInteger(hpIncreaseFactor * 1000);
             BigInteger stageCubed = new BigInteger(stage) * stage * stage;
             health = baseHP + (factor * stageCubed / 1000);
         }
-        else
+        else if(stage >= 150)
         {
             // 150 이후부터는 더 큰 체력 증가 공식
             BigInteger factor = new BigInteger(higherHpIncreaseFactor * 1000);
             BigInteger stageCubed = new BigInteger(stage) * stage * stage;
             health = upBaseHP + (factor * stageCubed / 1000);
+            Debug.Log($" 현재 : {stage}스테이지 / 150<이상>으로 초기화");
         }
 
         return health.ToString();

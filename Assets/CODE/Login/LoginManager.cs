@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 
 public class LoginManager : MonoBehaviour
 {
@@ -31,6 +33,9 @@ public class LoginManager : MonoBehaviour
     Button backBtn, accpectBtn;
     TMP_Text errorMsgText;
     TMP_Text loadingText;
+
+    // 구글인지 로컬인지
+    bool isGpgs;
 
     private void Awake()
     {
@@ -92,12 +97,14 @@ public class LoginManager : MonoBehaviour
         //구글플레이
         googlePlayBtn.onClick.AddListener(() =>
         {
-
+            isGpgs = true;
+            GPGSLogin();
         });
 
         //게스프 플레이
         guestBtn.onClick.AddListener(() =>
         {
+             isGpgs = false;
             guestInputFieldRef.SetActive(true);
         });
 
@@ -272,5 +279,26 @@ public class LoginManager : MonoBehaviour
         }
     }
 
+    // 구글플레이 로그인
+    private void GPGSLogin()
+    {
+        PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
+    }
 
+    internal void ProcessAuthentication(SignInStatus status)
+    {
+        if (status == SignInStatus.Success)
+        {
+            // 아이디 받아와서 등록
+            DataManager.inst.Save_NewCreateAccount(PlayGamesPlatform.Instance.GetUserDisplayName());
+            inputField.text = string.Empty;
+            loginRef.SetActive(false);
+            guestInputFieldRef.SetActive(false);
+            LoadScene(1);
+        }
+        else
+        {
+            Debug.Log("로그인 실패");
+        }
+    }
 }
