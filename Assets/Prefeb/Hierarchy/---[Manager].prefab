@@ -317,6 +317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2913c43259ad754e829bbd61156ecf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPlaying: 0
 --- !u!1 &2562581402446063995
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,8 +600,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c07847e3c1f7a2343b4f071d2ab6cef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hpIncreaseFactor: 1.03
-  higherHpIncreaseFactor: 1.2000000476837158
 --- !u!1 &5151449497917825089
 GameObject:
   m_ObjectHideFlags: 0
@@ -660,6 +659,7 @@ GameObject:
   - component: {fileID: 4904963902540086993}
   - component: {fileID: 5206211488151109852}
   - component: {fileID: 6982764872065819019}
+  - component: {fileID: 8567391761229616155}
   - component: {fileID: 4419585097905868713}
   m_Layer: 0
   m_Name: GameManager
@@ -912,6 +912,18 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5151ec50c4e48434cbcbbe75c2a1d60a, type: 3}
   - {fileID: 21300000, guid: 60a8d8a4188cc1f4b923e2815202fbd8, type: 3}
   - {fileID: 21300000, guid: b5be394816b8f844e9f6a085bca5b4fb, type: 3}
+--- !u!114 &8567391761229616155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9049315439970797926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416c694e22cf0b5478b6bb86ff796ca4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4419585097905868713
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -91,41 +91,45 @@ public class ShopManager : MonoBehaviour
                         break;
                 }
 
-                //상품 종류에 따른 액션 등록
-                inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
+                if(PriceType != ProductTag.Ruby)
                 {
-                    //비용 차감
-                    switch (PriceType)
+                    ShopManager.inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
+                    //상품 종류에 따른 액션 등록
                     {
-                        case ProductTag.Gold:
-                            GameStatus.inst.MinusGold(CalCulator.inst.ConvertChartoIndex(Price));
-                            break;
-                        case ProductTag.Star:
-                            GameStatus.inst.MinusStar(CalCulator.inst.ConvertChartoIndex(Price));
-                            break;
-                        case ProductTag.Ruby:
-                            GameStatus.inst.Ruby -= int.Parse(Price);
-                            break;
+                        //비용 차감
+                        switch (PriceType)
+                        {
+                            case ProductTag.Gold:
+                                GameStatus.inst.MinusGold(CalCulator.inst.ConvertChartoIndex(Price));
+                                break;
+                            case ProductTag.Star:
+                                GameStatus.inst.MinusStar(CalCulator.inst.ConvertChartoIndex(Price));
+                                break;
+                            //case ProductTag.Ruby:
+                            //    GameStatus.inst.Ruby -= int.Parse(Price);
+                            //    break;
 
                             case ProductTag.Money:
                                 //결제
                                 break;
                         }
 
-                    //상품 지급
-                    switch (ProductType)
-                    {
-                        case ProductTag.Gold:
-                            GameStatus.inst.PlusGold(prodCount.ToString());
-                            break;
-                        case ProductTag.Star:
-                            GameStatus.inst.PlusStar(prodCount.ToString());
-                            break;
-                        case ProductTag.Ruby:
-                            GameStatus.inst.PlusRuby(count);
-                            break;
-                    }
-                });
+                        //상품 지급
+                        switch (ProductType)
+                        {
+                            case ProductTag.Gold:
+                                GameStatus.inst.PlusGold(prodCount.ToString());
+                                break;
+                            case ProductTag.Star:
+                                GameStatus.inst.PlusStar(prodCount.ToString());
+                                break;
+                                //case ProductTag.Ruby:
+                                //    GameStatus.inst.PlusRuby(count);
+                                //    break;
+                        }
+                    });
+                }
+             
 
             });
         }

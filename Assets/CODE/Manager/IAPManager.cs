@@ -1,5 +1,7 @@
+using EpicToonFX;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
@@ -66,7 +68,6 @@ public class IAPManager : MonoBehaviour, IStoreListener
     {
         Debug.Log($"구매 실패 ");
     }
-
 
     //결제 정상적으로 이루어지면 재화나 기능구현
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
