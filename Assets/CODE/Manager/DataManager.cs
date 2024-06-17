@@ -63,6 +63,7 @@ public class DataManager : MonoBehaviour
         public int TotalFloor = 1;
         public int Stage = 1;
         public int NowFloor = 1;
+        public bool IsFirst30Stage;
 
         // 8. 동료 레벨
         public int Crew0Lv = 0;
