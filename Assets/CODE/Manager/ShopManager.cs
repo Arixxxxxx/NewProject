@@ -29,6 +29,7 @@ public class ShopManager : MonoBehaviour
         Button BuyBtn;
         Image ProdImage;
 
+       
 
         public void initProduct(Transform _trs)
         {
@@ -90,48 +91,42 @@ public class ShopManager : MonoBehaviour
                         break;
                 }
 
-                if (PriceType != ProductTag.Money)
+                //상품 종류에 따른 액션 등록
+                inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
                 {
-                    //상품 종류에 따른 액션 등록
-                    inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
+                    //비용 차감
+                    switch (PriceType)
                     {
-                        //비용 차감
-                        switch (PriceType)
-                        {
-                            case ProductTag.Gold:
-                                GameStatus.inst.MinusGold(CalCulator.inst.ConvertChartoIndex(Price));
-                                break;
-                            case ProductTag.Star:
-                                GameStatus.inst.MinusStar(CalCulator.inst.ConvertChartoIndex(Price));
-                                break;
-                            case ProductTag.Ruby:
-                                GameStatus.inst.Ruby -= int.Parse(Price);
-                                break;
+                        case ProductTag.Gold:
+                            GameStatus.inst.MinusGold(CalCulator.inst.ConvertChartoIndex(Price));
+                            break;
+                        case ProductTag.Star:
+                            GameStatus.inst.MinusStar(CalCulator.inst.ConvertChartoIndex(Price));
+                            break;
+                        case ProductTag.Ruby:
+                            GameStatus.inst.Ruby -= int.Parse(Price);
+                            break;
 
                             case ProductTag.Money:
                                 //결제
                                 break;
                         }
 
-                        //상품 지급
-                        switch (ProductType)
-                        {
-                            case ProductTag.Gold:
-                                GameStatus.inst.PlusGold(prodCount.ToString());
-                                break;
-                            case ProductTag.Star:
-                                GameStatus.inst.PlusStar(prodCount.ToString());
-                                break;
-                            case ProductTag.Ruby:
-                                GameStatus.inst.PlusRuby(count);
-                                break;
-                        }
-                    });
-                }
-                else
-                { 
-                
-                }
+                    //상품 지급
+                    switch (ProductType)
+                    {
+                        case ProductTag.Gold:
+                            GameStatus.inst.PlusGold(prodCount.ToString());
+                            break;
+                        case ProductTag.Star:
+                            GameStatus.inst.PlusStar(prodCount.ToString());
+                            break;
+                        case ProductTag.Ruby:
+                            GameStatus.inst.PlusRuby(count);
+                            break;
+                    }
+                });
+
             });
         }
     }
@@ -261,6 +256,9 @@ public class ShopManager : MonoBehaviour
     // 현재 눌려있는 번호
     int curSelectMenu = -1;
 
+    //루비상점용
+    GameObject rubyShopRef;
+    Button[] rubyBuyBtns;
     private void Awake()
     {
         //싱글톤
@@ -327,6 +325,14 @@ public class ShopManager : MonoBehaviour
         ProdImage = ObjCheckBuy.transform.Find("ProductImage").GetComponent<Image>();
         ProdText = ObjCheckBuy.transform.Find("ProductText").GetComponent<TMP_Text>();
 
+        rubyShopRef = shopListRef.transform.Find("Ruby_Shop/ProductList").gameObject;
+        int btnCount = rubyShopRef.transform.childCount;
+        rubyBuyBtns = new Button[btnCount];
+
+        for (int iNum = 0; iNum < btnCount; iNum++)
+        {
+            rubyBuyBtns[iNum] = rubyShopRef.transform.GetChild(iNum).GetComponentInChildren<Button>(true);
+        }
 
         Btn_Init();
     }
@@ -345,7 +351,11 @@ public class ShopManager : MonoBehaviour
             botArrBtn[curIndex].onClick.AddListener(() => Active_Shop(curIndex, true));
         }
 
-        // 
+        rubyBuyBtns[0].onClick.AddListener(() => IAPManager.inst.Buy_Item("ruby_100"));
+        rubyBuyBtns[1].onClick.AddListener(() => IAPManager.inst.Buy_Item("ruby_800"));
+        rubyBuyBtns[2].onClick.AddListener(() => IAPManager.inst.Buy_Item("ruby_1500"));
+        rubyBuyBtns[3].onClick.AddListener(() => IAPManager.inst.Buy_Item("ruby_3000"));
+        
     }
     private void Update()
     {

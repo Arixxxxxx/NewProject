@@ -667,7 +667,7 @@ public class ActionManager : MonoBehaviour
 
             case "3_Stage":
                 curEnemyNumber[0] = 3;
-                bossHPMultiPlyer = 5;
+                bossHPMultiPlyer = 3;
                 break;
         }
                

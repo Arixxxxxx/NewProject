@@ -90,16 +90,16 @@ public class AdDelete : MonoBehaviour
         //구매 버튼
         buyBtn.onClick.AddListener(() =>
         {
-            int Price = RubyPrice.inst.AdDeletePrice; // 루비가격 초기화
-            RubyPayment.inst.RubyPaymentUiActive(Price, () =>
-            {
-                Set_AdDeleteBuffTime(DateTime.Now.AddDays(30).ToString("O"));
-             
-            });
+            IAPManager.inst.Buy_Item("ad_delete");
         });
 
     }
 
+    public void ADDelete_1MonthAdd()
+    {
+        Set_AdDeleteBuffTime(DateTime.Now.AddDays(30).ToString("O"));
+    }
+    
     public void ActiveAdDeleteWindow(bool value)
     {
         if (value)
