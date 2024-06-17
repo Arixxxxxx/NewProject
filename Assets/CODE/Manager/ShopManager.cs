@@ -63,9 +63,6 @@ public class ShopManager : MonoBehaviour
 
             BuyBtn.onClick.AddListener(() =>
             {
-
-
-
                 //가격타입에 맞는 보유자산 체크
                 switch (PriceType)
                 {
@@ -93,42 +90,48 @@ public class ShopManager : MonoBehaviour
                         break;
                 }
 
-                //상품 종류에 따른 액션 등록
-                inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
+                if (PriceType != ProductTag.Money)
                 {
-                    //비용 차감
-                    switch (PriceType)
+                    //상품 종류에 따른 액션 등록
+                    inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
                     {
-                        case ProductTag.Gold:
-                            GameStatus.inst.MinusGold(CalCulator.inst.ConvertChartoIndex(Price));
-                            break;
-                        case ProductTag.Star:
-                            GameStatus.inst.MinusStar(CalCulator.inst.ConvertChartoIndex(Price));
-                            break;
-                        case ProductTag.Ruby:
-                            GameStatus.inst.Ruby -= int.Parse(Price);
-                            break;
+                        //비용 차감
+                        switch (PriceType)
+                        {
+                            case ProductTag.Gold:
+                                GameStatus.inst.MinusGold(CalCulator.inst.ConvertChartoIndex(Price));
+                                break;
+                            case ProductTag.Star:
+                                GameStatus.inst.MinusStar(CalCulator.inst.ConvertChartoIndex(Price));
+                                break;
+                            case ProductTag.Ruby:
+                                GameStatus.inst.Ruby -= int.Parse(Price);
+                                break;
 
-                        case ProductTag.Money:
-                            //결제
-                            break;
-                    }
+                            case ProductTag.Money:
+                                //결제
+                                break;
+                        }
 
-                    //상품 지급
-                    switch (ProductType)
-                    {
-                        case ProductTag.Gold:
-                            GameStatus.inst.PlusGold(prodCount.ToString());
-                            break;
-                        case ProductTag.Star:
-                            GameStatus.inst.PlusStar(prodCount.ToString());
-                            break;
-                        case ProductTag.Ruby:
-                            GameStatus.inst.PlusRuby(count);
-                            break;
-                    }
-                });
-
+                        //상품 지급
+                        switch (ProductType)
+                        {
+                            case ProductTag.Gold:
+                                GameStatus.inst.PlusGold(prodCount.ToString());
+                                break;
+                            case ProductTag.Star:
+                                GameStatus.inst.PlusStar(prodCount.ToString());
+                                break;
+                            case ProductTag.Ruby:
+                                GameStatus.inst.PlusRuby(count);
+                                break;
+                        }
+                    });
+                }
+                else
+                { 
+                
+                }
             });
         }
     }

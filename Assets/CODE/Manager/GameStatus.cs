@@ -74,7 +74,7 @@ public class GameStatus : MonoBehaviour
                 {
                     //하루가 지남
                     if (LastLoginDate.Date < DateTime.Now.Date)
-                    {                
+                    {
                         // 일일 리셋컨텐츠 리셋 함수 호출
                         Daily_init();
 
@@ -536,7 +536,11 @@ public class GameStatus : MonoBehaviour
         }
     }
 
-
+    bool isFirst30Stage = true;
+    public bool IsFirst30Stage
+    {
+        get => isFirst30Stage; set { isFirst30Stage = value; }
+    }
 
 
     /////////////////////////////// 상점 버프 증가량 관련 //////////////////////////////////
@@ -976,7 +980,7 @@ public class GameStatus : MonoBehaviour
             RealTime_Check();
         }
     }
-    
+
     // 실시간 초기화 시간체크
     private void RealTime_Check()
     {
@@ -987,7 +991,7 @@ public class GameStatus : MonoBehaviour
         {
             //1. 출석체크 && 뉴비
             Daily_init();
-            
+
             //3. 미션 일일퀘스트
             MissionData.Instance.initDailyMission();
 
@@ -1012,7 +1016,7 @@ public class GameStatus : MonoBehaviour
             TotayGotDaily_Reward = false;
             DailyADRuby = true;
         }
-        
+
         // 하루에 한번  루비받기 초기화
         if (DailyADRuby == true)
         {
@@ -1020,7 +1024,7 @@ public class GameStatus : MonoBehaviour
         }
 
         // 뉴비혜택 초기화
-        if(TodayGetNewbie_Reward == true)
+        if (TodayGetNewbie_Reward == true)
         {
             TodayGetNewbie_Reward = false;
         }
@@ -1207,6 +1211,7 @@ public class GameStatus : MonoBehaviour
         AccumlateFloor = saveData.TotalFloor;
         StageLv = saveData.Stage;
         FloorLv = saveData.NowFloor;
+        IsFirst30Stage = saveData.IsFirst30Stage;
 
         // 9. 동료 레벨
         Pet0_Lv = saveData.Crew0Lv;
@@ -1313,6 +1318,7 @@ public class GameStatus : MonoBehaviour
         saveData.TotalFloor = AccumlateFloor;
         saveData.Stage = StageLv;
         saveData.NowFloor = FloorLv;
+        saveData.IsFirst30Stage = IsFirst30Stage;
 
         // 9. 동료 레벨
         saveData.Crew0Lv = Pet0_Lv;
