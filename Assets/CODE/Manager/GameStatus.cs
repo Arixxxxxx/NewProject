@@ -820,6 +820,18 @@ public class GameStatus : MonoBehaviour
         }
     }
 
+    // 빙고 광고 체크
+    private bool adBingoActive;
+    public bool AdBingoActive
+    {
+        get { return adBingoActive; }
+        set
+        {
+            adBingoActive = value;
+            EventShop_RulletManager.inst.AdPlayButtonInit(2, adBingoActive);
+        }
+    }
+
     private int minigameTicket;
     public int MinigameTicket
     {
@@ -901,12 +913,12 @@ public class GameStatus : MonoBehaviour
     public DateTime WeeklyMissionResetTime { get => weeklyMissionResetTime; set { weeklyMissionResetTime = value; } }
 
     ///////////////////////빙고///////////////////
-    List<bool> bingoBoard = new List<bool>();
+    bool[] bingoBoard = new bool[9];
     public bool GetBingoBoard(int index)
     {
         return bingoBoard[index];
     }
-    public List<bool> GetBingoBoard()
+    public bool[] GetBingoBoard()
     {
         return bingoBoard;
     }
@@ -914,19 +926,19 @@ public class GameStatus : MonoBehaviour
     {
         bingoBoard[index] = value;
     }
-    public void SetBingoBoard(List<bool> value)
+    public void SetBingoBoard(bool[] value)
     {
         bingoBoard = value;
     }
-    int bingoStack;
-    public int BingoStack
-    {
-        get => bingoStack;
-        set
-        {
-            bingoStack = value;
-        }
-    }
+    //int bingoStack;
+    //public int BingoStack
+    //{
+    //    get => bingoStack;
+    //    set
+    //    {
+    //        bingoStack = value;
+    //    }
+    //}
 
     [HideInInspector] public UnityEvent OnRouletteTicketChanged;
     int rouletteTicket;
@@ -1048,6 +1060,10 @@ public class GameStatus : MonoBehaviour
         if (AdSlotMachineActive == true)
         {
             AdSlotMachineActive = false;
+        }
+        if (AdBingoActive == true)
+        {
+            AdBingoActive = false;
         }
     }
 
@@ -1196,6 +1212,7 @@ public class GameStatus : MonoBehaviour
         // 3.미니게임
         AdRulletActive = saveData.adRulletPlay;
         AdSlotMachineActive = saveData.adSlotMachinePlay;
+        AdBingoActive = saveData.adBingoPlay;
         MinigameTicket = saveData.miniTicket;
 
         // 4.버프남은시간
@@ -1255,8 +1272,8 @@ public class GameStatus : MonoBehaviour
 
         // 12. 빙고 현황
         RouletteTicket = saveData.RouletteTicket;
-        bingoBoard = saveData.BingoBoard.ToList();
-        BingoStack = saveData.BingoStack;
+        bingoBoard = saveData.BingoBoard;
+        //BingoStack = saveData.BingoStack;
 
         //우편
         LetterManager.inst.LeftLetterMake(saveData.LetterBox);
@@ -1365,7 +1382,7 @@ public class GameStatus : MonoBehaviour
         // 12. 빙고 현황
         saveData.RouletteTicket = RouletteTicket;
         saveData.BingoBoard = bingoBoard;
-        saveData.BingoStack = BingoStack;
+        //saveData.BingoStack = BingoStack;
 
         // 우편 남은것
         saveData.LetterBox.Clear();

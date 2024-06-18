@@ -93,7 +93,6 @@ public class Quest : MonoBehaviour, IClickLvUpAble
         GameStatus.inst.OnPercentageChanged.AddListener(() =>
         {
             _OnItemPercentChanged();
-            setItemCur();
             setNextCost();
         });
         //UpBtn.onClick.AddListener(() => { AudioManager.inst.Play_Ui_SFX(1, 0.8f); });
@@ -142,12 +141,6 @@ public class Quest : MonoBehaviour, IClickLvUpAble
         }
     }
 
-    void setItemCur()
-    {
-        itemCur = GameStatus.inst.GetAryPercent((int)ItemTag.QuestGold);
-        itemCur = itemCur / 100 + 1;
-    }
-
     private void setNextCost()
     {
         int btnnum = UIManager.Instance.QuestBuyCountBtnNum;
@@ -185,7 +178,7 @@ public class Quest : MonoBehaviour, IClickLvUpAble
     private void setNextCost(int count)
     {
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
-        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number) * (BigInteger)(Mathf.Pow(costGrowthRate, Lv) * (Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)),1 - (pricediscount/100));
+        nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number) * (BigInteger)(Mathf.Pow(costGrowthRate, Lv) * (Mathf.Pow(costGrowthRate, count) - 1) / (costGrowthRate - 1)),1 - (pricediscount/100));
         //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
     }
 
@@ -193,8 +186,7 @@ public class Quest : MonoBehaviour, IClickLvUpAble
     {
         if (Lv != 0)
         {
-            TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number + 1), prodGrothRate * Lv) / (900 * (Number + 1));
-
+            TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number + 1), prodGrothRate * Lv * itemCur) / (900 * (Number + 1));
         }
         else
         {
@@ -204,7 +196,7 @@ public class Quest : MonoBehaviour, IClickLvUpAble
 
     BigInteger getProd(int lv)
     {
-        BigInteger result = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number + 1), prodGrothRate * lv) / (900 * (Number + 1));
+        BigInteger result = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number + 1), prodGrothRate * lv * itemCur) / (900 * (Number + 1));
         return result;
     }
 
@@ -217,7 +209,7 @@ public class Quest : MonoBehaviour, IClickLvUpAble
 
     private void _OnItemPercentChanged()
     {
-        itemCur = GameStatus.inst.GetAryPercent((int)ItemTag.QuestGold);
+        itemCur = 1 + GameStatus.inst.GetAryPercent((int)ItemTag.QuestGold) / 100;
         //TotalProd = CalCulator.inst.MultiplyBigIntegerAndfloat(initialProd, Lv * LvCur * itemCur);
         setTotalProd();
         setText();

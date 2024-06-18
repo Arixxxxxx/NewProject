@@ -201,13 +201,13 @@ public class MissionData : MonoBehaviour
             switch (rewardTag)
             {
                 case ProductTag.Gold:
-                    rewardText.text = $"골드 {rewardCount}개, 빙고티켓 10개";
+                    rewardText.text = $"골드 {rewardCount}개, 미니게임 티켓";
                     break;
                 case ProductTag.Ruby:
-                    rewardText.text = $"루비 {rewardCount}개, 빙고티켓 10개";
+                    rewardText.text = $"루비 {rewardCount}개, 미니게임 티켓";
                     break;
                 case ProductTag.Star:
-                    rewardText.text = $"별 {rewardCount}개, 빙고티켓 10개";
+                    rewardText.text = $"별 {rewardCount}개, 미니게임 티켓";
                     break;
             }
 
@@ -275,7 +275,7 @@ public class MissionData : MonoBehaviour
             {
                 Instance.SetWeeklyMission("일일미션 모두 클리어", 1);
             }
-            GameStatus.inst.RouletteTicket += 10;
+            GameStatus.inst.MinigameTicket++;
             GameStatus.inst.SetDailyMIssionClear(index, true);
             clearBtn.gameObject.SetActive(false);
             trs.SetAsLastSibling();

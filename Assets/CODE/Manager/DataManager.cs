@@ -38,6 +38,7 @@ public class DataManager : MonoBehaviour
         // 3. 미니게임
         public bool adRulletPlay;
         public bool adSlotMachinePlay;
+        public bool adBingoPlay;
         public int miniTicket;
 
         // 3. 버프 남은 시간
@@ -85,7 +86,7 @@ public class DataManager : MonoBehaviour
         public List<int> SpecialMissionCount = new List<int>(100);
 
         //11. 빙고 현황
-        public List<bool> BingoBoard = new List<bool>();
+        public bool[] BingoBoard = new bool[9];
         public int RouletteTicket;
         public int BingoStack;
 

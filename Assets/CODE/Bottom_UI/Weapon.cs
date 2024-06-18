@@ -156,15 +156,15 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
 
     private BigInteger getAtk(int lv)
     {
-        float relicAtk = GameStatus.inst.GetAryPercent((int)ItemTag.Atk);
-        if (relicAtk == 0)
-        {
-            return (BigInteger)(lv * Mathf.Pow(Number + 1, atkRate) + 100 * lv);
-        }
-        else
-        {
-            return (BigInteger)((lv * Mathf.Pow(Number + 1, atkRate) + 100 * lv) * GameStatus.inst.GetAryPercent((int)ItemTag.Atk));
-        }
+        float relicAtk = 1 + GameStatus.inst.GetAryPercent((int)ItemTag.Atk) / 100;
+        //if (relicAtk == 0)
+        //{
+        //    return (BigInteger)(lv * Mathf.Pow(Number + 1, atkRate) + 100 * lv);
+        //}
+        //else
+        //{
+            return (BigInteger)((lv * Mathf.Pow(Number + 1, atkRate) + 100 * lv) * relicAtk);
+        //}
     }
 
     //private BigInteger getNextAtk(int num)
