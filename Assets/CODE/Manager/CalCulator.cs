@@ -238,17 +238,17 @@ public class CalCulator : MonoBehaviour
             percent += GameStatus.inst.Pet0_Lv * 10;
         }
 
-        // 유물 일반공격력 계산
+        // 도감 일반공격력 계산
         if (DogamManager.inst.Get_DogamATKBonus() != 0)
         {
             percent += DogamManager.inst.Get_DogamATKBonus();
         }
 
-        // 유물 일반공격력 계산
-        if (GameStatus.inst.GetAryRelicLv(0) != 0)
-        {
-            percent = GameStatus.inst.RelicDefaultvalue(0) * GameStatus.inst.GetAryRelicLv(0);
-        }
+        // 유물 일반공격력 계산 //메인에서 올려줌
+        //if (GameStatus.inst.GetAryRelicLv(0) != 0)
+        //{
+        //    percent = GameStatus.inst.RelicDefaultvalue(0) * GameStatus.inst.GetAryRelicLv(0);
+        //}
 
         if(percent != 0)
         {
@@ -654,12 +654,10 @@ public class CalCulator : MonoBehaviour
     /// <returns></returns>
     public string StringAndIntMultiPly(string value, int multiplyValue)
     {
-        sb.Clear();  // StringBuilder 초기화
         BigInteger bigIntValue = BigInteger.Parse(value);
         BigInteger result = BigInteger.Multiply(bigIntValue, multiplyValue);
+        Debug.Log($"들어온값 {bigIntValue}, 곱한값 {multiplyValue} = 곱해진값 {result}");
         return result.ToString();
-        //return sb.Append(BigInteger.Multiply(BigInteger.Parse(value), multiplyValue)).ToString();
-
     }
 
 

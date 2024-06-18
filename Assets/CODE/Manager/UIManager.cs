@@ -391,7 +391,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        InvokeRepeating("getGoldPerSceond", 0, 1);//√ ¥Á ∞ÒµÂ »πµÊ
+        InvokeRepeating("getGoldPerSceond", 0, 1.5f);//√ ¥Á ∞ÒµÂ »πµÊ
         m_totalGold.text = "∞ÒµÂ ¿⁄µø »πµÊ (√ ) : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
         //SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         SetAtkText(GameStatus.inst.TotalAtk.ToString());

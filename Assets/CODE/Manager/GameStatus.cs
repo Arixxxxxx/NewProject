@@ -252,9 +252,9 @@ public class GameStatus : MonoBehaviour
     public float NewbieMoveSpeedBuffValue { get { return newbieMoveSpeedBuffValue; } set { newbieMoveSpeedBuffValue = value; ActionManager.inst.SetPlayerMoveSpeed(); } }
 
     // 5-3. 뉴비 (골드량)
-    string newbieGoldBuffValue = "0";
+    bool newbieGoldBuffValue;
 
-    public string NewbieGoldBuffValue { get { return newbieGoldBuffValue; } set { newbieGoldBuffValue = value; } }
+    public bool NewbieGoldBuffValue { get { return newbieGoldBuffValue; } set { newbieGoldBuffValue = value; } }
 
     // 5-4. 뉴비 ( 공격속드)
     float newbieAttackSpeed = 0;
@@ -565,8 +565,8 @@ public class GameStatus : MonoBehaviour
     public string BuffAddAdATK { get { return buffAddAdATK; } set { buffAddAdATK = value; } }
 
     // 3. 골드증가 버프
-    string buffAddGold = "0";
-    public string BuffAddGold { get { return buffAddGold; } set { buffAddGold = value; } }
+    bool buffAddGold;
+    public bool BuffAddGold { get { return buffAddGold; } set { buffAddGold = value; } }
 
     // 4. 이동속도증가 버프
     float buffAddSpeed = 0;
@@ -1063,17 +1063,19 @@ public class GameStatus : MonoBehaviour
     /// <param name="getValue"></param>
     public void GetGold(string getValue)
     {
+        if (BuffAddGold == true)
+        {
+            Debug.Log("버프상점버프");
+            getValue = CalCulator.inst.StringAndIntMultiPly(getValue, 2); // 상점 버프로인한값 추가
+        }
+
+        if (NewbieGoldBuffValue == true)
+        {
+            Debug.Log("뉴비버프");
+            getValue = CalCulator.inst.StringAndIntMultiPly(getValue, 2); // 뉴비 버프로인한값 추가
+        }
+
         string result = CalCulator.inst.DigidPlus(gold, getValue); // 기본 골드
-
-        if (BuffAddGold != "0")
-        {
-            result = CalCulator.inst.DigidPlus(result, BuffAddGold); // 상점 버프로인한값 추가
-        }
-
-        if (NewbieGoldBuffValue != "0")
-        {
-            result = CalCulator.inst.DigidPlus(result, NewbieGoldBuffValue); // 뉴비 버프로인한값 추가
-        }
 
         Gold = result;
     }

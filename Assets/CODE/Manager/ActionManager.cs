@@ -2,7 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Schema;
+using System.Numerics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -95,7 +95,7 @@ public class ActionManager : MonoBehaviour
     // 이동애니메이션
 
     float checkPosition;
-    Vector2 enemyVec;
+    UnityEngine.Vector2 enemyVec;
     float enemyPosX;
     [Header("7. Insert Value => <Color=yellow>( Float Data )")]
     [Space]
@@ -196,7 +196,7 @@ public class ActionManager : MonoBehaviour
         Enemyinit();
     }
 
-    Vector2 matVec;
+    UnityEngine.Vector2 matVec;
     bool doEnemyMove = true;
     private void FixedUpdate()
     {
@@ -304,7 +304,7 @@ public class ActionManager : MonoBehaviour
             playerDustPs.gameObject.SetActive(false);
             playerAnim.SetBool("Move", false);
             petManager.PetAnimPlay(false);
-            playerAnim.transform.position = new Vector2(-0.706f, 5.45f);
+            playerAnim.transform.position = new UnityEngine.Vector2(-0.706f, 5.45f);
             moveWindParticle.gameObject.SetActive(false);
         }
 
@@ -435,13 +435,13 @@ public class ActionManager : MonoBehaviour
         //PlayerInit();
         // 뉴비버프 어택카운트 및 버프 
 
-        string DMG = CalCulator.inst.Get_CurPlayerATK();
+        //string DMG = CalCulator.inst.Get_CurPlayerATK();
         string CrewATK = string.Empty;
         string MinusValue = string.Empty;
 
         if (CrewType == 0) // 폭탄마 ( 총체력에서 공격력을 뺀값 )
         {
-            CrewATK = CalCulator.inst.StringAndIntMultiPly(DMG, GameStatus.inst.Pet0_Lv + 2); // 시작시 3배 시작
+            CrewATK = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), GameStatus.inst.Pet0_Lv + 2); // 시작시 3배 시작
             MinusValue = CalCulator.inst.BigIntigerMinus(enemyCurHP, CrewATK);
         }
         else if (CrewType == 1) // 사령술사
@@ -502,7 +502,7 @@ public class ActionManager : MonoBehaviour
     IEnumerator GetGoldActionParticle()
     {
         GameObject ps = Get_Pooling_Prefabs(1);
-        ps.transform.position = enemyAnim.transform.position + (Vector3.up * 0.5f);
+        ps.transform.position = enemyAnim.transform.position + (UnityEngine.Vector3.up * 0.5f);
         ps.SetActive(true);
         ps.GetComponent<ParticleSystem>().Play();
         yield return new WaitForSeconds(1);
@@ -574,7 +574,7 @@ public class ActionManager : MonoBehaviour
 
 
         WorldUI_Manager.inst.Reset_StageUiBar();
-        playerAnim.transform.localPosition = new Vector3(-5, 0, 0);
+        playerAnim.transform.localPosition = new UnityEngine.Vector3(-5, 0, 0);
         yield return null;
         playerAnim.SetTrigger("In");
 
@@ -586,7 +586,7 @@ public class ActionManager : MonoBehaviour
     int effectCriIndexCount = 0;
 
     //에너미 피격 이펙트 함수
-    Vector3 particleEffectPo = Vector3.zero;
+    UnityEngine.Vector3 particleEffectPo = UnityEngine.Vector3.zero;
 
     private void EnemyOnHitEffect(bool cri)
     {
@@ -622,7 +622,7 @@ public class ActionManager : MonoBehaviour
 
 
     // 몬스터 초기화
-    Vector3 hpbarPos;
+    UnityEngine.Vector3 hpbarPos;
 
     //float hpBar_downX = 0.1f;
     float hpBar_downY = 0f;
@@ -643,7 +643,7 @@ public class ActionManager : MonoBehaviour
     [Tooltip("Stage, Enemy Number")] int[] curEnemyNumber = new int[2];
     [SerializeField]
     Sprite[] curStageEnemy;
-    Vector3 bossSpriteSize = new Vector3(1.5f, 1.5f, 1);
+    UnityEngine.Vector3 bossSpriteSize = new UnityEngine.Vector3(1.5f, 1.5f, 1);
     /// <summary>
     /// 에너미 보스 설정
     /// </summary>
@@ -682,7 +682,7 @@ public class ActionManager : MonoBehaviour
 
         if (GameStatus.inst.FloorLv != 5) // 일반몹
         {
-            enemySr.transform.localScale = Vector3.one;
+            enemySr.transform.localScale = UnityEngine.Vector3.one;
 
             //몬스터 HP바 아웃라인
             hpBar_OutLine[0].SetActive(true);
@@ -889,15 +889,17 @@ public class ActionManager : MonoBehaviour
 
 
     // 몬스터 죽고 골드 상승
-    int defaultKillGoldValue = 3;
+    float defaultKillGoldValue = 0.5f;
     int relicMultiplyer = 0;
+    BigInteger curgold = new BigInteger();
     public string Get_EnemyDeadGold()
     {
-        
-        string normalValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), defaultKillGoldValue);
+        curgold = BigInteger.Parse(GameStatus.inst.GetTotalGold());
+        curgold = CalCulator.inst.MultiplyBigIntegerAndfloat(curgold, defaultKillGoldValue);
+        string normalValue = curgold.ToString();
 
         // 적 처지골드 유물
-        if(GameStatus.inst.GetAryRelicLv(9) != 0)
+        if (GameStatus.inst.GetAryRelicLv(9) != 0)
         {
             relicMultiplyer = GameStatus.inst.GetAryRelicLv(9);
             normalValue = CalCulator.inst.DigitAndIntPercentMultiply(normalValue, relicMultiplyer);
@@ -923,7 +925,7 @@ public class ActionManager : MonoBehaviour
     /// </summary>
     /// <param name="index"></param>
     /// <returns></returns>
-    public Vector3 Get_CurEnemyCenterPosition() => enemySr.bounds.center;
+    public UnityEngine.Vector3 Get_CurEnemyCenterPosition() => enemySr.bounds.center;
 
 
 }
