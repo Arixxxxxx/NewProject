@@ -101,7 +101,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
     private void setText()
     {
         LvText.text = $"Lv. {Lv} / 5";
-        upAtkText.text = $"LV 증가치 +{CalCulator.inst.StringFourDigitAddFloatChanger((getAtk(Lv +1) - getAtk(Lv)).ToString())}";
+        upAtkText.text = $"LV 증가치 +{CalCulator.inst.StringFourDigitAddFloatChanger((getAtk(Lv + 1) - getAtk(Lv)).ToString())}";
         totalAtkText.text = $"종합 대미지 : {CalCulator.inst.StringFourDigitAddFloatChanger(atk.ToString())} / 타격";
         if (Lv < 5)
         {
@@ -144,12 +144,12 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
             //nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
             if (Lv == 0)
             {
-                nextCost = baseCost;
+                nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100));
             }
             else
             {
 
-                nextCost = 200 * Lv * baseCost;
+                nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(200 * Lv * baseCost, 1 - (pricediscount / 100));
             }
         }
     }
@@ -222,8 +222,7 @@ public class Weapon : MonoBehaviour, IClickLvUpAble
 
     public BigInteger GetNextCost()
     {
-        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.WeaponDiscount);
-        return nextCost = baseCost * CalCulator.inst.MultiplyBigIntegerAndfloat(CalCulator.inst.CalculatePow(costGrowthRate, Lv + Number * 5), 1.67f * (1 - (pricediscount / 100))) * resultPowNum;
+        return nextCost;
     }
 
     public void clickWeaponImage()

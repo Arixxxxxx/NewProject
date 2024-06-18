@@ -6,6 +6,8 @@ using System;
 
 public class Tutorial : MonoBehaviour
 {
+    public static Tutorial inst;
+
     List<GameObject> list_QuestTutorial = new List<GameObject>();
     List<GameObject> list_WeaponTutorial = new List<GameObject>();
     List<GameObject> list_PetTutorial = new List<GameObject>();
@@ -27,7 +29,18 @@ public class Tutorial : MonoBehaviour
     IEnumerator nowCoroutine;
 
     bool isClick;
-    bool isFirst = true;
+
+    private void Awake()
+    {
+        if (inst == null)
+        {
+            inst = this;
+        }
+        else
+        {
+            Destroy(inst);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -37,10 +50,12 @@ public class Tutorial : MonoBehaviour
 
         GameStatus.inst.OnStageChanged.AddListener(() => 
         {
+            Debug.Log(GameStatus.inst.StageLv);
             if (GameStatus.inst.StageLv == 30 && GameStatus.inst.IsFirst30Stage)
             {
                 GameStatus.inst.IsFirst30Stage = false;
                 PlayTutorial(0, 0, 0, 0, 1);
+                Debug.Log("30스테이지 달성!");
             }
         });
     }

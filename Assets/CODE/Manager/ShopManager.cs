@@ -93,7 +93,7 @@ public class ShopManager : MonoBehaviour
 
                 if(PriceType != ProductTag.Money)
                 {
-                    ShopManager.inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
+                    inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
                     //상품 종류에 따른 액션 등록
                     {
                         //비용 차감
@@ -127,6 +127,8 @@ public class ShopManager : MonoBehaviour
                                 //    GameStatus.inst.PlusRuby(count);
                                 //    break;
                         }
+
+                        WorldUI_Manager.inst.Set_RewardUI_Invoke(ProdImage.sprite, ProductText.text);
                     });
                 }
              
@@ -142,6 +144,7 @@ public class ShopManager : MonoBehaviour
         [SerializeField] int count;
         BigInteger prodCount;
         Transform trs;
+        Image ProdImage;
         TMP_Text ProductText;
         TMP_Text BuyBtnText;
         Button BuyBtn;
@@ -152,6 +155,7 @@ public class ShopManager : MonoBehaviour
             BuyBtn = trs.Find("Button").GetComponent<Button>();
             ProductText = trs.Find("RewardText").GetComponent<TMP_Text>();
             BuyBtnText = trs.Find("Button/PriceText").GetComponent<TMP_Text>();
+            ProdImage = trs.Find("ProductImage").GetComponent<Image>();
 
             inst.onDailyReset.AddListener(() => { ResetAdBtn(GameStatus.inst.AdViewrAdShopData); });
 
@@ -183,15 +187,22 @@ public class ShopManager : MonoBehaviour
                 switch (ProductType)
                 {
                     case ProductTag.Gold:
-                        ADViewManager.inst.AdMob_ActiveAndFuntion(() => { GameStatus.inst.PlusGold(prodCount.ToString()); });
+                        ADViewManager.inst.AdMob_ActiveAndFuntion(() => 
+                        { 
+                            GameStatus.inst.PlusGold(prodCount.ToString()); 
+                            WorldUI_Manager.inst.Set_RewardUI_Invoke(ProdImage.sprite, ProductText.text); 
+                        });
 
                         break;
                     case ProductTag.Star:
 
                         break;
                     case ProductTag.Ruby:
-                        ADViewManager.inst.AdMob_ActiveAndFuntion(() => { GameStatus.inst.PlusRuby(count); });
-
+                        ADViewManager.inst.AdMob_ActiveAndFuntion(() => 
+                        { 
+                            GameStatus.inst.PlusRuby(count);
+                            WorldUI_Manager.inst.Set_RewardUI_Invoke(ProdImage.sprite, ProductText.text);
+                        });
                         break;
                 }
 

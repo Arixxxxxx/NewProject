@@ -151,7 +151,6 @@ public class Quest : MonoBehaviour, IClickLvUpAble
     private void setNextCost()
     {
         int btnnum = UIManager.Instance.QuestBuyCountBtnNum;
-        float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
         if (btnnum != 3)//max°¡ ¾Æ´Ò¶§
         {
             //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, buyCount) - 1) / (growthRate - 1)));
@@ -186,8 +185,8 @@ public class Quest : MonoBehaviour, IClickLvUpAble
     private void setNextCost(int count)
     {
         float pricediscount = GameStatus.inst.GetAryPercent((int)ItemTag.QuestDiscount);
-        //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
         nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(BigInteger.Pow(1000, Number) * (BigInteger)(Mathf.Pow(costGrowthRate, Lv) * (Mathf.Pow(costGrowthRate, buyCount) - 1) / (costGrowthRate - 1)),1 - (pricediscount/100));
+        //nextCost = CalCulator.inst.MultiplyBigIntegerAndfloat(baseCost, 1 - (pricediscount / 100)) * (CalCulator.inst.CalculatePow(growthRate, Lv) * (BigInteger)((Mathf.Pow(growthRate, count) - 1) / (growthRate - 1)));
     }
 
     void setTotalProd()

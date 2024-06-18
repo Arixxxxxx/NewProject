@@ -139,6 +139,11 @@ public class CartoonManager : MonoBehaviour
             yield return null;
         }
 
+        if (index == 0)
+        {
+            Tutorial.inst.PlayTutorial(1, 1, 1, 1, 0);
+        }
+
         AudioManager.inst.Set_VoulemMute("SFX", false);
         toons[index].SetActive(false);
         endTextRef.SetActive(false);

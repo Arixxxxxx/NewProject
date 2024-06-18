@@ -267,7 +267,6 @@ public class UIManager : MonoBehaviour
         {
             ShopManager.inst.Active_Shop(0, true);
             onOpenShop?.Invoke();
-            //canvas.sortingOrder = 15; 
         });
 
 
