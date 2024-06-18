@@ -100,6 +100,7 @@ public class MiniGame_0 : MonoBehaviour
 
 
 
+    List<Bamboo> playBamboo = new List<Bamboo>();
 
     // 죽순 풀링 시작
     float poolinginterval = 0.75f;
@@ -123,6 +124,9 @@ public class MiniGame_0 : MonoBehaviour
             }
 
             Bamboo obj = PrefabsQue.Dequeue();
+            // 회수용 리스트
+            playBamboo.Add(obj);
+
             float whereDrop = Random.Range(0f, 100f);
 
             if (whereDrop < 25f) //측면
@@ -168,9 +172,19 @@ public class MiniGame_0 : MonoBehaviour
     /// <param name="obj"></param>
     public void ReturnBambooObj(Bamboo obj)
     {
+        playBamboo.Remove(obj);
         obj.gameObject.SetActive(false);
         PrefabsQue.Enqueue(obj);
+    }
 
+    //게임종료시 전부 리턴
+    public void AllBabooReturn()
+    {
+        if (playBamboo.Count <= 0) { return; }
+        for (int index = playBamboo.Count - 1; index >= 0; index--)
+        {
+            ReturnBambooObj(playBamboo[index]);
+        }
     }
 
     private void FixedUpdate()

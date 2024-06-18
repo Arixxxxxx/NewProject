@@ -287,16 +287,22 @@ public class LoginManager : MonoBehaviour
 
     internal void ProcessAuthentication(SignInStatus status)
     {
+        // 로그인성공시
         if (status == SignInStatus.Success)
         {
             // 아이디 받아와서 등록
-            DataManager.inst.Save_NewCreateAccount(PlayGamesPlatform.Instance.GetUserDisplayName());
+            string id = PlayGamesPlatform.Instance.GetUserDisplayName();
+            if(id.Count() > 10)
+            {
+                id = id.Substring(0, 10);
+            }
+            DataManager.inst.Save_NewCreateAccount(id);
             inputField.text = string.Empty;
             loginRef.SetActive(false);
             guestInputFieldRef.SetActive(false);
             LoadScene(1);
         }
-        else
+        else // 로그인 실패시
         {
             Debug.Log("로그인 실패");
         }
