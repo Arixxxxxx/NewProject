@@ -30,7 +30,7 @@ public class ADViewManager : MonoBehaviour
 
 
     // Admob 리워드형 ID 
-    private string _adUnitId = "ca-app-pub-3940256099942544~3347511713";  /*Test ID*/
+    private string _adUnitId = "ca-app-pub-3940256099942544/5224354917";  /*Test ID*/
 
 
 
@@ -72,6 +72,7 @@ public class ADViewManager : MonoBehaviour
         LoadRewardedAd();
     }
 
+    // 광고 재생후 이벤트 호출
     public void AdMob_ActiveAndFuntion(Action funtion)
     {
         if (AdDelete.inst.IsAdDeleteBuy == false) // 광고 삭제 미구입시
@@ -202,28 +203,28 @@ public class ADViewManager : MonoBehaviour
     //이벤트
     private void RegisterEventHandlers(RewardedAd ad)
     {
-        //// 광고로 수익이 발생한 것으로 추정되는 경우
-        //ad.OnAdPaid += (AdValue adValue) =>
-        //{
-        //    Debug.Log(String.Format("Rewarded ad paid {0} {1}.",
-        //        adValue.Value,
-        //        adValue.CurrencyCode));
-        //};
-        //// 광고에 대한 노출이 기록되면 발생
-        //ad.OnAdImpressionRecorded += () =>
-        //{
-        //    Debug.Log("Rewarded ad recorded an impression.");
-        //};
+        // 광고로 수익이 발생한 것으로 추정되는 경우
+        ad.OnAdPaid += (AdValue adValue) =>
+        {
+            Debug.Log(String.Format("Rewarded ad paid {0} {1}.",
+                adValue.Value,
+                adValue.CurrencyCode));
+        };
+        // 광고에 대한 노출이 기록되면 발생
+        ad.OnAdImpressionRecorded += () =>
+        {
+            Debug.Log("Rewarded ad recorded an impression.");
+        };
         //광고 클릭이 기록되면 발생
-        //ad.OnAdClicked += () =>
-        //{
-        //    Debug.Log("Rewarded ad was clicked.");
-        //};
-        ////  광고가 전체 화면 콘텐츠를 열 때 발생.
-        //ad.OnAdFullScreenContentOpened += () =>
-        //{
-        //    Debug.Log("Rewarded ad full screen content opened.");
-        //};
+        ad.OnAdClicked += () =>
+        {
+            Debug.Log("Rewarded ad was clicked.");
+        };
+        //  광고가 전체 화면 콘텐츠를 열 때 발생.
+        ad.OnAdFullScreenContentOpened += () =>
+        {
+            Debug.Log("광고 시작");
+        };
         // 닫혔을때
         ad.OnAdFullScreenContentClosed += () =>
         {

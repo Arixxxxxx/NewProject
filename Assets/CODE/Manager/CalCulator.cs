@@ -266,10 +266,10 @@ public class CalCulator : MonoBehaviour
 
 
      BigInteger baseHP = new BigInteger(700);  // 기본 체력
-     double hpIncreaseFactor = 1.2;  // 체력 증가 계수 (밸런스 변수)
+     double hpIncreaseFactor = 1.35f;  // 체력 증가 계수 (밸런스 변수)
 
-     BigInteger upBaseHP = new BigInteger(8888);  // 기본 체력
-     double higherHpIncreaseFactor = 1.52;  // 스테이지 150 이후의 체력 증가 계수
+     BigInteger upBaseHP = new BigInteger(8888888);  // 기본 체력
+     double higherHpIncreaseFactor = 5.52;  // 스테이지 150 이후의 체력 증가 계수
 
     // 몬스터 체력 초기화
     public string EnemyHpSetup()

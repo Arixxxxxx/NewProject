@@ -95,6 +95,7 @@ public class GameManager : MonoBehaviour
             MinigameManager.inst.minigameReset();
             MinigameManager.inst.CuttonFadeOut(); // 시작 페이드 
 
+            MiniGame_0.inst.AllBabooReturn();
             worldCam.gameObject.SetActive(false);
             frontUiRef.SetActive(false);
             uiCanvasRef.SetActive(false);
