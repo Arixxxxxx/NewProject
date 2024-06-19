@@ -264,7 +264,8 @@ public class BuffContoller : MonoBehaviour
                     break;
 
                 case 2: // 골드 획득량증가
-                    GameStatus.inst.BuffAddGold = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 2);
+                    Debug.Log("버프 켜짐");
+                    GameStatus.inst.BuffAddGold = true;
                     break;
 
                 case 3: // 강한 공격력
@@ -274,7 +275,7 @@ public class BuffContoller : MonoBehaviour
                 case 4: //뉴비버프
                     GameStatus.inst.NewbieATKBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.TotalAtk.ToString(), 2);
                     GameStatus.inst.NewbieAttackSpeed = 0.2f;
-                    GameStatus.inst.NewbieGoldBuffValue = CalCulator.inst.StringAndIntMultiPly(GameStatus.inst.GetTotalGold(), 2);
+                    GameStatus.inst.NewbieGoldBuffValue = true;
                     GameStatus.inst.NewbieMoveSpeedBuffValue = 0.3f;
                     break;
             }
@@ -293,7 +294,7 @@ public class BuffContoller : MonoBehaviour
                     break;
 
                 case 2:
-                    GameStatus.inst.BuffAddGold = "0";
+                    GameStatus.inst.BuffAddGold = false;
                     break;
 
                 case 3: // 강한 공격력
@@ -303,7 +304,7 @@ public class BuffContoller : MonoBehaviour
                 case 4: //뉴비버프
                     GameStatus.inst.NewbieATKBuffValue = "0";
                     GameStatus.inst.NewbieAttackSpeed = 0f;
-                    GameStatus.inst.NewbieGoldBuffValue = "0";
+                    GameStatus.inst.NewbieGoldBuffValue = false;
                     GameStatus.inst.NewbieMoveSpeedBuffValue = 0f;
                     break;
             }
