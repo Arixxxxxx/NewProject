@@ -322,6 +322,7 @@ public class UIManager : MonoBehaviour
         {
             ClickBotBtn(4);
             ShopManager.inst.Active_Shop(0, true);
+            Shop_Gacha.inst.GachaMode_Changer(SelectType.RelicGacha);
         });
         Transform RelicAllUpBtnParents = canvas.transform.Find("ScreenArea/BackGround/Relic/AllLvUpBtn");
         int RelicAllCount = RelicAllUpBtnParents.childCount;

@@ -8,6 +8,7 @@ public class Tutorial : MonoBehaviour
 {
     public static Tutorial inst;
 
+    GameObject tutorialintro;
     List<GameObject> list_QuestTutorial = new List<GameObject>();
     List<GameObject> list_WeaponTutorial = new List<GameObject>();
     List<GameObject> list_PetTutorial = new List<GameObject>();
@@ -22,6 +23,7 @@ public class Tutorial : MonoBehaviour
     Button QuestLv1Btn;
     Button WeaponLv1Btn;
     Button HwanSeangBtn;
+    Button RelicShopBtn;
 
     Transform TutorialParents;
     Button skipBtn;
@@ -63,6 +65,7 @@ public class Tutorial : MonoBehaviour
     void initRef()
     {
         TutorialParents = transform.parent.Find("ScreenArea/Tutorial");
+        tutorialintro = TutorialParents.Find("Intro").gameObject;
         list_QuestTutorial.Add(TutorialParents.Find("Quest").gameObject);
         list_QuestTutorial.Add(TutorialParents.Find("Quest (1)").gameObject);
         list_QuestTutorial.Add(TutorialParents.Find("Quest (2)").gameObject);
@@ -85,6 +88,7 @@ public class Tutorial : MonoBehaviour
         QuestLv1Btn = transform.parent.Find("ScreenArea/BackGround/Quest/Scroll View/Viewport/Content/Quest/LvUpBtn").GetComponent<Button>();
         WeaponLv1Btn = transform.parent.Find("ScreenArea/BackGround/Weapon/Scroll View/Viewport/Content/Weapon/LvUpBtn").GetComponent<Button>();
         HwanSeangBtn = GameObject.Find("---[World UI Canvas]").transform.Find("StageUI/HwanSeng").GetComponent<Button>();
+        RelicShopBtn = transform.parent.Find("ScreenArea/BackGround/Relic/GotoRelicShopBtn").GetComponent<Button>();
 
         skipBtn = TutorialParents.Find("SkipBtn").GetComponent<Button>();
     }
@@ -99,6 +103,7 @@ public class Tutorial : MonoBehaviour
         HwanSeangBtn.onClick.AddListener(() => { isClick = true; });
         QuestLv1Btn.onClick.AddListener(() => { isClick = true; });
         WeaponLv1Btn.onClick.AddListener(() => { isClick = true; });
+        RelicShopBtn.onClick.AddListener(() => { isClick = true; });
     }
 
     private void Update()
@@ -174,6 +179,13 @@ public class Tutorial : MonoBehaviour
 
     IEnumerator QuestTutorial()
     {
+        tutorialintro.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        while (Input.anyKeyDown == false)
+        {
+            yield return null;
+        }
+        tutorialintro.SetActive(false);
 
         list_QuestTutorial[0].SetActive(true);
         isClick = false;
@@ -256,11 +268,20 @@ public class Tutorial : MonoBehaviour
         }
         list_RelicTutorial[0].SetActive(false);
         list_RelicTutorial[1].SetActive(true);
-        while (Input.anyKeyDown == false)
+        isClick = false;
+        while (isClick == false)
         {
             yield return null;
         }
         list_RelicTutorial[1].SetActive(false);
+        list_RelicTutorial[2].SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        while (Input.anyKeyDown == false)
+        {
+            yield return null;
+        }
+        list_RelicTutorial[2].SetActive(false);
+        UIManager.Instance.ClickBotBtn(0);
     }
 
     IEnumerator HwanseangTutorial()
