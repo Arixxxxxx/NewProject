@@ -339,9 +339,9 @@ public class UIManager : MonoBehaviour
         petParents = canvas.transform.Find("ScreenArea/BackGround/Pet/Scroll View/Viewport/Content");
 
         //∑Í∑ø √ ±‚»≠
-        ObjRoulette = canvas.transform.Find("ScreenArea/Roulette/").gameObject;
-        RouletteOpenBtn = worldCanvas.transform.Find("StageUI/MenuBox/Btns/Bingo").GetComponent<Button>();
-        RouletteOpenBtn.onClick.AddListener(() => { ObjRoulette.SetActive(true); });
+        //ObjRoulette = canvas.transform.Find("ScreenArea/Roulette/").gameObject;
+        //RouletteOpenBtn = worldCanvas.transform.Find("StageUI/MenuBox/Btns/Bingo").GetComponent<Button>();
+        //RouletteOpenBtn.onClick.AddListener(() => { ObjRoulette.SetActive(true); });
     }
 
     void Start()
