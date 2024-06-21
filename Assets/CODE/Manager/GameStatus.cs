@@ -930,15 +930,26 @@ public class GameStatus : MonoBehaviour
     {
         bingoBoard = value;
     }
-    //int bingoStack;
-    //public int BingoStack
-    //{
-    //    get => bingoStack;
-    //    set
-    //    {
-    //        bingoStack = value;
-    //    }
-    //}
+
+    [Serializable]
+    public class BingoBoard
+    {
+        public ProductTag type;
+        public int count;
+    }
+
+    List<BingoBoard> list_bingoBoard = new List<BingoBoard>(9);
+
+    public void SetBingoClass(int index,ProductTag _type, int _count)
+    {
+        list_bingoBoard[index].type = _type;
+        list_bingoBoard[index].count = _count;
+    }
+
+    public BingoBoard GetBingoClass(int _index)
+    {
+        return list_bingoBoard[_index];
+    }
 
     [HideInInspector] public UnityEvent OnRouletteTicketChanged;
     int rouletteTicket;
@@ -1065,6 +1076,9 @@ public class GameStatus : MonoBehaviour
         {
             AdBingoActive = false;
         }
+
+        // 빙고
+        EventShop_RulletManager.inst.resetBingo();
     }
 
 
@@ -1275,7 +1289,7 @@ public class GameStatus : MonoBehaviour
         // 12. 빙고 현황
         RouletteTicket = saveData.RouletteTicket;
         bingoBoard = saveData.BingoBoard;
-        //BingoStack = saveData.BingoStack;
+        list_bingoBoard = saveData.list_bingoboard;
 
         //우편
         LetterManager.inst.LeftLetterMake(saveData.LetterBox);
@@ -1384,7 +1398,7 @@ public class GameStatus : MonoBehaviour
         // 12. 빙고 현황
         saveData.RouletteTicket = RouletteTicket;
         saveData.BingoBoard = bingoBoard;
-        //saveData.BingoStack = BingoStack;
+        saveData.list_bingoboard = list_bingoBoard;
 
         // 우편 남은것
         saveData.LetterBox.Clear();

@@ -25,7 +25,8 @@ public enum ProductTag
     Gold,
     Star,
     Ruby,
-    Money
+    Money,
+    MiniGameTicket
 }
 
 public enum SpMissionTag
