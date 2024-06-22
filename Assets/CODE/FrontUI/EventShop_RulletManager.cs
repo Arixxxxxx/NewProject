@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.UI;
 using System.Numerics;
+using System;
 
 public class EventShop_RulletManager : MonoBehaviour
 {
@@ -60,17 +61,161 @@ public class EventShop_RulletManager : MonoBehaviour
     Animator rulletArrowAnim;
 
     // 빙고
-    List<GameObject> list_ObjBingoMask = new List<GameObject>();
-    List<Animator> list_AnimBingo = new List<Animator>();
-    List<GameObject> list_ObjBingoText = new List<GameObject>();
+    [SerializeField] List<bingo> list_bingo = new List<bingo>();
+
+    [Serializable]
+    class bingo
+    {
+        public ProductTag rewardType;
+        public int count;
+
+        GameObject objBingo;
+        GameObject objBingoMask;
+        GameObject objBingoText;
+        GameObject objParticle;
+        TMP_Text countText;
+        Image rewardImage;
+        Animator objBingoAnim;
+
+        public void initBingo(GameObject _obj)
+        {
+            objBingo = _obj;
+            countText = objBingo.transform.Find("Text (TMP)").GetComponent<TMP_Text>();
+            rewardImage = objBingo.transform.Find("Image").GetComponent<Image>();
+            Debug.Log(objBingo.transform.GetChild(3).name);
+            objParticle = objBingo.transform.Find("Fireworks").gameObject;
+
+            objBingoMask = _obj.transform.Find("Mask").gameObject;
+            objBingoText = objBingoMask.transform.GetChild(0).gameObject;
+            objBingoAnim = objBingoMask.GetComponent<Animator>();
+
+            rewardImage.sprite = UIManager.Instance.GetProdSprite((int)rewardType);
+            rewardImage.SetNativeSize();
+            float ratio = rewardImage.sprite.bounds.size.x / rewardImage.sprite.bounds.size.y;
+            if (rewardType == ProductTag.MiniGameTicket)
+            {
+                rewardImage.rectTransform.sizeDelta = new UnityEngine.Vector2(30 * ratio, 30f);
+                rewardImage.rectTransform.localEulerAngles = new UnityEngine.Vector3(0, 0, 16f);
+            }
+            else
+            {
+                rewardImage.rectTransform.sizeDelta = new UnityEngine.Vector2(40 * ratio, 40f);
+                rewardImage.rectTransform.localEulerAngles = new UnityEngine.Vector3(0, 0, 0);
+            }
+
+        }
+
+        public void initStart()
+        {
+            //갯수 텍스트 초기화
+            switch (rewardType)
+            {
+                case ProductTag.Gold:
+                    BigInteger prodGold = GameStatus.inst.TotalProdGold;
+                    countText.text = (prodGold * count).ToString();
+                    break;
+                case ProductTag.Star:
+                    countText.text = CalCulator.inst.StringFourDigitAddFloatChanger(count.ToString());
+                    break;
+                case ProductTag.Ruby:
+                    countText.text = count.ToString();
+                    break;
+                case ProductTag.MiniGameTicket:
+                    countText.text = "티켓";
+                    break;
+            }
+        }
+
+        public void SetGoldText()
+        {
+            if (rewardType == ProductTag.Gold)
+            {
+                BigInteger prodGold = GameStatus.inst.TotalProdGold;
+                countText.text = CalCulator.inst.StringFourDigitAddFloatChanger((prodGold * count).ToString());
+            }
+        }
+
+        public void GetReward()
+        {
+            switch (rewardType)
+            {
+                case ProductTag.Gold:
+                    BigInteger prodGold = GameStatus.inst.TotalProdGold;
+                    prodGold = prodGold * count;
+                    GameStatus.inst.PlusGold(prodGold.ToString());
+                    WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(1), "골드 " + CalCulator.inst.StringFourDigitAddFloatChanger(prodGold.ToString()) + "개");
+                    break;
+                case ProductTag.Star:
+                    GameStatus.inst.PlusStar(count.ToString());
+                    WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(2), "별 " + CalCulator.inst.StringFourDigitAddFloatChanger(count.ToString()) + "개");
+                    break;
+                case ProductTag.Ruby:
+                    GameStatus.inst.PlusRuby(count);
+                    WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "루비 " + CalCulator.inst.StringFourDigitAddFloatChanger(count.ToString()) + "개");
+                    break;
+                case ProductTag.MiniGameTicket:
+                    GameStatus.inst.MinigameTicket += count;
+                    WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(3), "이벤트티켓 " + count.ToString() + "장");
+                    break;
+            }
+        }
+
+        public void SetParticalActive(bool value)
+        {
+            objParticle.SetActive(value);
+        }
+
+        public GameObject GetObj()
+        {
+            return objBingo;
+        }
+
+        public void SetMaskActive(bool value)
+        {
+            objBingoMask.SetActive(value);
+        }
+
+        public void SetMaskTextActive(bool value)
+        {
+            objBingoText.SetActive(value);
+        }
+
+        public Animator GetAnim()
+        {
+            return objBingoAnim;
+        }
+
+        public void SetBingo(ProductTag _type, int _count)
+        {
+            rewardType = _type;
+            count = _count;
+
+            rewardImage.sprite = UIManager.Instance.GetProdSprite((int)rewardType);
+            rewardImage.SetNativeSize();
+            float ratio = rewardImage.sprite.bounds.size.x / rewardImage.sprite.bounds.size.y;
+            if (rewardType == ProductTag.MiniGameTicket)
+            {
+                rewardImage.rectTransform.sizeDelta = new UnityEngine.Vector2(30 * ratio, 30f);
+                rewardImage.rectTransform.localEulerAngles = new UnityEngine.Vector3(0, 0, 16f);
+            }
+            else
+            {
+                rewardImage.rectTransform.sizeDelta = new UnityEngine.Vector2(40 * ratio, 40f);
+                rewardImage.rectTransform.localEulerAngles = new UnityEngine.Vector3(0, 0, 0);
+
+            }
+        }
+    }
     List<GameObject> list_ObjBingoReward = new List<GameObject>();
     List<Image> list_ObjBingoRewardImage = new List<Image>();
     List<TMP_Text> list_ObjBingoRewardText = new List<TMP_Text>();
-    List<TMP_Text> list_GoldText = new List<TMP_Text>();
     GameObject objShowBingoReward;
     Transform BingoRef;
 
+
     int bingoStack = 0;
+    bool isDoBingo = false;
+    bool isBingoClear = false;
 
     bool[] list_BingoBoard = new bool[9];
     bool[] verticalBingo = new bool[3];
@@ -158,18 +303,19 @@ public class EventShop_RulletManager : MonoBehaviour
 
         //빙고
         BingoRef = RulletRef.transform.Find("Window/Main/Bingo");
-        Transform BingoBoardRef = BingoRef.Find("BingoBoard");
-        int BingoCount = BingoBoardRef.childCount;
-        for (int iNum = 0; iNum < BingoCount; iNum++)
-        {
-            GameObject objMask = BingoBoardRef.GetChild(iNum).Find("Mask").gameObject;
-            list_ObjBingoMask.Add(objMask);
-            list_AnimBingo.Add(objMask.GetComponent<Animator>());
-            list_ObjBingoText.Add(objMask.transform.GetChild(0).gameObject);
-        }
+
 
         objShowBingoReward = BingoRef.Find("ShowReward").gameObject;
         objShowBingoReward.GetComponent<Button>().onClick.AddListener(() => { objShowBingoReward.SetActive(false); });
+
+        Transform BingoBoardRef = BingoRef.Find("BingoBoard");
+        int BingoCount = list_bingo.Count;
+        for (int iNum = 0; iNum < BingoCount; iNum++)
+        {
+            GameObject obj = BingoBoardRef.GetChild(iNum).gameObject;
+            list_bingo[iNum].initBingo(obj);
+        }
+
         int bingoRewardCount = objShowBingoReward.transform.childCount;
         for (int iNum = 0; iNum < bingoRewardCount; iNum++)
         {
@@ -178,9 +324,6 @@ public class EventShop_RulletManager : MonoBehaviour
             list_ObjBingoRewardImage.Add(obj.transform.Find("Image").GetComponent<Image>());
             list_ObjBingoRewardText.Add(obj.transform.Find("CountText").GetComponent<TMP_Text>());
         }
-        list_GoldText.Add(BingoBoardRef.Find("Coin2/Text (TMP)").GetComponent<TMP_Text>());
-        list_GoldText.Add(BingoBoardRef.Find("Coin5/Text (TMP)").GetComponent<TMP_Text>());
-        list_GoldText.Add(BingoBoardRef.Find("Coin10/Text (TMP)").GetComponent<TMP_Text>());
 
 
         exitBingoBtn = RulletRef.transform.Find("Window/Main/Bingo/BingoBtns/ExitBtn").GetComponent<Button>();
@@ -203,23 +346,32 @@ public class EventShop_RulletManager : MonoBehaviour
 
         cheetBtn = RulletRef.transform.Find("Window/Main/Cheet").GetComponent<Button>();
         cheetBtn.onClick.AddListener(() => { GameStatus.inst.MinigameTicket++; });
-
         BtnInit();
     }
     void Start()
     {
+        int BingoCount = list_bingo.Count;
+        for (int iNum = 0; iNum < BingoCount; iNum++)
+        {
+            if (GameStatus.inst.GetBingoClass(iNum).count != 0)
+            {
+                list_bingo[iNum].SetBingo(GameStatus.inst.GetBingoClass(iNum).type, GameStatus.inst.GetBingoClass(iNum).count);
+            }
+            list_bingo[iNum].initStart();
+        }
+
+
         int boardCount = list_BingoBoard.Length;
         for (int iNum = 0; iNum < boardCount; iNum++)
         {
             setBingoBoard(iNum, GameStatus.inst.GetBingoBoard(iNum));
         }
-        setBingoBoard(4, true);
         //수직 빙고 체크
         if (verticalBingo[0] == false && list_BingoBoard[0] == true && list_BingoBoard[3] == true && list_BingoBoard[6] == true)
         {
             verticalBingo[0] = true;
         }
-        if (verticalBingo[1] == false && list_BingoBoard[1] == true && list_BingoBoard[7] == true)
+        if (verticalBingo[1] == false && list_BingoBoard[1] == true && list_BingoBoard[4] == true && list_BingoBoard[7] == true)
         {
             verticalBingo[1] = true;
         }
@@ -233,7 +385,7 @@ public class EventShop_RulletManager : MonoBehaviour
             horiBingo[0] = true;
             bingoStack++;
         }
-        if (horiBingo[1] == false && list_BingoBoard[3] == true && list_BingoBoard[5] == true)
+        if (horiBingo[1] == false && list_BingoBoard[3] == true && list_BingoBoard[4] == true && list_BingoBoard[5] == true)
         {
             horiBingo[1] = true;
             bingoStack++;
@@ -244,16 +396,32 @@ public class EventShop_RulletManager : MonoBehaviour
             bingoStack++;
         }
         //대각선 빙고 체크
-        if (crossBingo[0] == false && list_BingoBoard[0] == true && list_BingoBoard[8] == true)
+        if (crossBingo[0] == false && list_BingoBoard[0] == true && list_BingoBoard[4] == true && list_BingoBoard[8] == true)
         {
             crossBingo[0] = true;
             bingoStack++;
         }
-        if (crossBingo[1] == false && list_BingoBoard[2] == true && list_BingoBoard[6] == true)
+        if (crossBingo[1] == false && list_BingoBoard[2] == true && list_BingoBoard[4] == true && list_BingoBoard[6] == true)
         {
             crossBingo[1] = true;
             bingoStack++;
         }
+
+        int bingoCount = list_BingoBoard.Length;
+        //빙고판 다 채워졌는지 체크
+        for (int iNum = 0; iNum < bingoCount; iNum++)
+        {
+            if (list_BingoBoard[iNum] == false)
+            {
+                //빙고판 중에 안채워진게 있다면 코루틴 종료;
+                return;
+            }
+        }
+
+        isBingoClear = true;
+
+
+
     }
 
     UnityEngine.Vector2 cryVec;
@@ -266,12 +434,10 @@ public class EventShop_RulletManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             GameStatus.inst.MinigameTicket++;
+            resetBingo();
         };
 
     }
-
-
-
 
 
     /// <summary>
@@ -292,18 +458,19 @@ public class EventShop_RulletManager : MonoBehaviour
     {
         selectRulletBtn.onClick.AddListener(() =>
         {
-            if (rulletGameRef.activeSelf == false && doSlotMachine == false && isdoBingo == false)
+            if (rulletGameRef.activeSelf == false && doSlotMachine == false && isDoBingo == false)
             {
                 WorldUI_Manager.inst.FrontUICuttonAction(() =>
                 {
                     selectGame(0);
                 });
             }
+
         });
 
         selectSlotMachineBtn.onClick.AddListener(() =>
         {
-            if (slotMachineGameRef.activeSelf == false && doRullet == false && isdoBingo == false)
+            if (slotMachineGameRef.activeSelf == false && doRullet == false && isDoBingo == false)
             {
                 WorldUI_Manager.inst.FrontUICuttonAction(() =>
                 {
@@ -326,13 +493,21 @@ public class EventShop_RulletManager : MonoBehaviour
 
         exitRulletBtn.onClick.AddListener(() => { if (doRullet == true) { return; } Active_RulletEventShop(false); });
         exitRulletsBtn.onClick.AddListener(() => { if (doSlotMachine == true) { return; } Active_RulletEventShop(false); });
-        exitBingoBtn.onClick.AddListener(() => { if (isdoBingo) { return; } Active_RulletEventShop(false); });
+        exitBingoBtn.onClick.AddListener(() => { if (isDoBingo) { return; } Active_RulletEventShop(false); });
 
         //슬롯머신 일반
         startSlotMachineBtn.onClick.AddListener(() =>
         {
-            if (doSlotMachine == true) { return; }
-            if (GameStatus.inst.MinigameTicket <= 0) { nohaveTiketAnim.SetTrigger("False"); return; }
+            if (doSlotMachine == true)
+            {
+                return;
+            }
+            if (GameStatus.inst.MinigameTicket <= 0)
+            {
+                AudioManager.inst.Play_Ui_SFX(24, 1f);
+                nohaveTiketAnim.SetTrigger("False");
+                return;
+            }
             if (GameStatus.inst.MinigameTicket > 0)
             {
                 GameStatus.inst.MinigameTicket--;
@@ -345,7 +520,10 @@ public class EventShop_RulletManager : MonoBehaviour
         //슬롯머신 광고
         startadSlotMachineBtn.onClick.AddListener(() =>
         {
-            if (doSlotMachine == true) { return; }
+            if (doSlotMachine == true)
+            {
+                return;
+            }
             ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
             {
                 // 하루 추가
@@ -357,8 +535,16 @@ public class EventShop_RulletManager : MonoBehaviour
         //룰렛 일반
         startRulletBtn.onClick.AddListener(() =>
         {
-            if (doRullet == true) { return; }
-            if (GameStatus.inst.MinigameTicket <= 0) { nohaveTiketAnim.SetTrigger("False"); return; }
+            if (doRullet == true)
+            {
+                return;
+            }
+            if (GameStatus.inst.MinigameTicket <= 0)
+            {
+                AudioManager.inst.Play_Ui_SFX(24, 1f);
+                nohaveTiketAnim.SetTrigger("False");
+                return;
+            }
             if (GameStatus.inst.MinigameTicket > 0)
             {
                 GameStatus.inst.MinigameTicket--;
@@ -370,7 +556,10 @@ public class EventShop_RulletManager : MonoBehaviour
         //룰렛 광고
         adStartRulletBtn.onClick.AddListener(() =>
         {
-            if (doRullet == true) { return; }
+            if (doRullet == true)
+            {
+                return;
+            }
             ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
             {
                 GameStatus.inst.AdRulletActive = true;
@@ -382,9 +571,13 @@ public class EventShop_RulletManager : MonoBehaviour
         //빙고 일반
         startBingoBtn.onClick.AddListener(() =>
         {
-            if (isdoBingo) { return; }
+            if (isDoBingo || isBingoClear)
+            {
+                return;
+            }
             if (GameStatus.inst.MinigameTicket <= 0)
             {
+                AudioManager.inst.Play_Ui_SFX(24, 1f);
                 nohaveTiketAnim.SetTrigger("False");
                 return;
             }
@@ -397,7 +590,10 @@ public class EventShop_RulletManager : MonoBehaviour
         //빙고 광고
         startadBingoBtn.onClick.AddListener(() =>
         {
-            if (isdoBingo) { return; }
+            if (isDoBingo || isBingoClear)
+            {
+                return;
+            }
             ADViewManager.inst.AdMob_ActiveAndFuntion(() =>
             {
                 GameStatus.inst.AdBingoActive = true;
@@ -539,7 +735,7 @@ public class EventShop_RulletManager : MonoBehaviour
     {
         UnityEngine.Vector2 tillingVec = UnityEngine.Vector2.zero;
         float timer = 0f;
-        float randomStartValue = Random.Range(0f, 1f);
+        float randomStartValue = UnityEngine.Random.Range(0f, 1f);
         tillingVec.y = randomStartValue;
         rulletParticle.gameObject.SetActive(false);
 
@@ -896,7 +1092,7 @@ public class EventShop_RulletManager : MonoBehaviour
         yield return rulletDealy;
         doRullet = true;
         spinSpeed = 2500f;
-        rotZ.z = Random.Range(0, 360);
+        rotZ.z = UnityEngine.Random.Range(0, 360);
         rulletPan.transform.eulerAngles = rotZ;
     }
 
@@ -1060,51 +1256,58 @@ public class EventShop_RulletManager : MonoBehaviour
     }
 
     //////////////////////빙고///////////////////////////
-    bool isdoBingo = false;
+
     IEnumerator PlayBingo()
     {
-        if (isdoBingo == false)
+        if (isDoBingo == false)
         {
-            isdoBingo = true;
+            isDoBingo = true;
             //비어있는 빙고판 찾기
             List<int> indexList = new List<int>();
             int bingoCount = list_BingoBoard.Length;
             for (int iNum = 0; iNum < bingoCount; iNum++)
             {
-                if (iNum != 4 && list_BingoBoard[iNum] == false)
+                if (list_BingoBoard[iNum] == false)
                 {
                     indexList.Add(iNum);
                 }
             }
-            float time = 0.05f;
+            float time = 0.1f;
             //빙고번호 랜덤 연출
             int randomCount = indexList.Count;
 
             for (int iNum = 0; iNum < randomCount; iNum++)
             {
-                int index = Random.Range(0, randomCount);
-                list_ObjBingoMask[indexList[index]].SetActive(true);
+                int index = UnityEngine.Random.Range(0, randomCount);
+                list_bingo[indexList[index]].SetMaskActive(true);
+                AudioManager.inst.Play_Ui_SFX(21, 1);
                 yield return new WaitForSeconds(time);
-                list_ObjBingoMask[indexList[index]].SetActive(false);
-                time += 0.03f;
+                list_bingo[indexList[index]].SetMaskActive(false);
+                time += 0.05f;
 
             }
-            int realindex = Random.Range(0, randomCount);
-            list_ObjBingoMask[indexList[realindex]].SetActive(true);
+            int realindex = UnityEngine.Random.Range(0, randomCount);
+            list_bingo[indexList[realindex]].SetMaskActive(true);
+            AudioManager.inst.Play_Ui_SFX(21, 1);
             yield return new WaitForSeconds(time);
 
             //빙고 하나 채워주기
-            list_ObjBingoMask[indexList[realindex]].SetActive(false);
-            realindex = Random.Range(0, randomCount);
-            setBingoBoard(indexList[realindex], true);
+            list_bingo[indexList[realindex]].SetMaskActive(false);
+            realindex = UnityEngine.Random.Range(0, randomCount);
+            list_BingoBoard[indexList[realindex]] = true;
+            list_bingo[indexList[realindex]].SetMaskActive(true);
+            yield return new WaitForSeconds(0.5f);
+            list_bingo[indexList[realindex]].SetMaskTextActive(true);
+            GameStatus.inst.SetBingoBoard(indexList[realindex], true);
+            AudioManager.inst.Play_Ui_SFX(22, 1);
 
             //보상 지급
-            getBingoReward(indexList[realindex]);
+            list_bingo[indexList[realindex]].GetReward();
             GameStatus.inst.MinigameTicket--;
             yield return new WaitForSeconds(0.5f);
 
             //Get텍스트 표시
-            list_ObjBingoText[indexList[realindex]].SetActive(true);
+            list_bingo[indexList[realindex]].SetMaskTextActive(true);
 
             indexList.Clear();
 
@@ -1119,7 +1322,7 @@ public class EventShop_RulletManager : MonoBehaviour
                 indexList.Add(6);
                 bingoStack++;
             }
-            if (verticalBingo[1] == false && list_BingoBoard[1] == true && list_BingoBoard[7] == true)
+            if (verticalBingo[1] == false && list_BingoBoard[1] == true && list_BingoBoard[4] == true && list_BingoBoard[7] == true)
             {
                 verticalBingo[1] = true;
                 indexList.Add(1);
@@ -1145,7 +1348,7 @@ public class EventShop_RulletManager : MonoBehaviour
                 indexList.Add(2);
                 bingoStack++;
             }
-            if (horiBingo[1] == false && list_BingoBoard[3] == true && list_BingoBoard[5] == true)
+            if (horiBingo[1] == false && list_BingoBoard[3] == true && list_BingoBoard[4] == true && list_BingoBoard[5] == true)
             {
                 horiBingo[1] = true;
                 indexList.Add(3);
@@ -1163,7 +1366,7 @@ public class EventShop_RulletManager : MonoBehaviour
             }
 
             //대각선 빙고 체크
-            if (crossBingo[0] == false && list_BingoBoard[0] == true && list_BingoBoard[8] == true)
+            if (crossBingo[0] == false && list_BingoBoard[0] == true && list_BingoBoard[4] == true && list_BingoBoard[8] == true)
             {
                 crossBingo[0] = true;
                 indexList.Add(0);
@@ -1171,7 +1374,7 @@ public class EventShop_RulletManager : MonoBehaviour
                 indexList.Add(8);
                 bingoStack++;
             }
-            if (crossBingo[1] == false && list_BingoBoard[2] == true && list_BingoBoard[6] == true)
+            if (crossBingo[1] == false && list_BingoBoard[2] == true && list_BingoBoard[4] == true && list_BingoBoard[6] == true)
             {
                 crossBingo[1] = true;
                 indexList.Add(2);
@@ -1188,15 +1391,15 @@ public class EventShop_RulletManager : MonoBehaviour
                 switch (iNum)
                 {
                     case 0:
-                        BigInteger getgold5 = GameStatus.inst.TotalProdGold * 5;
+                        BigInteger getgold5 = GameStatus.inst.TotalProdGold * 25;
                         GameStatus.inst.PlusGold(getgold5.ToString());
                         rewardSprite.Add(UIManager.Instance.GetProdSprite(0));
                         rewardText.Add(CalCulator.inst.StringFourDigitAddFloatChanger(getgold5.ToString()));
                         break;
                     case 1:
-                        GameStatus.inst.PlusStar("300");
+                        GameStatus.inst.PlusStar("500");
                         rewardSprite.Add(UIManager.Instance.GetProdSprite(1));
-                        rewardText.Add("300");
+                        rewardText.Add("500");
                         break;
                     case 2:
                         GameStatus.inst.PlusRuby(200);
@@ -1204,15 +1407,15 @@ public class EventShop_RulletManager : MonoBehaviour
                         rewardText.Add("200");
                         break;
                     case 3:
-                        BigInteger getgold10 = GameStatus.inst.TotalProdGold * 10;
+                        BigInteger getgold10 = GameStatus.inst.TotalProdGold * 50;
                         GameStatus.inst.PlusGold(getgold10.ToString());
                         rewardSprite.Add(UIManager.Instance.GetProdSprite(0));
                         rewardText.Add(CalCulator.inst.StringFourDigitAddFloatChanger(getgold10.ToString()));
                         break;
                     case 4:
-                        GameStatus.inst.PlusStar("400");
+                        GameStatus.inst.PlusStar("700");
                         rewardSprite.Add(UIManager.Instance.GetProdSprite(1));
-                        rewardText.Add("400");
+                        rewardText.Add("700");
                         break;
                     case 5:
                         GameStatus.inst.PlusRuby(300);
@@ -1220,15 +1423,15 @@ public class EventShop_RulletManager : MonoBehaviour
                         rewardText.Add("300");
                         break;
                     case 6:
-                        BigInteger getgold15 = GameStatus.inst.TotalProdGold * 15;
+                        BigInteger getgold15 = GameStatus.inst.TotalProdGold * 100;
                         GameStatus.inst.PlusGold(getgold15.ToString());
                         rewardSprite.Add(UIManager.Instance.GetProdSprite(0));
                         rewardText.Add(CalCulator.inst.StringFourDigitAddFloatChanger(getgold15.ToString()));
                         break;
                     case 7:
-                        GameStatus.inst.PlusStar("500");
+                        GameStatus.inst.PlusStar("1000");
                         rewardSprite.Add(UIManager.Instance.GetProdSprite(1));
-                        rewardText.Add("500");
+                        rewardText.Add("1A");
                         break;
                 }
             }
@@ -1237,7 +1440,7 @@ public class EventShop_RulletManager : MonoBehaviour
             //빙고달성 연출 재생
             yield return StartCoroutine(BingoEffect(indexList));
             yield return new WaitForSeconds(0.3f);
-            isdoBingo = false;
+            isDoBingo = false;
 
             //빙고 획득 보상 연출 재생
             int effectCount = rewardSprite.Count;
@@ -1252,6 +1455,7 @@ public class EventShop_RulletManager : MonoBehaviour
             if (effectCount != 0)
             {
                 objShowBingoReward.SetActive(true);
+                AudioManager.inst.Play_Ui_SFX(23, 1);
             }
 
             while (objShowBingoReward.activeSelf)
@@ -1274,26 +1478,54 @@ public class EventShop_RulletManager : MonoBehaviour
                 }
             }
 
-            //다 채워졌으면 빙고판 리셋
-            for (int iNum = 0; iNum < bingoCount; iNum++)
-            {
-                setBingoBoard(iNum, false);
-                list_ObjBingoMask[iNum].SetActive(false);
-                list_ObjBingoText[iNum].SetActive(false);
-            }
-            list_ObjBingoMask[4].SetActive(true);
-            setBingoBoard(4, true);
+            isBingoClear = true;
+        }
+    }
 
-            verticalBingo[0] = false;
-            verticalBingo[1] = false;
-            verticalBingo[2] = false;
-            horiBingo[0] = false;
-            horiBingo[1] = false;
-            horiBingo[2] = false;
-            crossBingo[0] = false;
-            crossBingo[1] = false;
-            bingoStack = 0;
+    //빙고판 리셋
+    public void resetBingo()
+    {
+        int bingoCount = list_BingoBoard.Length;
+        for (int iNum = 0; iNum < bingoCount; iNum++)
+        {
+            setBingoBoard(iNum, false);
+            list_bingo[iNum].SetMaskActive(false);
+            list_bingo[iNum].SetMaskTextActive(false);
+        }
+        isDoBingo = false;
+        isBingoClear = false;
+        verticalBingo[0] = false;
+        verticalBingo[1] = false;
+        verticalBingo[2] = false;
+        horiBingo[0] = false;
+        horiBingo[1] = false;
+        horiBingo[2] = false;
+        crossBingo[0] = false;
+        crossBingo[1] = false;
+        bingoStack = 0;
+        suffleBingo();
+    }
+    System.Random rnd = new System.Random();
+    void suffleBingo()
+    {
+        int bingoCount = list_BingoBoard.Length;
+        for (int iNum = bingoCount - 1; iNum > 0; iNum--)
+        {
+            int rand = rnd.Next(iNum + 1);
+            var objTmep = list_bingo[rand];
 
+
+            list_bingo[rand] = list_bingo[iNum];
+
+
+            list_bingo[iNum] = objTmep;
+
+        }
+
+        for (int iNum = 0; iNum < bingoCount; iNum++)
+        {
+            list_bingo[iNum].GetObj().transform.SetSiblingIndex(iNum);
+            GameStatus.inst.SetBingoClass(iNum, list_bingo[iNum].rewardType, list_bingo[iNum].count);
         }
     }
 
@@ -1302,8 +1534,24 @@ public class EventShop_RulletManager : MonoBehaviour
         int count = _indexlist.Count;
         for (int iNum = 0; iNum < count; iNum++)
         {
-            list_AnimBingo[_indexlist[iNum]].Play("BingoGetEffect", -1, 0);
+            list_bingo[_indexlist[iNum]].GetAnim().Play("BingoGetEffect", -1, 0);
             yield return new WaitForSeconds(0.2f);
+        }
+
+        //파티클 켜줌
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            list_bingo[_indexlist[iNum]].SetParticalActive(true);
+        }
+        if (count != 0)
+        {
+            yield return new WaitForSeconds(1.5f);
+        }
+
+        //파티클 꺼줌
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            list_bingo[_indexlist[iNum]].SetParticalActive(false);
         }
     }
 
@@ -1326,7 +1574,7 @@ public class EventShop_RulletManager : MonoBehaviour
                 GameStatus.inst.PlusRuby(200);
                 break;
             case 4:
-                //가운데는 프리!
+                GameStatus.inst.MinigameTicket++;
                 break;
             case 5:
                 GameStatus.inst.PlusStar("50");
@@ -1347,16 +1595,17 @@ public class EventShop_RulletManager : MonoBehaviour
     void setBingoBoard(int index, bool value)
     {
         list_BingoBoard[index] = value;
-        list_ObjBingoMask[index].SetActive(value);
-        list_ObjBingoText[index].SetActive(value);
+        list_bingo[index].SetMaskActive(value);
+        list_bingo[index].SetMaskTextActive(value);
         GameStatus.inst.SetBingoBoard(index, value);
     }
 
     void setGoldText()
     {
-        BigInteger total = GameStatus.inst.TotalProdGold;
-        list_GoldText[0].text = CalCulator.inst.StringFourDigitAddFloatChanger((total * 2).ToString());
-        list_GoldText[1].text = CalCulator.inst.StringFourDigitAddFloatChanger((total * 5).ToString());
-        list_GoldText[2].text = CalCulator.inst.StringFourDigitAddFloatChanger((total * 10).ToString());
+        int count = list_bingo.Count;
+        for (int iNum = 0; iNum < count; iNum++)
+        {
+            list_bingo[iNum].SetGoldText();
+        }
     }
 }

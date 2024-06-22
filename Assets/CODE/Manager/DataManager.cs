@@ -88,7 +88,7 @@ public class DataManager : MonoBehaviour
         //11. 빙고 현황
         public bool[] BingoBoard = new bool[9];
         public int RouletteTicket;
-        public int BingoStack;
+        public List<GameStatus.BingoBoard> list_bingoboard = new List<GameStatus.BingoBoard>(9);
 
         //12 우편
         public List<SaveLetter> LetterBox = new List<SaveLetter>();
