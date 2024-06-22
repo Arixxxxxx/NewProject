@@ -97,7 +97,7 @@ public class IAPManager : MonoBehaviour, IStoreListener
         else if (product.definition.id == adDelete)
         {
             AdDelete.inst.ADDelete_1MonthAdd();
-            WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(0), "광고 제거 구매 완료");
+            WorldUI_Manager.inst.Set_RewardUI_Invoke(SpriteResource.inst.CoinIMG(3), "광고 제거 30일");
         }
 
         return PurchaseProcessingResult.Complete;

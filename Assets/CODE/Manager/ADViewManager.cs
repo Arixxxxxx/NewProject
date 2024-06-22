@@ -30,7 +30,10 @@ public class ADViewManager : MonoBehaviour
 
 
     // Admob 리워드형 ID 
-    private string _adUnitId = "ca-app-pub-3940256099942544/5224354917";  /*Test ID*/
+    //TestID : ca-app-pub-3940256099942544/5224354917
+    //빌드용ID : ca-app-pub-2830745914392195/4847725622
+
+    private string _adUnitId = "ca-app-pub-3940256099942544/5224354917";  //TestID
 
 
 
@@ -44,6 +47,10 @@ public class ADViewManager : MonoBehaviour
         {
             Destroy(this);
         }
+
+#if UNITY_EDITOR
+        _adUnitId = "ca-app-pub-3940256099942544/5224354917";  /*Test ID*/
+#endif
 
         worldUiRef = GameManager.inst.WorldUiRef;
         frontUIRef = GameManager.inst.FrontUiRef;

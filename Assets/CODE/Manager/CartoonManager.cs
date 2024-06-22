@@ -57,6 +57,7 @@ public class CartoonManager : MonoBehaviour
         }
     }
 
+    
     /// <summary>
     /// 만화 재생
     /// </summary>
@@ -158,6 +159,11 @@ public class CartoonManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && toonRef.activeInHierarchy && click == false)
         {
             StartCoroutine(clickCheck());
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Cartoon_Active(3);
         }
     }
 
