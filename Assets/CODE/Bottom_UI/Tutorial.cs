@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System;
 
 public class Tutorial : MonoBehaviour
 {
     public static Tutorial inst;
+
+    public UnityEvent onStartTutorial;
+    public UnityEvent onStopTutorial;
 
     GameObject tutorialintro;
     List<GameObject> list_QuestTutorial = new List<GameObject>();
@@ -144,7 +148,7 @@ public class Tutorial : MonoBehaviour
         {
             list_Coroutine.Add(HwanseangTutorial());
         }
-
+        onStartTutorial?.Invoke();
         nowCoroutine = coPlayTutorial();
         StartCoroutine(nowCoroutine);
 
@@ -172,6 +176,7 @@ public class Tutorial : MonoBehaviour
         {
             yield return StartCoroutine(list_Coroutine[iNum]);
         }
+        onStopTutorial?.Invoke();
         list_Coroutine.Clear();
         TutorialParents.gameObject.SetActive(false);
         UIManager.Instance.changeSortOder(12);

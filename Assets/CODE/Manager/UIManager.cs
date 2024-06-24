@@ -35,7 +35,8 @@ public class UIManager : MonoBehaviour
     List<Animator> list_BotBtnAnim = new List<Animator>();//메인UI 하단 버튼 애니메이터
     int bottomBtnNum = 0;//선택한 하단 버튼 번호
     RectTransform ScreenArea;
-
+    ScrollRect questScrollRect;
+    ScrollRect weaponScrollRect;
 
     ////////////////////////////////////////////퀘스트///////////////////////////////////////
 
@@ -282,7 +283,9 @@ public class UIManager : MonoBehaviour
         ScreenArea = canvas.transform.Find("ScreenArea").GetComponent<RectTransform>();
 
         //퀘스트 초기화
-        m_QuestParents = canvas.transform.Find("ScreenArea/BackGround/Quest/Scroll View").GetComponent<ScrollRect>().content;
+        questScrollRect = canvas.transform.Find("ScreenArea/BackGround/Quest/Scroll View").GetComponent<ScrollRect>();
+        
+        m_QuestParents = questScrollRect.content;
         m_QuestParentRect = m_QuestParents.GetComponent<RectTransform>();
         Transform trsQuestBuyCount = canvas.transform.Find("ScreenArea/BackGround/Quest/AllLvUpBtn");
         int QuestBuyCount = trsQuestBuyCount.childCount;
@@ -297,11 +300,13 @@ public class UIManager : MonoBehaviour
         }
 
         m_totalGold = canvas.transform.Find("ScreenArea/BackGround/Quest/TotalGpsBG/TotalGps").GetComponent<TextMeshProUGUI>();
-        
+
 
 
         //무기 초기화
-        m_WeaponParents = canvas.transform.Find("ScreenArea/BackGround/Weapon/Scroll View").GetComponent<ScrollRect>().content;
+        weaponScrollRect = canvas.transform.Find("ScreenArea/BackGround/Weapon/Scroll View").GetComponent<ScrollRect>();
+        
+        m_WeaponParents = weaponScrollRect.content;
         m_WeaponParentRect = m_WeaponParents.GetComponent<RectTransform>();
         m_totalAtk = canvas.transform.Find("ScreenArea/BackGround/Weapon/TotalAtkBG/TotalAtk").GetComponent<TextMeshProUGUI>();
         WeaponBook = canvas.transform.Find("ScreenArea/BackGround/Weapon/TopBg/DogamBtn").GetComponent<Button>();
@@ -321,6 +326,7 @@ public class UIManager : MonoBehaviour
         GotoRelicShopBtn.onClick.AddListener(() =>
         {
             ClickBotBtn(4);
+            onOpenShop?.Invoke();
             ShopManager.inst.Active_Shop(0, true);
             Shop_Gacha.inst.GachaMode_Changer(SelectType.RelicGacha);
         });
@@ -391,12 +397,20 @@ public class UIManager : MonoBehaviour
                 list_haveRelic.Add(obj);
             }
         }
+        Tutorial.inst.onStartTutorial.AddListener(() => { setScrollViewCanScroll(false); });
+        Tutorial.inst.onStopTutorial.AddListener(() => { setScrollViewCanScroll(true); });
 
         InvokeRepeating("getGoldPerSceond", 0, 1.5f);//초당 골드 획득
         m_totalGold.text = "골드 자동 획득 (초) : " + CalCulator.inst.StringFourDigitAddFloatChanger(GameStatus.inst.TotalProdGold.ToString());
         //SetAtkText(CalCulator.inst.StringFourDigitAddFloatChanger(CalCulator.inst.Get_CurPlayerATK()));
         SetAtkText(GameStatus.inst.TotalAtk.ToString());
         initButton();
+    }
+
+    void setScrollViewCanScroll(bool _value)
+    { 
+        questScrollRect.vertical = _value;
+        weaponScrollRect.vertical = _value;
     }
 
     void initButton()
@@ -429,7 +443,7 @@ public class UIManager : MonoBehaviour
 
     void SetWeaponScroll()
     {
-        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * TopHaveWeaponNum - 64);
+        m_WeaponParentRect.anchoredPosition = new UnityEngine.Vector2(0, 64 * TopHaveWeaponNum);
     }
 
 

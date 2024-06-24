@@ -82,7 +82,7 @@ public class EventShop_RulletManager : MonoBehaviour
             objBingo = _obj;
             countText = objBingo.transform.Find("Text (TMP)").GetComponent<TMP_Text>();
             rewardImage = objBingo.transform.Find("Image").GetComponent<Image>();
-            Debug.Log(objBingo.transform.GetChild(3).name);
+            
             objParticle = objBingo.transform.Find("Fireworks").gameObject;
 
             objBingoMask = _obj.transform.Find("Mask").gameObject;
@@ -1561,7 +1561,7 @@ public class EventShop_RulletManager : MonoBehaviour
         switch (index)
         {
             case 0://·çºñ 100°³
-                GameStatus.inst.PlusRuby(100);
+                GameStatus.inst.PlusRuby(20);
                 break;
             case 1:
                 GameStatus.inst.PlusStar("10");
@@ -1571,7 +1571,7 @@ public class EventShop_RulletManager : MonoBehaviour
                 GameStatus.inst.PlusGold($"{nowGold2 * 2}");
                 break;
             case 3:
-                GameStatus.inst.PlusRuby(200);
+                GameStatus.inst.PlusRuby(30);
                 break;
             case 4:
                 GameStatus.inst.MinigameTicket++;

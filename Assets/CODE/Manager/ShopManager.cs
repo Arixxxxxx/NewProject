@@ -50,7 +50,7 @@ public class ShopManager : MonoBehaviour
                 {
                     case ProductTag.Gold:
                         prodCount = GameStatus.inst.TotalProdGold * count;
-                        ProductText.text = CalCulator.inst.StringFourDigitAddFloatChanger(prodCount.ToString());
+                        ProductText.text = CalCulator.inst.StringFourDigitAddFloatChanger(prodCount.ToString()) + "°³";
 
                         break;
                     case ProductTag.Star:
@@ -166,14 +166,14 @@ public class ShopManager : MonoBehaviour
                 {
                     case ProductTag.Gold:
                         prodCount = GameStatus.inst.TotalProdGold * count;
-                        ProductText.text = CalCulator.inst.StringFourDigitAddFloatChanger(prodCount.ToString());
+                        ProductText.text = CalCulator.inst.StringFourDigitAddFloatChanger(prodCount.ToString()) + "°³";
 
                         break;
                     case ProductTag.Star:
 
                         break;
                     case ProductTag.Ruby:
-                        ProductText.text = count.ToString();
+                        ProductText.text = count.ToString() + "°³";
                         break;
 
                 }
