@@ -31,7 +31,7 @@ public class ADViewManager : MonoBehaviour
 
     // Admob 리워드형 ID 
     //TestID : ca-app-pub-3940256099942544/5224354917
-    //빌드용ID : ca-app-pub-2830745914392195/4847725622
+    //빌드용ID : ca-app-pub-2830745914392195/6310443548
 
     private string _adUnitId = "ca-app-pub-3940256099942544/5224354917";  //TestID
 
@@ -48,9 +48,9 @@ public class ADViewManager : MonoBehaviour
             Destroy(this);
         }
 
-#if UNITY_EDITOR
-        _adUnitId = "ca-app-pub-3940256099942544/5224354917";  /*Test ID*/
-#endif
+//#if UNITY_EDITOR
+//        _adUnitId = "ca-app-pub-3940256099942544/5224354917";  /*Test ID*/
+//#endif
 
         worldUiRef = GameManager.inst.WorldUiRef;
         frontUIRef = GameManager.inst.FrontUiRef;
@@ -84,6 +84,11 @@ public class ADViewManager : MonoBehaviour
     {
         if (AdDelete.inst.IsAdDeleteBuy == false) // 광고 삭제 미구입시
         {
+            if(_rewardedAd == null)
+            {
+                LoadRewardedAd();
+            }
+
             AdAfterInvokeFuntion = null;
             AdAfterInvokeFuntion += funtion;
             ShowRewardedAd();
@@ -91,9 +96,9 @@ public class ADViewManager : MonoBehaviour
         }
         else if (AdDelete.inst.IsAdDeleteBuy == true) //광고구입시 바로바로 발동
         {
+            AdAfterInvokeFuntion = null;
             AdAfterInvokeFuntion += funtion;
             AdAfterInvokeFuntion?.Invoke();
-            AdAfterInvokeFuntion = null;
         }
     }
 
@@ -171,6 +176,10 @@ public class ADViewManager : MonoBehaviour
                 {
                     Debug.LogError("Rewarded ad failed to load an ad " +
                                    "with error : " + error);
+
+                    
+                    // 빌드할때만 주석 풀것! 광고실패시 일단 테스트ID로 재생시킴
+                    StartCoroutine(RetryLoadAd());
                     return;
                 }
 
@@ -181,7 +190,32 @@ public class ADViewManager : MonoBehaviour
 
                 //핸들러 등록
                 RegisterEventHandlers(_rewardedAd);
+
+                // 광고형 아이디면 다시 빌드광고단위로변경 // 빌드할때만 주석 풀것!
+
+                //if(_adUnitId == "ca-app-pub-3940256099942544/5224354917")
+                //{
+                //    _adUnitId = "ca-app-pub-2830745914392195/6310443548";
+                //}
             });
+    }
+
+    // 광고 로드 재시도 코루틴 
+    
+    WaitForSeconds reloadWaitTime = new WaitForSeconds(0.5f);
+    int reloadCount = 0;
+    private IEnumerator RetryLoadAd()     //광고 인벤토리 부족시 3회 요청후 그래도 no fill 이 return되면 테스트 id로 일단 출력해줌
+    {
+        reloadCount++;
+        yield return reloadWaitTime;
+
+        if(reloadCount == 3)
+        {
+            _adUnitId = "ca-app-pub-3940256099942544/5224354917";
+            reloadCount = 0;
+        }
+        
+        LoadRewardedAd();
     }
 
     // Show

@@ -38,19 +38,25 @@ public class ShopManager : MonoBehaviour
             ProdImage = trs.Find("ProductImage").GetComponent<Image>();
             PriceText = trs.Find("Button/PriceText").GetComponent<TMP_Text>();
             ProductText = trs.Find("RewardText").GetComponent<TMP_Text>();
-            PriceText.text = string.Format("{0:#,0}", Price);
-            if (PriceType == ProductTag.Money)
+            if (PriceType != ProductTag.Money)
             {
-                PriceText.text += "원";
+                PriceText.text = string.Format("{0:#,0}", Price);
+            }
+            else if (PriceType == ProductTag.Money)
+            {
+                int tempnum = int.Parse(Price);
+                PriceText.text = string.Empty;
+                PriceText.text += "￦ " + tempnum.ToString("N0") + "원";
             }
 
             UIManager.Instance.onOpenShop.AddListener(() =>
             {
+                // 제품 상단
                 switch (ProductType)
                 {
                     case ProductTag.Gold:
                         prodCount = GameStatus.inst.TotalProdGold * count;
-                        ProductText.text = CalCulator.inst.StringFourDigitAddFloatChanger(prodCount.ToString()) + "개";
+                        ProductText.text = CalCulator.inst.StringFourDigitAddFloatChanger(prodCount.ToString());
 
                         break;
                     case ProductTag.Star:
@@ -68,6 +74,7 @@ public class ShopManager : MonoBehaviour
                 switch (PriceType)
                 {
                     case ProductTag.Gold:
+                        Debug.Log("여기");
                         BigInteger haveGold = BigInteger.Parse(GameStatus.inst.Gold);
                         BigInteger price = BigInteger.Parse(CalCulator.inst.ConvertChartoIndex(Price));
                         if (haveGold < price)
@@ -78,12 +85,12 @@ public class ShopManager : MonoBehaviour
                     case ProductTag.Star:
 
                         break;
+
+                      //골드상점
                     case ProductTag.Ruby:
-                        int haveRuby = GameStatus.inst.Ruby;
-                        if (haveRuby < int.Parse(Price))
-                        {
-                            return;
-                        }
+                        RubyPayment.inst.RubyPaymentUiActive(int.Parse(Price), () => { GameStatus.inst.PlusGold(prodCount.ToString()); WorldUI_Manager.inst.Set_RewardUI_Invoke(ProdImage.sprite, "골드" + ProductText.text); });
+                        
+                        
                         break;
 
                     case ProductTag.Money:
@@ -91,7 +98,8 @@ public class ShopManager : MonoBehaviour
                         break;
                 }
 
-                if(PriceType != ProductTag.Money)
+             
+                if(PriceType != ProductTag.Money && PriceType != ProductTag.Ruby)
                 {
                     inst.ClickProduct(ProdImage.sprite, ProductText.text, () =>
                     //상품 종류에 따른 액션 등록

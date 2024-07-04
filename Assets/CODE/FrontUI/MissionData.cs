@@ -1013,11 +1013,11 @@ public class MissionData : MonoBehaviour
         //checkDay();
         //checkWeek();
 
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            initDailyMission();
-            initWeeklyMission();
-        }
+        //if (Input.GetKeyDown(KeyCode.J))
+        //{
+        //    initDailyMission();
+        //    initWeeklyMission();
+        //}
     }
 
     void checkDay()

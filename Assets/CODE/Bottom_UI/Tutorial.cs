@@ -112,10 +112,10 @@ public class Tutorial : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            PlayTutorial(1, 1, 1, 1, 0);
-        }
+        //if (Input.GetKeyDown(KeyCode.B))
+        //{
+        //    PlayTutorial(1, 1, 1, 1, 0);
+        //}
     }
     /// <summary>
     /// 0 = 해당 튜토리얼 제외, 1 = 해당 튜토리얼 포함 재생

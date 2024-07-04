@@ -21,6 +21,24 @@ public class Reward_Parts : MonoBehaviour
         
     }
 
+    private void Update()
+    {
+        AutoReturn();
+    }
+
+    float popupTime = 5;
+    float timer = 0;
+    private void AutoReturn()
+    {
+        if(gameObject.activeInHierarchy == false) { return; }
+        
+        timer += Time.deltaTime;
+        if (timer > popupTime)
+        {
+            timer = 0;
+            WorldUI_Manager.inst.Return_WorldUIObjPoolingObj(gameObject, 0);
+        }
+    }
     private void init()
     {
         parentRef = transform.parent.gameObject;
@@ -35,6 +53,7 @@ public class Reward_Parts : MonoBehaviour
         {
             init();
         }
+        timer = 0;
 
         itemIMG.sprite = sprite;
         itemInfoText.text = text;
@@ -51,6 +70,7 @@ public class Reward_Parts : MonoBehaviour
         {
             init();
         }
+        timer = 0;
 
         itemIMG.sprite = sprite;
         itemInfoText.text = text;

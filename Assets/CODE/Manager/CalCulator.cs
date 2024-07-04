@@ -656,7 +656,6 @@ public class CalCulator : MonoBehaviour
     {
         BigInteger bigIntValue = BigInteger.Parse(value);
         BigInteger result = BigInteger.Multiply(bigIntValue, multiplyValue);
-        Debug.Log($"들어온값 {bigIntValue}, 곱한값 {multiplyValue} = 곱해진값 {result}");
         return result.ToString();
     }
 

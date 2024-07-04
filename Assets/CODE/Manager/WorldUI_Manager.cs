@@ -497,10 +497,10 @@ public class WorldUI_Manager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            GetItemTextAllReturn();
-        }
+        //if (Input.GetKeyDown(KeyCode.F))
+        //{
+        //    GetItemTextAllReturn();
+        //}
     }
     public void GetItemTextAllReturn()
     {

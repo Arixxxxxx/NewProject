@@ -161,10 +161,10 @@ public class CartoonManager : MonoBehaviour
             StartCoroutine(clickCheck());
         }
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            Cartoon_Active(3);
-        }
+        //if (Input.GetKeyDown(KeyCode.C))
+        //{
+        //    Cartoon_Active(3);
+        //}
     }
 
     IEnumerator clickCheck()

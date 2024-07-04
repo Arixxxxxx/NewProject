@@ -112,7 +112,7 @@ public class HwanSengSystem : MonoBehaviour
     float tillingFrontSpeedMultipleyr = 0.25f;
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z)) { FeverTimeActive(30, 0); }
+        //if (Input.GetKeyDown(KeyCode.Z)) { FeverTimeActive(30, 0); }
 
         // 환생 애니메이션 실행시 백그라운드 
         FeverTime_AnimationUpdate();

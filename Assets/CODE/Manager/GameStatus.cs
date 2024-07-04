@@ -1095,13 +1095,11 @@ public class GameStatus : MonoBehaviour
     {
         if (BuffAddGold == true)
         {
-            Debug.Log("버프상점버프");
             getValue = CalCulator.inst.StringAndIntMultiPly(getValue, 2); // 상점 버프로인한값 추가
         }
 
         if (NewbieGoldBuffValue == true)
         {
-            Debug.Log("뉴비버프");
             getValue = CalCulator.inst.StringAndIntMultiPly(getValue, 2); // 뉴비 버프로인한값 추가
         }
 
