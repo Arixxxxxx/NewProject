@@ -193,10 +193,10 @@ public class ADViewManager : MonoBehaviour
 
                 // 광고형 아이디면 다시 빌드광고단위로변경 // 빌드할때만 주석 풀것!
 
-                //if(_adUnitId == "ca-app-pub-3940256099942544/5224354917")
-                //{
-                //    _adUnitId = "ca-app-pub-2830745914392195/6310443548";
-                //}
+                if (_adUnitId == "ca-app-pub-3940256099942544/5224354917")
+                {
+                    _adUnitId = "ca-app-pub-2830745914392195/6310443548";
+                }
             });
     }
 
